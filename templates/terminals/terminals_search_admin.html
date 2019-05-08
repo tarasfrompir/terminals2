@@ -1,0 +1,113 @@
+<!--#
+ @version 0.3 (auto-set)
+#-->
+<!-- table terminals search -->
+
+<p>
+<b>
+
+
+<a href="?view_mode=edit_terminals" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
+</b>
+</p>
+<table width=100% border=0><tr>
+<td valign=top>
+<!-- results -->
+[#if RESULT#]
+<!-- paging -->
+[#if PAGES#]
+<center>
+<ul class="pagination">
+  [#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
+  [#begin PAGES#]
+  <li [#if SELECTED#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+ [#end PAGES#]
+  [#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
+</ul>
+</center>
+
+[#endif PAGES#]
+<!-- / paging -->
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_terminals" style="padding:0px">
+<table class="table table-striped">
+<thead>
+<tr>
+
+ <th>
+ <b><#LANG_SYSTEM_NAME#>
+ </th>
+ <th>
+ <b><#LANG_TITLE#></b>
+ </th>
+ <th>
+ <b>Latest activity</b>
+ </th>
+<th></th>
+
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr class="hover_btn2">
+ <td
+   >
+  <b>
+   [#NAME#]
+  </a></b>
+ </td>
+ <td
+   >
+  <b>
+   [#TITLE#]
+  </a></b>
+  [#if CANTTS="1"#](+notifications [#TTS_TYPE#][#if MIN_MSG_LEVEL!=""#], min level: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
+  [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
+ </td>
+ <td valign="top">[#LATEST_ACTIVITY#]
+ [#if IS_ONLINE="1"#]
+  <font color="green">Online</font>
+ [#else#]
+  <font color="red">Offline</font>
+ [#endif#]
+ </td>
+ <td width="100">
+ 
+  [#if "<#ACTION#>"=="admin"#]
+  
+    <a class="btn btn-default btn-sm" href="?view_mode=edit_terminals&id=[#ID#]" ><i class="glyphicon glyphicon-pencil"></i></a>
+  
+  
+    <a class="btn btn-default btn-sm" href="?view_mode=delete_terminals&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
+  
+  [#endif ACTION#]
+  
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_terminals">
+</form>
+<!-- / search results (list) -->
+<!-- paging -->
+[#if PAGES#]
+<center>
+<ul class="pagination">
+  [#begin PREVPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&laquo;</a></li>[#end PREVPAGE#]
+  [#begin PAGES#]
+  <li [#if SELECTED#]class="active"[#endif#]><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#NUM#]</a></li>
+ [#end PAGES#]
+  [#begin NEXTPAGE#]<li><a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&raquo;</a></li>[#end NEXTPAGE#]
+</ul>
+</center>
+[#endif PAGES#]
+<!-- / paging -->
+[#else RESULT#]
+<p align=center>
+<div class="alert alert-danger"><#LANG_NO_RECORDS_FOUND#></font>
+</p>
+[#endif RESULT#]
+<!-- / results -->
+</td></tr></table>
