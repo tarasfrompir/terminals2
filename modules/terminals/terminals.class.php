@@ -328,13 +328,6 @@ function terminalSayByCacheQueue($target, $details) {
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
 
-	// unsubscribeFromEvent standart terminals
-	unsubscribeFromEvent('terminals', 'SAY');
-        unsubscribeFromEvent('terminals', 'SAYTO');
-        unsubscribeFromEvent('terminals', 'ASK');
-        unsubscribeFromEvent('terminals', 'SAYREPLY');
-        unsubscribeFromEvent('terminals', 'SAY_CACHED_READY');
-	
 	// unsubscribe FromEvent standart terminals
 	unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
