@@ -22,7 +22,7 @@ class terminals extends module
     function __construct()
     {
         $this->name = "terminals";
-        $this->title = "Терминалы 2";
+        $this->title = ""<#LANG_MODULE_TERMINALS#>"";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
         $this->serverip = getLocalIp();
