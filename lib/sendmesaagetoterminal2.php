@@ -17,12 +17,3 @@ function send_message_to_terminal ($terminal, $filename, $ipfilename, $level, $m
     getURLBackground($url);
     return 1;
 }
-
-// Get terminals by CANTTS
-function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '".DBSafe('1')."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
-}
