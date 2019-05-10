@@ -194,7 +194,9 @@ class terminals extends module {
                 $details['event'] = 'SAY';
             }
             // берем длинну сообщения
-            $details['time_shift'] = getMediaDurationSeconds($details['filename']);
+            $time_shift = getMediaDurationSeconds($details['filename']);
+
+            //if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
             if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
                 $terminal_rec = array();
                 if ($details['destination']) {
@@ -255,7 +257,7 @@ class terminals extends module {
             }
         }
         
-        addScheduledJob('allsay-target-' . $target['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $target['NAME'] . "','" . $details['filename'] . "','" . $details['ipfilename'] . "','" . $details['level'] . "','" . $details['message'] . "','" . $details['event'] . "','" . $details['langcode'] . "','" . $details['langfullcode'] . "');", time() + 1, $details['time_shift']);
+        addScheduledJob('allsay-target-' . $target['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $target['NAME'] . "','" . $details['filename'] . "','" . $details['level'] . "','" . $details['message'] . "','" . $details['event'] . "','" . SETTINGS_SITE_LANGUAGE . "','" . LANG_SETTINGS_SITE_LANGUAGE_CODE . "');", time() + 1, $time_shift);
         
         // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
         $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
