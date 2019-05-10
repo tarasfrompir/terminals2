@@ -121,7 +121,12 @@
                 function player_type_select(type) {
                     $('small.addon-description').addClass('hidden');
                     $('small#'+type+'_description').removeClass('hidden');
-                    if (type == 'telegat') {
+                    if (type == '') {
+                            $('#device_control_address').hide();
+                            $('#player_name').hide();
+                            $('#player_password').hide();
+                            $('#player_port').hide();
+                    } else if (type == 'telegat') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
