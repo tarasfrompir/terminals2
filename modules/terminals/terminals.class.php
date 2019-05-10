@@ -312,19 +312,13 @@ class terminals extends module {
         }
         
         
-        //subscribeToEvent($this->name, 'SAY', '', 0);
-        //subscribeToEvent($this->name, 'SAYREPLY', '', 0);
-        //subscribeToEvent($this->name, 'SAYTO', '', 0);
-        //subscribeToEvent($this->name, 'ASK', '', 0);
+        subscribeToEvent($this->name, 'SAY', '', 0);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
+        subscribeToEvent($this->name, 'SAYTO', '', 0);
+        subscribeToEvent($this->name, 'ASK', '', 0);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
-        
-        // unsubscribe FromEvent standart terminals
-        unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
-        
+      
         parent::install($parent_name);
         
     }
@@ -344,21 +338,7 @@ class terminals extends module {
         unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
         unsubscribeFromEvent($this->name, 'HOURLY');
-        
-        // subscribeFromEvent standart terminals
-        subscribeToEvent('terminals', 'SAY', '', 0);
-        subscribeToEvent('terminals', 'SAYREPLY', '', 0);
-        subscribeToEvent('terminals', 'SAYTO', '', 0);
-        subscribeToEvent('terminals', 'ASK', '', 0);
-        subscribeToEvent('terminals', 'SAY_CACHED_READY', 0);
-        subscribeToEvent('terminals', 'HOURLY');
-        
-        // telegram
-        subscribeToEvent('telegram', 'SAY', '', 0);
-        subscribeToEvent('telegram', 'SAYREPLY', '', 0);
-        subscribeToEvent('telegram', 'SAYTO', '', 0);
-        subscribeToEvent('telegram', 'ASK', '', 0);
-        
+       
         parent::uninstall();
     }
     
