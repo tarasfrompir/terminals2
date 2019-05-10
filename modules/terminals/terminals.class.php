@@ -185,6 +185,12 @@ class terminals extends module {
      */
     function processSubscription($event, $details = '') {
         $this->getConfig();
+        // берем длинну сообщения
+        $time_shift = getMediaDurationSeconds($details['filename']);
+        if ($time_shift = 0){
+            $time_shift = 2;
+        }
+
         // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             // $details['level']     $details['message']    $details['destination']        $details['filename']    $details['event'] $event
@@ -193,11 +199,9 @@ class terminals extends module {
             if (!$details['event']) {
                 $details['event'] = 'SAY';
             }
-            // берем длинну сообщения
-            $time_shift = getMediaDurationSeconds($details['filename']);
 
             //if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
-            if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
+            if ($details['event']) {
                 $terminal_rec = array();
                 if ($details['destination']) {
                     if (!$terminal_rec = getTerminalsByName($details['destination'], 1)) {
@@ -206,19 +210,7 @@ class terminals extends module {
                 } else {
                     $terminal_rec = getTerminalsByCANTTS();
                 }
-                foreach ($terminal_rec as $terminal) {
-                    $online_terminal = ping($terminal['HOST']);
-                    if (!$terminal['ID'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-                        continue;
-                    }
-                    if (!$terminal['MIN_MSG_LEVEL']) {
-                        $terminal['MIN_MSG_LEVEL'] = 0;
-                    }
-                    if ($source_event == 'ASK') {
-                        $details['level'] = 9999;
-                    }
-                    $this->terminalSayByCacheQueue($terminal, $details);
-                }
+                $this->terminalSayByCacheQueue($terminal_rec, $details);
             }
         } elseif ($event == 'HOURLY') {
             // check terminals
@@ -238,48 +230,61 @@ class terminals extends module {
      *
      * @access public
      */
-    function terminalSayByCacheQueue($target, $details) {
-        // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
-        $messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
-        foreach ($messages as $message) {
-            if ($details['message'] == $message['MESSAGE']) {
-                $number_message = $message['ID'];
-                break;
-            }
-        }
-        // получаем данные оплеере для восстановления проигрываемого контента
-        $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "99999999999'");
-        if (!$chek_restore) {
-            $played = getPlayerStatus($target['NAME']);
-            if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-                addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $target['NAME'] . "',1);", time() + 100, 4);
-                addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $target['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
-            }
-        }
-        
-        addScheduledJob('allsay-target-' . $target['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $target['NAME'] . "','" . $details['filename'] . "','" . $details['level'] . "','" . $details['message'] . "','" . $details['event'] . "','" . SETTINGS_SITE_LANGUAGE . "','" . LANG_SETTINGS_SITE_LANGUAGE_CODE . "');", time() + 1, $time_shift);
-        
-        // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-        $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
-        $first_fields = reset($all_messages);
-        $runtime      = (strtotime($first_fields['RUNTIME']));
-        foreach ($all_messages as $message) {
-            $expire          = (strtotime($message['EXPIRE'])) - (strtotime($message['RUNTIME']));
-            $rec['ID']       = $message['ID'];
-            $rec['TITLE']    = $message['TITLE'];
-            $rec['COMMANDS'] = $message['COMMANDS'];
-            $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
-            $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime + $expire);
-            // proverka i udaleniye odinakovih soobsheniy
-            if ($prev_message['TITLE'] == $message['TITLE']) {
-                SQLExec("DELETE FROM jobs WHERE ID='" . $rec['ID'] . "'");
-            } else {
-                SQLUpdate('jobs', $rec);
-            }
-            $runtime      = $runtime + $expire;
-            $prev_message = $message;
-        }
-    }
+    function terminalSayByCacheQueue($terminal, $details) {
+		foreach ($terminal_rec as $terminal) {	
+			$online_terminal = ping($terminal['HOST']);
+			if (!$terminal['ID'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+				continue;
+			}
+			if (!$terminal['MIN_MSG_LEVEL']) {
+				$terminal['MIN_MSG_LEVEL'] = 0;
+			}
+			if ($details['event'] == 'ASK') {
+				$details['level'] = 9999;
+			}
+			
+			// berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
+			$messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
+			foreach ($messages as $message) {
+				if ($details['message'] == $message['MESSAGE']) {
+					$number_message = $message['ID'];
+					break;
+				}
+			}
+			// получаем данные оплеере для восстановления проигрываемого контента
+			$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "99999999999'");
+			if (!$chek_restore) {
+				$played = getPlayerStatus($target['NAME']);
+				if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+					addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $target['NAME'] . "',1);", time() + 100, 4);
+					addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $target['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
+				}
+			}
+			
+			addScheduledJob('allsay-target-' . $target['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $target['NAME'] . "','" . $details['filename'] . "','" . $details['level'] . "','" . $details['message'] . "','" . $details['event'] . "','" . SETTINGS_SITE_LANGUAGE . "','" . LANG_SETTINGS_SITE_LANGUAGE_CODE . "');", time() + 1, $time_shift);
+			
+			// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
+			$all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
+			$first_fields = reset($all_messages);
+			$runtime      = (strtotime($first_fields['RUNTIME']));
+			foreach ($all_messages as $message) {
+				$expire          = (strtotime($message['EXPIRE'])) - (strtotime($message['RUNTIME']));
+				$rec['ID']       = $message['ID'];
+				$rec['TITLE']    = $message['TITLE'];
+				$rec['COMMANDS'] = $message['COMMANDS'];
+				$rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
+				$rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime + $expire);
+				// proverka i udaleniye odinakovih soobsheniy
+				if ($prev_message['TITLE'] == $message['TITLE']) {
+					SQLExec("DELETE FROM jobs WHERE ID='" . $rec['ID'] . "'");
+				} else {
+					SQLUpdate('jobs', $rec);
+				}
+				$runtime      = $runtime + $expire;
+				$prev_message = $message;
+			}
+		}
+	}
     
     /**
      * Install
