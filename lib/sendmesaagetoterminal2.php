@@ -2,10 +2,6 @@
 function send_message_to_terminal ($terminal, $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode )
 {
     if (!$terminal) {
-        $terminal = 'MAIN';
-    }
-
-    if (!$terminal) {
         return 0;
     }
 	
