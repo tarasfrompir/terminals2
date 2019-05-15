@@ -319,10 +319,10 @@ class terminals extends module {
         }
         
         
-        subscribeToEvent($this->name, 'SAY', '', 0);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
-        subscribeToEvent($this->name, 'SAYTO', '', 0);
-        subscribeToEvent($this->name, 'ASK', '', 0);
+        //subscribeToEvent($this->name, 'SAY', '', 0);
+        //subscribeToEvent($this->name, 'SAYREPLY', '', 0);
+        //subscribeToEvent($this->name, 'SAYTO', '', 0);
+        //subscribeToEvent($this->name, 'ASK', '', 0);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
       
@@ -339,10 +339,10 @@ class terminals extends module {
      */
     function uninstall() {
         //SQLDropTable('terminals');
-        unsubscribeFromEvent($this->name, 'SAY');
-        unsubscribeFromEvent($this->name, 'SAYTO');
-        unsubscribeFromEvent($this->name, 'ASK');
-        unsubscribeFromEvent($this->name, 'SAYREPLY');
+       // unsubscribeFromEvent($this->name, 'SAY');
+       // unsubscribeFromEvent($this->name, 'SAYTO');
+       // unsubscribeFromEvent($this->name, 'ASK');
+       // unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
         unsubscribeFromEvent($this->name, 'HOURLY');
        
