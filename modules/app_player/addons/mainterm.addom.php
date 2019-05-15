@@ -43,17 +43,10 @@ class mainterm extends app_player_addon {
     }
 
     // Say
-    /**
-     * Summary of play message
-     * @param mixed $param['filename'] File name
-     * @param mixed $param['level'] level of message
-     * @param mixed $param['message'] text of message
-     * @param mixed $param['event'] type of event
-     * @return void
-     */
-
     function say($param) {
-        $this->reset_properties();
+        // E:\xampp\htdocs/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, http://192.168.1.30/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, 3, привет, SAY, ua, uk_UA
+        // $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode
+	$this->reset_properties();
 	$out = explode(',', $param);
 	$filename = $out[0];
 	$level = $out[1];
