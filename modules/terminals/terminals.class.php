@@ -184,7 +184,6 @@ class terminals extends module {
      * @access public
      */
     function processSubscription($event, $details = '') {
-        $this->getConfig();
         // берем длинну сообщения
         $time_shift = getMediaDurationSeconds($details['filename']);
         if ($time_shift = 0){
