@@ -49,6 +49,7 @@ class mainterm extends app_player_addon {
 	$out = explode(',', $param);
 	$filename = $out[5];
 	$level = $out[4];
+	$message = $out[1];
         if(strlen($message)) {
             if(file_exists($filename)) {
                 if (IsWindowsOS()){
