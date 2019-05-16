@@ -121,12 +121,12 @@
                 function player_type_select(type) {
                     $('small.addon-description').addClass('hidden');
                     $('small#'+type+'_description').removeClass('hidden');
-                    if (type == '') {
+                    if (type == 'mainterm') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').hide();
-                    } else if (type == 'telegat') {
+                    } else if (type == 'telegramm') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
