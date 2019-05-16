@@ -184,6 +184,7 @@ class terminals extends module {
      * @access public
      */
     function processSubscription($event, $details = '') {
+		        DebMes ($details);
         // берем длинну сообщения
         $time_shift = getMediaDurationSeconds($details['filename']);
         if ($time_shift = 0){
@@ -201,15 +202,15 @@ class terminals extends module {
 
             //if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
             if ($details['event']) {
-                $terminal_rec = array();
+                $terminals = array();
                 if ($details['destination']) {
-                    if (!$terminal_rec = getTerminalsByName($details['destination'], 1)) {
-                        $terminal_rec = getTerminalsByHost($details['destination'], 1);
+                    if (!$terminals = getTerminalsByName($details['destination'], 1)) {
+                        $terminals = getTerminalsByHost($details['destination'], 1);
                     }
                 } else {
-                    $terminal_rec = getTerminalsByCANTTS();
+                    $terminals = getTerminalsByCANTTS();
                 }
-                $this->terminalSayByCacheQueue($terminal_rec, $details);
+                $this->terminalSayByCacheQueue($terminals, $details);
             }
         } elseif ($event == 'HOURLY') {
             // check terminals
