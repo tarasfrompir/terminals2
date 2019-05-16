@@ -339,12 +339,12 @@ class terminals extends module {
      */
     function uninstall() {
         //SQLDropTable('terminals');
-       // unsubscribeFromEvent($this->name, 'SAY');
-       // unsubscribeFromEvent($this->name, 'SAYTO');
-       // unsubscribeFromEvent($this->name, 'ASK');
-       // unsubscribeFromEvent($this->name, 'SAYREPLY');
-        unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
-        unsubscribeFromEvent($this->name, 'HOURLY');
+       unsubscribeFromEvent($this->name, 'SAY');
+       unsubscribeFromEvent($this->name, 'SAYTO');
+       unsubscribeFromEvent($this->name, 'ASK');
+       unsubscribeFromEvent($this->name, 'SAYREPLY');
+       unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
+       unsubscribeFromEvent($this->name, 'HOURLY');
        
         parent::uninstall();
     }
@@ -384,17 +384,6 @@ class terminals extends module {
 EOD;
         parent::dbInstall($data);
         
-        $terminals = SQLSelect("SELECT * FROM terminals WHERE TTS_TYPE='' AND CANTTS=1");
-        foreach ($terminals as $terminal) {
-            if ($terminal['MAJORDROID_API']) {
-                $terminal['TTS_TYPE'] = 'majordroid';
-            } else {
-                $terminal['TTS_TYPE'] = 'mediaplayer';
-            }
-            SQLUpdate('terminals', $terminal);
-        }
-        
-    }
     // --------------------------------------------------------------------
 }
 
