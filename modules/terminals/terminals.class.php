@@ -318,11 +318,6 @@ class terminals extends module {
             }
         }
 	    
-        unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
-	    
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
@@ -373,7 +368,7 @@ class terminals extends module {
         terminals: NAME varchar(255) NOT NULL DEFAULT ''
  terminals: HOST varchar(255) NOT NULL DEFAULT ''
  terminals: TITLE varchar(255) NOT NULL DEFAULT ''
- terminals: CANPLAY int(3) NOT NULL DEFAULT '0'
+ terminals: CANPLAY int(3) NOT NULL DEFAULT '1'
  terminals: CANTTS int(3) NOT NULL DEFAULT '0'
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
  terminals: TTS_TYPE char(20) NOT NULL DEFAULT '' 
