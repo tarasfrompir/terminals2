@@ -385,11 +385,6 @@ EOD;
         parent::dbInstall($data);
         
     // --------------------------------------------------------------------
+    }
 }
-
-/*
- *
- * TW9kdWxlIGNyZWF0ZWQgTWFyIDI3LCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
- *
- */
 ?>
