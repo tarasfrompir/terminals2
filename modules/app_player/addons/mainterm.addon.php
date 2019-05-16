@@ -44,7 +44,7 @@ class mainterm extends app_player_addon {
 
     // Say
     function say($param) {
-       $terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
 	$this->reset_properties();
 	$out = explode(',', $param);
 	$filename = $out[5];
