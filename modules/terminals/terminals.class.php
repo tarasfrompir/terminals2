@@ -260,7 +260,7 @@ class terminals extends module {
 					addScheduledJob('target-' . $terminal['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
 				}
 			}
-			DebMes ("send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');");
+			
 			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');", time() + 1, $time_shift);
 
 			// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
