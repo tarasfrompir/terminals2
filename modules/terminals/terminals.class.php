@@ -321,7 +321,10 @@ class terminals extends module {
             }
         }
         
-        
+        unsubscribeFromEvent($this->name, 'SAY');
+        unsubscribeFromEvent($this->name, 'SAYTO');
+        unsubscribeFromEvent($this->name, 'ASK');
+        unsubscribeFromEvent($this->name, 'SAYREPLY');
         //subscribeToEvent($this->name, 'SAY', '', 0);
         //subscribeToEvent($this->name, 'SAYREPLY', '', 0);
         //subscribeToEvent($this->name, 'SAYTO', '', 0);
