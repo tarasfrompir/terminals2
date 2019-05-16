@@ -184,23 +184,24 @@ class terminals extends module {
      * @access public
      */
     function processSubscription($event, $details = '') {
-		        DebMes ($details);
         // берем длинну сообщения
         $time_shift = getMediaDurationSeconds($details['filename']);
         if ($time_shift = 0){
-            $time_shift = 2;
+            $time_shift = 1;
         }
-
         // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             // $details['level']     $details['message']    $details['destination']        $details['filename']    $details['event'] $event
-            if (!file_get_contents($details['filename']))
+		DebMes ($details);
+
+    		if (!file_get_contents($details['filename']))
                 return false;
             if (!$details['event']) {
                 $details['event'] = 'SAY';
             }
 
             //if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
+								        DebMes ($details);
             if ($details['event']) {
                 $terminals = array();
                 if ($details['destination']) {
@@ -225,13 +226,15 @@ class terminals extends module {
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)'); //
         }
     }
+
     /**
      * очередь сообщений 
      *
      * @access public
      */
-    function terminalSayByCacheQueue($terminal, $details) {
-		foreach ($terminal_rec as $terminal) {	
+    function terminalSayByCacheQueue($terminals, $details) {
+
+		foreach ($terminals as $terminal) {	
 			$online_terminal = ping($terminal['HOST']);
 			if (!$terminal['ID'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
 				continue;
@@ -339,12 +342,12 @@ class terminals extends module {
      */
     function uninstall() {
         //SQLDropTable('terminals');
-       unsubscribeFromEvent($this->name, 'SAY');
-       unsubscribeFromEvent($this->name, 'SAYTO');
-       unsubscribeFromEvent($this->name, 'ASK');
-       unsubscribeFromEvent($this->name, 'SAYREPLY');
-       unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
-       unsubscribeFromEvent($this->name, 'HOURLY');
+        unsubscribeFromEvent($this->name, 'SAY');
+        unsubscribeFromEvent($this->name, 'SAYTO');
+        unsubscribeFromEvent($this->name, 'ASK');
+        unsubscribeFromEvent($this->name, 'SAYREPLY');
+        unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
+        unsubscribeFromEvent($this->name, 'HOURLY');
        
         parent::uninstall();
     }
@@ -383,8 +386,7 @@ class terminals extends module {
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 EOD;
         parent::dbInstall($data);
-        
-    // --------------------------------------------------------------------
+  
     }
 }
 ?>
