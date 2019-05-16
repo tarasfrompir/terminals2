@@ -42,7 +42,7 @@ class telegramm extends app_player_addon {
                     getURLBackground($url,0);
                     $this->success = TRUE;
                     $this->message = 'OK';
-			    }
+                 }
             } else {
                 $this->success = FALSE;
                 $this->message = 'Command execution error!';
