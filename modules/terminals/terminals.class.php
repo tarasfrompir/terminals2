@@ -1,15 +1,4 @@
 <?php
-/**
- * Terminals
- *
- * Terminals
- *
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 0.3
- */
-//
-//
 class terminals extends module {
     /**
      * terminals
@@ -184,24 +173,33 @@ class terminals extends module {
      * @access public
      */
     function processSubscription($event, $details = '') {
-        // берем длинну сообщения
-        $time_shift = getMediaDurationSeconds($details['filename']);
-        if ($time_shift = 0){
-            $time_shift = 1;
-        }
-        // если происходит событие SAY_CACHED_READY то запускаемся
+		// если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            // $details['level']     $details['message']    $details['destination']        $details['filename']    $details['event'] $event
-		DebMes ($details);
 
-    		if (!file_get_contents($details['filename']))
-                return false;
+            // берем длинну сообщения
+            $time_shift = getMediaDurationSeconds($details['filename']);
+            if ($time_shift = 0){
+                $time_shift = 1;
+            }
+
+			// берем ссылку http
+            if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
+                $server_ip = getLocalIp();
+                if (!$server_ip) {
+                    DebMes("Server IP not found", 'terminals');
+                    return false;
+                } else {
+                    $details['linkfile'] = 'http://' . $server_ip . $m[0];
+                }
+		    }
+
+			// добавляем язык в разных форматах
+			$details['lang'] = SETTINGS_SITE_LANGUAGE;
+			$details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
+
             if (!$details['event']) {
                 $details['event'] = 'SAY';
             }
-
-            //if ($details['event'] == 'SAY' || $details['event'] == 'SAYTO' || $details['event'] == 'ASK' || $details['event'] == 'SAYREPLY') {
-								        DebMes ($details);
             if ($details['event']) {
                 $terminals = array();
                 if ($details['destination']) {
@@ -233,14 +231,13 @@ class terminals extends module {
      * @access public
      */
     function terminalSayByCacheQueue($terminals, $details) {
-
 		foreach ($terminals as $terminal) {	
 			$online_terminal = ping($terminal['HOST']);
-			if (!$terminal['ID'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-				continue;
-			}
 			if (!$terminal['MIN_MSG_LEVEL']) {
 				$terminal['MIN_MSG_LEVEL'] = 0;
+			}
+			if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+				continue;
 			}
 			if ($details['event'] == 'ASK') {
 				$details['level'] = 9999;
@@ -255,19 +252,19 @@ class terminals extends module {
 				}
 			}
 			// получаем данные оплеере для восстановления проигрываемого контента
-			$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "99999999999'");
+			$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "99999999999'");
 			if (!$chek_restore) {
-				$played = getPlayerStatus($target['NAME']);
+				$played = getPlayerStatus($terminal['NAME']);
 				if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-					addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $target['NAME'] . "',1);", time() + 100, 4);
-					addScheduledJob('allsay-target-' . $target['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $target['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
+					addScheduledJob('target-' . $terminal['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
+					addScheduledJob('target-' . $terminal['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
 				}
 			}
-			
-			addScheduledJob('allsay-target-' . $target['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $target['NAME'] . "','" . $details['filename'] . "','" . $details['level'] . "','" . $details['message'] . "','" . $details['event'] . "','" . SETTINGS_SITE_LANGUAGE . "','" . LANG_SETTINGS_SITE_LANGUAGE_CODE . "');", time() + 1, $time_shift);
-			
+			DebMes ("send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');");
+			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');", time() + 1, $time_shift);
+
 			// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-			$all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $target['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
+			$all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
 			$first_fields = reset($all_messages);
 			$runtime      = (strtotime($first_fields['RUNTIME']));
 			foreach ($all_messages as $message) {
