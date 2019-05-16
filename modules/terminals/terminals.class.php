@@ -300,24 +300,6 @@ class terminals extends module {
         $terminal['PLAYER_TYPE'] = 'mainterm';
         SQLUpdate('terminals', $terminal);
         
-        // update majordoid terminal
-        $terminals = getMajorDroidTerminals();
-        foreach ($terminals as $terminal) {
-            $terminal['PLAYER_TYPE'] = 'majordroid';
-            SQLUpdate('terminals', $terminal);
-        }
-        
-        // update other terminal
-        $terminals = getAllTerminals();
-        foreach ($terminals as $terminal) {
-            if (!$terminal['PLAYER_TYPE'] and $terminal['TTS_TYPE']) {
-                if ($terminal['TTS_TYPE'] == 'googlehomenotifier') {
-                    $terminal['PLAYER_TYPE'] = 'ghn';
-                }
-                SQLUpdate('terminals', $terminal);
-            }
-        }
-	    
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
