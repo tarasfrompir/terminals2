@@ -8,7 +8,7 @@ function send_message_to_terminal ($terminal, $message, $event, $member, $level,
     $url .= "&command=" . ($safe_say ? 'safe_say' : 'say');
     $url .= "&command=say";
     $url .= "&play_terminal=" . $terminal;
-    $url .= "&param=" . urlencode($message.','.$event.','.$member.','.$level.','.$filename.','.$linkfile.','.$lang.','.$langfull);
+    $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$linkfile.','.$lang.','.$langfull);
     getURLBackground($url);
     return 1;
 }
