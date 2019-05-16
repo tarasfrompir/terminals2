@@ -1,6 +1,5 @@
 <?php
-function send_message_to_terminal ($terminal, $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode )
-{
+function send_message_to_terminal ($terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull ) {
     if (!$terminal) {
         return 0;
     }
@@ -9,7 +8,7 @@ function send_message_to_terminal ($terminal, $filename, $ipfilename, $level, $m
     $url .= "&command=" . ($safe_say ? 'safe_say' : 'say');
     $url .= "&command=say";
     $url .= "&play_terminal=" . $terminal;
-    $url .= "&param=" . urlencode($filename.','.$ipfilename.','.$level.','.$message.','.$event.','.$langcode.','.$langfullcode);
+    $url .= "&param=" . urlencode($message.','.$event.','.$member.','.$level.','.$filename.','.$linkfile.','.$lang.','.$langfull);
     getURLBackground($url);
     return 1;
 }
