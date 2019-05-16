@@ -1,6 +1,6 @@
 <?php
 
-class telegat extends app_player_addon {
+class telegramm extends app_player_addon {
 	
 	// Private properties
 	private $curl;
@@ -24,15 +24,13 @@ class telegat extends app_player_addon {
 	
 	// Say
     function say($params) {
-        // E:\xampp\htdocs/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, http://192.168.1.30/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, 3, привет, SAY, ua, uk_UA
-        // $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode
+        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
         $this->reset_properties();
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
-		    $out = explode(',', $params);
-	        $message = $out[3];
-            
-			$users = SQLSelect("SELECT * FROM tlg_user WHERE HISTORY=1;");
-			$c_users = count($users);
+	    $out = explode(',', $params);
+	    $message = $out[1];
+            $users = SQLSelect("SELECT * FROM tlg_user WHERE HISTORY=1;");
+	    $c_users = count($users);
 
             if($message AND $c_users) {
                 for($j = 0; $j < $c_users; $j++) {
