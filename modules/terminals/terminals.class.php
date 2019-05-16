@@ -320,7 +320,12 @@ class terminals extends module {
                 SQLUpdate('terminals', $terminal);
             }
         }
-        
+	    
+        unsubscribeFromEvent('telegram', 'SAY');
+        unsubscribeFromEvent('telegram', 'SAYTO');
+        unsubscribeFromEvent('telegram', 'ASK');
+        unsubscribeFromEvent('telegram', 'SAYREPLY');
+	    
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
