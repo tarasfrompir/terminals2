@@ -59,11 +59,7 @@ if ($this->mode == 'update') {
     $rec['LINKED_OBJECT'] = gr('linked_object');
     if ($rec['LINKED_OBJECT'] == '') {
 		$objects = getObjectsByClass('Terminals');
-        if ($objects['TITLE'][0]) {
-		    $maxterminal = max($objects)['TITLE'];
-		} else {
-			$maxterminal = 0;
-		}
+		$maxterminal = max($objects)['TITLE'];
         $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
         addClassObject('Terminals', 'terminal'.$maxnomber);
         $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
