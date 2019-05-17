@@ -1,9 +1,5 @@
 <?php
 
-/*
-* @version 0.3 (auto-set)
-*/
-
 if ($this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
 }
@@ -17,18 +13,15 @@ addClassProperty('Terminals', 'media_vol_level');
 addClassProperty('Terminals', 'message_vol_level');
 
 $rec = getTerminalByID($id);
-
-//DebMes('add');
-if ($objects = getObjectsByClass('Terminals') AND !$rec['LINKED_OBJECT']) {
-   $maxterminal = max($objects)['TITLE'];
-   $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
-} else {
-   $maxnomber = 1;
+// add default 
+if ($rec['CANPLAY'] == '') {
+        $rec['CANPLAY'] = 1;
 }
-addClassObject('Terminals', 'terminal'.$maxnomber);
-$rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
+if ($rec['PLAYER_TYPE'] == '') {
+        $rec['PLAYER_TYPE'] = 'mainterm';
+}
 
-$rec = getTerminalByID($id);
+
 if ($this->mode == 'update') {
     $ok = 1;
 
@@ -60,10 +53,13 @@ if ($this->mode == 'update') {
     $rec['PLAYER_USERNAME'] = gr('player_username');
     $rec['PLAYER_PASSWORD'] = gr('player_password');
     $rec['LINKED_OBJECT'] = gr('linked_object');
-    /*
-    global $level_linked_property;
-    $rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
-    */
+    if ($rec['LINKED_OBJECT'] == '') {
+		$objects = getObjectsByClass('Terminals');
+        $maxterminal = max($objects)['TITLE'];
+        $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
+        addClassObject('Terminals', 'terminal'.$maxnomber);
+        $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
+    }
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
     $rec['HOST'] = gr('host');
