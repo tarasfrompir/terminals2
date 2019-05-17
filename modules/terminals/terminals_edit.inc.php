@@ -17,14 +17,17 @@ addClassProperty('Terminals', 'name');
 addClassProperty('Terminals', 'media_vol_level');
 addClassProperty('Terminals', 'message_vol_level');
 
-//if ($objects = getObjectsByClass('Terminals')) {
-//   $maxterminal = max()['TITLE'];
-//   $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
-//} else {
-//   $maxnomber = 1;
-//}
-//addClassObject('Terminals', 'terminal'.$maxnomber);
-//$rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
+$rec = getTerminalByID($id);
+
+DebMes('add');
+if ($objects = getObjectsByClass('Terminals') AND !$rec['LINKED_OBJECT']) {
+   $maxterminal = max($objects)['TITLE'];
+   $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
+} else {
+   $maxnomber = 1;
+}
+addClassObject('Terminals', 'terminal'.$maxnomber);
+$rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
 
 $rec = getTerminalByID($id);
 if ($this->mode == 'update') {
