@@ -1,5 +1,9 @@
 <?php
 
+/*
+* @version 0.3 (auto-set)
+*/
+
 if ($this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
 }
@@ -13,7 +17,7 @@ addClassProperty('Terminals', 'media_vol_level');
 addClassProperty('Terminals', 'message_vol_level');
 
 $rec = getTerminalByID($id);
-// add default 
+
 if ($rec['CANPLAY'] == '') {
         $rec['CANPLAY'] = 1;
 }
@@ -55,7 +59,11 @@ if ($this->mode == 'update') {
     $rec['LINKED_OBJECT'] = gr('linked_object');
     if ($rec['LINKED_OBJECT'] == '') {
 		$objects = getObjectsByClass('Terminals');
-        $maxterminal = max($objects)['TITLE'];
+        if ($objects['TITLE'][0]) {
+		    $maxterminal = max($objects)['TITLE'];
+		} else {
+			$maxterminal = 0;
+		}
         $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
         addClassObject('Terminals', 'terminal'.$maxnomber);
         $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
