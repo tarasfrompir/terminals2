@@ -157,6 +157,7 @@ class terminals extends module {
      */
     function delete_terminals($id) {
         if ($rec = getTerminalByID($id)) {
+			deleteObject($rec['LINKED_OBJECT']);
             SQLExec('DELETE FROM `terminals` WHERE `ID` = ' . $rec['ID']);
         }
     }
