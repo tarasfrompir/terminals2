@@ -18,7 +18,7 @@ addClassProperty('Terminals', 'message_vol_level');
 
 $rec = getTerminalByID($id);
 
-DebMes('add');
+//DebMes('add');
 if ($objects = getObjectsByClass('Terminals') AND !$rec['LINKED_OBJECT']) {
    $maxterminal = max($objects)['TITLE'];
    $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
