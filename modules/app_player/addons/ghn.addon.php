@@ -22,9 +22,31 @@ class ghn extends app_player_addon {
 		$this->address = 'http://'.$this->terminal['HOST'].':'.$this->terminal['PLAYER_PORT'];
 	}
 
+
 	// Play
 	function play($input) {
 		$this->reset_properties();
+		if(strlen($input)) {
+			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+			} else {
+				$this->success = FALSE;
+				$this->message = 'Command execution error!';
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}
+	
+	// Play
+	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+	function say($param) {
+		$this->reset_properties();
+		$out   = explode(',', $param);
+                $input = $out[6];
 		if(strlen($input)) {
 			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
 				$this->success = TRUE;
