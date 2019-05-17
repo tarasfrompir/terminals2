@@ -112,11 +112,10 @@ class dnla extends app_player_addon {
 
 	// Say
     function say($param) {
-		// E:\xampp\htdocs/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, http://192.168.1.30/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, 3, привет, SAY, ua, uk_UA
-		// $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode
+	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
         $this->reset_properties();
 	    $out = explode(',', $param);
-	    $input = $out[1];
+	    $input = $out[6];
         $this->reset_properties();
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($input);
