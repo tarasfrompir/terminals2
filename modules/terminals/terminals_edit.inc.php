@@ -4,6 +4,9 @@
 * @version 0.3 (auto-set)
 */
 
+if ($this->owner->name == 'panel') {
+    $out['CONTROLPANEL'] = 1;
+}
 $out['CONTROLPANEL'] = 1;
 
 $table_name = 'terminals';
