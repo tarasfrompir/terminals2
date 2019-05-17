@@ -82,10 +82,9 @@ class chromecast extends app_player_addon {
     
     // Say
     function say($param) {
-        // E:\xampp\htdocs/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, http://192.168.1.30/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, 3, привет, SAY, ua, uk_UA
-        // $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode
+        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
         $out   = explode(',', $param);
-        $input = $out[1];
+        $input = $out[6];
         $this->reset_properties();
         $this->reset_properties();
         if (strlen($input)) {
