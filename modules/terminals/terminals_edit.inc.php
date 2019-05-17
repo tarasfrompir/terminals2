@@ -58,8 +58,8 @@ if ($this->mode == 'update') {
     $rec['PLAYER_PASSWORD'] = gr('player_password');
     $rec['LINKED_OBJECT'] = gr('linked_object');
     if ($rec['LINKED_OBJECT'] == '') {
-		$objects = getObjectsByClass('Terminals');
-		$maxterminal = max($objects)['TITLE'];
+	$objects = getObjectsByClass('Terminals');
+	$maxterminal = max($objects)['TITLE'];
         $maxnomber = (str_replace("terminal", "", $maxterminal))+1;
         addClassObject('Terminals', 'terminal'.$maxnomber);
         $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
