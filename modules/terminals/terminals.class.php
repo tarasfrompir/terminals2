@@ -177,10 +177,11 @@ class terminals extends module {
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
 
             // берем длинну сообщения
-            $time_shift = getMediaDurationSeconds($details['filename']);
-            if ($time_shift = 0){
-                $time_shift = 1;
-            }
+            if (!getMediaDurationSeconds($details['filename'])){
+                $details['time_shift'] = 1;
+            } else {
+				$details['time_shift'] = getMediaDurationSeconds($details['filename']);
+			}
 
 			// берем ссылку http
             if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
@@ -256,12 +257,12 @@ class terminals extends module {
 			if (!$chek_restore) {
 				$played = getPlayerStatus($terminal['NAME']);
 				if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-					addScheduledJob('target-' . $terminal['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
-					addScheduledJob('target-' . $terminal['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
+					addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
+					addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
 				}
 			}
-			
-			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');", time() + 1, $time_shift);
+		
+			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "');", time() + 1, $details['time_shift']);
 
 			// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
 			$all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
