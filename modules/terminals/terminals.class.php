@@ -1,18 +1,15 @@
 <?php
 class terminals extends module {
-    /**
-     * terminals
-     *
-     * Module class constructor
-     *
-     * @access private
-     */
     function __construct() {
         $this->name            = "terminals";
         $this->title           = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
         $this->serverip = getLocalIp();
+        addClass('Terminals', 'SDevices');
+        addClassProperty('Terminals', 'name');
+        addClassProperty('Terminals', 'media_vol_level');
+        addClassProperty('Terminals', 'message_vol_level');
     }
     
     /**
