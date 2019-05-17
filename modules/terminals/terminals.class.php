@@ -6,10 +6,6 @@ class terminals extends module {
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
         $this->serverip = getLocalIp();
-        addClass('Terminals', 'SDevices');
-        addClassProperty('Terminals', 'name');
-        addClassProperty('Terminals', 'media_vol_level');
-        addClassProperty('Terminals', 'message_vol_level');
     }
     
     /**
