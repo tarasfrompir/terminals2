@@ -20,13 +20,12 @@ class majordroid extends app_player_addon {
 
 	// Say
 	function say($param) {
-		// E:\xampp\htdocs/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, http://192.168.1.30/cms/cached/voice/sapi_608333adc72f545078ede3aad71bfe74.mp3, 3, привет, SAY, ua, uk_UA
-		// $filename, $ipfilename, $level, $message, $event, $langcode, $langfullcode
-		$this->reset_properties();
+        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+	    $this->reset_properties();
 	    $out = explode(',', $param);
-	    $event = $out[4];
-		$input = $out[3];
-		if(strlen($input)) {
+	    $event = $out[2];
+	    $input = $out[1];
+	    if(strlen($input)) {
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			if($socket === false) {
 				$this->success = FALSE;
