@@ -19,6 +19,33 @@ class mainterm extends app_player_addon {
         
     }
 
+    // Get player status
+    function status() {
+        $this->reset_properties();
+        // Defaults
+        $track_id = -1;
+        $length   = 0;
+        $time     = 0;
+        $state    = 'unknown';
+        $volume   = 0;
+        $random   = FALSE;
+        $loop     = FALSE;
+        $repeat   = FALSE;
+ 
+        return $this->success;
+    }
+    
+    // Playlist: Get
+    function pl_get() {
+        $this->success = FALSE;
+        $this->message = 'Command execution error!';
+        $track_id      = -1;
+        $name          = 'unknow';
+        $curren_url    = '';
+     
+        return $this->success;
+    }
+	
     // Play
     function play($input) {
         $this->reset_properties();
