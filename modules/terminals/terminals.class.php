@@ -227,11 +227,11 @@ class terminals extends module {
      */
     function terminalSayByCacheQueue($terminals, $details) {
 		foreach ($terminals as $terminal) {	
-			if (!$terminal['MIN_MSG_LEVEL']) {
-				$terminal['MIN_MSG_LEVEL'] = 0;
-			}
 			if (!ping($terminal['HOST']) OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
 				continue;
+			}
+			if (!$terminal['MIN_MSG_LEVEL']) {
+				$terminal['MIN_MSG_LEVEL'] = 0;
 			}
 			if ($details['event'] == 'ASK') {
 				$details['level'] = 9999;
