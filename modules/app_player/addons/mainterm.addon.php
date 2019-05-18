@@ -72,10 +72,10 @@ class mainterm extends app_player_addon {
     // Say
     function say($param) {
         //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
-	$this->reset_properties();
-	$out = explode(',', $param);
-	$filename = $out[5];
-	$message = $out[1];
+        $this->reset_properties();
+        $out = explode(',', $param);
+        $filename = $out[5];
+        $message = $out[1];
         if(strlen($message)) {
             if(file_exists($filename)) {
                 if (IsWindowsOS()){
