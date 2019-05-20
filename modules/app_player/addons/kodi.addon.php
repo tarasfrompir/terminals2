@@ -221,6 +221,29 @@ class kodi extends app_player_addon {
 		return $this->success;
 	}
 	
+	// Say
+	function say($param) {
+		$this->reset_properties();
+		//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+                $this->reset_properties();
+                $out = explode(',', $param);
+                $filename = $out[6];
+		if(strlen($filename)) {
+			//$json = array('jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => (int)$this->terminal['ID'])
+			if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'item'=>array('file'=>$filename)))) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+			} else if ($this->kodi_request('Player.Open', array('item'=>array('file'=>$filename)))) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}
+	
 	// Pause
 	function pause() {
 		if($this->kodi_player_id()) {
