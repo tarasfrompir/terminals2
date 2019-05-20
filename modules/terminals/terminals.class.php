@@ -167,7 +167,7 @@ class terminals extends module {
      * @access public
      */
     function processSubscription($event, $details = '') {
-		// если происходит событие SAY_CACHED_READY то запускаемся
+	// если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
 
             // берем длинну сообщения
