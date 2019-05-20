@@ -85,6 +85,30 @@ class mpd extends app_player_addon {
 
 	}
 	
+	
+	// Say
+	function say($param) {
+		$this->reset_properties();
+		//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+	        $out = explode(',', $param);
+	        $input = $out[6];
+		if(strlen($input)) {
+			if($this->mpd_connect()) {
+				$this->mpd->PLClear();
+				//$this->mpd->DBRefresh();
+				$this->mpd->PLAdd($input);
+				$this->mpd->Play();
+				$this->mpd->Disconnect();
+				$this->reset_properties();
+				$this->success = TRUE;
+				$this->message = 'OK';
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}
 	// Play
 	function play($input) {
 		$this->reset_properties();
