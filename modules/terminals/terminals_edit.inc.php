@@ -15,8 +15,15 @@ addClass('Terminals', 'SDevices');
 addClassProperty('Terminals', 'name');
 addClassProperty('Terminals', 'media_vol_level');
 addClassProperty('Terminals', 'message_vol_level');
+addClassProperty('Terminals', 'location');
 
 $rec = getTerminalByID($id);
+
+$out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
+if ($rec['LOCATION_ID']) {
+    $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);
+    $out['LOCATION_TITLE'] = processTitle($location_rec['TITLE']);
+}
 
 if ($rec['CANPLAY'] == '') {
         $rec['CANPLAY'] = 1;
@@ -65,7 +72,9 @@ if ($this->mode == 'update') {
         $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
     }
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
-
+    
+    $rec['LOCATIONS'] = gr('location');
+	
     $rec['HOST'] = gr('host');
     if (!$rec['HOST']) {
         $out['ERR_HOST'] = 1;
@@ -75,6 +84,9 @@ if ($this->mode == 'update') {
     //UPDATING RECORD
     if ($ok) {
         if ($rec['ID']) {
+	    if ($rec['LOCATIONS'] ) {
+	        sg($rec['LINKED_OBJECT'].'.location', $rec['LOCATIONS']);
+            }
             SQLUpdate($table_name, $rec); // update
         } else {
             $new_rec = 1;
