@@ -171,13 +171,13 @@ class terminals extends module {
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
 
             // берем длинну сообщения
-            if (!getMediaDurationSeconds($details['filename'])){
-                $details['time_shift'] = 1;
+            if (getMediaDurationSeconds($details['filename'])<2){
+                $details['time_shift'] = 2;
             } else {
-				$details['time_shift'] = getMediaDurationSeconds($details['filename']);
-			}
+		$details['time_shift'] = getMediaDurationSeconds($details['filename']);
+	    }
 
-			// берем ссылку http
+	    // берем ссылку http
             if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
                 $server_ip = getLocalIp();
                 if (!$server_ip) {
@@ -186,11 +186,11 @@ class terminals extends module {
                 } else {
                     $details['linkfile'] = 'http://' . $server_ip . $m[0];
                 }
-		    }
+	    }
 
-			// добавляем язык в разных форматах
-			$details['lang'] = SETTINGS_SITE_LANGUAGE;
-			$details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
+	    // добавляем язык в разных форматах
+	    $details['lang'] = SETTINGS_SITE_LANGUAGE;
+	    $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
 
             if (!$details['event']) {
                 $details['event'] = 'SAY';
@@ -227,7 +227,8 @@ class terminals extends module {
      */
     function terminalSayByCacheQueue($terminals, $details) {
 		foreach ($terminals as $terminal) {	
-			if (!ping($terminal['HOST']) OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+			ping($terminal['HOST']);
+			if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
 				continue;
 			}
 			if (!$terminal['MIN_MSG_LEVEL']) {
