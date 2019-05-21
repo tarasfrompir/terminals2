@@ -46,29 +46,6 @@ class mainterm extends app_player_addon {
         return $this->success;
     }
 	
-    // Play
-    function play($input) {
-        $this->reset_properties();
-        if(strlen($input)) {
-            if(file_exists($input)) {
-                if (IsWindowsOS()){
-                   safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $input);
-                } else {
-                   safe_exec('mplayer ' . $input . " >/dev/null 2>&1");
-                }
-                $this->success = TRUE;
-                $this->message = 'OK';
-            } else {
-                $this->success = FALSE;
-                $this->message = 'Command execution error!';
-            }
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Input is missing!';
-        }
-        return $this->success;
-    }
-
     // Say
     function say($param) {
         //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
