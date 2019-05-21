@@ -116,14 +116,12 @@ class dnla extends app_player_addon {
         $this->reset_properties();
 	$out = explode(',', $param);
 	$input = $out[6];
+	$terminal = $out[0];
+	$timeshift = $out[9];
 	// получаем данные оплеере для восстановления проигрываемого контента
-	//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "99999999999'");
+	//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
 	//if (!$chek_restore) {
-	//    $played = getPlayerStatus($terminal['NAME']);
-	//    if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-	//	addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
-	//	addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
-	//    }
+	//    $played = getPlayerStatus($terminal);
 	//}
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($input);
@@ -134,6 +132,11 @@ class dnla extends app_player_addon {
         if($doc->getElementsByTagName('PlayResponse')) {
             $this->success = TRUE;
             $this->message = 'Play files';
+	    //if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	    //    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift, 3);
+	    //    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+6, 4);
+	    //}
+
          } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
