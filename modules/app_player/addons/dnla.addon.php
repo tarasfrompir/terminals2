@@ -114,9 +114,17 @@ class dnla extends app_player_addon {
     function say($param) {
 	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
         $this->reset_properties();
-	    $out = explode(',', $param);
-	    $input = $out[6];
-        $this->reset_properties();
+	$out = explode(',', $param);
+	$input = $out[6];
+	// получаем данные оплеере для восстановления проигрываемого контента
+	$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "99999999999'");
+	if (!$chek_restore) {
+	    $played = getPlayerStatus($terminal['NAME']);
+	    if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+		addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
+		addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
+	    }
+	}
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($input);
         // создаем хмл документ
