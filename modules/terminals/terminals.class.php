@@ -294,6 +294,19 @@ class terminals extends module {
         $terminal                = getMainTerminal();
         $terminal['PLAYER_TYPE'] = 'mainterm';
         SQLUpdate('terminals', $terminal);
+        // update all terminals
+	$terminals = SQLSelect("SELECT * FROM terminals);
+        foreach ($terminals as $terminal) {
+            if ($terminal['MAJORDROID_API']) {
+                $terminal['PLAYER_TYPE'] = 'majordroid';
+            } else {
+                $terminal['TTS_TYPE'] = 'mediaplayer';
+            }
+	    
+	    $terminal['CANPLAY'] = '1';
+            SQLUpdate('terminals', $terminal);
+        }
+	    
         
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
