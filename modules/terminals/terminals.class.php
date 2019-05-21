@@ -6,6 +6,10 @@ class terminals extends module {
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
         $this->serverip = getLocalIp();
+	unsubscribeFromEvent('telegram', 'SAY');
+        unsubscribeFromEvent('telegram', 'SAYTO');
+        unsubscribeFromEvent('telegram', 'ASK');
+        unsubscribeFromEvent('telegram', 'SAYREPLY');
     }
     
     /**
@@ -313,11 +317,7 @@ class terminals extends module {
 	    $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
-	    
-        unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
+
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
