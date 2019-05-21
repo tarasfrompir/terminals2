@@ -295,7 +295,7 @@ class terminals extends module {
         $terminal['PLAYER_TYPE'] = 'mainterm';
         SQLUpdate('terminals', $terminal);
         // update all terminals
-	$terminals = SQLSelect("SELECT * FROM terminals);
+	$terminals = SQLSelect("SELECT * FROM terminals");
         foreach ($terminals as $terminal) {
             if ($terminal['MAJORDROID_API']) {
                 $terminal['PLAYER_TYPE'] = 'majordroid';
