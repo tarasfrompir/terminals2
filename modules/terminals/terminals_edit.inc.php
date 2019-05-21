@@ -26,6 +26,13 @@ if ($rec['PLAYER_TYPE'] == '') {
         $rec['PLAYER_TYPE'] = 'mainterm';
 }
 
+global $location;
+$out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
+DebMes ($location);
+if ($location) {
+     $out['LOCATION_TITLE'] = processTitle($location);
+}
+
 
 if ($this->mode == 'update') {
     $ok = 1;
@@ -51,13 +58,16 @@ if ($this->mode == 'update') {
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
-    
+	   
     $rec['TTS_TYPE'] = gr('tts_type');
     $rec['PLAYER_TYPE'] = gr('player_type');
     $rec['PLAYER_PORT'] = gr('player_port');
     $rec['PLAYER_USERNAME'] = gr('player_username');
     $rec['PLAYER_PASSWORD'] = gr('player_password');
     $rec['LINKED_OBJECT'] = gr('linked_object');
+	
+	$location = gr('location');
+	
     if ($rec['LINKED_OBJECT'] == '') {
 	$objects = getObjectsByClass('Terminals');
 	$maxterminal = max($objects)['TITLE'];
@@ -77,6 +87,7 @@ if ($this->mode == 'update') {
     if ($ok) {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
+			    sg($rec['LINKED_OBJECT'] .'.location',$location);
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
