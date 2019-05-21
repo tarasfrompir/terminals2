@@ -59,7 +59,14 @@
     [#module name="linkedobject" object_field="linked_object"#]
 [#endif ID#]
 
-   
+ <div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <div class="col-lg-4"><select name="location" class="form-control">
+   <option value="">-
+    [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select></div>
+ </div>
 
 <script language="javascript">
  function canTTSChanged() {
@@ -217,4 +224,3 @@
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
 </form>
-
