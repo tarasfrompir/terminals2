@@ -10,7 +10,7 @@ class kodi extends app_player_addon {
 	
 	// Constructor
 	function __construct($terminal) {
-		$this->title = 'Kodi (XBMC)';
+		$this->title = 'KODI (XBMC)';
 		$this->description = 'Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.';
 		
 		$this->terminal = $terminal;
