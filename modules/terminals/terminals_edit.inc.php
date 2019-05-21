@@ -28,7 +28,6 @@ if ($rec['PLAYER_TYPE'] == '') {
 
 global $location;
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
-DebMes ($location);
 if ($location) {
      $out['LOCATION_TITLE'] = processTitle($location);
 }
@@ -87,7 +86,7 @@ if ($this->mode == 'update') {
     if ($ok) {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
-			    sg($rec['LINKED_OBJECT'] .'.location',$location);
+	    sg($rec['LINKED_OBJECT'] .'.location',$location);
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
