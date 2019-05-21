@@ -23,7 +23,7 @@ class telegramm extends app_player_addon {
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
 	    $out = explode(',', $params);
 	    $message = $out[1];
-            $users = SQLSelect("SELECT * FROM tlg_user WHERE HISTORY=1;");
+            $users = SQLSelect("SELECT * FROM tlg_user ");
 	    $c_users = count($users);
 
             if($message AND $c_users) {
