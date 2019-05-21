@@ -127,6 +127,33 @@ class lms extends app_player_addon {
 		return $this->success;
 	}
 
+    // Say
+    function say($param) {
+	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+        $this->reset_properties();
+	$out = explode(',', $param);
+	$input = $out[6];
+	$this->reset_properties();
+		if(strlen($input)) {
+			$input = preg_replace('/\\\\$/is', '', $input);
+			if($this->lms_jsonrpc_request(array('playlist', 'play', $input))) {
+				if($this->status()) {
+					$track_id = $this->data['track_id'];
+				} else {
+					$track_id = -1;
+				}
+				$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+				$this->data = (int)$track_id;
+			}
+		} else {
+			$this->success = FALSE;
+			$this->message = 'Input is missing!';
+		}
+		return $this->success;
+	}    
+	    
+	    
+	    
 	// Play
 	function play($input) {
 		$this->reset_properties();
