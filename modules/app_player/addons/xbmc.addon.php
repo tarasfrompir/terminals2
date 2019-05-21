@@ -2,7 +2,7 @@
 /*
 	Addon Kodi (XBMC) for app_player
 */
-class kodi extends app_player_addon {
+class xbmc extends app_player_addon {
 	
 	// Private properties
 	private $curl;
@@ -10,7 +10,7 @@ class kodi extends app_player_addon {
 	
 	// Constructor
 	function __construct($terminal) {
-		$this->title = 'Kodi (XBMC)';
+		$this->title = 'XBMC - использует дополнение script.alicevox.master';
 		$this->description = 'Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.';
 		
 		$this->terminal = $terminal;
@@ -231,9 +231,6 @@ class kodi extends app_player_addon {
 		if(strlen($filename)) {
 			//$json = array('jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => (int)$this->terminal['ID'])
 			if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'item'=>array('file'=>$filename)))) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			} else if ($this->kodi_request('Player.Open', array('item'=>array('file'=>$filename)))) {
 				$this->success = TRUE;
 				$this->message = 'OK';
 			}
