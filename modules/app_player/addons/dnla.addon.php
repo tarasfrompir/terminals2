@@ -112,7 +112,7 @@ class dnla extends app_player_addon {
 
 	// Say
     function say($param) {
-	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
         $this->reset_properties();
 	$out = explode(',', $param);
 	$input = $out[6];
