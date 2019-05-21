@@ -30,7 +30,10 @@ global $location;
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 if ($location) {
      $out['LOCATION_TITLE'] = processTitle($location);
+} else {
+     $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.location'));
 }
+
 
 
 if ($this->mode == 'update') {
