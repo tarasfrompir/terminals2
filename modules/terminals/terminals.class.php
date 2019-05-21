@@ -177,6 +177,7 @@ class terminals extends module {
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
                 if (ping($terminal['HOST'])) {
+                    sg($terminal['LINKED_OBJECT'] .'.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
                     SQLUpdate('terminals', $terminal);
@@ -241,6 +242,9 @@ class terminals extends module {
 		foreach ($terminals as $terminal) {	
 			if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
 				continue;
+			}
+			if (terminal['IS_ONLINE'] ) {
+                            sg($terminal['LINKED_OBJECT'] .'.status', '1');
 			}
 			if (!$terminal['MIN_MSG_LEVEL']) {
 				$terminal['MIN_MSG_LEVEL'] = 0;
