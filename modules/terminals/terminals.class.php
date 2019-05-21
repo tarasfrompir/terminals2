@@ -169,7 +169,16 @@ class terminals extends module {
     function processSubscription($event, $details = '') {
 	// если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-
+            // check terminals
+            $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
+            foreach ($terminals as $terminal) {
+                if (ping($terminal['HOST'])) {
+                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE']       = 1;
+                    SQLUpdate('terminals', $terminal);
+                }
+            }
+		
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename'])<2){
                 $details['time_shift'] = 2;
@@ -216,7 +225,6 @@ class terminals extends module {
                     SQLUpdate('terminals', $terminal);
                 }
             }
-            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)'); //
         }
     }
 
@@ -227,7 +235,6 @@ class terminals extends module {
      */
     function terminalSayByCacheQueue($terminals, $details) {
 		foreach ($terminals as $terminal) {	
-			ping($terminal['HOST']);
 			if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
 				continue;
 			}
