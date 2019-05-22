@@ -24,7 +24,7 @@ function saytts($terminal, $message, $event, $member, $level, $lang, $langfull) 
     }
 	
     $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=" . 'say_tts';
+    $url .= "&command=say_tts";
     $url .= "&play_terminal=" . $terminal;
     $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$lang.','.$langfull);
     //DebMes($url,'playmedia');
