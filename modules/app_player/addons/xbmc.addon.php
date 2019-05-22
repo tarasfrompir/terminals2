@@ -229,8 +229,7 @@ class xbmc extends app_player_addon {
                 $out = explode(',', $param);
                 $filename = $out[6];
 		if(strlen($filename)) {
-			//$json = array('jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => (int)$this->terminal['ID'])
-			if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'item'=>array('file'=>$filename)))) {
+			if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'params'=>array($filename)))) {
 				$this->success = TRUE;
 				$this->message = 'OK';
 			}
