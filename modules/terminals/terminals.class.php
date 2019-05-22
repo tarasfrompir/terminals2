@@ -319,6 +319,7 @@ class terminals extends module {
         //subscribeToEvent($this->name, 'SAYTO', '', 0);
         //subscribeToEvent($this->name, 'ASK', '', 0);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
+	subscribeToEvent($this->name, 'SAY_WITHOUT_CACHE', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
       
         parent::install($parent_name);
@@ -339,7 +340,8 @@ class terminals extends module {
         unsubscribeFromEvent($this->name, 'ASK');
         unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
-        unsubscribeFromEvent($this->name, 'HOURLY');
+        unsubscribeFromEvent($this->name, 'SAY_WITHOUT_CACHE');
+	unsubscribeFromEvent($this->name, 'HOURLY');
        
         parent::uninstall();
     }
