@@ -4,12 +4,7 @@ class terminals extends module {
         $this->name            = "terminals";
         $this->title           = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
-        $this->checkInstalled();
         $this->serverip = getLocalIp();
-	unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
     }
     
     /**
@@ -261,17 +256,8 @@ class terminals extends module {
 					break;
 				}
 			}
-			// получаем данные оплеере для восстановления проигрываемого контента
-			$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "99999999999'");
-			if (!$chek_restore) {
-				$played = getPlayerStatus($terminal['NAME']);
-				if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-					addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal['NAME'] . "',1);", time() + 100, 4);
-					addScheduledJob('target-' . $terminal['NAME'] . '-number-99999999999', "seekPlayerPosition('" . $terminal['NAME'] . "'," . $played['time'] . ");", time() + 110, 4);
-				}
-			}
-		
-			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "','" . $details['time_shift']. "');", time() + 1, $details['time_shift']);
+
+			addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message']. "','" . $details['event']. "','" . $details['member']. "','" . $details['level']. "','" . $details['filename']. "','" . $details['linkfile']. "','" . $details['lang']. "','" . $details['langfull']. "','" . $details['time_shift']. "');", time() + 1, $details['time_shift']+2);
 
 			// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
 			$all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
@@ -321,7 +307,10 @@ class terminals extends module {
 	    $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
-
+	unsubscribeFromEvent('telegram', 'SAY');
+        unsubscribeFromEvent('telegram', 'SAYTO');
+        unsubscribeFromEvent('telegram', 'ASK');
+        unsubscribeFromEvent('telegram', 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
