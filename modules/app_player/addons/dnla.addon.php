@@ -12,7 +12,7 @@ class dnla extends app_player_addon {
     
     // Constructor
     function __construct($terminal) {
-        $this->title = 'DNLA media player';
+        $this->title = 'устройства с DNLA протоколом';
         $this->description = 'Проигрывание видео - аудио ';
         $this->description .= 'на всех устройства поддерживающих такой протокол. ';
         $this->terminal = $terminal;
