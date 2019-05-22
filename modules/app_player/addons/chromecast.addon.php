@@ -82,11 +82,17 @@ class chromecast extends app_player_addon {
     
     // Say
     function say($param) {
-        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
-        $out   = explode(',', $param);
-        $input = $out[6];
+	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
         $this->reset_properties();
-        $this->reset_properties();
+	    $out = explode(',', $param);
+	    $input = $out[6];
+	    $terminal = $out[0];
+	    $timeshift = $out[9];
+	    // получаем данные оплеере для восстановления проигрываемого контента
+	    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
+        if (!$chek_restore) {
+    	    $played = getPlayerStatus($terminal);
+	    }
         if (strlen($input)) {
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
@@ -118,6 +124,10 @@ class chromecast extends app_player_addon {
                 $cc->DMP->play($input, 'BUFFERED', $content_type, true, 0);
                 $this->success = TRUE;
                 $this->message = 'OK';
+                if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	                addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 3);
+	                addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+7, 3);
+	            }
             }
             catch (Exception $e) {
                 $this->success = FALSE;
