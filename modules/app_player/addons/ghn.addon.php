@@ -42,11 +42,13 @@ class ghn extends app_player_addon {
 	}
 	
 	// Play
-	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
 	function say($param) {
-		$this->reset_properties();
-		$out   = explode(',', $param);
-                $input = $out[6];
+	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
+            $this->reset_properties();
+	    $out = explode(',', $param);
+	    $input = $out[6];
+	    $terminal = $out[0];
+	    $timeshift = $out[9];
 		if(strlen($input)) {
 			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
 				$this->success = TRUE;
