@@ -223,20 +223,30 @@ class kodi extends app_player_addon {
 	
 	// Say
 	function say($param) {
-		$this->reset_properties();
-		//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
-                $this->reset_properties();
-                $out = explode(',', $param);
-                $input = $out[6];
-		if(strlen($input)) {
-			if($this->kodi_request('Player.Open', array('item'=>array('file'=>$input)))) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			}
-		} else {
-			$this->success = FALSE;
-			$this->message = 'Input is missing!';
+    	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
+            $this->reset_properties();
+	    $out = explode(',', $param);
+	    $input = $out[6];
+	    $terminal = $out[0];
+	    $timeshift = $out[9];
+	    // получаем данные оплеере для восстановления проигрываемого контента
+	    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
+	    if (!$chek_restore) {
+	        $played = getPlayerStatus($terminal);
+	    }
+	    if(strlen($input)) {
+		if($this->kodi_request('Player.Open', array('item'=>array('file'=>$input)))) {
+			$this->success = TRUE;
+			$this->message = 'OK';
+			if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	                    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 3);
+	                    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+7, 3);
+	                }
 		}
+	    } else {
+		$this->success = FALSE;
+		$this->message = 'Input is missing!';
+	    }
 		return $this->success;
 	}
 	
