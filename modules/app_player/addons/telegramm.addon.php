@@ -8,16 +8,14 @@ class telegramm extends app_player_addon {
 	
 	// Constructor
 	function __construct($terminal) {
-		$this->title = 'Терминал для модуля Телеграмм';
-		$this->description = 'Терминал Телеграмма';
-		
-		$this->terminal = $terminal;
-		$this->reset_properties();
-			unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
-		
+	    $this->title = 'Терминал для модуля Телеграмм';
+	    $this->description = 'Терминал Телеграмма';
+	    $this->terminal = $terminal;
+	    $this->reset_properties();
+	    unsubscribeFromEvent('telegram', 'SAY');
+            unsubscribeFromEvent('telegram', 'SAYTO');
+            unsubscribeFromEvent('telegram', 'ASK');
+            unsubscribeFromEvent('telegram', 'SAYREPLY');
 	}
 	
 	// Say
