@@ -216,7 +216,7 @@ class terminals extends module {
                 }
                 $this->terminalSayByCacheQueue($terminals, $details);
             }
-        } elseif ($event == 'HOURLY') {
+        } else if ($event == 'HOURLY') {
             // check terminals
 	    SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
