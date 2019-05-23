@@ -9,7 +9,7 @@ class majordroid extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'MajorDroid';
-		$this->description = 'Официальное приложение для Android.';
+		$this->description = 'Описание: Терминал предназначен для устройств использующих MajorDroidAPI.';
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
