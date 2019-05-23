@@ -9,7 +9,7 @@ class chromecast extends app_player_addon {
     // Constructor
     function __construct($terminal) {
         $this->title       = 'Google Chromecast';
-        $this->description = 'Цифровой медиаплеер от компании Google.';
+        $this->description = 'Описание: Цифровой медиаплеер от компании Google.';
         
         $this->terminal = $terminal;
         $this->reset_properties();
