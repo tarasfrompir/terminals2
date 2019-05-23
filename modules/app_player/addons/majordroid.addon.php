@@ -19,13 +19,12 @@ class majordroid extends app_player_addon {
 	}
 
 	// Say
-	function say($param) {
-	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
+	function saytts($param) {
+	    //$terminal, $message, $event, $member, $level, $lang, $langfull
             $this->reset_properties();
             $out = explode(',', $param);
 	    $input = $out[1];
 	    $terminal = $out[0];
-	    $timeshift = $out[9];
 	    $event = $out[2];
 	    if(strlen($input)) {
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
