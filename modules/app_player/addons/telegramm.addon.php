@@ -9,13 +9,13 @@ class telegramm extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 	    $this->title = 'Терминал для модуля Телеграмм';
-	    $this->description = 'Терминал Телеграмма';
+	    $this->description = 'Описание: Терминал использующий прием-передачу сообщений через модуль Телеграмм';
 	    $this->terminal = $terminal;
 	    $this->reset_properties();
 	    unsubscribeFromEvent('telegram', 'SAY');
-        unsubscribeFromEvent('telegram', 'SAYTO');
-        unsubscribeFromEvent('telegram', 'ASK');
-        unsubscribeFromEvent('telegram', 'SAYREPLY');
+            unsubscribeFromEvent('telegram', 'SAYTO');
+            unsubscribeFromEvent('telegram', 'ASK');
+            unsubscribeFromEvent('telegram', 'SAYREPLY');
 	}
 	
 	// Say
