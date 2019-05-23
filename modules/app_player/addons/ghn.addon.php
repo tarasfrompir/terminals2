@@ -12,7 +12,7 @@ class ghn extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Google Home Notifier';
-		$this->description = 'Умная колонка от Google.';
+		$this->description = 'Описание: Умная колонка от Google.';
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
