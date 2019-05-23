@@ -13,7 +13,7 @@ class dnla extends app_player_addon {
     // Constructor
     function __construct($terminal) {
         $this->title = 'Устройства с поддержкой протокола DLNA';
-        $this->description = 'Проигрывание видео - аудио ';
+        $this->description = 'Описание: Проигрывание видео - аудио ';
         $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
         $this->terminal = $terminal;
         $this->reset_properties();
