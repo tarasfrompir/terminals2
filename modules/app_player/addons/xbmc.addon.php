@@ -11,7 +11,8 @@ class xbmc extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'KODI (XBMC) alicevox';
-		$this->description = 'Описание: Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.Поддерживаемые возможности: через alicevox плагин для KODI (https://mjdm.ru/forum/viewtopic.php?f=5&t=2893&start=120).'; 
+		$this->description = 'Описание: Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.'; 
+                $this->description .= 'Поддерживаемые возможности say, sayto, sayreply, ask через alicevox плагин для KODI (https://mjdm.ru/forum/viewtopic.php?f=5&t=2893&start=120).'; 
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
