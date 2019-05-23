@@ -19,8 +19,8 @@ class majordroid extends app_player_addon {
 	}
 
 	// Say
-	function saytts($param) {
-	    //$terminal, $message, $event, $member, $level, $lang, $langfull
+	function say($param) {
+	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
             $this->reset_properties();
             $out = explode(',', $param);
 	    $input = $out[1];
