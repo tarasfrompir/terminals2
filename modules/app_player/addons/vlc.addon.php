@@ -13,7 +13,7 @@ class vlc extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'VLC (VideoLAN)';
-		$this->description = 'Управление VLC через GUI интерфейс. ';
+		$this->description = 'Описание: Управление VLC через GUI интерфейс. ';
 		$this->description .= 'В настоящее время доступно только для Windows. ';
 		$this->description .= 'Поддерживает ограниченный набор команд. ';
 		
