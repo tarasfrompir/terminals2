@@ -11,8 +11,8 @@ class mainterm extends app_player_addon {
     
     // Constructor
     function __construct($terminal) {
-        $this->title = 'Основной терминал Мажордомо.';
-        $this->description = 'Основной терминал Мажордомо.';
+        $this->title = 'Основной терминал Мажордомо';
+        $this->description = 'Тип терминала для воспроизведения сообщений на локальном сервере.';
         
         $this->terminal = $terminal;
         $this->reset_properties();
