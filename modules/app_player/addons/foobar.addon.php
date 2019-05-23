@@ -13,7 +13,7 @@ class foobar extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Foobar2000';
-		$this->description = 'Мощный медиаплеер, созданный одним из разработчиков WinAmp.';
+		$this->description = 'Описание: Мощный медиаплеер, созданный одним из разработчиков WinAmp.';
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
