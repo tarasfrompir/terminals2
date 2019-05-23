@@ -15,7 +15,7 @@ class lms extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Logitech Media Server';
-		$this->description = 'Logitech Media Server - это потоковый аудиосервер,разработанный, в частности, для поддержки цифровых аудиоприемников Squeezebox.<br>';
+		$this->description = 'Описание: Logitech Media Server - это потоковый аудиосервер,разработанный, в частности, для поддержки цифровых аудиоприемников Squeezebox.<br>';
 		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес плеера.';
 		
 		$this->terminal = $terminal;
