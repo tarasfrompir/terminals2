@@ -8,7 +8,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     $url .= "&command=say";
     $url .= "&play_terminal=" . $terminal;
     $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$filename.','.$linkfile.','.$lang.','.$langfull.','.$timeshift);
-    getURLBackground($url);
+    getURL($url);
     return 1;
 }
 
@@ -27,7 +27,7 @@ function saytts($terminal, $message, $event, $member, $level, $lang, $langfull) 
     $url .= "&command=saytts";
     $url .= "&play_terminal=" . $terminal;
     $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$lang.','.$langfull);
-    getURLBackground($url);
+    getURL($url);
     return 1;
 
 }
