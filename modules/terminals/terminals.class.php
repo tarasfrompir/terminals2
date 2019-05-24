@@ -341,10 +341,10 @@ class terminals extends module {
         }
         
 
-        subscribeToEvent($this->name, 'SAY', '', 0);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
-        subscribeToEvent($this->name, 'SAYTO', '', 0);
-        subscribeToEvent($this->name, 'ASK', '', 0);
+        subscribeToEvent($this->name, 'SAY', '', 110);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 110);
+        subscribeToEvent($this->name, 'SAYTO', '', 110);
+        subscribeToEvent($this->name, 'ASK', '', 110);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
         
