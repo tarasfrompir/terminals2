@@ -167,7 +167,7 @@ class terminals extends module {
      */
     function processSubscription($event, $details = '') {
         // если происходит событие SAY_CACHED_READY то запускаемся
-        if ($event == 'SAY_WITHOUT_CACHE' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+        if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
