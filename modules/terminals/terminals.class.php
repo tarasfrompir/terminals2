@@ -354,16 +354,12 @@ class terminals extends module {
             SQLUpdate('terminals', $terminal);
         }
         
-        unsubscribeFromEvent($this->name, 'SAY');
-        unsubscribeFromEvent($this->name, 'SAYTO');
-        unsubscribeFromEvent($this->name, 'ASK');
-        unsubscribeFromEvent($this->name, 'SAYREPLY');
-        //subscribeToEvent($this->name, 'SAY', '', 0);
-        //subscribeToEvent($this->name, 'SAYREPLY', '', 0);
-        //subscribeToEvent($this->name, 'SAYTO', '', 0);
-        //subscribeToEvent($this->name, 'ASK', '', 0);
+
+        subscribeToEvent($this->name, 'SAY', '', 0);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
+        subscribeToEvent($this->name, 'SAYTO', '', 0);
+        subscribeToEvent($this->name, 'ASK', '', 0);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
-        subscribeToEvent($this->name, 'SAY_WITHOUT_CACHE', '', 0);
         subscribeToEvent($this->name, 'HOURLY');
         
         parent::install($parent_name);
