@@ -27,7 +27,7 @@ function saytts($terminal, $message, $event, $member, $level, $lang, $langfull) 
     $url .= "&command=saytts";
     $url .= "&play_terminal=" . $terminal;
     $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$lang.','.$langfull);
-    getURL($url);
+    getURLBackground($url);
     return 1;
 
 }
