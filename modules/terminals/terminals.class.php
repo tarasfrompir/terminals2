@@ -335,14 +335,14 @@ class terminals extends module {
      *
      * @access private
      */
-    function install($parent_name = "") {
+    function install() {
         // updates database
         // update main terminal
         $terminal                = getMainTerminal();
         $terminal['PLAYER_TYPE'] = 'mainterm';
         SQLUpdate('terminals', $terminal);
         // update all terminals
-    $terminals = SQLSelect("SELECT * FROM terminals");
+        $terminals = SQLSelect("SELECT * FROM terminals");
         foreach ($terminals as $terminal) {
             if ($terminal['MAJORDROID_API']) {
                 $terminal['PLAYER_TYPE'] = 'majordroid';
@@ -401,12 +401,12 @@ class terminals extends module {
         /*
         terminals - Terminals
         */
-        $data = <<<EOD
-        terminals: ID int(10) unsigned NOT NULL auto_increment
-        terminals: NAME varchar(255) NOT NULL DEFAULT ''
+       $data = <<<EOD
+ terminals: ID int(10) unsigned NOT NULL auto_increment
+ terminals: NAME varchar(255) NOT NULL DEFAULT ''
  terminals: HOST varchar(255) NOT NULL DEFAULT ''
  terminals: TITLE varchar(255) NOT NULL DEFAULT ''
- terminals: CANPLAY int(3) NOT NULL DEFAULT '1'
+ terminals: CANPLAY int(3) NOT NULL DEFAULT '0'
  terminals: CANTTS int(3) NOT NULL DEFAULT '0'
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
  terminals: TTS_TYPE char(20) NOT NULL DEFAULT '' 
