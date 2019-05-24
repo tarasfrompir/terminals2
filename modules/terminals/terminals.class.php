@@ -1,24 +1,6 @@
 <?php
-/**
- * Terminals
- *
- * Terminals
- *
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 0.3
- */
-//
-//
-class terminals extends module
-{
-    /**
-     * terminals
-     *
-     * Module class constructor
-     *
-     * @access private
-     */
+class terminals extends module {
+
     function __construct()
     {
         $this->name = "terminals";
@@ -27,13 +9,7 @@ class terminals extends module
         $this->checkInstalled();
         $this->serverip = getLocalIp();
     }
-    /**
-     * saveParams
-     *
-     * Saving module parameters
-     *
-     * @access public
-     */
+
     function saveParams($data = 1) {
         $data = array();
         if (IsSet($this->id)) {
@@ -81,13 +57,7 @@ class terminals extends module
         }
     }
     
-    /**
-     * Run
-     *
-     * Description
-     *
-     * @access public
-     */
+
     function run() {
         global $session;
         $out = array();
@@ -115,13 +85,7 @@ class terminals extends module
         $this->result = $p->result;
     }
     
-    /**
-     * BackEnd
-     *
-     * Module backend
-     *
-     * @access public
-     */
+
     function admin(&$out) {
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
@@ -140,40 +104,22 @@ class terminals extends module
         }
     }
     
-    /**
-     * FrontEnd
-     *
-     * Module frontend
-     *
-     * @access public
-     */
+
     function usual(&$out) {
         $this->admin($out);
     }
     
-    /**
-     * terminals search
-     *
-     * @access public
-     */
+
     function search_terminals(&$out) {
         require(DIR_MODULES . $this->name . '/terminals_search.inc.php');
     }
     
-    /**
-     * terminals edit/add
-     *
-     * @access public
-     */
+
     function edit_terminals(&$out, $id) {
         require(DIR_MODULES . $this->name . '/terminals_edit.inc.php');
     }
     
-    /**
-     * terminals delete record
-     *
-     * @access public
-     */
+
     function delete_terminals($id) {
         if ($rec = getTerminalByID($id)) {
             deleteObject($rec['LINKED_OBJECT']);
@@ -217,8 +163,18 @@ class terminals extends module
                 $terminals = getTerminalsByCANTTS();
             }
             foreach ($terminals as $terminal) {
-                
-                if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+				// Addons main class
+				include_once(DIR_MODULES.'app_player/addons.php');
+				// Load addon
+				if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
+					include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
+					if(class_exists($terminal['PLAYER_TYPE'])) {
+						if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+							$player = new $terminal['PLAYER_TYPE']($terminal);
+						} 
+					} 
+				}
+                if (!method_exists($player, 'saytts') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if ($terminal['IS_ONLINE']) {
@@ -301,7 +257,18 @@ class terminals extends module
      */
     function terminalSayByCacheQueue($terminals, $details) {
         foreach ($terminals as $terminal) {
-            if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+			// Addons main class
+			include_once(DIR_MODULES.'app_player/addons.php');
+			// Load addon
+			if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
+				include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
+				if(class_exists($terminal['PLAYER_TYPE'])) {
+					if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+						$player = new $terminal['PLAYER_TYPE']($terminal);
+					} 
+				} 
+			}
+            if (!method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
             }
             if ($terminal['IS_ONLINE']) {
