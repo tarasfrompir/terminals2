@@ -1,12 +1,32 @@
 <?php
-class terminals extends module {
-    function __construct() {
-        $this->name            = "terminals";
-        $this->title           = "<#LANG_MODULE_TERMINALS#>";
+/**
+ * Terminals
+ *
+ * Terminals
+ *
+ * @package MajorDoMo
+ * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @version 0.3
+ */
+//
+//
+class terminals extends module
+{
+    /**
+     * terminals
+     *
+     * Module class constructor
+     *
+     * @access private
+     */
+    function __construct()
+    {
+        $this->name = "terminals";
+        $this->title = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
-        $this->serverip        = getLocalIp();
+        $this->checkInstalled();
+        $this->serverip = getLocalIp();
     }
-    
     /**
      * saveParams
      *
