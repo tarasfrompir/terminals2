@@ -1,8 +1,6 @@
 <?php
-class terminals extends module
-{
-    function __construct()
-    {
+class terminals extends module {
+    function __construct() {
         $this->name            = "terminals";
         $this->title           = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
@@ -16,8 +14,7 @@ class terminals extends module
      *
      * @access public
      */
-    function saveParams($data = 1)
-    {
+    function saveParams($data = 1) {
         $data = array();
         if (IsSet($this->id)) {
             $data["id"] = $this->id;
@@ -41,8 +38,7 @@ class terminals extends module
      *
      * @access public
      */
-    function getParams($data = 1)
-    {
+    function getParams($data = 1) {
         global $id;
         global $mode;
         global $view_mode;
@@ -72,8 +68,7 @@ class terminals extends module
      *
      * @access public
      */
-    function run()
-    {
+    function run() {
         global $session;
         $out = array();
         if ($this->action == 'admin') {
@@ -107,8 +102,7 @@ class terminals extends module
      *
      * @access public
      */
-    function admin(&$out)
-    {
+    function admin(&$out) {
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -133,8 +127,7 @@ class terminals extends module
      *
      * @access public
      */
-    function usual(&$out)
-    {
+    function usual(&$out) {
         $this->admin($out);
     }
     
@@ -143,8 +136,7 @@ class terminals extends module
      *
      * @access public
      */
-    function search_terminals(&$out)
-    {
+    function search_terminals(&$out) {
         require(DIR_MODULES . $this->name . '/terminals_search.inc.php');
     }
     
@@ -153,8 +145,7 @@ class terminals extends module
      *
      * @access public
      */
-    function edit_terminals(&$out, $id)
-    {
+    function edit_terminals(&$out, $id) {
         require(DIR_MODULES . $this->name . '/terminals_edit.inc.php');
     }
     
@@ -163,8 +154,7 @@ class terminals extends module
      *
      * @access public
      */
-    function delete_terminals($id)
-    {
+    function delete_terminals($id) {
         if ($rec = getTerminalByID($id)) {
             deleteObject($rec['LINKED_OBJECT']);
             SQLExec('DELETE FROM `terminals` WHERE `ID` = ' . $rec['ID']);
@@ -175,8 +165,7 @@ class terminals extends module
      *
      * @access public
      */
-    function processSubscription($event, $details = '')
-    {
+    function processSubscription($event, $details = '') {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_WITHOUT_CACHE' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
@@ -290,8 +279,7 @@ class terminals extends module
      *
      * @access public
      */
-    function terminalSayByCacheQueue($terminals, $details)
-    {
+    function terminalSayByCacheQueue($terminals, $details) {
         foreach ($terminals as $terminal) {
             if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
@@ -347,8 +335,7 @@ class terminals extends module
      *
      * @access private
      */
-    function install($parent_name = '')
-    {
+    function install($parent_name = '') {
         // updates database
         // update main terminal
         $terminal                = getMainTerminal();
@@ -390,8 +377,7 @@ class terminals extends module
      *
      * @access public
      */
-    function uninstall()
-    {
+    function uninstall() {
         //SQLDropTable('terminals');
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
@@ -411,8 +397,7 @@ class terminals extends module
      *
      * @access private
      */
-    function dbInstall($data)
-    {
+    function dbInstall($data) {
         /*
         terminals - Terminals
         */
@@ -442,4 +427,3 @@ EOD;
         
     }
 }
-
