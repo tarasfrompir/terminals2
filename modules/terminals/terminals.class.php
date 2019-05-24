@@ -143,8 +143,12 @@ class terminals extends module {
                     sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
-                    SQLUpdate('terminals', $terminal);
+                } else {
+                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE']       = 0;
                 }
+                SQLUpdate('terminals', $terminal);
             }
             
             // добавляем язык в разных форматах
@@ -174,7 +178,7 @@ class terminals extends module {
 				} 
 			} 
 		}
-                if (!method_exists($player, 'saytts') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if ($terminal['IS_ONLINE']) {
@@ -189,18 +193,8 @@ class terminals extends module {
                 saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
-        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            // check terminals
-            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
-            $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
-            foreach ($terminals as $terminal) {
-                if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
-                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE']       = 1;
-                    SQLUpdate('terminals', $terminal);
-                }
-            }
+        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel') ) {
+           
             
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
@@ -242,10 +236,15 @@ class terminals extends module {
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
                 if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
+                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
-                    SQLUpdate('terminals', $terminal);
+                } else {
+                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                    $terminal['IS_ONLINE']       = 0;
                 }
+                SQLUpdate('terminals', $terminal);
             }
         }
     }
@@ -268,7 +267,7 @@ class terminals extends module {
 				} 
 			} 
 		}
-            if (!method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+            if (!method_exists($player, 'say') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
             }
             if ($terminal['IS_ONLINE']) {
