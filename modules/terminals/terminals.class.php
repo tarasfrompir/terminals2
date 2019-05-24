@@ -347,7 +347,7 @@ class terminals extends module
      *
      * @access private
      */
-    function install()
+    function install($parent_name = '')
     {
         // updates database
         // update main terminal
