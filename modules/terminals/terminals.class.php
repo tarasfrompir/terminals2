@@ -257,18 +257,7 @@ class terminals extends module {
      */
     function terminalSayByCacheQueue($terminals, $details) {
         foreach ($terminals as $terminal) {
-			// Addons main class
-			include_once(DIR_MODULES.'app_player/addons.php');
-			// Load addon
-			if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
-				include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
-				if(class_exists($terminal['PLAYER_TYPE'])) {
-					if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-						$player = new $terminal['PLAYER_TYPE']($terminal);
-					} 
-				} 
-			}
-            if (!method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+            if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
             }
             if ($terminal['IS_ONLINE']) {
