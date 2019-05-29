@@ -188,11 +188,12 @@ class terminals extends module {
                 if ($details['event'] == 'ASK') {
                     $details['level'] = 9999;
                 }
+                $message = str_replace(',', '', $details['message']);
                 //saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
 	        $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
                 $url .= "&command=saytts";
                 $url .= "&play_terminal=" . $terminal['NAME'];
-                $url .= "&param=" . urlencode($terminal['NAME'].','.$details['message'].','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
+                $url .= "&param=" . urlencode($terminal['NAME'].','.$message.','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
                 getURL($url);
                 return 1;
             }
