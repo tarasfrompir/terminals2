@@ -11,23 +11,3 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     getURLBackground($url);
     return 1;
 }
-
-/**
- * Summary of playMedia
- * @param mixed $path Path
- * @param mixed $host Host (default 'localhost')
- * @return int
- */
-function saytts($terminal, $message, $event, $member, $level, $lang, $langfull) {
-    if (!$terminal) {
-        return 0;
-    }
-
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=saytts";
-    $url .= "&play_terminal=" . $terminal;
-    $url .= "&param=" . urlencode($terminal.','.$message.','.$event.','.$member.','.$level.','.$lang.','.$langfull);
-    getURL($url);
-    return 1;
-
-}
