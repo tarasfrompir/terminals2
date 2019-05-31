@@ -188,7 +188,7 @@ class terminals extends module {
                 if ($details['event'] == 'ASK') {
                     $details['level'] = 9999;
                 }
-                $message = str_replace(',', '', $details['message']);
+ 		$details['terminal'] = $terminal['NAME'];
                 //saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
 	        //$url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
                 //$url .= "&command=saytts";
