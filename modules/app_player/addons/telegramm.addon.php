@@ -28,7 +28,7 @@ class telegramm extends app_player_addon {
 //"event": "SAY",
 //"terminal": 
         $this->reset_properties();
-        DebMes ('telegram saytt telegram incoming time-'.microtime(true),'terminal2');
+        DebMes ('telegram saytt telegram incoming time-'.microtime(true));
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
             $message = $details['message'];
             $users = SQLSelect("SELECT * FROM tlg_user ");
@@ -42,7 +42,7 @@ class telegramm extends app_player_addon {
                     }
                     $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
                     getURLBackground($url,0);
-		    DebMes ('telegram send url -'.microtime(true),'terminal2');
+		    DebMes ('telegram send url -'.microtime(true));
                     $this->success = TRUE;
                     $this->message = 'OK';
                  }
