@@ -20,7 +20,13 @@ class majordroid extends app_player_addon {
 
 	// saytts
 	function saytts($details) {
-
+//"level": 4,
+//"message": "132.",
+//"member_id": 0,
+//"lang": "ua",
+//"langfull": "uk_UA",
+//"event": "SAY",
+//"terminal": 
             $this->reset_properties();
 	    $input =  $details['message'];
 	    $event =  $details['event'];
