@@ -190,12 +190,13 @@ class terminals extends module {
                 }
                 $message = str_replace(',', '', $details['message']);
                 //saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
-	        $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-                $url .= "&command=saytts";
-                $url .= "&play_terminal=" . $terminal['NAME'];
-                $url .= "&param=" . urlencode($terminal['NAME'].','.$message.','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
-                getURL($url);
-                return 1;
+	        //$url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
+                //$url .= "&command=saytts";
+                //$url .= "&play_terminal=" . $terminal['NAME'];
+                //$url .= "&param=" . urlencode($terminal['NAME'].','.$message.','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
+                //getURL($url);
+                //return 1;
+                return $player->saytts($details);
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel') ) {
