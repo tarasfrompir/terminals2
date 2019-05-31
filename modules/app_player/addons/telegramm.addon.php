@@ -20,7 +20,13 @@ class telegramm extends app_player_addon {
 	
 	// Say
     function saytts($details) {
-        //$terminal, $message, $event, $member, $level, $lang, $langfull
+//"level": 4,
+//"message": "132.",
+//"member_id": 0,
+//"lang": "ua",
+//"langfull": "uk_UA",
+//"event": "SAY",
+//"terminal": 
         $this->reset_properties();
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
             $message = $details['message'];
