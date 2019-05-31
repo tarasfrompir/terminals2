@@ -18,14 +18,12 @@ class majordroid extends app_player_addon {
 		$this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT'])?7999:$this->terminal['PLAYER_PORT']);
 	}
 
-	// Say
-	function say($param) {
-	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
+	// saytts
+	function saytts($details) {
+            //$terminal, $message, $event, $member, $level, $lang, $langfull
             $this->reset_properties();
-            $out = explode(',', $param);
-	    $input = $out[1];
-	    $terminal = $out[0];
-	    $event = $out[2];
+	    $input =  $details['message'];
+	    $event =  $details['event'];
 	    if(strlen($input)) {
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			if($socket === false) {
