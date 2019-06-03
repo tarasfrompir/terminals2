@@ -42,8 +42,11 @@ class telegramm extends app_player_addon {
                     }
                     $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
                     //getURLBackground($url,0);
-                    getURL($url,0);
-		    DebMes ('telegram send url -'.microtime(true));
+                    $out = getURL($url,0);
+		    while ($out!='Ok') {
+		        DebMes ('telegram send url error? repit send Message');
+			$out = getURL($url,0);
+		    }
                     $this->success = TRUE;
                     $this->message = 'OK';
                  }
