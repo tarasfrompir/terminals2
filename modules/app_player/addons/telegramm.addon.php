@@ -28,26 +28,32 @@ class telegramm extends app_player_addon {
 //"event": "SAY",
 //"terminal": 
         $this->reset_properties();
-        //DebMes ('telegram saytt telegram incoming time-'.microtime(true));
+        DebMes ('telegram saytt telegram incoming time-'.microtime(true));
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
+            $message = $details['message'];
             $users = SQLSelect("SELECT * FROM tlg_user ");
-	    $c_users = count($users);
+	        $c_users = count($users);
 
-            if($details['message'] AND $c_users) {
+            if($message AND $c_users) {
                 for($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($details['message']);
-                    //getURLBackground($url,0);
+                    $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
                     $out = getURL($url,0);
-		    while ($out!='Ok') {
+		    $checktime = time();
+		    while ($out!='Ok' or time() > $checktime+2) {
 		        DebMes ('telegram send url error? repit send Message');
 			$out = getURL($url,0);
 		    }
-                    $this->success = TRUE;
-                    $this->message = 'OK';
+		    if ($out = 'Ok') {
+			$this->success = TRUE;
+                        $this->message = 'OK';
+		    } else {
+			$this->success = FALSE;
+                        $this->message = 'Command execution error!';
+		    }
                  }
             } else {
                 $this->success = FALSE;
