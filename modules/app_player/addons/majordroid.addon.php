@@ -19,7 +19,7 @@ class majordroid extends app_player_addon {
 	}
 
 	// saytts
-	function saytts($details) {
+	function sayttotext($details) {
 //"level": 4,
 //"message": "132.",
 //"member_id": 0,
