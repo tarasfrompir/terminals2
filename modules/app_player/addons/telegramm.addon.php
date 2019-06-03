@@ -44,7 +44,7 @@ class telegramm extends app_player_addon {
                     $out = getURL($url,0);
 		    $checktime = time();
 		    while ($out!='Ok' or time() > $checktime+2) {
-		        DebMes ('telegram send url error? repit send Message');
+		        DebMes ('Problem with send message to telegram? Repit now.');
 			$out = getURL($url,0);
 		    }
 		    if ($out = 'Ok') {
