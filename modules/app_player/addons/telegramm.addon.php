@@ -28,19 +28,18 @@ class telegramm extends app_player_addon {
 //"event": "SAY",
 //"terminal": 
         $this->reset_properties();
-        DebMes ('telegram saytt telegram incoming time-'.microtime(true));
+        //DebMes ('telegram saytt telegram incoming time-'.microtime(true));
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
-            $message = $details['message'];
             $users = SQLSelect("SELECT * FROM tlg_user ");
-	        $c_users = count($users);
+	    $c_users = count($users);
 
-            if($message AND $c_users) {
+            if($details['message'] AND $c_users) {
                 for($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
+                    $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($details['message']);
                     //getURLBackground($url,0);
                     $out = getURL($url,0);
 		    while ($out!='Ok') {
