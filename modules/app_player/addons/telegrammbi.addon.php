@@ -1,6 +1,6 @@
 <?php
 
-class telegrammbg extends app_player_addon {
+class telegrammbi extends app_player_addon {
 	
 	// Private properties
 	private $curl;
