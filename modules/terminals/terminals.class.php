@@ -184,7 +184,7 @@ class terminals extends module {
 			} 
 		}
                 //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-		if (!method_exists($player, 'saytts') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+		if (!method_exists($player, 'sayttotext') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -202,7 +202,7 @@ class terminals extends module {
                 //getURL($url);
                 //return 1;
 		DebMes ('terminals send message to'.$details['terminal'].' time-'.microtime(true));
-                return $player->saytts($details);
+                return $player->sayttotext($details);
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel') ) {
