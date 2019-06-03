@@ -134,10 +134,10 @@ class terminals extends module {
     function processSubscription($event, $details = '') {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            DebMes ('terminals event time-'.microtime(true));
+            //DebMes ('terminals event time-'.microtime(true));
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
-	    DebMes('base update'.microtime(true));
+	    //DebMes('base update'.microtime(true));
             //$terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             //foreach ($terminals as $terminal) {
             //    if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
@@ -201,7 +201,7 @@ class terminals extends module {
                 //$url .= "&param=" . urlencode($terminal['NAME'].','.$message.','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
                 //getURL($url);
                 //return 1;
-		DebMes ('terminals send message to'.$details['terminal'].' time-'.microtime(true));
+		//DebMes ('terminals send message to'.$details['terminal'].' time-'.microtime(true));
                 return $player->sayttotext($details);
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
