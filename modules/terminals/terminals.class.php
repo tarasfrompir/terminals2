@@ -1,16 +1,18 @@
 <?php
-class terminals extends module {
-
+class terminals extends module
+{
+    
     function __construct()
     {
-        $this->name = "terminals";
-        $this->title = "<#LANG_MODULE_TERMINALS#>";
+        $this->name            = "terminals";
+        $this->title           = "<#LANG_MODULE_TERMINALS#>";
         $this->module_category = "<#LANG_SECTION_SETTINGS#>";
         $this->checkInstalled();
         $this->serverip = getLocalIp();
     }
-
-    function saveParams($data = 1) {
+    
+    function saveParams($data = 1)
+    {
         $data = array();
         if (IsSet($this->id)) {
             $data["id"] = $this->id;
@@ -34,7 +36,8 @@ class terminals extends module {
      *
      * @access public
      */
-    function getParams($data = 1) {
+    function getParams($data = 1)
+    {
         global $id;
         global $mode;
         global $view_mode;
@@ -57,8 +60,9 @@ class terminals extends module {
         }
     }
     
-
-    function run() {
+    
+    function run()
+    {
         global $session;
         $out = array();
         if ($this->action == 'admin') {
@@ -85,8 +89,9 @@ class terminals extends module {
         $this->result = $p->result;
     }
     
-
-    function admin(&$out) {
+    
+    function admin(&$out)
+    {
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -104,23 +109,27 @@ class terminals extends module {
         }
     }
     
-
-    function usual(&$out) {
+    
+    function usual(&$out)
+    {
         $this->admin($out);
     }
     
-
-    function search_terminals(&$out) {
+    
+    function search_terminals(&$out)
+    {
         require(DIR_MODULES . $this->name . '/terminals_search.inc.php');
     }
     
-
-    function edit_terminals(&$out, $id) {
+    
+    function edit_terminals(&$out, $id)
+    {
         require(DIR_MODULES . $this->name . '/terminals_edit.inc.php');
     }
     
-
-    function delete_terminals($id) {
+    
+    function delete_terminals($id)
+    {
         if ($rec = getTerminalByID($id)) {
             deleteObject($rec['LINKED_OBJECT']);
             SQLExec('DELETE FROM `terminals` WHERE `ID` = ' . $rec['ID']);
@@ -131,31 +140,32 @@ class terminals extends module {
      *
      * @access public
      */
-    function processSubscription($event, $details = '') {
+    function processSubscription($event, $details = '')
+    {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            //DebMes ('terminals event time-'.microtime(true));
+            //DebMes('terminals event time-' . microtime(true));
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
-	    //DebMes('base update'.microtime(true));
+            //DebMes('base update' . microtime(true));
             //$terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             //foreach ($terminals as $terminal) {
             //    if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-	//		DebMes('ping terminal online -'.$terminal['HOST'].' '.microtime(true));
-          //          sg($terminal['LINKED_OBJECT'] . '.status', '1');
-           //         $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-             //       $terminal['IS_ONLINE']       = 1;
-             //       sg($terminal['LINKED_OBJECT'] . '.status', '1');
-             //   } else {
-	//	    DebMes('ping terminal offline-'.$terminal['HOST'].' '.microtime(true));
-          //          sg($terminal['LINKED_OBJECT'] . '.status', '0');
+            //        DebMes('ping terminal online -'.$terminal['HOST'].' '.microtime(true));
+            //          sg($terminal['LINKED_OBJECT'] . '.status', '1');
+            //         $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+            //       $terminal['IS_ONLINE']       = 1;
+            //       sg($terminal['LINKED_OBJECT'] . '.status', '1');
+            //   } else {
+            //        DebMes('ping terminal offline-'.$terminal['HOST'].' '.microtime(true));
+            //          sg($terminal['LINKED_OBJECT'] . '.status', '0');
             //        $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-              //      $terminal['IS_ONLINE']       = 0;
-                //    sg($terminal['LINKED_OBJECT'] . '.status', '0');
-		//}
-              // SQLUpdate('terminals', $terminal);
-          //  }
-            DebMes ('terminals update terminals time-'.microtime(true));
+            //      $terminal['IS_ONLINE']       = 0;
+            //    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+            //}
+            // SQLUpdate('terminals', $terminal);
+            //  }
+            //DebMes('terminals update terminals time-' . microtime(true));
             // добавляем язык в разных форматах
             $details['lang']     = SETTINGS_SITE_LANGUAGE;
             $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
@@ -172,19 +182,19 @@ class terminals extends module {
                 $terminals = getTerminalsByCANTTS();
             }
             foreach ($terminals as $terminal) {
-		// Addons main class
-		include_once(DIR_MODULES.'app_player/addons.php');
-		// Load addon
-		if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
-			include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
-			if(class_exists($terminal['PLAYER_TYPE'])) {
-				if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-					$player = new $terminal['PLAYER_TYPE']($terminal);
-				} 
-			} 
-		}
+                // Addons main class
+                include_once(DIR_MODULES . 'app_player/addons.php');
+                // Load addon
+                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+                    include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
+                    if (class_exists($terminal['PLAYER_TYPE'])) {
+                        if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+                            $player = new $terminal['PLAYER_TYPE']($terminal);
+                        }
+                    }
+                }
                 //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-		if (!method_exists($player, 'sayttotext') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                if (!method_exists($player, 'sayttotext') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -193,20 +203,20 @@ class terminals extends module {
                 if ($details['event'] == 'ASK') {
                     $details['level'] = 9999;
                 }
- 		$details['terminal'] = $terminal['NAME'];
+                $details['terminal'] = $terminal['NAME'];
                 //saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
-	        //$url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
+                //$url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
                 //$url .= "&command=saytts";
                 //$url .= "&play_terminal=" . $terminal['NAME'];
                 //$url .= "&param=" . urlencode($terminal['NAME'].','.$message.','.$details['event'].','.$details['member'].','.$details['level'].','.$details['lang'].','.$details['langfull']);
                 //getURL($url);
                 //return 1;
-		//DebMes ('terminals send message to'.$details['terminal'].' time-'.microtime(true));
+                DebMes('terminals send message to' . $details['terminal'] . ' time-' . microtime(true));
                 return $player->sayttotext($details);
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
-        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel') ) {
-           
+        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+            
             
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
@@ -257,7 +267,7 @@ class terminals extends module {
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 0;
                     sg($terminal['LINKED_OBJECT'] . '.status', '0');
-		}
+                }
                 SQLUpdate('terminals', $terminal);
             }
         }
@@ -268,19 +278,20 @@ class terminals extends module {
      *
      * @access public
      */
-    function terminalSayByCacheQueue($terminals, $details) {
+    function terminalSayByCacheQueue($terminals, $details)
+    {
         foreach ($terminals as $terminal) {
-		// Addons main class
-		include_once(DIR_MODULES.'app_player/addons.php');
-		// Load addon
-		if(file_exists(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php')) {
-			include_once(DIR_MODULES.'app_player/addons/'.$terminal['PLAYER_TYPE'].'.addon.php');
-			if(class_exists($terminal['PLAYER_TYPE'])) {
-				if(is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-					$player = new $terminal['PLAYER_TYPE']($terminal);
-				} 
-			} 
-		}
+            // Addons main class
+            include_once(DIR_MODULES . 'app_player/addons.php');
+            // Load addon
+            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+                include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
+                if (class_exists($terminal['PLAYER_TYPE'])) {
+                    if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+                        $player = new $terminal['PLAYER_TYPE']($terminal);
+                    }
+                }
+            }
             //if (!method_exists($player, 'say') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
             if (!method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
@@ -336,7 +347,8 @@ class terminals extends module {
      *
      * @access private
      */
-    function install($parent_name = '') {
+    function install($parent_name = '')
+    {
         // updates database
         // update main terminal
         $terminal                = getMainTerminal();
@@ -355,7 +367,7 @@ class terminals extends module {
             SQLUpdate('terminals', $terminal);
         }
         
-
+        
         subscribeToEvent($this->name, 'SAY', '', 200);
         subscribeToEvent($this->name, 'SAYREPLY', '', 200);
         subscribeToEvent($this->name, 'SAYTO', '', 200);
@@ -374,7 +386,8 @@ class terminals extends module {
      *
      * @access public
      */
-    function uninstall() {
+    function uninstall()
+    {
         //SQLDropTable('terminals');
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
@@ -386,7 +399,7 @@ class terminals extends module {
         parent::uninstall();
     }
     
-   function dbInstall($data)
+    function dbInstall($data)
     {
         /*
         terminals - Terminals
@@ -414,13 +427,13 @@ class terminals extends module {
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
 EOD;
         parent::dbInstall($data);
-
+        
     }
-// --------------------------------------------------------------------
+    // --------------------------------------------------------------------
 }
 /*
-*
-* TW9kdWxlIGNyZWF0ZWQgTWFyIDI3LCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
-*
-*/
+ *
+ * TW9kdWxlIGNyZWF0ZWQgTWFyIDI3LCAyMDA5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==
+ *
+ */
 ?>
