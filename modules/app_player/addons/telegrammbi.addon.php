@@ -41,7 +41,9 @@ class telegrammbi extends app_player_addon {
                         $user_id = $users[$j]['NAME'];
                     }
                     $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
-                    getURL($url,0);
+                    while (!getURL($url,0)) {
+			$count++;
+		    }
 		    DebMes ('telegram send url -'.microtime(true));
                     $this->success = TRUE;
                     $this->message = 'OK';
