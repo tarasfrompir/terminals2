@@ -304,7 +304,7 @@ class terminals extends module {
                 }
             }
             
-            addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message'] . "','" . $details['event'] . "','" . $details['member'] . "','" . $details['level'] . "','" . $details['filename'] . "','" . $details['linkfile'] . "','" . $details['lang'] . "','" . $details['langfull'] . "','" . $details['time_shift'] . "');", time() + 1, $details['time_shift'] + 2);
+            addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message'] . "','" . $details['event'] . "','" . $details['member'] . "','" . $details['level'] . "','" . $details['filename'] . "','" . $details['linkfile'] . "','" . $details['lang'] . "','" . $details['langfull'] . "','" . $details['time_shift'] . "');", time(), $details['time_shift'] + 2);
             
             // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
             $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
