@@ -138,23 +138,23 @@ class terminals extends module {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
 	    DebMes('base update'.microtime(true));
-            $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
-            foreach ($terminals as $terminal) {
-                if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-			DebMes('ping terminal online -'.$terminal['HOST'].' '.microtime(true));
-                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
-                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE']       = 1;
-                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
-                } else {
-		    DebMes('ping terminal offline-'.$terminal['HOST'].' '.microtime(true));
-                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
-                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE']       = 0;
-                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
-		}
-               SQLUpdate('terminals', $terminal);
-            }
+            //$terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
+            //foreach ($terminals as $terminal) {
+            //    if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
+	//		DebMes('ping terminal online -'.$terminal['HOST'].' '.microtime(true));
+          //          sg($terminal['LINKED_OBJECT'] . '.status', '1');
+           //         $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+             //       $terminal['IS_ONLINE']       = 1;
+             //       sg($terminal['LINKED_OBJECT'] . '.status', '1');
+             //   } else {
+	//	    DebMes('ping terminal offline-'.$terminal['HOST'].' '.microtime(true));
+          //          sg($terminal['LINKED_OBJECT'] . '.status', '0');
+            //        $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+              //      $terminal['IS_ONLINE']       = 0;
+                //    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+		//}
+              // SQLUpdate('terminals', $terminal);
+          //  }
             DebMes ('terminals update terminals time-'.microtime(true));
             // добавляем язык в разных форматах
             $details['lang']     = SETTINGS_SITE_LANGUAGE;
@@ -183,7 +183,8 @@ class terminals extends module {
 				} 
 			} 
 		}
-                if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+		if (!method_exists($player, 'saytts') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
