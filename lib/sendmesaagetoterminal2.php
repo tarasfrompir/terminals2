@@ -16,7 +16,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
 function Update_Queue_sayToText($terminal)
 {
     $rec            = SQLSelectOne("SELECT * FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . $terminal . '-' . "%' ORDER BY `TITLE` ASC ");
-    $runtime        = strtotime("now");
+    $runtime        = strtotime("now")+1;
     $expire         = (strtotime($rec['EXPIRE'])) - (strtotime($rec['RUNTIME']));
     $rec['RUNTIME'] = date('Y-m-d H:i:s', $runtime);
     $rec['EXPIRE']  = date('Y-m-d H:i:s', $runtime + $expire);
