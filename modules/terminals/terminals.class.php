@@ -210,7 +210,7 @@ class terminals extends module
                     $datetime = strtotime("now") + 120;
                     $expire   = 20;
                 } else {
-                    $datetime = strtotime("now")+2;
+                    $datetime = strtotime("now");
                     $expire   = 20;
                 }
                 // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
