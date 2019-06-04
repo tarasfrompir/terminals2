@@ -19,18 +19,9 @@ class majordroid extends app_player_addon {
 	}
 
 	// saytts
-	function sayttotext($details) {
-//"level": 4,
-//"message": "132.",
-//"member_id": 0,
-//"lang": "ua",
-//"langfull": "uk_UA",
-//"event": "SAY",
-//"terminal": 
+	function sayttotext($message, $event, $lang, $langfull) {
             $this->reset_properties();
-	    $input =  $details['message'];
-	    $event =  $details['event'];
-	    if(strlen($input)) {
+	    if(strlen($message)) {
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			if($socket === false) {
 				$this->success = FALSE;
@@ -44,9 +35,9 @@ class majordroid extends app_player_addon {
 					$this->message = iconv('CP1251', 'UTF-8', $this->message);
 				} else {
 					if ($event=='SAY' OR $event = 'SAYTO' OR $event = 'SAYREPLY') {
-						$packet = 'tts:'.$input;
+						$packet = 'tts:'.$message;
 					} else {
-						$packet = 'ask:'.$input;
+						$packet = 'ask:'.$message;
 					}
 					socket_write($socket, $packet, strlen($packet));
 					$this->success = TRUE;
