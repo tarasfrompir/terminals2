@@ -11,8 +11,8 @@ class telegramm extends app_player_addon
     function __construct($terminal)
     {
         $this->title       = 'Терминал для модуля Телеграмм';
-        $this->description = 'Описание: Терминал использующий прием-передачу сообщений через модуль Телеграмм';
-        $this->description.= 'Терминал имеет обратную связь с сайтом Телеграмм.';
+        $this->description = 'Описание: Терминал использующий прием-передачу сообщений через модуль Телеграмм.';
+        $this->description.= ' Терминал имеет обратную связь с сайтом Телеграмм.(сообщения не теряются).';
         $this->terminal    = $terminal;
         $this->reset_properties();
         unsubscribeFromEvent('telegram', 'SAY');
