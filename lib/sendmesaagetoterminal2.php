@@ -12,25 +12,31 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     return 1;
 }
 
-function Update_Queue_saytext ($terminal) {
-	// vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-    $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal. '-number-' . "%' ORDER BY `TITLE` ASC");
-    $first_fields = reset($all_messages);
-    $runtime      = strtotime("now");
-    foreach ($all_messages as $message) {
-        $expire          = (strtotime($message['EXPIRE'])) - (strtotime($message['RUNTIME']));
-        $rec['ID']       = $message['ID'];
-        $rec['TITLE']    = $message['TITLE'];
-        $rec['COMMANDS'] = $message['COMMANDS'];
-        $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
-        $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime + $expire);
-        // proverka i udaleniye odinakovih soobsheniy
-        if ($prev_message['TITLE'] == $message['TITLE']) {
-            SQLExec("DELETE FROM jobs WHERE ID='" . $rec['ID'] . "'");
-        } else {
-            SQLUpdate('jobs', $rec);
-        }
-        $runtime      = $runtime + $expire;
-        $prev_message = $message;
-        }
+function Update_Queue_sayToText($terminal) {
+	$rec = SQLSelectOne("SELECT * FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . $terminal . '-' . "%' ORDER BY `TITLE` ASC ");
+    $runtime = strtotime("now");
+    $expire  = (strtotime($rec['EXPIRE'])) - (strtotime($rec['RUNTIME']));
+    $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
+    $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime + $expire);
+    SQLUpdate('jobs', $rec);
+}
+function sayToText($terminals, $message, $event, $lang, $langfull) {
+	        // Addons main class
+		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals. "' OR TITLE = '" . $terminals. "'");
+		// Addons main class
+                include_once(DIR_MODULES . 'app_player/addons.php');
+                // Load addon
+                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+                    include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
+                    if (class_exists($terminal['PLAYER_TYPE'])) {
+                        if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+                            $player = new $terminal['PLAYER_TYPE']($terminal);
+                        }
+                    }
+                }
+                $out = $player->sayttotext($message, $event, $lang, $langfull);
+				while (!$out) {
+					$out = $player->sayttotext($message, $event, $lang, $langfull);
+				}
+				Update_Queue_sayToText($terminal['NAME']);
 }
