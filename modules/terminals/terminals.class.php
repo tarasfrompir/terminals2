@@ -205,8 +205,15 @@ class terminals extends module
                 }
                 $details['terminal'] = $terminal['NAME'];
                 //saytts($terminal['NAME'], $details['message'], $details['event'], $details['member'], $details['level'], $details['lang'], $details['langfull']);
- 
-				// berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
+                
+                if (SQLSelect("SELECT * FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . $details['terminal'] . '-' . "%' ORDER BY `TITLE` ASC")) {
+                    $datetime = strtotime("now") + 120;
+                    $expire   = 20;
+                } else {
+                    $datetime = strtotime("now");
+                    $expire   = 20;
+                }
+                // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
                 $messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
                 foreach ($messages as $message) {
                     if ($details['message'] == $message['MESSAGE']) {
@@ -214,14 +221,7 @@ class terminals extends module
                         break;
                     }
                 }
-                if (SQLSelect("SELECT * FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . $details['terminal'] . '-' . "%' ORDER BY `TITLE` ASC")) {
-				    $datetime = strtotime("now")+120;
-					$expire = 20;
-				} else {
-					$datetime = strtotime("now")+1;
-					$expire = 20;
-				}
-				$out = addScheduledJob($details['terminal'] . '-' . $number_message, "sayToText('".$details['terminal'] ."','". $details['message']."','". $details['event']."','". $details['lang']."','". $details['langfull']."');", $datetime, $expire);
+                $out = addScheduledJob($details['terminal'] . '-' . $number_message, "sayToText('" . $details['terminal'] . "','" . $details['message'] . "','" . $details['event'] . "','" . $details['lang'] . "','" . $details['langfull'] . "');", $datetime, $expire);
                 return $out;
             }
             // если происходит событие SAY_CACHED_READY то запускаемся
