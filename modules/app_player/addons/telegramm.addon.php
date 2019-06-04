@@ -19,18 +19,9 @@ class telegramm extends app_player_addon {
 	}
 	
 	// Say
-    function sayttotext($details) {
-//"level": 4,
-//"message": "132.",
-//"member_id": 0,
-//"lang": "ua",
-//"langfull": "uk_UA",
-//"event": "SAY",
-//"terminal": 
+    function sayttotext($message, $event, $lang, $langfull) {
         $this->reset_properties();
-        DebMes ('telegram saytt telegram incoming time-'.microtime(true));
         if(file_exists(DIR_MODULES.'telegram/telegram.class.php')) {
-            $message = $details['message'];
             $users = SQLSelect("SELECT * FROM tlg_user ");
 	        $c_users = count($users);
 
@@ -42,18 +33,13 @@ class telegramm extends app_player_addon {
                     }
                     $url=BASE_URL."/ajax/telegram.html?sendMessage=1&user=".$user_id."&text=".urlencode($message);
                     $out = getURL($url,0);
-		    $checktime = time();
-		    while ($out!='Ok' or time() > $checktime+2) {
-		        DebMes ('Problem with send message to telegram? Repit now.');
-			$out = getURL($url,0);
-		    }
-		    if ($out = 'Ok') {
-			$this->success = TRUE;
+					if ($out = 'Ok') {
+						$this->success = TRUE;
                         $this->message = 'OK';
-		    } else {
-			$this->success = FALSE;
+					} else {
+						$this->success = FALSE;
                         $this->message = 'Command execution error!';
-		    }
+					}
                  }
             } else {
                 $this->success = FALSE;
