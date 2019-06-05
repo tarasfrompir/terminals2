@@ -375,6 +375,12 @@ class terminals extends module
             SQLUpdate('terminals', $terminal);
         }
         
+        /*// обнуляем сообщения типа они все передані на терминалі
+        $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE = ''");
+        foreach ($messages as $message) {
+            $message['SOURCE'] = '10';
+            SQLUpdate('shouts', $message);
+         } */
         
         subscribeToEvent($this->name, 'SAY', '', 200);
         subscribeToEvent($this->name, 'SAYREPLY', '', 200);
