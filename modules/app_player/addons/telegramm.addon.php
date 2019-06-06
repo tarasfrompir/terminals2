@@ -22,7 +22,7 @@ class telegramm extends app_player_addon
     }
     
     // Say
-    function sayttotext($message, $event, $lang, $langfull)
+    function sayttotext($message, $event)
     {
         $this->reset_properties();
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
