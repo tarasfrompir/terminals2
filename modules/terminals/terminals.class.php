@@ -166,7 +166,7 @@ class terminals extends module
             // SQLUpdate('terminals', $terminal);
             //  }
             //DebMes('terminals update terminals time-' . microtime(true));
-
+            
             $terminals = array();
             if ($details['destination']) {
                 if (!$terminals = getTerminalsByName($details['destination'], 1)) {
@@ -175,16 +175,16 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-
+            
             foreach ($terminals as $terminal) {
-				// проверка функции
-		        if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-					if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-						$method_exists = true;
-					} else {
-						continue;
-				    }
-				}
+                // проверка функции
+                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+                    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+                        $method_exists = true;
+                    } else {
+                        continue;
+                    }
+                }
                 DebMes($terminal['NAME']);
                 //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
@@ -196,18 +196,54 @@ class terminals extends module
                 if ($details['event'] == 'ASK') {
                     $details['level'] = 9999;
                 }
-			    if (!$details['event']) {
+                if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
                 
-				// berem pervoe neobrabotannoe soobshenie 
-	            $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '".$details['message']."' ORDER BY ID DESC");
-	            $message['SOURCE'] .= $terminal['ID'].'^';
-		        SQLUpdate('shouts', $message);
-			    $out = addScheduledJob($terminal['NAME'] . '-sayToText' , "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time(), 50);
+                // berem pervoe neobrabotannoe soobshenie 
+                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' ORDER BY ID DESC");
+                $message['SOURCE'] .= $terminal['ID'] . '^';
+                SQLUpdate('shouts', $message);
+                $out = addScheduledJob($terminal['NAME'] . '-sayToText', "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time(), 50);
             }
-			
-            // если происходит событие SAY_CACHED_READY то запускаемся
+            
+        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+            
+            
+            // берем длинну сообщения
+            if (getMediaDurationSeconds($details['filename']) < 2) {
+                $details['time_shift'] = 2;
+            } else {
+                $details['time_shift'] = getMediaDurationSeconds($details['filename']);
+            }
+            
+            // берем ссылку http
+            if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
+                $server_ip = getLocalIp();
+                if (!$server_ip) {
+                    DebMes("Server IP not found", 'terminals');
+                    return false;
+                } else {
+                    $details['linkfile'] = 'http://' . $server_ip . $m[0];
+                }
+            }
+            
+            // добавляем язык в разных форматах
+            $details['lang']     = SETTINGS_SITE_LANGUAGE;
+            $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
+            
+            if (!$details['event']) {
+                $details['event'] = 'SAY';
+            }
+            $terminals = array();
+            if ($details['destination']) {
+                if (!$terminals = getTerminalsByName($details['destination'], 1)) {
+                    $terminals = getTerminalsByHost($details['destination'], 1);
+                }
+            } else {
+                $terminals = getTerminalsByCANTTS();
+            }
+            $this->terminalSayByCacheQueue($terminals, $details);
         } else if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
@@ -217,7 +253,7 @@ class terminals extends module
                     //sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
-                  } else {
+                } else {
                     //sg($terminal['LINKED_OBJECT'] . '.status', '0');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 0;
@@ -324,9 +360,9 @@ class terminals extends module
         /*// обнуляем сообщения типа они все передані на терминалі
         $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE = ''");
         foreach ($messages as $message) {
-            $message['SOURCE'] = '10';
-            SQLUpdate('shouts', $message);
-         } */
+        $message['SOURCE'] = '10';
+        SQLUpdate('shouts', $message);
+        } */
         
         subscribeToEvent($this->name, 'SAY', '', 200);
         subscribeToEvent($this->name, 'SAYREPLY', '', 200);
