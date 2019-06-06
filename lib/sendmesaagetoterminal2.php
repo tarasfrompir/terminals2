@@ -40,3 +40,22 @@ function sayToText($terminals, $event)
 	}
 }
 
+function sayToTextSafe($terminals, $event)
+{
+    $data = array(
+        'sayToText' => 1,
+        'terminals' => $terminals,
+        'event' => $event,
+    );
+    if (session_id()) {
+        $data[session_name()] = session_id();
+    }
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
+    if (is_array($params)) {
+        foreach ($params as $k => $v) {
+            $url .= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    $result = getURLBackground($url, 0);
+    return $result;
+}
