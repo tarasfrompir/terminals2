@@ -19,7 +19,7 @@ class majordroid extends app_player_addon
     }
     
     // saytts
-    function sayttotext($message, $event, $lang, $langfull)
+    function sayttotext($message, $event)
     {
         $this->reset_properties();
         if (strlen($message)) {
