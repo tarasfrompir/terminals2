@@ -13,16 +13,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     return 1;
 }
 
-function Update_Queue_sayToText($terminal)
-{
-    $rec            = SQLSelectOne("SELECT * FROM jobs WHERE PROCESSED = 0 AND TITLE LIKE '" . $terminal . '-' . "%' ORDER BY `TITLE` ASC ");
-    $runtime        = strtotime("now")+1;
-    $expire         = (strtotime($rec['EXPIRE'])) - (strtotime($rec['RUNTIME']));
-    $rec['RUNTIME'] = date('Y-m-d H:i:s', $runtime);
-    $rec['EXPIRE']  = date('Y-m-d H:i:s', $runtime + $expire);
-    SQLUpdate('jobs', $rec);
-}
-function sayToText($terminals, $message, $event, $lang, $langfull)
+function sayToText($terminals, $event)
 {
     // Addons main class
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals . "' OR TITLE = '" . $terminals . "'");
@@ -37,9 +28,15 @@ function sayToText($terminals, $message, $event, $lang, $langfull)
             }
         }
     }
-    $out = $player->sayttotext($message, $event, $lang, $langfull);
-    while (!$out) {
-        $out = $player->sayttotext($message, $event, $lang, $langfull);
-    }
-    Update_Queue_sayToText($terminal['NAME']);
+	
+	$messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
+	foreach ($messages as $message) {
+		$out = $player->sayttotext($message['MESSAGE'], $event);
+        while (!$out) {
+            $out = $player->sayttotext($message['MESSAGE'], $event);
+        }
+		$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
+        SQLUpdate('shouts', $message);
+	}
 }
+
