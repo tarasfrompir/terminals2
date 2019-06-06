@@ -185,7 +185,7 @@ class terminals extends module
                         continue;
                     }
                 }
-                
+                DebMes($terminal['NAME']);
                 //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
@@ -204,9 +204,9 @@ class terminals extends module
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 SQLUpdate('shouts', $message);
-                $out = addScheduledJob($terminal['NAME'] . '-sayToText', "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time(), 1);
+                $out = addScheduledJob($terminal['NAME'] . '-sayToTextSafe', "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time(), 5);
             }
-            
+            return 1;
         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
