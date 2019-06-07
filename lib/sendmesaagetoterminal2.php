@@ -37,6 +37,7 @@ function sayToText($terminals, $event)
         }
 		$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
         SQLUpdate('shouts', $message);
+	    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 	}
 }
 
