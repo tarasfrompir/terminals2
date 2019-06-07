@@ -29,15 +29,15 @@ function sayToText($terminals, $event)
         }
     }
 	
-	$messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
-	foreach ($messages as $message) {
-		$out = $player->sayttotext($message['MESSAGE'], $event);
+    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
+    foreach ($messages as $message) {
+        $out = $player->sayttotext($message['MESSAGE'], $event);
         while (!$out) {
             $out = $player->sayttotext($message['MESSAGE'], $event);
         }
-		$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
+	$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
         SQLUpdate('shouts', $message);
-	    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
+	$messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 	}
 }
 
