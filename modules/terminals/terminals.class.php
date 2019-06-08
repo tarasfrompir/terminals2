@@ -201,7 +201,7 @@ class terminals extends module
                 }
                 
                 // berem pervoe neobrabotannoe soobshenie 
-                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' ORDER BY ID DESC");
+                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "'AND SOURCE = '' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 SQLUpdate('shouts', $message);
                 $out = addScheduledJob($terminal['NAME'] . '-sayToTextSafe', "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time()+1, 5);
