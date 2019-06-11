@@ -204,7 +204,7 @@ class terminals extends module
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "'AND SOURCE = '' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 SQLUpdate('shouts', $message);
-                $out = addScheduledJob($terminal['NAME'] . '-sayToTextSafe', "sayToText('" . $terminal['NAME'] . "', '" . $details['event'] . "');", time()+1, 5);
+                sayToTextSafe($terminal['NAME'], $details['event']);
             }
             return 1;
         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
