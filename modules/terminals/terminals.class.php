@@ -203,8 +203,9 @@ class terminals extends module
                 // berem pervoe neobrabotannoe soobshenie 
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "'AND SOURCE = '' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
+                $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
-                sayToTextSafe($terminal['NAME'], $details['event']);
+                sayToTextSafe($terminal['NAME']);
             }
             return 1;
 /*         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
