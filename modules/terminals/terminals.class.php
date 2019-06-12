@@ -356,13 +356,14 @@ class terminals extends module
             $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
-        
-        /*// обнуляем сообщения типа они все передані на терминалі
-        $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE = ''");
+        SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS LINK LONGTEXT");
+        SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS EVENT TEXT");
+        // обнуляем сообщения типа они все передані на терминалі
+        $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '^'");
         foreach ($messages as $message) {
-        $message['SOURCE'] = '10';
+        $message['SOURCE'] = '';
         SQLUpdate('shouts', $message);
-        } */
+        }
         
         subscribeToEvent($this->name, 'SAY', '', 200);
         subscribeToEvent($this->name, 'SAYREPLY', '', 200);
