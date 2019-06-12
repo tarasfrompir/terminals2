@@ -13,7 +13,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     return 1;
 }
 
-function sayToText($terminals, $event)
+function sayToText($terminals)
 {
     // Addons main class
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals . "' OR TITLE = '" . $terminals . "'");
@@ -35,18 +35,17 @@ function sayToText($terminals, $event)
         while (!$out) {
             $out = $player->sayttotext($message['MESSAGE'], $event);
         }
-	$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
+	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
         SQLUpdate('shouts', $message);
 	$messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 	}
 }
 
-function sayToTextSafe($terminals, $event)
+function sayToTextSafe($terminals)
 {
     $data = array(
         'sayToText' => 1,
         'terminals' => $terminals,
-        'event' => $event,
     );
     if (session_id()) {
         $data[session_name()] = session_id();
