@@ -16,8 +16,10 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
 function sayToText($terminals)
 {
     // Addons main class
+	DebMes('Выбираем все параметры терминала '.$terminal.' '. microtime(true), 'terminals2');
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals . "' OR TITLE = '" . $terminals . "'");
     // Addons main class
+	DebMes('Подключаем класс функции сайтутекст для воспроизведения сообщения '.$terminal.' '. microtime(true), 'terminals2');
     include_once(DIR_MODULES . 'app_player/addons.php');
     // Load addon
     if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
@@ -28,16 +30,18 @@ function sayToText($terminals)
             }
         }
     }
-	
+	DebMes('Выбираем все сообщения которые есть в очереди терминала '.$terminal.' '. microtime(true), 'terminals2');
     $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
     foreach ($messages as $message) {
+		DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
         $out = $player->sayttotext($message['MESSAGE'], $event);
         while (!$out) {
             $out = $player->sayttotext($message['MESSAGE'], $event);
+			DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
         }
 	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
+		DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal.' '. microtime(true), 'terminals2');
         SQLUpdate('shouts', $message);
-	    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 	}
 }
 
@@ -56,6 +60,7 @@ function sayToTextSafe($terminals)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
+	DebMes('Запускаем очередь в отделный поток для терминала '.$terminals.' '. microtime(true), 'terminals2');
     $result = getURLBackground($url, 0);
     return $result;
 }
