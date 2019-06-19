@@ -15,20 +15,24 @@ class telegramm extends app_player_addon
         $this->description.= ' Терминал имеет обратную связь с сайтом Телеграмм.(сообщения не теряются).';
         $this->terminal    = $terminal;
         $this->reset_properties();
+        DebMes('Отписываем от событий терминал Телеграмма '.$this->terminal.' '. microtime(true), 'terminals2');
         unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
         unsubscribeFromEvent('telegram', 'SAYREPLY');
+        DebMes('Отписались от событий терминал Телеграмма '.$this->terminal.' '. microtime(true), 'terminals2');
     }
     
     // Say
     function sayttotext($message, $event)
     {
+		DebMes('Получили сообщение на Телеграм '.$message.' '. microtime(true), 'terminals2');
         $this->reset_properties();
+		DebMes('Проверяем наличие модуля Телеграма '. microtime(true), 'terminals2');
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             $users   = SQLSelect("SELECT * FROM tlg_user ");
             $c_users = count($users);
-            
+            DebMes('Проверяем количество пользователей в модуле Телеграма '. microtime(true), 'terminals2');
             if ($message AND $c_users) {
                 for ($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
@@ -37,6 +41,7 @@ class telegramm extends app_player_addon
                     }
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
                     $out = getURL($url, 0);
+					DebMes('Отправили сообщение в телеграм '. microtime(true), 'terminals2');
                     if ($out = 'Ok') {
                         $this->success = TRUE;
                         $this->message = 'OK';
