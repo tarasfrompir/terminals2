@@ -343,8 +343,8 @@ class terminals extends module
             $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
-        SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS LINK LONGTEXT");
-        SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS EVENT TEXT");
+        //SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS LINK LONGTEXT");
+        //SQLExec("ALTER TABLE shouts ADD COLUMN IF NOT EXISTS EVENT TEXT");
         // обнуляем сообщения типа они все передані на терминалі
         $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%'");
         foreach ($messages as $message) {
