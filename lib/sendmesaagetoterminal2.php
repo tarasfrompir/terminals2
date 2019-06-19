@@ -105,30 +105,3 @@ function pingTerminal($terminal)
     DebMes("Пропингованый Терминал-".$terminal . ' состояние обновлено '. microtime(true), 'terminals2');
 }
 
- //возвращает true, если домен доступен, в противном случае false
- function getURLFast($url)
- {
- //инициализация curl
- $curlInit = curl_init($url);
- //curl_setopt($curlInit, CURLOPT_URL, $url);
- curl_setopt($curlInit, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
- curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, 1);
- curl_setopt($curlInit, CURLOPT_CONNECTTIMEOUT, 1); // connection timeout
- //curl_setopt($curlInit, CURLOPT_MAXREDIRS, 2);
- //@curl_setopt($curlInit, CURLOPT_FOLLOWLOCATION, true);
- //curl_setopt($curlInit, CURLOPT_TIMEOUT, 1);  // operation timeout 45 seconds
- curl_setopt($curlInit, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
- curl_setopt($curlInit, CURLOPT_SSL_VERIFYHOST, 2);
-	 
- curl_setopt($curlInit,CURLOPT_HEADER,true);
- curl_setopt($curlInit,CURLOPT_NOBODY,true);
-
- //получаем ответ
- $response = curl_exec($url);
-
- curl_close($curlInit);
-
- if ($response) return 'Ok';
-
- return false;
- }
