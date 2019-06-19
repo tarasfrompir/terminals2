@@ -171,6 +171,8 @@ if ($object != '') {
   say(gr('ph'),gr('level'),gr('member_id'),gr('source'));
 } elseif (gr('sayTo')) {
    sayTo(gr('ph'),gr('level'),gr('destination'));
+} elseif (gr('pingTerminal')) {
+   pingTerminal(gr('terminal'));
 } elseif (gr('sayToText')) {
    sayToText(gr('terminals'));
 } elseif (gr('processSubscriptions')) {
