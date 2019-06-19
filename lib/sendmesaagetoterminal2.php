@@ -110,7 +110,7 @@ function pingTerminal($terminal)
  {
  //инициализация curl
  $curlInit = curl_init($url);
- curl_setopt($curlInit, CURLOPT_URL, $url);
+ //curl_setopt($curlInit, CURLOPT_URL, $url);
  curl_setopt($curlInit, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
  curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, 1);
  curl_setopt($curlInit, CURLOPT_CONNECTTIMEOUT, 1); // connection timeout
