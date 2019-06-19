@@ -15,12 +15,12 @@ class telegramm extends app_player_addon
         $this->description.= ' Терминал имеет обратную связь с сайтом Телеграмм.(сообщения не теряются).';
         $this->terminal    = $terminal;
         $this->reset_properties();
-        DebMes('Отписываем от событий терминал Телеграмма '.$this->terminal.' '. microtime(true), 'terminals2');
+        DebMes('Отписываем от событий терминал Телеграмма '. microtime(true), 'terminals2');
         unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
         unsubscribeFromEvent('telegram', 'SAYREPLY');
-        DebMes('Отписались от событий терминал Телеграмма '.$this->terminal.' '. microtime(true), 'terminals2');
+        DebMes('Отписались от событий терминал Телеграмма '. microtime(true), 'terminals2');
     }
     
     // Say
