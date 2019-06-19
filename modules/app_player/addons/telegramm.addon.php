@@ -41,7 +41,7 @@ class telegramm extends app_player_addon
                     }
 					DebMes('Отобрано пользователей в телеграме для сообщения '.$message.' '. microtime(true), 'terminals2');
 		    $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
-                    $out = getURLFast($url);
+                    $out = getURL($url,0);
 					DebMes('Отправили сообщение в телеграм '. microtime(true), 'terminals2');
                     if ($out = 'Ok') {
                         $this->success = TRUE;
