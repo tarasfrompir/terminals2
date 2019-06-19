@@ -144,29 +144,7 @@ class terminals extends module
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            //DebMes('terminals event time-' . microtime(true));
-            // check terminals
-            //SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
-            //DebMes('base update' . microtime(true));
-            //$terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
-            //foreach ($terminals as $terminal) {
-            //    if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-            //        DebMes('ping terminal online -'.$terminal['HOST'].' '.microtime(true));
-            //          sg($terminal['LINKED_OBJECT'] . '.status', '1');
-            //         $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-            //       $terminal['IS_ONLINE']       = 1;
-            //       sg($terminal['LINKED_OBJECT'] . '.status', '1');
-            //   } else {
-            //        DebMes('ping terminal offline-'.$terminal['HOST'].' '.microtime(true));
-            //          sg($terminal['LINKED_OBJECT'] . '.status', '0');
-            //        $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-            //      $terminal['IS_ONLINE']       = 0;
-            //    sg($terminal['LINKED_OBJECT'] . '.status', '0');
-            //}
-            // SQLUpdate('terminals', $terminal);
-            //  }
-            //DebMes('terminals update terminals time-' . microtime(true));
-            
+			DebMes("Произошло событие ".$event . ' сообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
             $terminals = array();
             if ($details['destination']) {
                 if (!$terminals = getTerminalsByName($details['destination'], 1)) {
@@ -175,19 +153,26 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-            
+			//обновляем статусы нужных терминалов
+            DebMes("Обновляем терминалы на которые отправляется СЕЙ их состояние". microtime(true), 'terminals2');
+
             foreach ($terminals as $terminal) {
+				DebMes("Проверяем терминал на присутсвие функции сейтотекст ".$terminal['NAME'].' '. microtime(true), 'terminals2');
                 // проверка функции
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         $method_exists = true;
+						DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
+						if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
+                            pingTerminalSafe($terminal['NAME']);
+							DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+				        }
                     } else {
+						DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
                         continue;
                     }
                 }
-                //DebMes($terminal['NAME']);
-                //if (!method_exists($player, 'saytts') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-                if (!$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -199,13 +184,16 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-                
+                sleep(2);
+				DebMes('отбираем из базы сообщений Cообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
                 // berem pervoe neobrabotannoe soobshenie 
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "'AND SOURCE = '' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
+				DebMes('Внесено в базу терминалы на это сообщение '.$details['message'].' '. microtime(true), 'terminals2');
                 sayToTextSafe($terminal['NAME']);
+				DebMes('Запущено в отдельный поток сообщение '.$details['message'].' '. microtime(true), 'terminals2');
             }
             return 1;
 /*         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
