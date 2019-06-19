@@ -270,8 +270,7 @@ class terminals extends module
                     }
                 }
             }
-            //if (!method_exists($player, 'say') OR !$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-            if (!method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+            if (!$terminal['IS_ONLINE'] OR !method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                 continue;
             }
             if ($terminal['IS_ONLINE']) {
