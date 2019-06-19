@@ -128,7 +128,7 @@ function pingTerminal($terminal)
 
  curl_close($curlInit);
 
- if ($response) return true;
+ if ($response) return 'Ok';
 
  return false;
  }
