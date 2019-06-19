@@ -32,14 +32,15 @@ class telegramm extends app_player_addon
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             $users   = SQLSelect("SELECT * FROM tlg_user ");
             $c_users = count($users);
-            DebMes('Проверяем количество пользователей в модуле Телеграма '. microtime(true), 'terminals2');
+            DebMes('Проверяем количество пользователей в модуле Телеграма для сообщения '.$message.' '. microtime(true), 'terminals2');
             if ($message AND $c_users) {
                 for ($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
+					DebMes('Отобрано пользователей в телеграме для сообщения '.$message.' '. microtime(true), 'terminals2');
+		    $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
                     $out = getURL($url, 0);
 					DebMes('Отправили сообщение в телеграм '. microtime(true), 'terminals2');
                     if ($out = 'Ok') {
