@@ -37,7 +37,7 @@ function sayToText($terminals)
         }
 	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
         SQLUpdate('shouts', $message);
-	$messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
+	    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 	}
 }
 
@@ -58,4 +58,44 @@ function sayToTextSafe($terminals)
     }
     $result = getURLBackground($url, 0);
     return $result;
+}
+
+// check terminal Safe
+function pingTerminalSafe($terminal)
+{
+    $data = array(
+        'pingTerminal' => 1,
+        'terminal' => $terminal,
+    );
+    if (session_id()) {
+        $data[session_name()] = session_id();
+    }
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
+    if (is_array($params)) {
+        foreach ($params as $k => $v) {
+            $url .= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    $result = getURLBackground($url, 0);
+    return $result;
+}
+
+// check terminal Safe
+function pingTerminal($terminal)
+{
+	DebMes("Терминал-".$terminal . ' офлайн и его запускаем на пинг '. microtime(true), 'terminals2');
+    $Cheked_terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
+    if (ping($Cheked_terminal['HOST'])) {
+        DebMes("Пропингованый Терминал-".$terminal . ' онлайн и обновляем его статус '. microtime(true), 'terminals2');
+        sg($Cheked_terminal['LINKED_OBJECT'] . '.status', '1');
+        $Cheked_terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $Cheked_terminal['IS_ONLINE']       = 1;
+    } else {
+        DebMes("Пропингованый Терминал-".$terminal . ' офлайн и обновляем его статус '. microtime(true), 'terminals2');
+        sg($Cheked_terminal['LINKED_OBJECT'] . '.status', '0');
+        $Cheked_terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $Cheked_terminal['IS_ONLINE']       = 0;
+    }
+    SQLUpdate('terminals', $Cheked_terminal);
+    DebMes("Пропингованый Терминал-".$terminal . ' состояние обновлено '. microtime(true), 'terminals2');
 }
