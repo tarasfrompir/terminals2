@@ -144,7 +144,7 @@ class terminals extends module
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-			DebMes("Произошло событие ".$event . ' сообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
+			DebMes("ПРОИЗОШЛО СОБЫТИЕ ".$event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА '.$details['message'].' '. microtime(true), 'terminals2');
             $terminals = array();
             if ($details['destination']) {
                 if (!$terminals = getTerminalsByName($details['destination'], 1)) {
