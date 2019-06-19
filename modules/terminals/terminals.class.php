@@ -162,13 +162,13 @@ class terminals extends module
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         $method_exists = true;
-						DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
-						if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
-                            pingTerminalSafe($terminal['NAME']);
-							DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
-				        }
+			DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
+			if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
+                          pingTerminalSafe($terminal['NAME']);
+	                  DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+			}
                     } else {
-						DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
+			DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
                         continue;
                     }
                 }
@@ -184,16 +184,15 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-                sleep(2);
-				DebMes('отбираем из базы сообщений Cообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
+		DebMes('отбираем из базы сообщений Cообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
                 // berem pervoe neobrabotannoe soobshenie 
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "'AND SOURCE = '' ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
-				DebMes('Внесено в базу терминалы на это сообщение '.$details['message'].' '. microtime(true), 'terminals2');
+		DebMes('Внесено в базу терминалы на это сообщение '.$details['message'].' '. microtime(true), 'terminals2');
                 sayToTextSafe($terminal['NAME']);
-				DebMes('Запущено в отдельный поток сообщение '.$details['message'].' '. microtime(true), 'terminals2');
+		DebMes('Запущено в отдельный поток сообщение '.$details['message'].' '. microtime(true), 'terminals2');
             }
             return 1;
 /*         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
