@@ -402,7 +402,7 @@ class terminals extends module
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
  shouts: FILE_LINK varchar(255) NOT NULL DEFAULT ''
- shouts: EVENT varchar(255) DEFAULT NULL  
+ shouts: EVENT varchar(255) NOT NULL DEFAULT ''  
 EOD;
         parent::dbInstall($data);
         
