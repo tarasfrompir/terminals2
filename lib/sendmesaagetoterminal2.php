@@ -34,9 +34,9 @@ function sayToText($terminals)
     $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
     foreach ($messages as $message) {
 		DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
-        $out = $player->sayttotext($message['MESSAGE'], $event);
+        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
         while (!$out) {
-            $out = $player->sayttotext($message['MESSAGE'], $event);
+            $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
 			DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
         }
 	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
