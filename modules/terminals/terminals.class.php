@@ -333,7 +333,7 @@ class terminals extends module
             SQLUpdate('shouts', $message);
         }
         // запускаем цикл автоматом
-        setGlobal('cycle_terminalsControl','start');
+        setGlobal('cycle_terminalsControl','restart');
         setGlobal('cycle_terminalsAutoRestart','1');
         
         subscribeToEvent($this->name, 'SAY', '', 200);
