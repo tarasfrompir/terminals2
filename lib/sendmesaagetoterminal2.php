@@ -16,10 +16,10 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
 function sayToText($terminals)
 {
     // Addons main class
-	DebMes('Выбираем все параметры терминала '.$terminal.' '. microtime(true), 'terminals2');
+    DebMes('Выбираем все параметры терминала ' . $terminal . ' ' . microtime(true), 'terminals2');
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals . "' OR TITLE = '" . $terminals . "'");
     // Addons main class
-	DebMes('Подключаем класс функции сайтутекст для воспроизведения сообщения '.$terminal.' '. microtime(true), 'terminals2');
+    DebMes('Подключаем класс функции сайтутекст для воспроизведения сообщения ' . $terminal . ' ' . microtime(true), 'terminals2');
     include_once(DIR_MODULES . 'app_player/addons.php');
     // Load addon
     if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
@@ -30,26 +30,26 @@ function sayToText($terminals)
             }
         }
     }
-	DebMes('Выбираем сообщение которое есть в очереди терминала '.$terminal['NAME'].' '. microtime(true), 'terminals2');
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' AND EVENT NOT NULL ORDER BY ID ASC");
-    DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    DebMes('Выбираем сообщение которое есть в очереди терминала ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%" . $terminal['ID'] . "^%' AND EVENT IS NOT NULL ORDER BY ID ASC");
+    DebMes('Отправляем сообщение ' . $message['MESSAGE'] . ' в терминал ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
     $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-	    DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+        DebMes('ПОВТОРНО Отправляем сообщение ' . $message['MESSAGE'] . ' в терминал ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
     }
-	$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
-	DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
+    DebMes('Удаляем терминал для сообщения ' . $message['MESSAGE'] . ' в таблице шутс из очереди' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
     SQLUpdate('shouts', $message);
-	return $out;
- 
+    return $out;
+    
 }
 
 function sayToTextSafe($terminals)
 {
     $data = array(
         'sayToText' => 1,
-        'terminals' => $terminals,
+        'terminals' => $terminals
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -60,7 +60,7 @@ function sayToTextSafe($terminals)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-	DebMes('Запускаем очередь в отделный поток для терминала '.$terminals.' '. microtime(true), 'terminals2');
+    DebMes('Запускаем очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
     $result = getURLBackground($url, 0);
     return $result;
 }
@@ -91,7 +91,7 @@ function pingTerminalSafe($terminal)
 {
     $data = array(
         'pingTerminal' => 1,
-        'terminal' => $terminal,
+        'terminal' => $terminal
     );
     if (session_id()) {
         $data[session_name()] = session_id();
