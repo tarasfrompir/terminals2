@@ -30,20 +30,19 @@ function sayToText($terminals)
             }
         }
     }
-	DebMes('Выбираем все сообщения которые есть в очереди терминала '.$terminal['NAME'].' '. microtime(true), 'terminals2');
-    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
-    foreach ($messages as $message) {
-		DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+	DebMes('Выбираем сообщение которое есть в очереди терминала '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' AND EVENT NOT NULL ORDER BY ID ASC");
+    DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
+    while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-        while (!$out) {
-            $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-			DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
-        }
-	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
-		DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal['NAME'].' '. microtime(true), 'terminals2');
-        SQLUpdate('shouts', $message);
-		return $out;
-	}
+	    DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    }
+	$message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
+	DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal['NAME'].' '. microtime(true), 'terminals2');
+    SQLUpdate('shouts', $message);
+	return $out;
+ 
 }
 
 function sayToTextSafe($terminals)
@@ -66,27 +65,7 @@ function sayToTextSafe($terminals)
     return $result;
 }
 
-// check terminal Safe
-function pingTerminalSafe($terminal)
-{
-    $data = array(
-        'pingTerminal' => 1,
-        'terminal' => $terminal,
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    $result = getURLBackground($url, 0);
-    return $result;
-}
-
-// check terminal Safe
+// check terminal 
 function pingTerminal($terminal)
 {
     //DebMes("Терминал-".$terminal . ' офлайн и его запускаем на пинг '. microtime(true), 'terminals2');
@@ -106,3 +85,23 @@ function pingTerminal($terminal)
     //DebMes("Пропингованый Терминал-".$terminal . ' состояние обновлено '. microtime(true), 'terminals2');
 }
 
+
+// check terminal Safe
+function pingTerminalSafe($terminal)
+{
+    $data = array(
+        'pingTerminal' => 1,
+        'terminal' => $terminal,
+    );
+    if (session_id()) {
+        $data[session_name()] = session_id();
+    }
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
+    if (is_array($params)) {
+        foreach ($params as $k => $v) {
+            $url .= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    $result = getURLBackground($url, 0);
+    return $result;
+}
