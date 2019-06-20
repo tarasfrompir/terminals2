@@ -186,7 +186,7 @@ class terminals extends module
                 }
 		DebMes('отбираем из базы сообщений Cообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
                 // berem pervoe neobrabotannoe soobshenie 
-                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND EVENT = '' AND SOURCE = '' ORDER BY ID DESC");
+                                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT IS NULL ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
