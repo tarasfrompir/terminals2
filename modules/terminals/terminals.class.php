@@ -410,7 +410,7 @@ class terminals extends module
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  
- shouts: LINK varchar(255) DEFAULT NULL 
+ shouts: FILE_LINK varchar(255) DEFAULT NULL 
  shouts: EVENT varchar(255) DEFAULT NULL  
 EOD;
         parent::dbInstall($data);
