@@ -30,18 +30,19 @@ function sayToText($terminals)
             }
         }
     }
-	DebMes('Выбираем все сообщения которые есть в очереди терминала '.$terminal.' '. microtime(true), 'terminals2');
+	DebMes('Выбираем все сообщения которые есть в очереди терминала '.$terminal['NAME'].' '. microtime(true), 'terminals2');
     $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
     foreach ($messages as $message) {
-		DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
+		DebMes('Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
         while (!$out) {
             $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-			DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal.' '. microtime(true), 'terminals2');
+			DebMes('ПОВТОРНО Отправляем сообщение '.$message['MESSAGE'].' в терминал '.$terminal['NAME'].' '. microtime(true), 'terminals2');
         }
 	    $message['SOURCE'] = str_replace($terminal['ID'].'^', "", $message['SOURCE']);
-		DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal.' '. microtime(true), 'terminals2');
+		DebMes('Удаляем терминал для сообщения '.$message['MESSAGE'].' в таблице шутс из очереди'.$terminal['NAME'].' '. microtime(true), 'terminals2');
         SQLUpdate('shouts', $message);
+		return $out;
 	}
 }
 
