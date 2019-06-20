@@ -168,7 +168,7 @@ class terminals extends module
                     //DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
                     if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
                         pingTerminalSafe($terminal['NAME']);
-                        //DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+                        DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
                     }
                 } else {
                     //DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
