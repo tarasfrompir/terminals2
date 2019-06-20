@@ -409,26 +409,6 @@ class terminals extends module
  terminals: LATEST_ACTIVITY datetime
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
-  terminals: ID int(10) unsigned NOT NULL auto_increment
- terminals: NAME varchar(255) NOT NULL DEFAULT ''
- terminals: HOST varchar(255) NOT NULL DEFAULT ''
- terminals: TITLE varchar(255) NOT NULL DEFAULT ''
- terminals: CANPLAY int(1) NOT NULL DEFAULT '0'
- terminals: CANTTS int(1) NOT NULL DEFAULT '0'
- terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
- terminals: TTS_TYPE char(20) NOT NULL DEFAULT '' 
- terminals: PLAYER_TYPE char(20) NOT NULL DEFAULT ''
- terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
- terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
- terminals: PLAYER_PASSWORD varchar(255) NOT NULL DEFAULT ''
- terminals: PLAYER_CONTROL_ADDRESS varchar(255) NOT NULL DEFAULT ''
- terminals: IS_ONLINE int(1) NOT NULL DEFAULT '0'
- terminals: MAJORDROID_API int(1) NOT NULL DEFAULT '0'
- terminals: LATEST_REQUEST varchar(255) NOT NULL DEFAULT ''
- terminals: LATEST_REQUEST_TIME datetime
- terminals: LATEST_ACTIVITY datetime
- terminals: LINK text DEFAULT ''
- terminals: EVENT text DEFAULT NULL 
 EOD;
         parent::dbInstall($data);
         
