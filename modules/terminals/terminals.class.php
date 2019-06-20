@@ -194,6 +194,7 @@ class terminals extends module
                 sayToTextSafe($terminal['NAME']);
                 DebMes('Запущено в отдельный поток сообщение ' . $details['message'] . ' ' . microtime(true), 'terminals2');
             }
+            usleep(200000);
             return 1;
          } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
