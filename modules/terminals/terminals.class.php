@@ -143,8 +143,8 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
-        if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-            DebMes("ПРОИЗОШЛО СОБЫТИЕ ".$event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА '.$details['message'].' '. microtime(true), 'terminals2');
+        if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK')) {
+            DebMes("ПРОИЗОШЛО СОБЫТИЕ " . $event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА ' . $details['message'] . ' ' . microtime(true), 'terminals2');
             $terminals = array();
             if ($details['destination']) {
                 if (!$terminals = getTerminalsByName($details['destination'], 1)) {
@@ -155,26 +155,26 @@ class terminals extends module
             }
             //обновляем статусы нужных терминалов
             //DebMes("Обновляем терминалы на которые отправляется СЕЙ их состояние". microtime(true), 'terminals2');
-
+            
             foreach ($terminals as $terminal) {
                 //DebMes("Проверяем терминал на присутсвие функции сейтотекст ".$terminal['NAME'].' '. microtime(true), 'terminals2');
-                // проверка функции
-                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-                    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                        $method_exists = true;
-			//DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
-			if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
-                          pingTerminalSafe($terminal['NAME']);
-	                  //DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
-			}
-                    } else {
-			//DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
-                        continue;
-                    }
-                }
-                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                DebMes("Проверяем терминал на уровень минимального сообщения " . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
+                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     continue;
                 }
+                // проверка функции
+                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+                    $method_exists = true;
+                    //DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
+                    if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
+                        pingTerminalSafe($terminal['NAME']);
+                        //DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+                    }
+                } else {
+                    //DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
+                    continue;
+                }
+                
                 if (!$terminal['MIN_MSG_LEVEL']) {
                     $terminal['MIN_MSG_LEVEL'] = 0;
                 }
@@ -184,36 +184,36 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-		DebMes('отбираем из базы сообщений Cообщение для вывода '.$details['message'].' '. microtime(true), 'terminals2');
+                DebMes('отбираем из базы сообщений Cообщение для вывода ' . $details['message'] . ' ' . microtime(true), 'terminals2');
                 // berem pervoe neobrabotannoe soobshenie 
-                                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT IS NULL ORDER BY ID DESC");
+                $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT IS NULL ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
-		DebMes('Внесено в базу терминалы на это сообщение '.$details['message'].' '. microtime(true), 'terminals2');
+                DebMes('Внесено в базу терминалы на это сообщение ' . $details['message'] . ' ' . microtime(true), 'terminals2');
                 sayToTextSafe($terminal['NAME']);
-		DebMes('Запущено в отдельный поток сообщение '.$details['message'].' '. microtime(true), 'terminals2');
+                DebMes('Запущено в отдельный поток сообщение ' . $details['message'] . ' ' . microtime(true), 'terminals2');
             }
             return 1;
-/*         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+            /*         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
-                $details['time_shift'] = 2;
+            $details['time_shift'] = 2;
             } else {
-                $details['time_shift'] = getMediaDurationSeconds($details['filename']);
+            $details['time_shift'] = getMediaDurationSeconds($details['filename']);
             }
             
             // берем ссылку http
             if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
-                $server_ip = getLocalIp();
-                if (!$server_ip) {
-                    DebMes("Server IP not found", 'terminals');
-                    return false;
-                } else {
-                    $details['linkfile'] = 'http://' . $server_ip . $m[0];
-                }
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+            DebMes("Server IP not found", 'terminals');
+            return false;
+            } else {
+            $details['linkfile'] = 'http://' . $server_ip . $m[0];
+            }
             }
             
             // добавляем язык в разных форматах
@@ -221,15 +221,15 @@ class terminals extends module
             $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
             
             if (!$details['event']) {
-                $details['event'] = 'SAY';
+            $details['event'] = 'SAY';
             }
             $terminals = array();
             if ($details['destination']) {
-                if (!$terminals = getTerminalsByName($details['destination'], 1)) {
-                    $terminals = getTerminalsByHost($details['destination'], 1);
-                }
+            if (!$terminals = getTerminalsByName($details['destination'], 1)) {
+            $terminals = getTerminalsByHost($details['destination'], 1);
+            }
             } else {
-                $terminals = getTerminalsByCANTTS();
+            $terminals = getTerminalsByCANTTS();
             }
             $this->terminalSayByCacheQueue($terminals, $details); */
         } else if ($event == 'HOURLY') {
@@ -348,8 +348,8 @@ class terminals extends module
         // обнуляем сообщения типа они все передані на терминалі
         $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%'");
         foreach ($messages as $message) {
-        $message['SOURCE'] = '';
-        SQLUpdate('shouts', $message);
+            $message['SOURCE'] = '';
+            SQLUpdate('shouts', $message);
         }
         
         subscribeToEvent($this->name, 'SAY', '', 200);
