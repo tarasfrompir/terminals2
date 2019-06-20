@@ -153,26 +153,13 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-            //обновляем статусы нужных терминалов
-            //DebMes("Обновляем терминалы на которые отправляется СЕЙ их состояние". microtime(true), 'terminals2');
-            
+           
             foreach ($terminals as $terminal) {
-                //DebMes("Проверяем терминал на присутсвие функции сейтотекст ".$terminal['NAME'].' '. microtime(true), 'terminals2');
-                DebMes("Проверяем терминал на уровень минимального сообщения " . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
-                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+               if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     continue;
                 }
-                // проверка функции
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                    $method_exists = true;
-                    //DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
-                    if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
-                        pingTerminalSafe($terminal['NAME']);
-                        DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
-                    }
-                } else {
-                    //DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
-                    continue;
+                if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
+                    pingTerminalSafe($terminal['NAME']);
                 }
                 
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -184,17 +171,11 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-                DebMes('отбираем из базы сообщений Cообщение для вывода ' . $details['message'] . ' ' . microtime(true), 'terminals2');
-                // berem pervoe neobrabotannoe soobshenie 
                 $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT IS NULL ORDER BY ID DESC");
                 $message['SOURCE'] .= $terminal['ID'] . '^';
                 $message['EVENT'] = $event;
                 SQLUpdate('shouts', $message);
-                DebMes('Внесено в базу терминалы на это сообщение ' . $details['message'] . ' ' . microtime(true), 'terminals2');
-                sayToTextSafe($terminal['NAME']);
-                DebMes('Запущено в отдельный поток сообщение ' . $details['message'] . ' ' . microtime(true), 'terminals2');
             }
-            usleep(200000);
             return 1;
          } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
