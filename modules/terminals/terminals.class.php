@@ -144,7 +144,7 @@ class terminals extends module
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK') AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
-			DebMes("ПРОИЗОШЛО СОБЫТИЕ ".$event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА '.$details['message'].' '. microtime(true), 'terminals2');
+            DebMes("ПРОИЗОШЛО СОБЫТИЕ ".$event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА '.$details['message'].' '. microtime(true), 'terminals2');
             $terminals = array();
             if ($details['destination']) {
                 if (!$terminals = getTerminalsByName($details['destination'], 1)) {
@@ -153,22 +153,22 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-			//обновляем статусы нужных терминалов
-            DebMes("Обновляем терминалы на которые отправляется СЕЙ их состояние". microtime(true), 'terminals2');
+            //обновляем статусы нужных терминалов
+            //DebMes("Обновляем терминалы на которые отправляется СЕЙ их состояние". microtime(true), 'terminals2');
 
             foreach ($terminals as $terminal) {
-				DebMes("Проверяем терминал на присутсвие функции сейтотекст ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+                //DebMes("Проверяем терминал на присутсвие функции сейтотекст ".$terminal['NAME'].' '. microtime(true), 'terminals2');
                 // проверка функции
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         $method_exists = true;
-			DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
+			//DebMes("Терминал ".$terminal['NAME'].' может говорить '. microtime(true), 'terminals2');
 			if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
                           pingTerminalSafe($terminal['NAME']);
-	                  DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
+	                  //DebMes("Терминал в офлайне. Пинги терминалa запущены в отдельном потоке без ожидания ".$terminal['NAME'].' '. microtime(true), 'terminals2');
 			}
                     } else {
-			DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
+			//DebMes("Терминал ".$terminal['NAME'].' НЕ может говорить '. microtime(true), 'terminals2');
                         continue;
                     }
                 }
