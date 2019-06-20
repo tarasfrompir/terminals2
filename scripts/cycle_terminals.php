@@ -21,6 +21,8 @@ $checked_time = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
+setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+
 while (1)
 {
    if (time() - $checked_time > 30)
