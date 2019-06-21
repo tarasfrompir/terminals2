@@ -15,6 +15,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
 
 function sayToText($messageid, $terminalid)
 {
+    DebMes('Запущена очередь в отделный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
     include_once(DIR_MODULES . 'app_player/addons.php');
@@ -25,6 +26,7 @@ function sayToText($messageid, $terminalid)
         }
     }
     $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
+    DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     }
@@ -33,6 +35,7 @@ function sayToText($messageid, $terminalid)
 
 function sayToTextSafe($messageid, $terminalid)
 {
+    DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $data = array(
         'sayToText' => 1,
         'messageid' => $messageid,
@@ -47,8 +50,8 @@ function sayToTextSafe($messageid, $terminalid)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    DebMes('Запускаем очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
     $result = getURLBackground($url, 0);
+    DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
     return $result;
 }
 
