@@ -176,7 +176,7 @@ class terminals extends module
             }
             SQLUpdate('shouts', $message);
             return 1;
-        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+        /* } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
             // берем длинну сообщения
@@ -212,7 +212,7 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-            $this->terminalSayByCacheQueue($terminals, $details);
+            $this->terminalSayByCacheQueue($terminals, $details); */
         } else if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
