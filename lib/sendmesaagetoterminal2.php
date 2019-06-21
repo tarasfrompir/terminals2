@@ -17,7 +17,6 @@ function sayToText($messageid, $terminalid)
 {
     $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
-    DebMes('incoing ' . $terminal['ID']);
     include_once(DIR_MODULES . 'app_player/addons.php');
     include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
     if (class_exists($terminal['PLAYER_TYPE'])) {
@@ -25,7 +24,6 @@ function sayToText($messageid, $terminalid)
             $player = new $terminal['PLAYER_TYPE']($terminal);
         }
     }
-    DebMes('gouin ' . $terminal['ID']);
     $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
