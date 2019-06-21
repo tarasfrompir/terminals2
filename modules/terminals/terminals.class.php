@@ -153,14 +153,14 @@ class terminals extends module
             } else {
                 $terminals = getTerminalsByCANTTS();
             }
-
-            $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT = '' ORDER BY ID DESC");
+            
+            $message          = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT = '' ORDER BY ID DESC");
             $message['EVENT'] = $event;
             foreach ($terminals as $terminal) {
                 if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
                     pingTerminalSafe($terminal['NAME']);
                 }
-		if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
+                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -172,29 +172,29 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-		$message['SOURCE'] .= $terminal['ID'] . '^';
-	    }
+                $message['SOURCE'] .= $terminal['ID'] . '^';
+            }
             SQLUpdate('shouts', $message);
             return 1;
-         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+        } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
-            $details['time_shift'] = 2;
+                $details['time_shift'] = 2;
             } else {
-            $details['time_shift'] = getMediaDurationSeconds($details['filename']);
+                $details['time_shift'] = getMediaDurationSeconds($details['filename']);
             }
             
             // берем ссылку http
             if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-            DebMes("Server IP not found", 'terminals');
-            return false;
-            } else {
-            $details['linkfile'] = 'http://' . $server_ip . $m[0];
-            }
+                $server_ip = getLocalIp();
+                if (!$server_ip) {
+                    DebMes("Server IP not found", 'terminals');
+                    return false;
+                } else {
+                    $details['linkfile'] = 'http://' . $server_ip . $m[0];
+                }
             }
             
             // добавляем язык в разных форматах
@@ -202,17 +202,17 @@ class terminals extends module
             $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
             
             if (!$details['event']) {
-            $details['event'] = 'SAY';
+                $details['event'] = 'SAY';
             }
             $terminals = array();
             if ($details['destination']) {
-            if (!$terminals = getTerminalsByName($details['destination'], 1)) {
-            $terminals = getTerminalsByHost($details['destination'], 1);
-            }
+                if (!$terminals = getTerminalsByName($details['destination'], 1)) {
+                    $terminals = getTerminalsByHost($details['destination'], 1);
+                }
             } else {
-            $terminals = getTerminalsByCANTTS();
+                $terminals = getTerminalsByCANTTS();
             }
-            $this->terminalSayByCacheQueue($terminals, $details); 
+            $this->terminalSayByCacheQueue($terminals, $details);
         } else if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
@@ -324,7 +324,7 @@ class terminals extends module
             $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
-
+        
         // обнуляем сообщения типа они все передані на терминалі
         $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%'");
         foreach ($messages as $message) {
@@ -332,8 +332,8 @@ class terminals extends module
             SQLUpdate('shouts', $message);
         }
         // запускаем цикл автоматом
-        setGlobal('cycle_terminalsControl','restart');
-        setGlobal('cycle_terminalsAutoRestart','1');
+        setGlobal('cycle_terminalsControl', 'restart');
+        setGlobal('cycle_terminalsAutoRestart', '1');
         
         // modify base
         SQLExec("ALTER TABLE `shouts` CHANGE `EVENT` `EVENT` VARCHAR(255) NOT NULL DEFAULT ''");
@@ -407,7 +407,7 @@ class terminals extends module
  shouts: EVENT varchar(255) NOT NULL DEFAULT ''  
 EOD;
         parent::dbInstall($data);
-        
+	    
     }
     // --------------------------------------------------------------------
 }
