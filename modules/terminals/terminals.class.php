@@ -155,7 +155,7 @@ class terminals extends module
             }
 
             $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT = '' ORDER BY ID DESC");
-   
+            $message['EVENT'] = $event;
             foreach ($terminals as $terminal) {
                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     continue;
@@ -173,10 +173,13 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-                $message['SOURCE'] .= $terminal['ID'] . '^';
-                $message['EVENT'] = $event;
-                SQLUpdate('shouts', $message);
+				if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+					if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+                        $message['SOURCE'] .= $terminal['ID'] . '^';
+					}
+				}
             }
+            SQLUpdate('shouts', $message);
             return 1;
          } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
