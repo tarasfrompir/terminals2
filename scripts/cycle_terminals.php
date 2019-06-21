@@ -45,8 +45,6 @@ while (1) {
                 } else {
                     // sleduyushiy tip terminalov
                 }
-                $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
-                SQLUpdate('shouts', $message);
             }
         }
     }
