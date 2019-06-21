@@ -30,7 +30,6 @@ function sayToText($messageid, $terminalid)
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     }
-    return $out;
 }
 
 function sayToTextSafe($messageid, $terminalid)
