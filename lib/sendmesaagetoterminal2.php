@@ -27,11 +27,11 @@ function sayToText($messageid, $terminalid)
     }
     $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-    while (!$out) {
+    $count = 0;
+    while (!$out AND $count >2) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
+        $count = $count+1;
     }
-    $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
-    SQLUpdate('shouts', $message);
 }
 
 function sayToTextSafe($messageid, $terminalid)
