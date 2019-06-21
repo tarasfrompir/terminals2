@@ -157,13 +157,12 @@ class terminals extends module
             $message = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT = '' ORDER BY ID DESC");
             $message['EVENT'] = $event;
             foreach ($terminals as $terminal) {
-               if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-                    continue;
-                }
                 if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
                     pingTerminalSafe($terminal['NAME']);
                 }
-                
+		if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+                    continue;
+                }
                 if (!$terminal['MIN_MSG_LEVEL']) {
                     $terminal['MIN_MSG_LEVEL'] = 0;
                 }
@@ -173,11 +172,11 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-				if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-					if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+		if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+		    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         $message['SOURCE'] .= $terminal['ID'] . '^';
-					}
-				}
+		    }
+		}
             }
             SQLUpdate('shouts', $message);
             return 1;
