@@ -30,7 +30,8 @@ function sayToText($messageid, $terminalid)
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     }
-    return 1;
+    $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
+    SQLUpdate('shouts', $message);
 }
 
 function sayToTextSafe($messageid, $terminalid)
@@ -50,9 +51,8 @@ function sayToTextSafe($messageid, $terminalid)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    $out = getURLBackground($url, 0);
+    getURLBackground($url, 0);
     DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
-    return $out;
 }
 
 // check terminal 
