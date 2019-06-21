@@ -160,7 +160,7 @@ class terminals extends module
                 if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
                     pingTerminalSafe($terminal['NAME']);
                 }
-		if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level'] OR !file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+		if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
                     continue;
                 }
                 if (!$terminal['MIN_MSG_LEVEL']) {
@@ -172,12 +172,8 @@ class terminals extends module
                 if (!$details['event']) {
                     $details['event'] = 'SAY';
                 }
-		if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-		    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                        $message['SOURCE'] .= $terminal['ID'] . '^';
-		    }
-		}
-            }
+		$message['SOURCE'] .= $terminal['ID'] . '^';
+	    }
             SQLUpdate('shouts', $message);
             return 1;
          } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
