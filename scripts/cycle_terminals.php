@@ -31,7 +31,7 @@ while (1)
       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    }
 
-    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND EVENT IS NOT NULL ORDER BY ID ASC");
+    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' ORDER BY ID ASC");
 	if ($messages) {
 		foreach ($messages as $message) {
 			$out_terminals = explode("^", $message['SOURCE']);	
