@@ -13,43 +13,32 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
     return 1;
 }
 
-function sayToText($terminals)
+function sayToText($messageid, $terminalid)
 {
-    // Addons main class
-    DebMes('Выбираем все параметры терминала ' . $terminal . ' ' . microtime(true), 'terminals2');
-    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminals . "' OR TITLE = '" . $terminals . "'");
-    // Addons main class
-    DebMes('Подключаем класс функции сайтутекст для воспроизведения сообщения ' . $terminal . ' ' . microtime(true), 'terminals2');
+    $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
+    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
+    DebMes('incoing ' . $terminal['ID']);
     include_once(DIR_MODULES . 'app_player/addons.php');
-    // Load addon
-    if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-        include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
-        if (class_exists($terminal['PLAYER_TYPE'])) {
-            if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-                $player = new $terminal['PLAYER_TYPE']($terminal);
-            }
+    include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
+    if (class_exists($terminal['PLAYER_TYPE'])) {
+        if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
+            $player = new $terminal['PLAYER_TYPE']($terminal);
         }
     }
-    DebMes('Выбираем сообщение которое есть в очереди терминала ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%" . $terminal['ID'] . "^%' AND EVENT IS NOT NULL ORDER BY ID ASC");
-    DebMes('Отправляем сообщение ' . $message['MESSAGE'] . ' в терминал ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
+    DebMes('gouin ' . $terminal['ID']);
     $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
     while (!$out) {
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-        DebMes('ПОВТОРНО Отправляем сообщение ' . $message['MESSAGE'] . ' в терминал ' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
     }
-    $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
-    DebMes('Удаляем терминал для сообщения ' . $message['MESSAGE'] . ' в таблице шутс из очереди' . $terminal['NAME'] . ' ' . microtime(true), 'terminals2');
-    SQLUpdate('shouts', $message);
     return $out;
-    
 }
 
-function sayToTextSafe($terminals)
+function sayToTextSafe($messageid, $terminalid)
 {
     $data = array(
         'sayToText' => 1,
-        'terminals' => $terminals
+        'messageid' => $messageid,
+        'terminalid' => $terminalid
     );
     if (session_id()) {
         $data[session_name()] = session_id();
