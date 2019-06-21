@@ -336,6 +336,9 @@ class terminals extends module
         setGlobal('cycle_terminalsControl','restart');
         setGlobal('cycle_terminalsAutoRestart','1');
         
+        // modify base
+        SQLExec("ALTER TABLE `shouts` CHANGE `EVENT` `EVENT` VARCHAR(255) NOT NULL DEFAULT ''");
+        
         subscribeToEvent($this->name, 'SAY', '', 200);
         subscribeToEvent($this->name, 'SAYREPLY', '', 200);
         subscribeToEvent($this->name, 'SAYTO', '', 200);
