@@ -174,7 +174,7 @@ if ($object != '') {
 } elseif (gr('sayToText')) {
     sayToText(gr('messageid'), gr('terminalid'));
 } elseif (gr('processSubscriptions')) {
-    processSubscriptions(gr('event_name'), json_decode(gr('params'), true));
+    processSubscriptions(gr('event'), json_decode(gr('params'), true));
 } elseif ($script != '') {
     runScript($script, $_REQUEST);
 }
