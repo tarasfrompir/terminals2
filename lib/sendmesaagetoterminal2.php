@@ -50,9 +50,8 @@ function sayToTextSafe($messageid, $terminalid)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    $result = getURLBackground($url, 0);
+    getURLBackground($url, 0);
     DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
-    return $result;
 }
 
 // check terminal 
