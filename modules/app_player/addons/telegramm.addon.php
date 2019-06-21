@@ -44,7 +44,7 @@ class telegramm extends app_player_addon
                     //$out = getURL($url,0);
                     $out = getURLBackground($url, 0);
                     
-                    if ($out) {
+                    if ($out = 'Ok') {
                         DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
                         $this->success = TRUE;
                         $this->message = 'OK';
