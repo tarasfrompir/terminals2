@@ -24,7 +24,7 @@ class telegramm extends app_player_addon
     }
     
     // Say
-    function sayttotext($message, $event)
+    function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         //DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
         $this->reset_properties();
