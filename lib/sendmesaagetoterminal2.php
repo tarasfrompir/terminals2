@@ -15,7 +15,7 @@ function send_message_to_terminal($terminal, $message, $event, $member, $level, 
 
 function sayToText($messageid, $terminalid)
 {
-    DebMes('Запущена очередь в отделный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
+    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
     include_once(DIR_MODULES . 'app_player/addons.php');
@@ -25,18 +25,17 @@ function sayToText($messageid, $terminalid)
             $player = new $terminal['PLAYER_TYPE']($terminal);
         }
     }
-    $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-    DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
+    //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $count = 0;
     while (!$out AND $count >2) {
-        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
+        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT'], SETTINGS_SITE_LANGUAGE_CODE);
         $count = $count+1;
     }
 }
 
 function sayToTextSafe($messageid, $terminalid)
 {
-    DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
+    //DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $data = array(
         'sayToText' => 1,
         'messageid' => $messageid,
@@ -52,7 +51,7 @@ function sayToTextSafe($messageid, $terminalid)
         }
     }
     getURLBackground($url, 0);
-    DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
+    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
 }
 
 // check terminal 
@@ -111,13 +110,13 @@ function saynew($ph, $level = 0, $member_id = 0, $source = '')
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
-      $rec = array();
+    $rec = array();
     $rec['MESSAGE'] = $ph;
     $rec['ADDED'] = date('Y-m-d H:i:s');
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = $member_id;
     $rec['EVENT'] = 'SAY';
-	$rec['SOURCE'] = '';
+    $rec['SOURCE'] = '';
     $terminals = array();
     $terminals = getTerminalsByCANTTS();
             
