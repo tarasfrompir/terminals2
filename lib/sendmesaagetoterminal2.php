@@ -28,7 +28,7 @@ function sayToText($messageid, $terminalid)
     //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $count = 0;
     while (!$out AND $count >2) {
-        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT'], SETTINGS_SITE_LANGUAGE_CODE);
+        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
         $count = $count+1;
     }
 }
