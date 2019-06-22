@@ -19,7 +19,7 @@ class majordroid extends app_player_addon
     }
     
     // saytts
-    function sayttotext($message, $event)
+    function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
         if (strlen($message)) {
