@@ -26,7 +26,7 @@ class telegramm extends app_player_addon
     // Say
     function sayttotext($message, $event)
     {
-        DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
+        //DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
         $this->reset_properties();
         //DebMes('Проверяем наличие модуля Телеграма ' . microtime(true), 'terminals2');
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
@@ -41,11 +41,11 @@ class telegramm extends app_player_addon
                     }
                     //DebMes('Отобрано пользователей в телеграме для сообщения ' . $message . ' ' . microtime(true), 'terminals2');
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
-                    //$out = getURL($url,0);
-                    $out = getURLBackground($url, 0);
+                    $out = getURL($url,0);
+                    //$out = getURLBackground($url, 0);
                     
                     if ($out = 'Ok') {
-                        DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
+                        //DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
                         $this->success = TRUE;
                         $this->message = 'OK';
                     } else {
