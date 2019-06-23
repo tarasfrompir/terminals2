@@ -339,6 +339,14 @@ class terminals extends module
         // modify base
         SQLExec("ALTER TABLE `shouts` CHANGE `EVENT` `EVENT` VARCHAR(255) NOT NULL DEFAULT ''");
         
+	// для исправления подписки после наладки необходимо будет удалить
+	unsubscribeFromEvent($this->name, 'SAY');
+        unsubscribeFromEvent($this->name, 'SAYTO');
+        unsubscribeFromEvent($this->name, 'ASK');
+        unsubscribeFromEvent($this->name, 'SAYREPLY');
+        unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
+        unsubscribeFromEvent($this->name, 'HOURLY');
+	
         subscribeToEvent($this->name, 'SAY', '', 101);
         subscribeToEvent($this->name, 'SAYREPLY', '', 101);
         subscribeToEvent($this->name, 'SAYTO', '', 101);
