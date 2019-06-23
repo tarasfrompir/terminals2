@@ -175,7 +175,6 @@ class terminals extends module
                 $message['SOURCE'] .= $terminal['ID'] . '^';
             }
             SQLUpdate('shouts', $message);
-            return 1;
          } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
