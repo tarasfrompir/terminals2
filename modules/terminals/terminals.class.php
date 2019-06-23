@@ -213,6 +213,7 @@ class terminals extends module
                 $terminals = getTerminalsByCANTTS();
             }
             $this->terminalSayByCacheQueue($terminals, $details); 
+            $details['BREAK']=true;
         } else if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
@@ -338,11 +339,11 @@ class terminals extends module
         // modify base
         SQLExec("ALTER TABLE `shouts` CHANGE `EVENT` `EVENT` VARCHAR(255) NOT NULL DEFAULT ''");
         
-        subscribeToEvent($this->name, 'SAY', '', 200);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 200);
-        subscribeToEvent($this->name, 'SAYTO', '', 200);
-        subscribeToEvent($this->name, 'ASK', '', 200);
-        subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 0);
+        subscribeToEvent($this->name, 'SAY', '', 101);
+        subscribeToEvent($this->name, 'SAYREPLY', '', 101);
+        subscribeToEvent($this->name, 'SAYTO', '', 101);
+        subscribeToEvent($this->name, 'ASK', '', 101);
+        subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 101);
         subscribeToEvent($this->name, 'HOURLY');
         
         parent::install($parent_name);
