@@ -35,12 +35,13 @@ while (1) {
             $out_terminals = explode("^", $message['SOURCE']);
             foreach ($out_terminals as $terminals) {
                 $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-                DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
+                //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
                 // запускаем все что имеет function sayttotext
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                        DebMes('Запускаем очередь в отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
+                        DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
+                        DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
                 } else {
                     // sleduyushiy tip terminalov
