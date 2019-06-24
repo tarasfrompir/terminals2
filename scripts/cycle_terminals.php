@@ -29,28 +29,27 @@ while (1) {
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
     
-    $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' ORDER BY ID ASC");
-    if ($messages) {
-        foreach ($messages as $message) {
-            $out_terminals = explode("^", $message['SOURCE']);
-            foreach ($out_terminals as $terminals) {
-                $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-                //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
-                // запускаем все что имеет function sayttotext
-                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-                    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                        DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                        sayToTextSafe($message['ID'], $terminal['ID']);
-                        //sayToText($message['ID'], $terminal['ID']);
-                        DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                    }
-                } else {
-                    // sleduyushiy tip terminalov
-                }
-             $message['SOURCE'] = str_replace($terminal['ID'] . '^', "", $message['SOURCE']);
-             SQLUpdate('shouts', $message);
-            }
-        }
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' ORDER BY ID ASC");
+    if ($message) {
+		$out_terminals = explode("^", $message['SOURCE']);
+		foreach ($out_terminals as $terminals) {
+			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
+			//DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
+			// запускаем все что имеет function sayttotext
+			if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
+				if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+					DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
+					sayToTextSafe($message['ID'], $terminal['ID']);
+					//sayToText($message['ID'], $terminal['ID']);
+					DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
+				}
+			} else {
+				// sleduyushiy tip terminalov
+			}
+		}
+		$message['SOURCE'] = '';
+		SQLUpdate('shouts', $message);
+
     }
     usleep(500000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
