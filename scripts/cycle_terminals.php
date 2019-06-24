@@ -46,11 +46,11 @@ while (1) {
             } else {
                 // sleduyushiy tip terminalov
             }
-      }
-      $message['SOURCE'] = '';
-      SQLUpdate('shouts', $message);
+        }
+        $message['SOURCE'] = '';
+        SQLUpdate('shouts', $message);
     }
-    usleep(300000);
+    usleep(200000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
     }
