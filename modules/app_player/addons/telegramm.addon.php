@@ -39,7 +39,7 @@ class telegramm extends app_player_addon
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    //DebMes('Отобрано пользователей в телеграме для сообщения ' . $message . ' ' . microtime(true), 'terminals2');
+                    DebMes('Отобрано пользователей в телеграме для сообщения ' . $message . ' ' . microtime(true), 'terminals2');
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
                     //$out = getURL($url,0);
                     $out = getURLBackground($url, 0);
