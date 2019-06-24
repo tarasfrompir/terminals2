@@ -26,7 +26,7 @@ class telegramm extends app_player_addon
     // Say
     function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        //DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
+        DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
         $this->reset_properties();
         //DebMes('Проверяем наличие модуля Телеграма ' . microtime(true), 'terminals2');
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
@@ -45,7 +45,7 @@ class telegramm extends app_player_addon
                     $out = getURLBackground($url, 0);
                     
                     if ($out = 'Ok') {
-                        //DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
+                        DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
                         $this->success = TRUE;
                         $this->message = 'OK';
                     } else {
