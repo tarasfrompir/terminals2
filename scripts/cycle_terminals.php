@@ -43,12 +43,12 @@ while (1) {
                     //sayToText($message['ID'], $terminal['ID']);
                     //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                 }
+                $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
             } 
         }
         processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
     }
 
-    $message['SOURCE'] = '';
     SQLUpdate('shouts', $message);
     usleep(200000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
