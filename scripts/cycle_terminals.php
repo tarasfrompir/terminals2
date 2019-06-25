@@ -30,7 +30,7 @@ while (1) {
     }
     
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' ORDER BY ID ASC");
-    if ($message) {
+    if ($message AND $message['FILE_LINK'] = '') {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
