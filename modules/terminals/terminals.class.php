@@ -369,7 +369,8 @@ class terminals extends module
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
  shouts: FILE_LINK varchar(255) NOT NULL DEFAULT ''
- shouts: EVENT varchar(255) NOT NULL DEFAULT ''  
+ shouts: EVENT varchar(255) NOT NULL DEFAULT ''
+ shouts: TIME_MESSAGE int(10) NOT NULL DEFAULT '0'
 EOD;
         parent::dbInstall($data);
 	    
