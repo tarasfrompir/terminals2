@@ -62,7 +62,7 @@ while (1) {
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                 if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttosound")) {
                     //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                    sayToTextSafe($message['ID'], $terminal['ID']);
+                    sayToSoundSafe($message['ID'], $terminal['ID']);
                     //sayToText($message['ID'], $terminal['ID']);
                     //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
