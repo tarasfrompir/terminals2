@@ -143,9 +143,13 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
+              // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' ) {
             
-            
+                                //'filename' => '$cached_filename',
+                                //'message_id' => '$message_id',
+		
+		
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
                 $details['time_shift'] = 2;
@@ -154,30 +158,20 @@ class terminals extends module
             }
             
             // берем ссылку http
-            if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
-                $server_ip = getLocalIp();
-                if (!$server_ip) {
-                    DebMes("Server IP not found", 'terminals');
-                    return false;
-                } else {
-                    $details['linkfile'] = 'http://' . $server_ip . $m[0];
-                }
-            }
+            //if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
+            //    $server_ip = getLocalIp();
+            //    if (!$server_ip) {
+            //        DebMes("Server IP not found", 'terminals');
+            //        return false;
+            //    } else {
+            //        $details['linkfile'] = 'http://' . $server_ip . $m[0];
+            //    }
+            //}
             
-   
-            if (!$details['event']) {
-                $details['event'] = 'SAY';
-            }
-            $terminals = array();
-            if ($details['destination']) {
-                if (!$terminals = getTerminalsByName($details['destination'], 1)) {
-                    $terminals = getTerminalsByHost($details['destination'], 1);
-                }
-            } else {
-                $terminals = getTerminalsByCANTTS();
-            }
-            $this->terminalSayByCacheQueue($terminals, $details); 
-            $details['BREAK']=true; 
+            $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."' ORDER BY ID ASC");
+            $message['TIME_MESSAGE'] = $details['time_shift'];
+            $message['FILE_LINK'] = $details['filename'];
+            SQLUpdate('shouts', $message);
         } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
