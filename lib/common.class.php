@@ -167,42 +167,43 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['SOURCE'] = '';
     $rec['IMPORTANCE'] = $level;
 
+    if ($member_id) {
+        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
+        return;
+    }
+	
     $terminals = array();
     $terminals = getTerminalsByCANTTS();
      
     foreach ($terminals as $terminal) {
          $rec['SOURCE'] .= $terminal['ID'] . '^';
     }
-    
+	
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
-        return;
+
+    if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
+        eval(SETTINGS_HOOK_BEFORE_SAY);
     }
 
-   // if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
-    //    eval(SETTINGS_HOOK_BEFORE_SAY);
-   // }
 
+    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
+        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
+            $passed = time() - (int)getGlobal('lastSayTime');
+            if ($passed > 20) {
+                playSound('dingdong', 1, $level);
+            }
+        }
+    }
 
-//    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
-//        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
-//            $passed = time() - (int)getGlobal('lastSayTime');
-//            if ($passed > 20) {
-//                playSound('dingdong', 1, $level);
-//            }
-//        }
-//    }
-
-    //setGlobal('lastSayTime', time());
-    //setGlobal('lastSayMessage', $ph);
+    setGlobal('lastSayTime', time());
+    setGlobal('lastSayMessage', $ph);
 
     //processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
 
-//    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
-//        eval(SETTINGS_HOOK_AFTER_SAY);
- //   }
+    if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
+        eval(SETTINGS_HOOK_AFTER_SAY);
+    }
     //dprint(date('Y-m-d H:i:s')." Say OK",false);
         return 1;
 }
