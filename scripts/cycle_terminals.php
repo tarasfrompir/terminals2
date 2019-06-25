@@ -45,7 +45,7 @@ while (1) {
                 }
             } 
         }
-		processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE']));
+		processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'level' => $message['ID']));
     }
 
     $message['SOURCE'] = '';
