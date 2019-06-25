@@ -176,7 +176,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
     if ($member_id) {
-        //$processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
+        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
         return;
     }
 
