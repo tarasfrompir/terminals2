@@ -143,14 +143,14 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
-        if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+        if ($event == 'SAY_CACHED_READY' ) {
             
             
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['filename']) < 2) {
                 $details['time_shift'] = 2;
             } else {
-                $details['time_shift'] = getMediaDurationSeconds($details['filename']);
+                $details['time_shift'] = getMediaDurationSeconds($details['filename'])+1;
             }
             
             // берем ссылку http
