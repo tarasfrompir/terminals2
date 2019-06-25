@@ -143,39 +143,7 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
-/*         if (($event == 'SAY' OR $event == 'SAYTO' OR $event == 'SAYREPLY' OR $event == 'ASK')) {
-            DebMes("ПРОИЗОШЛО СОБЫТИЕ " . $event . ' СООБЩЕНИЕ ДЛЯ ВЫВОДА ' . $details['message'] . ' ' . microtime(true), 'terminals2');
-            $terminals = array();
-            if ($details['destination']) {
-                if (!$terminals = getTerminalsByName($details['destination'], 1)) {
-                    $terminals = getTerminalsByHost($details['destination'], 1);
-                }
-            } else {
-                $terminals = getTerminalsByCANTTS();
-            }
-            
-            $message          = SQLSelectOne("SELECT * FROM shouts WHERE MESSAGE = '" . $details['message'] . "' AND SOURCE = '' AND EVENT = '' ORDER BY ID DESC");
-            $message['EVENT'] = $event;
-            foreach ($terminals as $terminal) {
-                if (!$terminal['IS_ONLINE'] AND !$terminal['HOST'] = '') {
-                    pingTerminalSafe($terminal['NAME']);
-                }
-                if (!$terminal['IS_ONLINE'] OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-                    continue;
-                }
-                if (!$terminal['MIN_MSG_LEVEL']) {
-                    $terminal['MIN_MSG_LEVEL'] = 0;
-                }
-                if ($details['event'] == 'ASK') {
-                    $details['level'] = 9999;
-                }
-                if (!$details['event']) {
-                    $details['event'] = 'SAY';
-                }
-                $message['SOURCE'] .= $terminal['ID'] . '^';
-            }
-            SQLUpdate('shouts', $message);
-         } else if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
+        if ($event == 'SAY_CACHED_READY' AND $details['level'] >= (int) getGlobal('minMsgLevel')) {
             
             
             // берем длинну сообщения
@@ -196,10 +164,7 @@ class terminals extends module
                 }
             }
             
-            // добавляем язык в разных форматах
-            $details['lang']     = SETTINGS_SITE_LANGUAGE;
-            $details['langfull'] = LANG_SETTINGS_SITE_LANGUAGE_CODE;
-            
+   
             if (!$details['event']) {
                 $details['event'] = 'SAY';
             }
@@ -213,7 +178,7 @@ class terminals extends module
             }
             $this->terminalSayByCacheQueue($terminals, $details); 
             $details['BREAK']=true; 
-        } else  */if ($event == 'HOURLY') {
+        } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
@@ -346,10 +311,6 @@ class terminals extends module
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
         unsubscribeFromEvent($this->name, 'HOURLY');
 	
-        subscribeToEvent($this->name, 'SAY', '', 101);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 101);
-        subscribeToEvent($this->name, 'SAYTO', '', 101);
-        subscribeToEvent($this->name, 'ASK', '', 101);
         subscribeToEvent($this->name, 'SAY_CACHED_READY', '', 101);
         subscribeToEvent($this->name, 'HOURLY');
         
@@ -367,10 +328,6 @@ class terminals extends module
     function uninstall()
     {
         //SQLDropTable('terminals');
-        unsubscribeFromEvent($this->name, 'SAY');
-        unsubscribeFromEvent($this->name, 'SAYTO');
-        unsubscribeFromEvent($this->name, 'ASK');
-        unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
         unsubscribeFromEvent($this->name, 'HOURLY');
         
