@@ -168,7 +168,7 @@ class terminals extends module
             //    }
             //}
             
-            $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."' ORDER BY ID ASC");
+            $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
             $message['TIME_MESSAGE'] = $details['time_shift'];
             $message['FILE_LINK'] = $details['filename'];
             SQLUpdate('shouts', $message);
