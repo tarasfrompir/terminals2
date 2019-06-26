@@ -28,7 +28,7 @@ while (1) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
-    
+    // отправка только текстовых сообщений
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK='' ORDER BY ID ASC");
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
@@ -40,38 +40,47 @@ while (1) {
             }
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
-            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                    //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                    sayToTextSafe($message['ID'], $terminal['ID']);
-                    //sayToText($message['ID'], $terminal['ID']);
-                    //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-
+            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') ) {
+                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext") AND $terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+	                if ($terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+                        //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
+                        sayToTextSafe($message['ID'], $terminal['ID']);
+                        //sayToText($message['ID'], $terminal['ID']);
+                        //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
+					}
+					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 }
+				
 			}
-			$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+
         }
         processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
         SQLUpdate('shouts', $message);
     }
-	
+    // отправка сообщений сгенерированных ТТС
 	$message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK != '' ORDER BY ID ASC");
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
+		DebMes('Запускаем очередь vfbynthv'.$message['ID'].' '.$terminal['ID']);
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
-            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
-                    DebMes('Запускаем очередь vfbynthv'.$message['ID'].' '.$terminal['ID']);
-                    sayTToMediaSafe($message['ID'], $terminal['ID']);
-                    //sayToText($message['ID'], $terminal['ID']);
-                    //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                   
-                }
+            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') ) {
+                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia") ) {
+					if ($terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+						DebMes('Запускаем очередь vfbynthv'.$message['ID'].' '.$terminal['ID']);
+                        sayTToMediaSafe($message['ID'], $terminal['ID']);
+                        //sayToText($message['ID'], $terminal['ID']);
+                        //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
+					}
+                    $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                } else {
+					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+				}
+				
             }
-		$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+		
         }
         SQLUpdate('shouts', $message);
     }
