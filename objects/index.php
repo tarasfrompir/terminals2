@@ -173,6 +173,8 @@ if ($object != '') {
     pingTerminal(gr('terminal'));
 } elseif (gr('sayToText')) {
     sayToText(gr('messageid'), gr('terminalid'));
+} elseif (gr('sayTToMedia')) {
+    sayTToMedia(gr('messageid'), gr('terminalid'));
 } elseif (gr('processSubscriptions')) {
     processSubscriptions(gr('event'), json_decode(gr('params'), true));
 } elseif ($script != '') {
