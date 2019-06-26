@@ -156,18 +156,7 @@ class terminals extends module
             } else {
                 $details['time_shift'] = getMediaDurationSeconds($details['filename'])+1;
             }
-            
-            // берем ссылку http
-            //if (preg_match('/\/cms\/cached.+/', $details['filename'], $m)) {
-            //    $server_ip = getLocalIp();
-            //    if (!$server_ip) {
-            //        DebMes("Server IP not found", 'terminals');
-            //        return false;
-            //    } else {
-            //        $details['linkfile'] = 'http://' . $server_ip . $m[0];
-            //    }
-            //}
-            
+        
             $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
             $message['TIME_MESSAGE'] = $details['time_shift'];
             $message['FILE_LINK'] = $details['filename'];
