@@ -111,20 +111,27 @@ class dnla extends app_player_addon {
     }
 
 	// Say
-    function say($param) {
-	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
-        $this->reset_properties();
-	$out = explode(',', $param);
-	$input = $out[6];
-	$terminal = $out[0];
-	$timeshift = $out[9];
-	// получаем данные оплеере для восстановления проигрываемого контента
-	$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
-	if (!$chek_restore) {
-	    $played = getPlayerStatus($terminal);
-	}
+    function sayToMedia($message_link, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
+
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+		DebMes ($message_link);
+			
+		// получаем данные оплеере для восстановления проигрываемого контента
+		//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
+		//if (!$chek_restore) {
+		//	$played = getPlayerStatus($terminal);
+		//}
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->play($input);
+        $response = $remote->play($message_link);
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
@@ -132,11 +139,11 @@ class dnla extends app_player_addon {
         if($doc->getElementsByTagName('PlayResponse')) {
             $this->success = TRUE;
             $this->message = 'Say message';
-	    if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-	        addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 4);
-	        addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+8, 4);
-	    }
-         } else {
+	      //if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	      //    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 4);
+	      //    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+8, 4);
+	      //}
+        } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
             }
