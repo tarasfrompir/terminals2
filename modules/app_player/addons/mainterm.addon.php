@@ -47,7 +47,7 @@ class mainterm extends app_player_addon {
     }
 	
     // Say
-    function say($param) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function saymedia($param) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
         //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
         $this->reset_properties();
         $out = explode(',', $param);
