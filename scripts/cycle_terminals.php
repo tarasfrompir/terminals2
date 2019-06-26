@@ -84,7 +84,7 @@ while (1) {
         }
         SQLUpdate('shouts', $message);
     }
-    usleep(200000);
+    usleep(700000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
     }
