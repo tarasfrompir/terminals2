@@ -47,18 +47,14 @@ class mainterm extends app_player_addon {
     }
 	
     // Say
-    function saymedia($param) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
-        //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
+    function sayToMedia($message_link, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
         $this->reset_properties();
-        $out = explode(',', $param);
-        $filename = $out[5];
-        $message = $out[1];
-        if(strlen($message)) {
-            if(file_exists($filename)) {
+        if($time_message) {
+            if(file_exists($message_link)) {
                 if (IsWindowsOS()){
-                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename);
+                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message_link);
                 } else {
-                    safe_exec('mplayer ' . $filename . " >/dev/null 2>&1");
+                    safe_exec('mplayer ' . $message_link . " >/dev/null 2>&1");
                 }
                 $this->success = TRUE;
                 $this->message = 'OK';
@@ -70,7 +66,7 @@ class mainterm extends app_player_addon {
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
-        return $this->success;
+        return $this->message;
     }
 }
 ?>
