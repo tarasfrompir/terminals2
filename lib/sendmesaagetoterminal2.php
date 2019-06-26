@@ -94,9 +94,8 @@ function pingTerminalSafe($terminal)
     return $result;
 }
 
-function sayToSound($messageid, $terminalid)
+function sayTToMedia($messageid, $terminalid)
 {
-    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
     include_once(DIR_MODULES . 'app_player/addons.php');
@@ -108,16 +107,17 @@ function sayToSound($messageid, $terminalid)
     }
     //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     while (!$out AND $count <2) {
-        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
+        $out = $player->sayToMedia($message['FILE_LINK'], $message['TIME_MESSAGE']);
         $count = $count+1;
     }
+	sleep ($message['TIME_MESSAGE']);
 }
 
-function sayToSoundSafe($messageid, $terminalid)
+function sayTToMediaSafe($messageid, $terminalid)
 {
     //DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $data = array(
-        'sayToText' => 1,
+        'sayTToMedia' => 1,
         'messageid' => $messageid,
         'terminalid' => $terminalid
     );
