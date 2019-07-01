@@ -110,25 +110,26 @@ class dnla extends app_player_addon {
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-		
+		DebMes($this->terminal['NAME']);
 		// получаем данные оплеере для восстановления проигрываемого контента
-		//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
-		//if (!$chek_restore) {
-		//	$played = getPlayerStatus($terminal);
-		//}
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+		$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
+		if (!$chek_restore) {
+			$played = getPlayerStatus($terminal);
+		}
+        
+		$remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-
+        //DebMes($response);
         if($doc->getElementsByTagName('PlayResponse')) {
             $this->success = TRUE;
             $this->message = 'Say message';
-	      //if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-	      //    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 4);
-	      //    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+8, 4);
-	      //}
+	        if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
+	            addScheduledJob('target-' . $this->terminal['NAME'] . '-setURL', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $time_message+1, 4);
+	            addScheduledJob('target-' . $this->terminal['NAME'] . '-seek', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $time_message+8, 4);
+	        }
         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
