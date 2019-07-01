@@ -17,47 +17,32 @@ class dnla extends app_player_addon {
         $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
         $this->terminal = $terminal;
         $this->reset_properties();
- 
-		
+        
+		// proverka na otvet
+		$ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $content = curl_exec($ch);
+        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+			
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if ($this->terminal['HOST'] and !filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
-			DebMes($this->terminal['HOST']);
+        if (!$retcode=200 OR filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
+            // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
             $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
             $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
-            $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
-            if ($rec['HOST']) {
-                SQLUpdate('terminals', $rec); // update
-                //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
-            }
-        } else {
-            // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
-            // проверяем на правильность PLAYER_CONTROL_ADDRESS некоторые устройства могут их изменять
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $content = curl_exec($ch);
-    
-            // proverka na otvet
-            $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-    
-            // если не получен ответ делаем поиск устройства по новой
-            if ($retcode!=200) {
-                $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
-                if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
+            if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
                     SQLUpdate('terminals', $rec); // update
                     //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
-                    }
                 }
             }
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
 
-        }
+    }
     
 
     // Get player status
@@ -125,8 +110,7 @@ class dnla extends app_player_addon {
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-		DebMes ($message_link);
-			
+		
 		// получаем данные оплеере для восстановления проигрываемого контента
 		//$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
 		//if (!$chek_restore) {
@@ -137,7 +121,7 @@ class dnla extends app_player_addon {
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        //DebMes($response);
+
         if($doc->getElementsByTagName('PlayResponse')) {
             $this->success = TRUE;
             $this->message = 'Say message';
