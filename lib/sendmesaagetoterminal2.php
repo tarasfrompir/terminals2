@@ -110,7 +110,8 @@ function sayTToMedia($messageid, $terminalid)
         $out = $player->sayToMedia($message['FILE_LINK'], $message['TIME_MESSAGE']);
         $count = $count+1;
     }
-	sleep ($message['TIME_MESSAGE']);
+	sleep (10);
+	$runned_terminal = array_diff($runned_terminal, array($terminalid));
 }
 
 function sayTToMediaSafe($messageid, $terminalid)
