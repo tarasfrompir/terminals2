@@ -110,7 +110,7 @@ class dnla extends app_player_addon {
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-		DebMes($this->terminal['NAME']);
+		
 		// получаем данные оплеере для восстановления проигрываемого контента
 		$chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
 		if (!$chek_restore) {
