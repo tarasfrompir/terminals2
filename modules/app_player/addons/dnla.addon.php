@@ -17,11 +17,13 @@ class dnla extends app_player_addon {
         $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
         $this->terminal = $terminal;
         $this->reset_properties();
-
+ 
+		
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if ($this->terminal['HOST'] and !$this->terminal['PLAYER_CONTROL_ADDRESS']) {
+        if ($this->terminal['HOST'] and !filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
+			DebMes($this->terminal['HOST']);
             $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-            $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+            $this->terminal['PLAYER_CONTROL_ADDRESS'] = search($this->terminal['HOST']);
             $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
             if ($rec['HOST']) {
                 SQLUpdate('terminals', $rec); // update
@@ -43,7 +45,7 @@ class dnla extends app_player_addon {
             // если не получен ответ делаем поиск устройства по новой
             if ($retcode!=200) {
                 $rec=SQLSelectOne('SELECT * FROM terminals WHERE HOST="'.$this->terminal['HOST'].'"');
-                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search();
+                $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
                 if ($this->terminal['PLAYER_CONTROL_ADDRESS']){}
                 $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
                 if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
@@ -52,9 +54,9 @@ class dnla extends app_player_addon {
                     }
                 }
             }
-
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES.'app_player/libs/MediaRenderer/MediaRendererVolume.php');
+
         }
     
 
@@ -360,11 +362,11 @@ class dnla extends app_player_addon {
     }
     
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
-    private function search() {
+    private function search($ip = '239.255.255.250') {
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
-
+        DebMes('ip-'.$ip);
         //all
         $request = 'M-SEARCH * HTTP/1.1'."\r\n";
         $request .= 'HOST: 239.255.255.250:1900'."\r\n";
@@ -374,8 +376,7 @@ class dnla extends app_player_addon {
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
-        @socket_sendto($socket, $request, strlen($request), 0, '255.255.255.255', 1900);
-        @socket_sendto($socket, $request, strlen($request), 0, '239.255.255.250', 1900);
+        @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
 
         // send the data from socket
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec'=>'1', 'usec'=>'128'));
