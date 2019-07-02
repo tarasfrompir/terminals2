@@ -18,8 +18,8 @@ class dnla extends app_player_addon {
         $this->terminal = $terminal;
         $this->reset_properties();
         
-		// proverka na otvet
-		$ch = curl_init();
+	// proverka na otvet
+	$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -117,7 +117,7 @@ class dnla extends app_player_addon {
 			$played = getPlayerStatus($terminal);
 		}
         
-		$remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+	$remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
         // создаем хмл документ
         $doc = new \DOMDocument();
