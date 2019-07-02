@@ -112,8 +112,8 @@ function sayTToMedia($messageid, $terminalid)
         $count = $count+1;
     }
 
-	sleep ($message['TIME_MESSAGE']);
-	sg ($terminal['LINKED_OBJECT'].'.BASY',0);
+	sleep($message['TIME_MESSAGE']+1);
+	sg($terminal['LINKED_OBJECT'].'.BASY',0);
 }
 
 function sayTToMediaSafe($messageid, $terminalid)
