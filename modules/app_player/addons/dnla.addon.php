@@ -348,10 +348,12 @@ class dnla extends app_player_addon {
     
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250') {
+       if (!$ip) {
+           return 0;
+       }
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
-        DebMes('ip-'.$ip);
         //all
         $request = 'M-SEARCH * HTTP/1.1'."\r\n";
         $request .= 'HOST: 239.255.255.250:1900'."\r\n";
