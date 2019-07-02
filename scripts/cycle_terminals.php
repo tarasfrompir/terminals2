@@ -83,10 +83,8 @@ while (1) {
         }
         SQLUpdate('shouts', $message);
     }
-	DebMes( 'term id'.$terminal['ID']);
-						DebMes(gg ('terminal4.BASY'));
-							//unset($runned_terminal[24]);
-							//DebMes(serialize($runned_terminal));
+    //DebMes( 'term id'.$terminal['ID']);
+    //DebMes(gg ('terminal4.BASY'));
     usleep(500000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
