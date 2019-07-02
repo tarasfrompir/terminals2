@@ -23,12 +23,6 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
-// создаем массив глобальный содержащий работающие терминалы
-$runned_terminals = array();
-
-global $runned_terminals; 
-	
-
 while (1) {
     if (time() - $checked_time > 30) {
         $checked_time = time();
@@ -71,13 +65,11 @@ while (1) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
-            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php' ) AND !in_array($terminal['ID'], $runned_terminal) ) {
+            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php' )  AND !gg($terminal['LINKED_OBJECT'].'.BASY')) {
                 if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia") ) {
 					if ($terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
-						$runned_terminal[]= $terminal['ID'];
+						sg ($terminal['LINKED_OBJECT'].'.BASY',1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
-						DebMes(serialize($runned_terminal));
-						DebMes( $terminal['ID']);
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
 					}
@@ -91,6 +83,10 @@ while (1) {
         }
         SQLUpdate('shouts', $message);
     }
+	DebMes( 'term id'.$terminal['ID']);
+						DebMes(gg ('terminal4.BASY'));
+							//unset($runned_terminal[24]);
+							//DebMes(serialize($runned_terminal));
     usleep(500000);
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
