@@ -30,6 +30,7 @@ function sayToText($messageid, $terminalid)
         $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
         $count = $count+1;
     }
+	
 }
 
 function sayToTextSafe($messageid, $terminalid)
@@ -110,8 +111,9 @@ function sayTToMedia($messageid, $terminalid)
         $out = $player->sayToMedia($message['FILE_LINK'], $message['TIME_MESSAGE']);
         $count = $count+1;
     }
-	sleep (10);
-	$runned_terminal = array_diff($runned_terminal, array($terminalid));
+
+	sleep ($message['TIME_MESSAGE']);
+	sg ($terminal['LINKED_OBJECT'].'.BASY',0);
 }
 
 function sayTToMediaSafe($messageid, $terminalid)
