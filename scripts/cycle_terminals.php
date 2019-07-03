@@ -54,7 +54,7 @@ while (1) {
 			}
 
         }
-        processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+        //processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
         SQLUpdate('shouts', $message);
     }
     // отправка сообщений сгенерированных ТТС
