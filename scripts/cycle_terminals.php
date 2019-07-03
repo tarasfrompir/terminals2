@@ -66,6 +66,7 @@ while (1) {
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
     }
+    usleep(1000000);
     // отправка сообщений сгенерированных ТТС
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK != '' AND CHEKED = '1' ORDER BY ID ASC");
     if ($message) {
@@ -88,7 +89,7 @@ while (1) {
         }
         SQLUpdate('shouts', $message);
     }
-    usleep(500000);
+
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
     }
