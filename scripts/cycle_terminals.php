@@ -49,7 +49,9 @@ while (1) {
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
 					}
 					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                }
+                } else {
+					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+				}
 				
 			}
 
