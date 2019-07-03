@@ -63,7 +63,7 @@ while (1) {
             }
             
         }
-        //processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+        processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
         // pomechaem chto obrabotano i zapusheno na generaciyu rechi i obnovlyaem v baze
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
