@@ -24,9 +24,9 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 while (1) {
-    if (time() - $checked_time > 60) {
+    if (time() - $checked_time > 120) {
         $checked_time = time();
-        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 5 MINUTE)");
+        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
     // отправка только текстовых сообщений
