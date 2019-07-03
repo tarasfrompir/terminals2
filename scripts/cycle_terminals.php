@@ -32,7 +32,8 @@ while (1) {
         SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
-    if (time() - $clear_message > 120) {
+    //время жизни сообщений
+    if (time() - $clear_message > 180) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
         SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE) ");
@@ -63,6 +64,7 @@ while (1) {
             
         }
         //processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+        // pomechaem chto obrabotano i zapusheno na generaciyu rechi i obnovlyaem v baze
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
     }
