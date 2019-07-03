@@ -41,7 +41,7 @@ while (1) {
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') ) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext") ) {
 	                if ($terminal['IS_ONLINE']  AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
@@ -49,10 +49,7 @@ while (1) {
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
 					}
 					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                } else {
-					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-				}
-				
+                }
 			}
 
         }
@@ -76,12 +73,8 @@ while (1) {
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
 					}
                     $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                } else {
-					$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-				}
-				
+                } 
             }
-		
         }
         SQLUpdate('shouts', $message);
     }
