@@ -63,6 +63,7 @@ while (1) {
 
         }
         //processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+		$message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
     }
     // отправка сообщений сгенерированных ТТС
@@ -85,7 +86,6 @@ while (1) {
                 } 
             }
         }
-		$message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
     }
     usleep(500000);
