@@ -35,9 +35,10 @@ while (1) {
 	 if (time() - $clear_message > 120) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
+		SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE) ");
     }
     // отправка только текстовых сообщений
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK='' AND CHEKED = '1' ORDER BY ID ASC");
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK='' AND CHEKED = '0' ORDER BY ID ASC");
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
@@ -65,7 +66,7 @@ while (1) {
         SQLUpdate('shouts', $message);
     }
     // отправка сообщений сгенерированных ТТС
-	$message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK != '' AND CHEKED = '0' ORDER BY ID ASC");
+	$message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK != '' AND CHEKED = '1' ORDER BY ID ASC");
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
