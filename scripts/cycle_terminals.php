@@ -23,11 +23,17 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
+// set all message cheked
+SQLExec("UPDATE shouts SET CHEKED='1'");
+
 while (1) {
-    if (time() - $checked_time > 120) {
+    if (time() - $checked_time > 10) {
         $checked_time = time();
-        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+    }
+	 if (time() - $clear_message > 120) {
+        $clear_message = time();
+        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
     }
     // отправка только текстовых сообщений
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^%' AND FILE_LINK='' ORDER BY ID ASC");
@@ -35,8 +41,8 @@ while (1) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-			// pinguem terminal
-			if (!$terminal['IS_ONLINE'] ) {
+            // pinguem terminal
+            if (!$terminal['IS_ONLINE'] ) {
                 pingTerminalSafe($terminal['NAME']);
             }
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
