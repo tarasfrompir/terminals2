@@ -29,7 +29,6 @@ SQLExec("UPDATE shouts SET CHEKED='1'");
 while (1) {
     if (time() - $checked_time > 10) {
         $checked_time = time();
-        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
     //время жизни сообщений
@@ -52,7 +51,7 @@ while (1) {
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
                 if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
                         //sayToText($message['ID'], $terminal['ID']);
@@ -79,7 +78,7 @@ while (1) {
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
                 if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
-                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
                         //sayToText($message['ID'], $terminal['ID']);
