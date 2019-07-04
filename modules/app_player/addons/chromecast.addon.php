@@ -34,7 +34,7 @@ class chromecast extends app_player_addon {
         
         $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
         $cc->requestId = time();
-        $result        = $cc->DMP->getStatus();
+        $result        = $cc->getMediaSession();
         
         if ($result) {
             $this->reset_properties();
@@ -64,7 +64,7 @@ class chromecast extends app_player_addon {
         
         $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
         $cc->requestId = time();
-        $result        = $cc->DMP->getStatus();
+        $result        = $cc->getMediaSession();
         
         if ($result) {
             // Results
@@ -80,19 +80,21 @@ class chromecast extends app_player_addon {
         return $this->success;
     }
     
-    // Say
-    function say($param) {
-	//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
-        $this->reset_properties();
-	    $out = explode(',', $param);
-	    $input = $out[6];
-	    $terminal = $out[0];
-	    $timeshift = $out[9];
-	    // получаем данные оплеере для восстановления проигрываемого контента
-	    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
-        if (!$chek_restore) {
-    	    $played = getPlayerStatus($terminal);
-	    }
+	// Say
+    function sayToMedia($input, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
+
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $input, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $input = 'http://' . $server_ip . $m[0];
+            }
+        }
+		
+       $this->reset_properties();
         if (strlen($input)) {
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
@@ -121,13 +123,10 @@ class chromecast extends app_player_addon {
                 if (!$content_type) {
                     $content_type = 'audio/mpeg';
                 }
-                $cc->DMP->play($input, 'BUFFERED', $content_type, true, 0);
+                $cc->load($input, 'BUFFERED', $content_type, 0);
+                $cc->play();
                 $this->success = TRUE;
                 $this->message = 'OK';
-                if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-	                addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 3);
-	                addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+7, 3);
-	            }
             }
             catch (Exception $e) {
                 $this->success = FALSE;
@@ -171,7 +170,8 @@ class chromecast extends app_player_addon {
                 if (!$content_type) {
                     $content_type = 'audio/mpeg';
                 }
-                $cc->DMP->play($input, 'BUFFERED', $content_type, true, 0);
+                $cc->load($input, 'BUFFERED', $content_type, 0);
+                $cc->play();
                 $this->success = TRUE;
                 $this->message = 'OK';
             }
@@ -192,7 +192,7 @@ class chromecast extends app_player_addon {
         try {
             $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
             $cc->requestId = time();
-            $cc->DMP->pause();
+            $cc->pause();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -209,7 +209,7 @@ class chromecast extends app_player_addon {
         try {
             $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
             $cc->requestId = time();
-            $cc->DMP->stop();
+            $cc->stop();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -228,7 +228,7 @@ class chromecast extends app_player_addon {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
                 $level         = round($level / 100, 1);
-                $cc->DMP->SetVolume($level);
+                $cc->SetVolume($level);
                 $this->success = TRUE;
                 $this->message = 'OK';
             }
