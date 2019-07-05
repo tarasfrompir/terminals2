@@ -155,6 +155,11 @@ class GChromecast
 			$this->appid = $matches;
 			//DebMes ($this->appid);
 		}
+		if (preg_match("/contentId/s", $response)) {
+			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
+			$matches = $matches[1];
+			$this->contentid = $matches;
+		}
 		return $response;
 	}
 	
@@ -211,7 +216,6 @@ class GChromecast
 
 
 		$response = fread($this->socket, 2000);
-/* 
 		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
 			$this->pong();
 			//$this->getCastMessage();
@@ -220,25 +224,14 @@ class GChromecast
 
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
-		} */
+		} 
 
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
 			$matches = $matches[1];
 			$this->transportid = $matches;
 		}
-		if (preg_match("/appId/s", $response)) {
-			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->appid = $matches;
-			//DebMes ($this->appid);
-		}
 
-		if (preg_match("/mediaSessionId/s", $response)) {
-			preg_match("/\"mediaSessionId\"\:(\d+)/", $response, $r);
-			$this->sessionid = $r[1];
-
-		}
 		return $response;
 	}
 	
@@ -326,8 +319,8 @@ class GChromecast
 	public function seek($secs) {
 		// Seek
         $this->getMediaSession(); // Auto-reconnects
-		if ($this->sessionid) {
-		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->sessionid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
+		if ($this->mediaid) {
+		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
 		    $this->getCastMessage();
 		}
 	}
@@ -335,8 +328,8 @@ class GChromecast
 	public function stop() {
 		// Stop
 		$this->getMediaSession(); // Auto-reconnects
-		if ($this->sessionid) {
-			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->sessionid . ', "requestId":'.$this->requestId.'}');
+		if ($this->mediaid) {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 			$this->getCastMessage();
 		}
 	}
@@ -344,8 +337,8 @@ class GChromecast
 	public function pause() {
 		// Pause
 		$this->getMediaSession(); // Auto-reconnects
-		if ($this->sessionid) {
-			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->sessionid . ', "requestId":'.$this->requestId.'}');
+		if ($this->mediaid) {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		}
 		$this->getCastMessage();
 	}
@@ -353,8 +346,8 @@ class GChromecast
 	public function play() {
 		// Restart (after pause)
 		$this->getMediaSession(); // Auto-reconnects
-		if ($this->sessionid) {
-			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->sessionid . ', "requestId":'.$this->requestId.'}');
+		if ($this->mediaid) {
+			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		}
 		$this->getCastMessage();
 	}
@@ -369,10 +362,10 @@ class GChromecast
 		}
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
-			$this->sessionid = $m[1];
+			$this->mediaid = $m[1];
 		}
-		if (!$this->sessionid) {
-			$this->sessionid=1;
+		if (!$this->mediaid) {
+			$this->mediaid=1;
 		}
 	}
 	
@@ -386,10 +379,10 @@ class GChromecast
 		}
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
-			$this->sessionid = $m[1];
+			$this->mediaid = $m[1];
 		}
-		if (!$this->sessionid) {
-			$this->sessionid=1;
+		if (!$this->mediaid) {
+			$this->mediaid=1;
 		}
 	}
 }
