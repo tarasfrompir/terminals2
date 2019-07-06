@@ -151,24 +151,31 @@ class GChromecast
 		}
         $zeit60 = time()+2;
 		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
-		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$r) or time() > $zeit60) {
-			$r = $this->getCastMessage();
+		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response) or time() > $zeit60) {
+			$response = $this->getCastMessage();
 		}
 		// Grab the mediaSessionId
-		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$response,$m)) {
 			$this->mediaid = $m[1];
 		}
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
+
+		// playaer state
+		if (preg_match("/playerState/s", $response)) {
+			preg_match("/playerState\"\:\"([^\"]*)/", $response, $matches);
+			$this->state = $matches[1];
+		}
+
 		// played url
 		if (preg_match("/contentId/s", $response)) {
 			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
 			$this->contentid = $matches[1];
 		}
-	    if ($r){
-		    $r = substr($r, strpos($r,'{"type'),50000);
-            return json_decode($r,TRUE);
+	    if ($response){
+		    $response = substr($response, strpos($response,'{"type'),50000);
+            return json_decode($response,TRUE);
 		} else {
 			return ;
 		}
@@ -331,8 +338,11 @@ class GChromecast
 	public function pause() {
 		// Pause
 		$this->getMediaSession(); // Auto-reconnects
-		if ($this->mediaid) {
+		DebMes($this->state);
+		if ($this->mediaid and $this->state != 'PAUSED') {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+		} else if ($this->mediaid and $this->state == 'PAUSED') {
+			$this->play();
 		}
 		$this->getCastMessage();
 	}
@@ -391,19 +401,19 @@ class GChromecast
         if (!$content_type) {
             $content_type = 'audio/mpeg';
         }
-	$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
-	$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
-	$r = "";
-	while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
-		$r = $this->getCastMessage();
+		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
+		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
+		$r = "";
+		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
+			$r = $this->getCastMessage();
+		}
+		// Grab the mediaSessionId
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+			$this->mediaid = $m[1];
+		}
+		if (!$this->mediaid) {
+			$this->mediaid=1;
+		}
 	}
-	// Grab the mediaSessionId
-	if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
-		$this->mediaid = $m[1];
-	}
-	if (!$this->mediaid) {
-		$this->mediaid=1;
-	}
-    }
 }
 ?>
