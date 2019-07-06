@@ -17,10 +17,7 @@ class GChromecast
 	// The transportid of our connection
 	public $sessionid = "";
 	// Session id for any media sessions
-	public $DMP;
-	// Represents an instance of the Default Media Player.
-	public $Plex;
-	// Represents an instance of the Plex player
+
 	public $lastip = "";
 	// Store the last connected IP
 	public $lastport;
@@ -65,8 +62,8 @@ class GChromecast
 			else {
 				throw new Exception("Failed to connect to remote Chromecast");
 			}
-			$this->cc_connect(1);
-			$this->connect(1);
+			$this->cc_connect();
+			$this->connect();
 		}
 	}
 	
@@ -124,7 +121,7 @@ class GChromecast
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
 		$this->cc_connect();
-		//$this->testLive();
+		$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = "receiver-0";
@@ -141,25 +138,6 @@ class GChromecast
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
-		// get transport id
-		if (preg_match("/transportId/s", $response)) {
-			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->transportid = $matches;
-			//DebMes ($this->transportid);
-		}
-		// get app id
-		if (preg_match("/appId/s", $response)) {
-			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->appid = $matches;
-			//DebMes ($this->appid);
-		}
-		if (preg_match("/contentId/s", $response)) {
-			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->contentid = $matches;
-		}
 		return $response;
 	}
 	
@@ -175,6 +153,18 @@ class GChromecast
 		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
 		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$r) or time() > $zeit60) {
 			$r = $this->getCastMessage();
+		}
+		// Grab the mediaSessionId
+		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+			$this->mediaid = $m[1];
+		}
+		if (!$this->mediaid) {
+			$this->mediaid=1;
+		}
+		// played url
+		if (preg_match("/contentId/s", $response)) {
+			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
+			$this->contentid = $matches[1];
 		}
 	    if ($r){
 		    $r = substr($r, strpos($r,'{"type'),50000);
@@ -218,20 +208,24 @@ class GChromecast
 		$response = fread($this->socket, 2000);
 		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
 			$this->pong();
-			//$this->getCastMessage();
 			usleep(10);
 			$response = fread($this->socket, 2000);
 
 			// Wait infinitely for a packet.
 			//set_time_limit(30);
 		} 
-
+		// get transport id
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
-			$matches = $matches[1];
-			$this->transportid = $matches;
+			$this->transportid = $matches[1];
+			//DebMes ($this->transportid);
 		}
-
+		// get app id
+		if (preg_match("/appId/s", $response)) {
+			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
+			$this->appid = $matches[1];
+			//DebMes ($this->appid);
+		}
 		return $response;
 	}
 	
@@ -367,11 +361,12 @@ class GChromecast
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
+		DebMes ($this->mediaid);
 	}
 	
-	public function load($url,$streamType,$contentType,$currentTime) {
+	public function load($url, $contentType,$currentTime) {
 		$this->getMediaSession(); // Auto-reconnects
-		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"' . $streamType . '","contentType":"' . $contentType . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
+		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $contentType . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
 		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
 		$r = "";
 		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
