@@ -364,21 +364,46 @@ class GChromecast
 		DebMes ($this->mediaid);
 	}
 	
-	public function load($url, $contentType,$currentTime) {
+	public function load($url, $currentTime) {
 		$this->getMediaSession(); // Auto-reconnects
-		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $contentType . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
-		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
-		$r = "";
-		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
-			$r = $this->getCastMessage();
-		}
-		// Grab the mediaSessionId
-		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
-			$this->mediaid = $m[1];
-		}
-		if (!$this->mediaid) {
-			$this->mediaid=1;
-		}
+		
+		if (preg_match('/\.mp3/', $url)) {
+            $content_type = 'audio/mp3';
+        } elseif (preg_match('/mp4/', $url)) {
+            $content_type = 'video/mp4';
+        } elseif (preg_match('/m4a/', $url)) {
+            $content_type = 'audio/mp4';
+        } elseif (preg_match('/^http/', $url)) {
+            $content_type = '';
+            if ($fp = fopen($url, 'r')) {
+                $meta = stream_get_meta_data($fp);
+                if (is_array($meta['wrapper_data'])) {
+                    $items = $meta['wrapper_data'];
+                    foreach ($items as $line) {
+                        if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
+                            $content_type = trim($m[1]);
+                        }
+                    }
+                }
+                fclose($fp);
+            }
+        }
+        if (!$content_type) {
+            $content_type = 'audio/mpeg';
+        }
+	$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
+	$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
+	$r = "";
+	while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
+		$r = $this->getCastMessage();
 	}
+	// Grab the mediaSessionId
+	if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
+		$this->mediaid = $m[1];
+	}
+	if (!$this->mediaid) {
+		$this->mediaid=1;
+	}
+    }
 }
 ?>
