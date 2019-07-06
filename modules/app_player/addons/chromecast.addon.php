@@ -54,6 +54,7 @@ class chromecast extends app_player_addon {
         return $this->success;
     }
     
+	
     // Playlist: Get
     function pl_get() {
         $this->success = FALSE;
@@ -79,51 +80,26 @@ class chromecast extends app_player_addon {
         }
         return $this->success;
     }
-    
-	// Say
-    function sayToMedia($input, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    	// Say
+    function sayToMedia($message_link, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
 
         // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $input, $m)) {
+        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
             $server_ip = getLocalIp();
             if (!$server_ip) {
                 DebMes("Server IP not found", 'terminals');
                 return false;
             } else {
-                $input = 'http://' . $server_ip . $m[0];
+                $message_link = 'http://' . $server_ip . $m[0];
             }
         }
 		
-       $this->reset_properties();
-        if (strlen($input)) {
+        $this->reset_properties();
+        if (strlen($message_link)) {
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
-                if (preg_match('/\.mp3/', $input)) {
-                    $content_type = 'audio/mp3';
-                } elseif (preg_match('/mp4/', $input)) {
-                    $content_type = 'video/mp4';
-                } elseif (preg_match('/m4a/', $input)) {
-                    $content_type = 'audio/mp4';
-                } elseif (preg_match('/^http/', $input)) {
-                    $content_type = '';
-                    if ($fp = fopen($input, 'r')) {
-                        $meta = stream_get_meta_data($fp);
-                        if (is_array($meta['wrapper_data'])) {
-                            $items = $meta['wrapper_data'];
-                            foreach ($items as $line) {
-                                if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
-                                    $content_type = trim($m[1]);
-                                }
-                            }
-                        }
-                        fclose($fp);
-                    }
-                }
-                if (!$content_type) {
-                    $content_type = 'audio/mpeg';
-                }
-                $cc->load($input, 'BUFFERED', $content_type, 0);
+                $cc->load($message_link, 0);
                 $cc->play();
                 $this->success = TRUE;
                 $this->message = 'OK';
@@ -138,7 +114,7 @@ class chromecast extends app_player_addon {
         }
         return $this->success;
     }
-    
+	
     // Play
     function play($input) {
         $this->reset_properties();
@@ -146,31 +122,7 @@ class chromecast extends app_player_addon {
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
-                if (preg_match('/\.mp3/', $input)) {
-                    $content_type = 'audio/mp3';
-                } elseif (preg_match('/mp4/', $input)) {
-                    $content_type = 'video/mp4';
-                } elseif (preg_match('/m4a/', $input)) {
-                    $content_type = 'audio/mp4';
-                } elseif (preg_match('/^http/', $input)) {
-                    $content_type = '';
-                    if ($fp = fopen($input, 'r')) {
-                        $meta = stream_get_meta_data($fp);
-                        if (is_array($meta['wrapper_data'])) {
-                            $items = $meta['wrapper_data'];
-                            foreach ($items as $line) {
-                                if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
-                                    $content_type = trim($m[1]);
-                                }
-                            }
-                        }
-                        fclose($fp);
-                    }
-                }
-                if (!$content_type) {
-                    $content_type = 'audio/mpeg';
-                }
-                $cc->load($input, 'BUFFERED', $content_type, 0);
+                $cc->load($input, 0);
                 $cc->play();
                 $this->success = TRUE;
                 $this->message = 'OK';
