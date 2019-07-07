@@ -4,10 +4,12 @@
 Addon Chromecast for app_player
 */
 
-class chromecast extends app_player_addon {
+class chromecast extends app_player_addon
+{
     
     // Constructor
-    function __construct($terminal) {
+    function __construct($terminal)
+    {
         $this->title       = 'Google Chromecast';
         $this->description = 'Описание: Цифровой медиаплеер от компании Google.';
         
@@ -20,7 +22,8 @@ class chromecast extends app_player_addon {
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
     }
     // Get player status
-    function status() {
+    function status()
+    {
         $this->reset_properties();
         // Defaults
         $track_id = -1;
@@ -54,9 +57,10 @@ class chromecast extends app_player_addon {
         return $this->success;
     }
     
-	
+    
     // Playlist: Get
-    function pl_get() {
+    function pl_get()
+    {
         $this->success = FALSE;
         $this->message = 'Command execution error!';
         $track_id      = -1;
@@ -80,9 +84,10 @@ class chromecast extends app_player_addon {
         }
         return $this->success;
     }
-    	// Say
-    function sayToMedia($message_link, $time_message) { //SETTINGS_SITE_LANGUAGE_CODE=код языка
-
+    // Say
+    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
             $server_ip = getLocalIp();
@@ -93,7 +98,7 @@ class chromecast extends app_player_addon {
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-		
+        
         $this->reset_properties();
         if (strlen($message_link)) {
             try {
@@ -114,9 +119,10 @@ class chromecast extends app_player_addon {
         }
         return $this->success;
     }
-	
+    
     // Play
-    function play($input) {
+    function play($input)
+    {
         $this->reset_properties();
         if (strlen($input)) {
             try {
@@ -139,7 +145,8 @@ class chromecast extends app_player_addon {
     }
     
     // Pause
-    function pause() {
+    function pause()
+    {
         $this->reset_properties();
         try {
             $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
@@ -156,7 +163,8 @@ class chromecast extends app_player_addon {
     }
     
     // Stop
-    function stop() {
+    function stop()
+    {
         $this->reset_properties();
         try {
             $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
@@ -173,7 +181,8 @@ class chromecast extends app_player_addon {
     }
     
     // Set volume
-    function set_volume($level) {
+    function set_volume($level)
+    {
         $this->reset_properties();
         if (strlen($level)) {
             try {
