@@ -12,12 +12,10 @@ class chromecast extends app_player_addon
     {
         $this->title       = 'Google Chromecast';
         $this->description = 'Описание: Цифровой медиаплеер от компании Google.';
-        
         $this->terminal = $terminal;
-        $this->reset_properties();
-        // Network
         $this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
-        
+
+        $this->reset_properties();        
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
     }
