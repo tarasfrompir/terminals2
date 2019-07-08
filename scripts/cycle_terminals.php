@@ -42,7 +42,7 @@ while (1) {
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
+            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID LIKE '" . $terminals . "'");
             // pinguem terminal
             if (!$terminal['IS_ONLINE']) {
                 pingTerminalSafe($terminal['NAME']);
@@ -73,7 +73,7 @@ while (1) {
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
+            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID LIKE '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
