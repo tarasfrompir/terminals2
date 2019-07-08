@@ -40,9 +40,10 @@ while (1) {
     // отправка только текстовых сообщений
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND FILE_LINK='' AND CHEKED = '0' ORDER BY ID ASC");
     if ($message) {
+		$generatetts = false;
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID LIKE '" . $terminals . "'");
+            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             // pinguem terminal
             if (!$terminal['IS_ONLINE']) {
                 pingTerminalSafe($terminal['NAME']);
@@ -50,19 +51,24 @@ while (1) {
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
-                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
-                    }
+                    } else {
+                        $generatetts = true;
+						DebMes('$generatetts'.$generatetts);
+					}						
                     $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 }
             }
             
         }
-        processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+		if ($generatetts) {
+			processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+		}
         // pomechaem chto obrabotano i zapusheno na generaciyu rechi i obnovlyaem v baze
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
@@ -73,12 +79,12 @@ while (1) {
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID LIKE '" . $terminals . "'");
+            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
-                    if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                    if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
                         //sayToText($message['ID'], $terminal['ID']);
