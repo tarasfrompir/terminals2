@@ -26,6 +26,12 @@ setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 // set all message cheked
 SQLExec("UPDATE shouts SET CHEKED='1'");
 
+// set all terminal as free when restart cycle
+$terminals = SQLSelect("SELECT * FROM terminals");
+foreach ($terminals as $terminal) {
+	 sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
+}
+
 while (1) {
     if (time() - $checked_time > 10) {
         $checked_time = time();
@@ -55,13 +61,13 @@ while (1) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
+						$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     } else {
                         $generatetts = true;
 						DebMes('$generatetts'.$generatetts);
 					}						
-                    $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 }
             }
             
