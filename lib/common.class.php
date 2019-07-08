@@ -101,6 +101,7 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['ADDED'] = date('Y-m-d H:i:s');
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = 0;
+    $rec['EVENT'] = 'SAYTO';
     if ($level > 0) $rec['IMPORTANCE'] = $level;
 	
 	$terminals = array();
