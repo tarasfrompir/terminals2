@@ -93,11 +93,12 @@ while (1) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
-						$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
                 }
+				$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
             }
         }
         SQLUpdate('shouts', $message);
