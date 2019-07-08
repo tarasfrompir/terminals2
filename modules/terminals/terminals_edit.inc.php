@@ -25,6 +25,9 @@ if ($rec['CANPLAY'] == '') {
 if ($rec['PLAYER_TYPE'] == '') {
         $rec['PLAYER_TYPE'] = 'mainterm';
 }
+if ($rec['MIN_MSG_LEVEL'] == '') {
+        $rec['MIN_MSG_LEVEL'] = 0;
+}
 
 global $location;
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
