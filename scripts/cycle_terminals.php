@@ -66,7 +66,7 @@ while (1) {
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
                     $generatetts = true;
-                    DebMes('$generatetts'.$generatetts);
+                    //DebMes('$generatetts'.$generatetts);
                 }
             }
             
