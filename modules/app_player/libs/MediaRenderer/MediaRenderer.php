@@ -109,12 +109,13 @@ class MediaRenderer {
         $doc = new \DOMDocument();
         $doc->loadXML($response);
         //DebMes($response);
-        if(!$doc->getElementsByTagName('PlayResponse')) {
+        if(!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
             $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
             $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-         }
+        }
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
+        //DebMes($response);
         return $response;
     }
 
