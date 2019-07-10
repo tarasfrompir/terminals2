@@ -359,7 +359,7 @@ class dnla extends app_player_addon {
         $request .= 'HOST: 239.255.255.250:1900'."\r\n";
         $request .= 'MAN: "ssdp:discover"'."\r\n";
         $request .= 'MX: 2'."\r\n";
-        $request .= 'ST: ssdp:all'."\r\n";
+        $request .= 'ST: urn:schemas-upnp-org:device:MediaRenderer:1'."\r\n";
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7'."\r\n";
         $request .= "\r\n";
         
