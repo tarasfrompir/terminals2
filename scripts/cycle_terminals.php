@@ -61,7 +61,7 @@ while (1) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
-						$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+			$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
@@ -88,7 +88,7 @@ while (1) {
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                          if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY') AND $terminal['LINKED_OBJECT']) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
