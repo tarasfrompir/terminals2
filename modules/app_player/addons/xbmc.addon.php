@@ -222,23 +222,33 @@ class xbmc extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Say
-	function say($param) {
-		$this->reset_properties();
-		//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
-                $this->reset_properties();
-                $out = explode(',', $param);
-                $filename = $out[6];
-		if(strlen($filename)) {
-			if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'params'=>array($filename)))) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-			}
-		} else {
-			$this->success = FALSE;
-			$this->message = 'Input is missing!';
+    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+        if (!remote_file_exists($message_link)) {
+            $message_link = BASE_URL . $m[0];
+        }
+	if(strlen($message_link)) {
+		if($this->kodi_request('Addons.ExecuteAddon', array('addonid'=>'script.alicevox.master', 'params'=>array($message_link)))) {
+			$this->success = TRUE;
+			$this->message = 'OK';
 		}
-		return $this->success;
+	} else {
+		$this->success = FALSE;
+		$this->message = 'Input is missing!';
+	}
+	return $this->success;
 	}
 	
 	// Pause
