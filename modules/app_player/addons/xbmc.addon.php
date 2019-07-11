@@ -225,21 +225,20 @@ class xbmc extends app_player_addon {
 	// Say
    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-		// преобразовываем файл в вав формат
-		$path_parts = pathinfo($message_link);
+	// преобразовываем файл в вав формат
+	$path_parts = pathinfo($message_link);
         if ($path_parts['extension'] != 'wav') {
-			if (!defined('PATH_TO_FFMPEG')) {
-				if (IsWindowsOS()) {
-					define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-				} else {
-					define("PATH_TO_FFMPEG", 'ffmpeg');
-				}
-				$outlink = str_ireplace(".".$path_parts['extension'] , ".wav", $message_link);
-				$out = shell_exec(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec pcm_s16le -ar 44100 ".$outlink." 2>&1");
-			}
+	    if (!defined('PATH_TO_FFMPEG')) {
+		if (IsWindowsOS()) {
+			define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+		} else {
+			define("PATH_TO_FFMPEG", 'ffmpeg');
 		}
-		DebMes(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec pcm_s16le -ar 44100 ".$outlink." 2>&1");
-        
+		$outlink = str_ireplace(".".$path_parts['extension'] , ".wav", $message_link);
+		$out = shell_exec(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec pcm_s16le -ar 44100 ".$outlink." 2>&1");
+	    }
+	}
+
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
             $server_ip = getLocalIp();
