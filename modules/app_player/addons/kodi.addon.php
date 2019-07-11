@@ -221,27 +221,27 @@ class kodi extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Say
-	function say($param) {
-    	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
-            $this->reset_properties();
-	    $out = explode(',', $param);
-	    $input = $out[6];
-	    $terminal = $out[0];
-	    $timeshift = $out[9];
-	    // получаем данные оплеере для восстановления проигрываемого контента
-	    $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal . '-number-' . "99999999999'");
-	    if (!$chek_restore) {
-	        $played = getPlayerStatus($terminal);
-	    }
-	    if(strlen($input)) {
-		if($this->kodi_request('Player.Open', array('item'=>array('file'=>$input)))) {
+    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+        if (!remote_file_exists($message_link)) {
+            $message_link = BASE_URL . $m[0];
+        }
+	    if(strlen($message_link)) {
+		if($this->kodi_request('Player.Open', array('item'=>array('file'=>$message_link)))) {
 			$this->success = TRUE;
 			$this->message = 'OK';
-			if (($played['state'] == 'playing') and (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-	                    addScheduledJob('target-' . $terminal . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $terminal . "',1);", time() + $timeshift+1, 3);
-	                    addScheduledJob('target-' . $terminal . '-number-99999999999', "seekPlayerPosition('" . $terminal . "'," . $played['time'] . ");", time() + $timeshift+7, 3);
-	                }
 		}
 	    } else {
 		$this->success = FALSE;
