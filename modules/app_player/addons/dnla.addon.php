@@ -121,7 +121,9 @@ class dnla extends app_player_addon
         if (!file_exists($message_link)) {
             $message_link = BASE_URL . $m[0];
         }
-        DebMes("Url to file ".$message_link);
+        //DebMes("Url to file ".$message_link);
+        // конец блока получения ссылки на файл 
+        
         // получаем данные оплеере для восстановления проигрываемого контента
         $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE '" . 'target-' . $this->terminal['NAME'] . "'-setURL'");
         if (!$chek_restore AND (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
