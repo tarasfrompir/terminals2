@@ -41,16 +41,10 @@ class ghn extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Play
-	function say($param) {
-	    //$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift
-            $this->reset_properties();
-	    $out = explode(',', $param);
-	    $input = $out[6];
-	    $terminal = $out[0];
-	    $timeshift = $out[9];
-		if(strlen($input)) {
-			if(getURL($this->address.'/google-home-notifier?text='.urlencode($input), 0)) {
+       // saytts
+       function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+		if(strlen($message)) {
+			if(getURL($this->address.'/google-home-notifier?text='.urlencode($message), 0)) {
 				$this->success = TRUE;
 				$this->message = 'OK';
 			} else {
