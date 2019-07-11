@@ -118,7 +118,7 @@ class dnla extends app_player_addon
             }
         }
         //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!file_exists($message_link)) {
+        if (!!remote_file_exists($message_link)) {
             $message_link = BASE_URL . $m[0];
         }
         //DebMes("Url to file ".$message_link);
