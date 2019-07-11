@@ -86,7 +86,7 @@ class chromecast extends app_player_addon
     function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         
-        // берем ссылку http
+         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
             $server_ip = getLocalIp();
             if (!$server_ip) {
@@ -96,6 +96,12 @@ class chromecast extends app_player_addon
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
+        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+        if (!file_exists($message_link)) {
+            $message_link = BASE_URL . $m[0];
+        }
+        //DebMes("Url to file ".$message_link);
+        // конец блока получения ссылки на файл 
         
         $this->reset_properties();
         if (strlen($message_link)) {
