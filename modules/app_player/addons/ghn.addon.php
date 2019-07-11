@@ -42,7 +42,7 @@ class ghn extends app_player_addon {
 	}
 	
        // saytts
-       function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+       function sayttotext($message, $event) {//SETTINGS_SITE_LANGUAGE_CODE=код языка
 		if(strlen($message)) {
 			if(getURL($this->address.'/google-home-notifier?text='.urlencode($message), 0)) {
 				$this->success = TRUE;
