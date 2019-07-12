@@ -14,10 +14,10 @@ class dnla extends app_player_addon
     // Constructor
     function __construct($terminal)
     {
-        $this->title        = 'Устройства с поддержкой протокола DLNA';
-        $this->description  = 'Описание: Проигрывание видео - аудио ';
+        $this->title = 'Устройства с поддержкой протокола DLNA';
+        $this->description = 'Описание: Проигрывание видео - аудио ';
         $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
-        $this->terminal     = $terminal;
+        $this->terminal = $terminal;
         $this->reset_properties();
         
         // proverka na otvet
@@ -82,8 +82,8 @@ class dnla extends app_player_addon
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $length   = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
-        $time     = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        $length = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         // Results
         if ($response) {
             $this->reset_properties();
@@ -124,10 +124,10 @@ class dnla extends app_player_addon
         //DebMes("Url to file ".$message_link);
         // конец блока получения ссылки на файл 
         
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
         // создаем хмл документ
-        $doc      = new \DOMDocument();
+        $doc = new \DOMDocument();
         $doc->loadXML($response);
         //DebMes($response);
         if ($doc->getElementsByTagName('PlayResponse')) {
@@ -150,20 +150,20 @@ class dnla extends app_player_addon
         $curren_url    = '';
         
         // создаем хмл документ
-        $doc      = new \DOMDocument();
+        $doc = new \DOMDocument();
         // Для получения состояния плеера
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->getPosition();
         $doc->loadXML($response);
-        $track_id   = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $name       = 'Played url om the device';
+        $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
+        $name = 'Played url om the device';
         $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
         if ($response) {
             // Results
             $this->reset_properties();
             $this->success = TRUE;
             $this->message = 'OK';
-            $this->data    = array(
+            $this->data = array(
                 'id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $curren_url //Current link for media in device. String.
