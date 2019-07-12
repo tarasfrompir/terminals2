@@ -124,15 +124,6 @@ class dnla extends app_player_addon
         //DebMes("Url to file ".$message_link);
         // конец блока получения ссылки на файл 
         
-        // получаем данные оплеере для восстановления проигрываемого контента
-        $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE '" . 'target-' . $this->terminal['NAME'] . "'-setURL'");
-        if (!$chek_restore AND (stristr($played['file'], 'cms/cached/voice') === FALSE)) {
-            $played = getPlayerStatus($this->terminal['NAME']);
-            addScheduledJob('target-' . $this->terminal['NAME'] . '-setURL', "playMedia('" . $played['file'] . "', '" . $this->terminal['NAME'] . "',1);", time() + $time_message + 1, 5);
-            addScheduledJob('target-' . $this->terminal['NAME'] . '-seek', "seekPlayerPosition('" . $this->terminal['NAME'] . "'," . $played['time'] . ");", time() + $time_message + 8, 5);
-            //DebMes($played);
-        }
-        
         $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
         // создаем хмл документ
