@@ -40,14 +40,21 @@ class MediaRendererVolume {
 
 	public function SetVolume($volume)
 	{
-		$args = array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume);
-		return $this->sendRequestToDevice('SetVolume',$args);
+		$response = $this->sendRequestToDevice('SetVolume',array('InstanceId' => 0,'Channel' => 'Master','DesiredVolume' => $volume));
+		// создаем хмл документ
+        $doc = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('SetVolumeResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
 	}
 
 	public function GetVolume()
 	{
-		$args = array('InstanceId' => 0,'Channel' => 'Master');
-		return $this->sendRequestToDevice('GetVolume',$args);
+		return $this->sendRequestToDevice('GetVolume',array('InstanceId' => 0,'Channel' => 'Master'));
 	}
 
 	public function mute() {
