@@ -125,9 +125,9 @@ while (1) {
             seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
             // надо еще с громкостью разобратся
             //обнуляем все значения
-            sg($terminal['LINKED_OBJECT'] . '.rest_link', 0);
-            sg($terminal['LINKED_OBJECT'] . '.media_vol_level', 0);
-            sg($terminal['LINKED_OBJECT'] . '.rest_time', 0);
+            sg($terminal['LINKED_OBJECT'] . '.rest_link', '');
+            sg($terminal['LINKED_OBJECT'] . '.media_vol_level', '');
+            sg($terminal['LINKED_OBJECT'] . '.rest_time', '');
             
         }
     }
