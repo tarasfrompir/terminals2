@@ -140,51 +140,7 @@ class dnla extends app_player_addon
         return $this->success;
     }
     
-    // Play
-    function play($input)
-    {
-        $this->reset_properties();
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        // для радио 101 ру
-        if (stripos($input, '?userid=0&setst')) {
-            $input = stristr($input, '&setst', True) . '.mp4';
-        }
-        //DebMes('Ссылка '.$input.' подана на терминал - '.$this->terminal['NAME']);
-        $response = $remote->play($input);
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PlayResponse')) {
-            $this->success = TRUE;
-            $this->message = 'Play files';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
-    // Stop
-    function stop()
-    {
-        $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->stop();
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('StopResponse ')) {
-            $this->success = TRUE;
-            $this->message = 'Stop play';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
+
     // Seek
     function seek($position)
     {
@@ -242,7 +198,28 @@ class dnla extends app_player_addon
         }
         return $this->success;
     }
-
+	
+	// Get media volume level
+    function get_volume()
+    {
+        if ($this->status()) {
+            $volume        = $this->data['volume'];
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+            $this->data    = $volume;
+        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
+            $this->reset_properties(array(
+                'success' => TRUE,
+                'message' => 'OK'
+            ));
+            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+        } 
+        return $this->success;
+    }
+	
+  ////////////////////////////////////////////////////////////////////////////// obrbotano
     // Pause
     function pause()
     {
@@ -307,26 +284,43 @@ class dnla extends app_player_addon
         return $this->success;
     }
 	
-	// Get media volume level
-    function get_volume()
+	// Stop
+    function stop()
     {
-        if ($this->status()) {
-            $volume        = $this->data['volume'];
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->stop();
+        if ($response) {
             $this->success = TRUE;
-            $this->message = 'Volume get';
-            $this->data    = $volume;
-        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
-            $this->reset_properties(array(
-                'success' => TRUE,
-                'message' => 'OK'
-            ));
-            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
+            $this->message = 'Stop play';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+    // Play
+    function play($input)
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        // для радио 101 ру
+        if (stripos($input, '?userid=0&setst')) {
+            $input = stristr($input, '&setst', True) . '.mp4';
+        }
+        $response = $remote->play($input);
+        if ($response) {
             $this->success = TRUE;
-            $this->message = 'Volume get';
-        } 
+            $this->message = 'Play files';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
         return $this->success;
     }
     
+	
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250')
     {
