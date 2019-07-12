@@ -82,7 +82,7 @@ while (1) {
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
     }
-    usleep(500000);
+    usleep(330000);
     // отправка сообщений сгенерированных ТТС
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND FILE_LINK != '' AND CHEKED = '1' ORDER BY ID ASC");
     if ($message) {
@@ -115,7 +115,7 @@ while (1) {
         }
         SQLUpdate('shouts', $message);
     }
-    
+    usleep(330000);
     // esli netu soobsheniy to probuem vosstanovit vosproizvodimoe
     $terminalsName = getObjectsByProperty('rest_link');
     foreach ($terminalsName as $terminals) {
@@ -131,7 +131,7 @@ while (1) {
             
         }
     }
-    
+    usleep(330000);
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
