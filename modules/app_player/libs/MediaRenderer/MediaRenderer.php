@@ -123,15 +123,6 @@ class MediaRenderer {
         }
     }
 
-    public function seek($target = 0) {
-         $args = array(
-            'InstanceID' => 0,
-            'Unit' => 'REL_TIME',
-            'Target' => $target
-        );
-        return $this->sendRequestToDevice('Seek', $args);
-    }
-
     public function setNext($url) {
         $tags = get_meta_tags($url);
         $args = array(
@@ -202,7 +193,7 @@ class MediaRenderer {
     public function previous() {
         $response = $this->instanceOnly('Previous');
 		// создаем хмл документ
-        $doc      = new \DOMDocument();
+        $doc = new \DOMDocument();
 		$doc->loadXML($response);
         //DebMes($response);
         if ($doc->getElementsByTagName('PreviousResponse ')) {
@@ -212,6 +203,19 @@ class MediaRenderer {
         }
     }
 
+    public function seek($target = 0) {
+        $response = $this->sendRequestToDevice('Seek', array('InstanceID' => 0,'Unit' => 'REL_TIME','Target' => $target));
+		// создаем хмл документ
+        $doc = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('SeekResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+	
 // dorabativaem
 private function get_urihead($uri_head){
     $avmetadatauri = array(
