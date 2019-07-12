@@ -91,11 +91,11 @@ while (1) {
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY') AND $terminal['LINKED_OBJECT']) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
 						// zapisivaem sostoyanie pleera
-						if (!gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
+						if ($terminal['LINKED_OBJECT'] AND !gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
 							$out = getPlayerStatus($terminal['NAME']);
-							sg($terminal['LINKED_OBJECT'] . '.rest_link',$out['file']);
-							sg($terminal['LINKED_OBJECT'] . '.media_vol_level',$out['volume']);
-							sg($terminal['LINKED_OBJECT'] . '.rest_time',$out['time']);
+							sg($terminal['LINKED_OBJECT'].'.rest_link',$out['file']);
+							sg($terminal['LINKED_OBJECT'].'.media_vol_level',$out['volume']);
+							sg($terminal['LINKED_OBJECT'].'.rest_time',$out['time']);
 						}
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
@@ -108,23 +108,24 @@ while (1) {
             }
         }
         SQLUpdate('shouts', $message);
-    } else {
+    } 
+	
 		// esli netu soobsheniy to probuem vosstanovit vosproizvodimoe
 		$terminalsName = getObjectsByProperty('rest_link');
 		foreach ($terminalsName as $terminals) {
-			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME LIKE '" . $terminals . "'");
+			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
 			if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
-				playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME'], $safe_play = FALSE);
-				seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
+				playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
+				seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'].'.rest_time'));
 				// надо еще с громкостью разобратся
 				//обнуляем все значения
-				sg($terminal['LINKED_OBJECT'] . '.rest_link','');
-				sg($terminal['LINKED_OBJECT'] . '.media_vol_level','');
-				sg($terminal['LINKED_OBJECT'] . '.rest_time','');
+				sg($terminal['LINKED_OBJECT'] . '.rest_link',0);
+				sg($terminal['LINKED_OBJECT'] . '.media_vol_level',0);
+				sg($terminal['LINKED_OBJECT'] . '.rest_time',0);
 				
 			}
 		}
-	}
+
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
