@@ -185,46 +185,6 @@ class dnla extends app_player_addon
         return $this->success;
     }
     
-    // Next
-    function next()
-    {
-        $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->next();
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('NextResponse')) {
-            $this->success = TRUE;
-            $this->message = 'Next file changed';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
-    // Previous
-    function previous()
-    {
-        $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->previous();
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PreviousResponse')) {
-            $this->success = TRUE;
-            $this->message = 'Previous file changed';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
     // Seek
     function seek($position)
     {
@@ -249,66 +209,8 @@ class dnla extends app_player_addon
         }
         return $this->success;
     }
-    // Set volume
-    function set_volume($level)
-    {
-        $this->reset_properties();
-        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response     = $remotevolume->SetVolume($level);
-        // создаем хмл документ
-        $doc          = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('SetVolumeResponse')) {
-            //DebMes('Изменена громкость на терминале - '.$this->terminal['NAME'].' установлен уровень '.$level);
-            $this->success = TRUE;
-            $this->message = 'Volume changed';
-        } else {
-            //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ИЗМЕНЕНА ОШИБКА!');
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
-    // Get media volume level
-    function get_volume()
-    {
-        $this->success = FALSE;
-        $this->message = 'Command execution error!';
-        if ($this->status()) {
-            $volume        = $this->data['volume'];
-            $this->success = TRUE;
-            $this->message = 'Volume get';
-            $this->data    = $volume;
-        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
-            $this->reset_properties(array(
-                'success' => TRUE,
-                'message' => 'OK'
-            ));
-            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
-            $this->success = TRUE;
-            $this->message = 'Volume get';
-        } else {
-            // создаем хмл документ
-            $doc          = new \DOMDocument();
-            //  для получения уровня громкости
-            $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-            $response     = $remotevolume->GetVolume();
-            $doc->loadXML($response);
-            $this->data = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-            if ($this->data) {
-                $this->success = TRUE;
-                $this->message = 'Volume get';
-            } else {
-                //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
-                $this->success = FALSE;
-                $this->message = 'Command execution error!';
-            }
-        }
-        return $this->success;
-    }
-    
+   
+
     // Playlist: Get
     function pl_get()
     {
@@ -353,6 +255,92 @@ class dnla extends app_player_addon
         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Next
+    function next()
+    {
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->next();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Next file changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Previous
+    function previous()
+    {
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->previous();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Previous file changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Set volume
+    function set_volume($level)
+    {
+        $this->reset_properties();
+        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response     = $remotevolume->SetVolume($level);
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+	// Get media volume level
+    function get_volume()
+    {
+        $this->success = FALSE;
+        $this->message = 'Command execution error!';
+        if ($this->status()) {
+            $volume        = $this->data['volume'];
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+            $this->data    = $volume;
+        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
+            $this->reset_properties(array(
+                'success' => TRUE,
+                'message' => 'OK'
+            ));
+            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+        } else {
+            // создаем хмл документ
+            $doc          = new \DOMDocument();
+            //  для получения уровня громкости
+            $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+            $response     = $remotevolume->GetVolume();
+            $doc->loadXML($response);
+            $this->data = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+            if ($this->data) {
+                $this->success = TRUE;
+                $this->message = 'Volume get';
+            } else {
+                //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
+                $this->success = FALSE;
+                $this->message = 'Command execution error!';
+            }
         }
         return $this->success;
     }
