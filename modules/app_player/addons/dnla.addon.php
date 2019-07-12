@@ -310,8 +310,6 @@ class dnla extends app_player_addon
 	// Get media volume level
     function get_volume()
     {
-        $this->success = FALSE;
-        $this->message = 'Command execution error!';
         if ($this->status()) {
             $volume        = $this->data['volume'];
             $this->success = TRUE;
@@ -325,23 +323,7 @@ class dnla extends app_player_addon
             $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
             $this->success = TRUE;
             $this->message = 'Volume get';
-        } else {
-            // создаем хмл документ
-            $doc          = new \DOMDocument();
-            //  для получения уровня громкости
-            $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-            $response     = $remotevolume->GetVolume();
-            $doc->loadXML($response);
-            $this->data = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-            if ($this->data) {
-                $this->success = TRUE;
-                $this->message = 'Volume get';
-            } else {
-                //DebMes('Громкость на терминале - '.$this->terminal['NAME'].' НЕ ПОЛУЧЕНА ОШИБКА!');
-                $this->success = FALSE;
-                $this->message = 'Command execution error!';
-            }
-        }
+        } 
         return $this->success;
     }
     
