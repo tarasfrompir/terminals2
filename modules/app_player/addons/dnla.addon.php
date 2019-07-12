@@ -149,14 +149,8 @@ class dnla extends app_player_addon
         $hours    = floor($position / 3600);
         $minutes  = floor($position % 3600 / 60);
         $seconds  = $position % 60;
-        //DebMes($hours.':'.$minutes.':'.$seconds);
         $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->seek($hours . ':' . $minutes . ':' . $seconds);
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('SeekResponse')) {
+        if ($remote) {
             $this->success = TRUE;
             $this->message = 'Position changed';
         } else {
