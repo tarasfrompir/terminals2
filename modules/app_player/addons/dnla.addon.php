@@ -32,7 +32,7 @@ class dnla extends app_player_addon
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
         if (!$retcode = 200 OR filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
-            $rec                                      = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
+            $rec = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
             $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
             if ($this->terminal['PLAYER_CONTROL_ADDRESS']) {
             }
@@ -64,14 +64,14 @@ class dnla extends app_player_addon
         $curren_url    = '';
         
         // создаем хмл документ
-        $doc          = new \DOMDocument();
+        $doc = new \DOMDocument();
         //  для получения уровня громкости
         $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response     = $remotevolume->GetVolume();
+        $response = $remotevolume->GetVolume();
         $doc->loadXML($response);
-        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
         // Для получения состояния плеера
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->getState();
         $doc->loadXML($response);
         $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
