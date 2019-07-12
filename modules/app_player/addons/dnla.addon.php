@@ -14,10 +14,10 @@ class dnla extends app_player_addon
     // Constructor
     function __construct($terminal)
     {
-        $this->title       = 'Устройства с поддержкой протокола DLNA';
-        $this->description = 'Описание: Проигрывание видео - аудио ';
+        $this->title        = 'Устройства с поддержкой протокола DLNA';
+        $this->description  = 'Описание: Проигрывание видео - аудио ';
         $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
-        $this->terminal = $terminal;
+        $this->terminal     = $terminal;
         $this->reset_properties();
         
         // proverka na otvet
@@ -89,7 +89,7 @@ class dnla extends app_player_addon
             $this->reset_properties();
             $this->success = TRUE;
             $this->message = 'OK';
-            $this->data    = array(
+            $this->data = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
@@ -176,16 +176,16 @@ class dnla extends app_player_addon
     function get_volume()
     {
         if ($this->status()) {
-            $volume        = $this->data['volume'];
+            $volume = $this->data['volume'];
             $this->success = TRUE;
             $this->message = 'Volume get';
-            $this->data    = $volume;
+            $this->data = $volume;
         } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
             $this->reset_properties(array(
                 'success' => TRUE,
                 'message' => 'OK'
             ));
-            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
+            $this->data = (int) getGlobal('ThisComputer.volumeMediaLevel');
             $this->success = TRUE;
             $this->message = 'Volume get';
         } 
@@ -197,7 +197,7 @@ class dnla extends app_player_addon
     function pause()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->pause();
         if ($response) {
             $this->success = TRUE;
@@ -213,7 +213,7 @@ class dnla extends app_player_addon
     function next()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->next();
         if ($response) {
             $this->success = TRUE;
@@ -229,7 +229,7 @@ class dnla extends app_player_addon
     function previous()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->previous();
         if ($response) {
             $this->success = TRUE;
@@ -246,7 +246,7 @@ class dnla extends app_player_addon
     {
         $this->reset_properties();
         $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response     = $remotevolume->SetVolume($level);
+        $response = $remotevolume->SetVolume($level);
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Volume changed';
@@ -261,7 +261,7 @@ class dnla extends app_player_addon
     function stop()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->stop();
         if ($response) {
             $this->success = TRUE;
@@ -298,10 +298,10 @@ class dnla extends app_player_addon
     {
         $this->reset_properties();
         // преобразуем в часы минуты и секунды
-        $hours    = floor($position / 3600);
-        $minutes  = floor($position % 3600 / 60);
-        $seconds  = $position % 60;
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $hours = floor($position / 3600);
+        $minutes = floor($position % 3600 / 60);
+        $seconds = $position % 60;
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         if ($remote) {
             $this->success = TRUE;
             $this->message = 'Position changed';
