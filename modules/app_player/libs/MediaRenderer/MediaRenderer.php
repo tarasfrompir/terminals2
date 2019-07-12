@@ -76,7 +76,7 @@ class MediaRenderer {
     public function play($url = "") {
 
 		if ($url === "") {
-            return self::unpause();
+            return $this->sendRequestToDevice('Play', $args = array('InstanceID' => 0,'Speed' => 1));
         }
  
         // neobhodimo ostanovit vosproizvedenie
@@ -151,15 +151,16 @@ class MediaRenderer {
     }
 
     public function stop() {
-        return $this->instanceOnly('Stop');
-    }
-
-    public function unpause() {
-        $args = array(
-            'InstanceID' => 0,
-            'Speed' => 1
-        );
-        return $this->sendRequestToDevice('Play', $args);
+        $response = $this->instanceOnly('Stop');
+		// создаем хмл документ
+        $doc = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('StopResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     public function pause() {
