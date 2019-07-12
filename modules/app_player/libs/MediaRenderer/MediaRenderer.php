@@ -115,8 +115,12 @@ class MediaRenderer {
         }
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
-        //DebMes($response);
-        return $response;
+		$doc->loadXML($response);
+        if ($doc->getElementsByTagName('PlayResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     public function seek($target = 0) {
