@@ -163,7 +163,22 @@ class MediaRenderer {
     }
 
     public function pause() {
-        return $this->instanceOnly('Pause');
+		$response = $this->getState();
+		// создаем хмл документ
+        $doc      = new \DOMDocument();
+		$doc->loadXML($response);
+        if ($doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue == 'PLAYING') {
+            $response = $this->instanceOnly('Pause');
+        } else {
+			$response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
+		}
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('PauseResponse ') OR $doc->getElementsByTagName('PlayResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     public function next() {
