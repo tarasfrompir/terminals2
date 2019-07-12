@@ -165,7 +165,7 @@ class MediaRenderer {
     public function pause() {
 		$response = $this->getState();
 		// создаем хмл документ
-        $doc      = new \DOMDocument();
+        $doc = new \DOMDocument();
 		$doc->loadXML($response);
         if ($doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue == 'PLAYING') {
             $response = $this->instanceOnly('Pause');
@@ -182,19 +182,29 @@ class MediaRenderer {
     }
 
     public function next() {
-        return $this->instanceOnly('Next');
+        $response = $this->instanceOnly('Next');
+		// создаем хмл документ
+        $doc = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('NextResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     public function previous() {
-        return $this->instanceOnly('Previous');
-    }
-
-    public function fforward() {
-        return $this->next();
-    }
-
-    public function rewind() {
-        return $this->previous();
+        $response = $this->instanceOnly('Previous');
+		// создаем хмл документ
+        $doc      = new \DOMDocument();
+		$doc->loadXML($response);
+        //DebMes($response);
+        if ($doc->getElementsByTagName('PreviousResponse ')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 // dorabativaem
