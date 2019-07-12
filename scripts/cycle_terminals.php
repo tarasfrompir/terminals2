@@ -29,7 +29,7 @@ SQLExec("UPDATE shouts SET CHEKED='1'");
 // set all terminal as free when restart cycle
 $terminals = SQLSelect("SELECT * FROM terminals");
 foreach ($terminals as $terminal) {
-	 sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
+    sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
 }
 
 while (1) {
@@ -46,7 +46,7 @@ while (1) {
     // отправка только текстовых сообщений
     $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND FILE_LINK='' AND CHEKED = '0' ORDER BY ID ASC");
     if ($message) {
-		$generatetts = false;
+        $generatetts   = false;
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
@@ -61,7 +61,7 @@ while (1) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
                         //DebMes('Запускаем очередь в отделный поток для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                         sayToTextSafe($message['ID'], $terminal['ID']);
-			            $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                        $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
@@ -71,9 +71,13 @@ while (1) {
             }
             
         }
-		if ($generatetts) {
-			processSubscriptionsSafe($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
-		}
+        if ($generatetts) {
+            processSubscriptionsSafe($message['EVENT'], array(
+                'level' => $message['IMPORTANCE'],
+                'message' => $message['MESSAGE'],
+                'id' => $message['ID']
+            ));
+        }
         // pomechaem chto obrabotano i zapusheno na generaciyu rechi i obnovlyaem v baze
         $message['CHEKED'] = '1';
         SQLUpdate('shouts', $message);
@@ -86,47 +90,49 @@ while (1) {
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
-			// запускаем все что имеет function sayttotext
+            // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY') AND $terminal['LINKED_OBJECT']) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
-						// zapisivaem sostoyanie pleera
-						if ($terminal['LINKED_OBJECT'] AND !gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
-							$out = getPlayerStatus($terminal['NAME']);
-							sg($terminal['LINKED_OBJECT'].'.rest_link',$out['file']);
-							sg($terminal['LINKED_OBJECT'].'.media_vol_level',$out['volume']);
-							sg($terminal['LINKED_OBJECT'].'.rest_time',$out['time']);
-						}
+                        // zapisivaem sostoyanie pleera
+                        if ($terminal['LINKED_OBJECT'] AND !gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
+                            $out = getPlayerStatus($terminal['NAME']);
+                            if (is_array($out) AND $out['state'] == 'playing') {
+                                sg($terminal['LINKED_OBJECT'] . '.rest_link', $out['file']);
+                                sg($terminal['LINKED_OBJECT'] . '.media_vol_level', $out['volume']);
+                                sg($terminal['LINKED_OBJECT'] . '.rest_time', $out['time']);
+                            }
+                        }
                         sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
                         sayTToMediaSafe($message['ID'], $terminal['ID']);
-
+                        
                         //sayToText($message['ID'], $terminal['ID']);
                         //DebMes('Ochered zapushena для soobcsheniya ' . $message['MESSAGE'] . ' ' . microtime(true), 'terminals2');
                     }
                 }
-				$message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
             }
         }
         SQLUpdate('shouts', $message);
-    } 
-	
-		// esli netu soobsheniy to probuem vosstanovit vosproizvodimoe
-		$terminalsName = getObjectsByProperty('rest_link');
-		foreach ($terminalsName as $terminals) {
-			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-			if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
-				playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
-				seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'].'.rest_time'));
-				// надо еще с громкостью разобратся
-				//обнуляем все значения
-				sg($terminal['LINKED_OBJECT'] . '.rest_link',0);
-				sg($terminal['LINKED_OBJECT'] . '.media_vol_level',0);
-				sg($terminal['LINKED_OBJECT'] . '.rest_time',0);
-				
-			}
-		}
-
-
+    }
+    
+    // esli netu soobsheniy to probuem vosstanovit vosproizvodimoe
+    $terminalsName = getObjectsByProperty('rest_link');
+    foreach ($terminalsName as $terminals) {
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
+            playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
+            seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
+            // надо еще с громкостью разобратся
+            //обнуляем все значения
+            sg($terminal['LINKED_OBJECT'] . '.rest_link', 0);
+            sg($terminal['LINKED_OBJECT'] . '.media_vol_level', 0);
+            sg($terminal['LINKED_OBJECT'] . '.rest_time', 0);
+            
+        }
+    }
+    
+    
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
     }
