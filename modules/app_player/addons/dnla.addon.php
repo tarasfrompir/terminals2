@@ -140,27 +140,6 @@ class dnla extends app_player_addon
         return $this->success;
     }
     
-
-    // Seek
-    function seek($position)
-    {
-        $this->reset_properties();
-        // преобразуем в часы минуты и секунды
-        $hours    = floor($position / 3600);
-        $minutes  = floor($position % 3600 / 60);
-        $seconds  = $position % 60;
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        if ($remote) {
-            $this->success = TRUE;
-            $this->message = 'Position changed';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-   
-
     // Playlist: Get
     function pl_get()
     {
@@ -314,6 +293,24 @@ class dnla extends app_player_addon
         return $this->success;
     }
     
+    // Seek
+    function seek($position)
+    {
+        $this->reset_properties();
+        // преобразуем в часы минуты и секунды
+        $hours    = floor($position / 3600);
+        $minutes  = floor($position % 3600 / 60);
+        $seconds  = $position % 60;
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        if ($remote) {
+            $this->success = TRUE;
+            $this->message = 'Position changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
 	
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250')
