@@ -185,26 +185,6 @@ class dnla extends app_player_addon
         return $this->success;
     }
     
-    // Pause
-    function pause()
-    {
-        $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->pause();
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PauseResponse ')) {
-            $this->success = TRUE;
-            $this->message = 'Pause enabled';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-    
     // Next
     function next()
     {
@@ -357,6 +337,22 @@ class dnla extends app_player_addon
                 'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $curren_url //Current link for media in device. String.
             );
+        }
+        return $this->success;
+    }
+
+    // Pause
+    function pause()
+    {
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->pause();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Pause enabled';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
         }
         return $this->success;
     }
