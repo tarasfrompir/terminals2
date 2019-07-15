@@ -82,8 +82,8 @@ class dnla extends app_player_addon
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $length = $this->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
-        $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         // Results
         if ($response) {
             $this->reset_properties();
@@ -297,11 +297,8 @@ class dnla extends app_player_addon
     function seek($position)
     {
         $this->reset_properties();
-        // преобразуем в часы минуты и секунды
-        $hours = floor($position / 3600);
-        $minutes = floor($position % 3600 / 60);
-        $seconds = $position % 60;
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->seek($position);
         if ($remote) {
             $this->success = TRUE;
             $this->message = 'Position changed';
@@ -358,14 +355,6 @@ class dnla extends app_player_addon
         socket_close($socket);
         $response = str_ireplace("Location:", "", $response);
         return $response;
-    }
-    
-    // функция преобразования в секунды времени
-    private function parse_to_second($time)
-    {
-        $parsed  = date_parse($time);
-        $seconds = $parsed['hour'] * 3600 + $parsed['minute'] * 60 + $parsed['second'];
-        return $seconds;
     }
 }
 ?>
