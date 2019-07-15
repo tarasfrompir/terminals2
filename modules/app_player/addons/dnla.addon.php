@@ -121,7 +121,7 @@ class dnla extends app_player_addon
         if (!remote_file_exists($message_link)) {
             $message_link = BASE_URL . $m[0];
         }
-        //DebMes("Url to file ".$message_link);
+        DebMes("Url to file ".$message_link);
         // конец блока получения ссылки на файл 
         
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
