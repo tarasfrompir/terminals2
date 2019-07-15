@@ -115,13 +115,13 @@ class MediaRenderer {
         }
         $args = array( 'InstanceID' => 0, 'Speed' => 1);
         $response = $this->sendRequestToDevice('Play', $args);
-		$doc->loadXML($response);
-                if ($doc->getElementsByTagName('PlayResponse ')) {
-		   //while ($time<1) {
-		  //  $response = $this->getPosition();
-                   // $doc->loadXML($response);
-                    //$time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-			}
+        $doc->loadXML($response);
+            if ($doc->getElementsByTagName('PlayResponse ')) {
+	       //while ($time<1) {
+	       //  $response = $this->getPosition();
+               // $doc->loadXML($response);
+               //$time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+	       //}
             return TRUE;
         } else {
             return FALSE;
