@@ -33,6 +33,47 @@ class MediaRenderer {
                     $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
                 }
             }
+			if ($service->serviceId == 'urn:upnp-org:serviceId:ConnectionManager') {
+                $chek_url = (substr($service->controlURL, 0, 1));
+                $this->conn_manager = ($service->serviceType);
+                if ($chek_url == '/') {
+                    $this->conn_url = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . $service->controlURL);
+                } else {
+                    $this->conn_url = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
+                }
+            }
+			DebMes($this->conn_url);
+			$body = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+            $body.= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
+            $body.= '<s:Body>';
+            $body.= '<u:GetProtocolInfo xmlns:u="urn:schemas-upnp-org:service:ConnectionManager:1" />';
+            $body.= '</s:Body>';
+            $body.= '</s:Envelope>';
+
+            $header = array(
+                'Host: ' . $this->ip . ':' . $this->port,
+                'User-Agent: Majordomo/ver-x.x UDAP/2.0 Win/7', //fudge the user agent to get desired video format
+                'Content-Length: ' . strlen($body) ,
+                'Connection: close',
+                'Content-Type: text/xml; charset="utf-8"',
+                'SOAPACTION: "urn:schemas-upnp-org:service:ConnectionManager:1#GetProtocolInfo"',
+            );
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_URL, $this->conn_url);
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+            $response = curl_exec($ch);
+            curl_close($ch);
+			// создаем хмл документ
+           	$doc = new \DOMDocument();
+			$doc->loadXML($response);
+			// получаем все значения необходиміе для постройки правильного урла
+			//$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
+			$all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
+            DebMes($all_extension);
         }
     }
 
@@ -92,7 +133,23 @@ class MediaRenderer {
             // poluchaem zagolovki dlyz protokola i classa contenta massiv 'iteam' i 'httphead'
             $urimetadata = $this->get_urihead($content_type);
         }
-        //var_dump($urimetadata);
+		$content_type = '';
+        if ($fp = fopen($url, 'r')) {
+            $meta = stream_get_meta_data($fp);
+            if (is_array($meta['wrapper_data'])) {
+                $items = $meta['wrapper_data'];
+                foreach ($items as $line) {
+                    if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
+                        $content_type = trim($m[1]);
+                    }
+                }
+            }
+            fclose($fp);
+        }
+        if (!$content_type) {
+            $content_type = 'audio/mpeg';
+        }
+        DebMes('ct '.$content_type);
         $MetaData ='&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;';
         $MetaData.='&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
         $MetaData.='&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;0&quot;&gt;';
