@@ -117,6 +117,11 @@ class MediaRenderer {
         $response = $this->sendRequestToDevice('Play', $args);
 		$doc->loadXML($response);
         if ($doc->getElementsByTagName('PlayResponse ')) {
+			while ($time<1) {
+				$response = $this->getPosition();
+                $doc->loadXML($response);
+                $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+			}
             return TRUE;
         } else {
             return FALSE;
@@ -204,7 +209,11 @@ class MediaRenderer {
     }
 
     public function seek($target = 0) {
-        $response = $this->sendRequestToDevice('Seek', array('InstanceID' => 0,'Unit' => 'REL_TIME','Target' => $target));
+        // преобразуем в часы минуты и секунды
+		$hours = floor($target / 3600);
+        $minutes = floor($target % 3600 / 60);
+        $seconds = $position % 60;
+        $response = $this->sendRequestToDevice('Seek', array('InstanceID' => 0,'Unit' => 'REL_TIME','Target' => $hours.':'.$minutes.':'.$seconds));
 		// создаем хмл документ
         $doc = new \DOMDocument();
 		$doc->loadXML($response);
@@ -270,5 +279,13 @@ private function get_extfile($ext){
     'm3u'=>     array('item'=>'object.item.audioItem.audioBroadcast', 'httphead'=>'http-get:*:audio/m3u:*'),
     );
     return $extmetadatauri[$ext];
+    }
+	
+    // функция преобразования в секунды времени
+    public function parse_to_second($time)
+    {
+        $parsed  = date_parse($time);
+        $seconds = $parsed['hour'] * 3600 + $parsed['minute'] * 60 + $parsed['second'];
+        return $seconds;
     }
 }
