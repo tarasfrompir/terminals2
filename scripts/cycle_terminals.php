@@ -122,7 +122,8 @@ while (1) {
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
             playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
-            sleep(1);
+			usleep(500000);
+			DebMes($terminal['NAME']. gg($terminal['LINKED_OBJECT'] . '.rest_time'));
             seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
             // надо еще с громкостью разобратся
             //обнуляем все значения
