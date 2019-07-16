@@ -1,6 +1,6 @@
 <?php
 
-class telegramm extends app_player_addon
+class 2teleg extends app_player_addon
 {
     
     // Private properties
