@@ -142,7 +142,10 @@ class MediaRenderer {
         DebMes('ct '.$content_type);
 		// proveryaem
 		foreach($this->all_extension as $index => $string) {
-			if ($urimetadata = stripos($string, 'http-get:*:'.$content_type.':') !== FALSE) {
+			if ($urimetadata = stripos($string, 'http-get:*:'.$content_type.':*') !== FALSE) {
+				DebMes ($string);
+				break ;
+			} else if ($urimetadata = stripos($string, 'http-get:*:'.$content_type.':') !== FALSE) {
 				DebMes ($string);
 				break ;
 			}
