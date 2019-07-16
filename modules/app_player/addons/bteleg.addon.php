@@ -1,6 +1,6 @@
 <?php
 
-class 2teleg extends app_player_addon
+class bteleg extends app_player_addon
 {
     
     // Private properties
