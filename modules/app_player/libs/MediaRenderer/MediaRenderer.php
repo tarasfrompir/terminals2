@@ -33,7 +33,7 @@ class MediaRenderer {
                     $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
                 }
             }
-	    if ($service->serviceId == 'urn:upnp-org:serviceId:ConnectionManager') {
+			if ($service->serviceId == 'urn:upnp-org:serviceId:ConnectionManager') {
                 $chek_url = (substr($service->controlURL, 0, 1));
                 $this->conn_manager = ($service->serviceType);
                 if ($chek_url == '/') {
@@ -42,9 +42,9 @@ class MediaRenderer {
                     $this->conn_url = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
                 }
             }
-	 }
-            //DebMes($this->conn_url);
-            $body = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+		}
+			//DebMes($this->conn_url);
+			$body = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
             $body.= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
             $body.= '<s:Body>';
             $body.= '<u:GetProtocolInfo xmlns:u="urn:schemas-upnp-org:service:ConnectionManager:1" />';
@@ -68,12 +68,12 @@ class MediaRenderer {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             $response = curl_exec($ch);
             curl_close($ch);
-            // создаем хмл документ
-            $doc = new \DOMDocument();
-            $doc->loadXML($response);
-            // получаем все значения необходиміе для постройки правильного урла
-            //$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
-            $this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
+			// создаем хмл документ
+           	$doc = new \DOMDocument();
+			$doc->loadXML($response);
+			// получаем все значения необходиміе для постройки правильного урла
+			//$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
+			$this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
             //DebMes($this->all_extension);
     }
 
@@ -142,9 +142,9 @@ class MediaRenderer {
         DebMes('ct '.$content_type);
 		// proveryaem
 		foreach($this->all_extension as $index => $string) {
-			if ($urimetadata = strpos($string, 'http-get:*:'.$content_type.':') !== FALSE) {
+			if ($urimetadata = strpos($string, 'http-get:*:'.$content_type.':*') !== FALSE) {
 				DebMes ($string);
-				//break ;
+				break ;
 			}
 		}
 		
