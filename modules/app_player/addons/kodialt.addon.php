@@ -2,7 +2,7 @@
 /*
 Addon Kodi (XBMC) for app_player
 */
-class xbmc extends app_player_addon
+class kodialt extends app_player_addon
 {
     
     // Private properties
