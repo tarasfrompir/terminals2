@@ -74,7 +74,7 @@ class MediaRenderer {
 			// получаем все значения необходиміе для постройки правильного урла
 			//$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
 			$this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
-            //DebMes($this->all_extension);
+            DebMes($this->all_extension);
     }
 
     private function instanceOnly ($command, $id = 0) {
@@ -150,19 +150,19 @@ class MediaRenderer {
 				break ;
 			}
 		}
-		
+		$type_data = substr($content_type, 0, strpos($content_type, '/'));
+		//DebMes($type_data);
 		
         $MetaData ='&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;';
         $MetaData.='&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
         $MetaData.='&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;0&quot;&gt;';
-       // $MetaData.='&lt;upnp:class&gt;'.$urimetadata['item'].'&lt;/upnp:class&gt;';
-        $MetaData.='&lt;upnp:class&gt;object.item.audioItem.musicTrack&lt;/upnp:class&gt;';
+        $MetaData.='&lt;upnp:class&gt;object.item.'.$type_data.'Item&lt;/upnp:class&gt;';
         $MetaData.='&lt;dc:title&gt;Majordomo mesage&lt;/dc:title&gt;';
         $MetaData.='&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
-        //$MetaData.='&lt;res protocolInfo=&quot;'.$urimetadata['httphead'].'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData.='&lt;res protocolInfo=&quot;'.$urimetadata.'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData.='&lt;/item&gt;';
         $MetaData.='&lt;/DIDL-Lite&gt;';
+        //DebMes($MetaData);
         
         $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
