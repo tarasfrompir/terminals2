@@ -43,11 +43,11 @@ class MediaRenderer {
                 }
             }
 		}
-			//DebMes($this->conn_url);
-			$body = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+	    //DebMes($this->conn_url);
+	    $body = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
             $body.= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
             $body.= '<s:Body>';
-            $body.= '<u:GetProtocolInfo xmlns:u="urn:schemas-upnp-org:service:ConnectionManager:1" />';
+	    $body.= '<u:GetProtocolInfo xmlns:u="' . $this->conn_manager . '">';
             $body.= '</s:Body>';
             $body.= '</s:Envelope>';
 
@@ -57,7 +57,7 @@ class MediaRenderer {
                 'Content-Length: ' . strlen($body) ,
                 'Connection: close',
                 'Content-Type: text/xml; charset="utf-8"',
-                'SOAPACTION: "urn:schemas-upnp-org:service:ConnectionManager:1#GetProtocolInfo"',
+                'SOAPAction: "' . $this->conn_manager . '#GetProtocolInfo"',
             );
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
