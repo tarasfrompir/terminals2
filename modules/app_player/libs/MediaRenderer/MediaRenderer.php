@@ -46,8 +46,8 @@ class MediaRenderer
             }
         }
         //DebMes($this->conn_url);
-        //DebMes($this->conn_manager);
-        //DebMes($this->service_type);
+        DebMes($this->conn_manager);
+        DebMes($this->service_type);
         $body = '<?xml version="1.0" encoding="utf-8"?>' . "\r\n";
         $body .= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
         $body .= '<s:Body>';
