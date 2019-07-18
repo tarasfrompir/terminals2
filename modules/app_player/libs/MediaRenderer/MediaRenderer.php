@@ -174,26 +174,16 @@ class MediaRenderer
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
         //DebMes($MetaData);
-        
-        $args     = array(
-            'InstanceID' => 0,
-            'CurrentURI' => '<![CDATA[' . $url . ']]>',
-            'CurrentURIMetaData' => $MetaData
-        );
-	
-        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+
+	$args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
       
         // создаем хмл документ
         $doc = new \DOMDocument();        
         $doc->loadXML($response);
         DebMes($response);
-        
-        $args     = array(
-            'InstanceID' => 0,
-            'Speed' => 1
-        );
-        $response = $this->sendRequestToDevice('Play', $args);
+
+        $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
         $doc->loadXML($response);
         DebMes($response);
         
