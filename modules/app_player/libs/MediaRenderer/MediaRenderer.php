@@ -181,19 +181,11 @@ class MediaRenderer
             'CurrentURIMetaData' => $MetaData
         );
 	
-	$args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => '');
+        $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
+      
         // создаем хмл документ
-        $doc = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if(!$doc->getElementsByTagName('PlayResponse')) {
-            $args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
-            $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        }
-        $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        
-        // создаем хмл документ
+        $doc = new \DOMDocument();        
         $doc->loadXML($response);
         DebMes($response);
         
