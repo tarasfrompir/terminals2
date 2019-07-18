@@ -107,7 +107,7 @@ class dnla extends app_player_addon
     function sayToMedia($outlink, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         // преобразовываем файл в мп3 формат
-        $path_parts = pathinfo($message_link);
+        $path_parts = pathinfo($outlink);
         if ($path_parts['extension'] == 'wav') {
             if (!defined('PATH_TO_FFMPEG')) {
                 if (IsWindowsOS()) {
@@ -115,9 +115,10 @@ class dnla extends app_player_addon
                 } else {
                     define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
-                $outlink = str_ireplace("." . $path_parts['extension'], ".mp3", $message_link);
+				$oldname = $outlink;
+                $outlink = str_ireplace("." . $path_parts['extension'], ".mp3", $oldname);
 			    if (!file_exists($outlink)) {
-                    shell_exec(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec libmp3lame -ar 44100 " . $outlink . " 2>&1");
+                    shell_exec(PATH_TO_FFMPEG . " -i " . $oldname . " -acodec libmp3lame -ar 44100 " . $outlink . " 2>&1");
 			    }
             }
         }
