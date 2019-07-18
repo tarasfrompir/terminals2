@@ -45,7 +45,7 @@ class MediaRenderer
                 }
             }
         }
-        //DebMes($this->conn_url);
+        DebMes($this->conn_url);
         DebMes($this->conn_manager);
         DebMes($this->service_type);
         $body = '<?xml version="1.0" encoding="utf-8"?>' . "\r\n";
@@ -78,7 +78,7 @@ class MediaRenderer
         // получаем все значения необходиміе для постройки правильного урла
         //$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
         $this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
-        //DebMes($this->all_extension);
+        DebMes($this->all_extension);
     }
     
     private function instanceOnly($command, $id = 0)
@@ -174,25 +174,33 @@ class MediaRenderer
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
         //DebMes($MetaData);
-
-	$args = array('InstanceID' => 0, 'CurrentURI' => '<![CDATA[' . $url . ']]>', 'CurrentURIMetaData' => $MetaData);
+        
+        $args     = array(
+            'InstanceID' => 0,
+            'CurrentURI' => '<![CDATA[' . $url . ']]>',
+            'CurrentURIMetaData' => $MetaData
+        );
         $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-      
+        
         // создаем хмл документ
-        $doc = new \DOMDocument();        
+        $doc = new \DOMDocument();
         $doc->loadXML($response);
         DebMes($response);
-
-        $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
+        
+        $args     = array(
+            'InstanceID' => 0,
+            'Speed' => 1
+        );
+        $response = $this->sendRequestToDevice('Play', $args);
         $doc->loadXML($response);
         DebMes($response);
         
         if ($doc->getElementsByTagName('PlayResponse ')) {
-            while ($time<1) {
-               $response = $this->getPosition();
-               $doc->loadXML($response);
-               $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-            } 
+            //while ($time<1) {
+            //   $response = $this->getPosition();
+            //   $doc->loadXML($response);
+            //   $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+            //} 
             return TRUE;
         } else {
             return FALSE;
