@@ -196,11 +196,11 @@ class MediaRenderer
         DebMes($response);
         
         if ($doc->getElementsByTagName('PlayResponse ')) {
-            //while ($time<1) {
-            //   $response = $this->getPosition();
-            //   $doc->loadXML($response);
-            //   $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-            //} 
+            while ($time<1) {
+               $response = $this->getPosition();
+               $doc->loadXML($response);
+               $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+            } 
             return TRUE;
         } else {
             return FALSE;
