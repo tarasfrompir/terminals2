@@ -1,330 +1,375 @@
 <?php
-/** AVTransport UPnP Class
- * Used for controlling renderers
- *
- * @author jalder
- */
 
-class MediaRenderer
+/*
+Addon dnla for app_player
+*/
+
+class dnla extends app_player_addon
 {
-    public function __construct($server)
+    
+    // Private properties
+    private $curl;
+    private $address;
+    
+    // Constructor
+    function __construct($terminal)
     {
-        // получаем айпи и порт устройства
-        $url        = parse_url($server);
-        $this->ip   = $url['host'];
-        $this->port = $url['port'];
-        // получаем XML
-        $ch         = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $server);
+        $this->title = 'Устройства с поддержкой протокола DLNA';
+        $this->description = 'Описание: Проигрывание видео - аудио ';
+        $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
+        $this->terminal = $terminal;
+        $this->reset_properties();
+        
+        // proverka na otvet
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
+        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        // загружаем xml
-        libxml_use_internal_errors(true);
-        $xml = simplexml_load_string($content);
-        // получаем адрес управления устройством
-        foreach ($xml->device->serviceList->service as $service) {
-            if ($service->serviceId == 'urn:upnp-org:serviceId:AVTransport') {
-                $chek_url           = (substr($service->controlURL, 0, 1));
-                $this->service_type = ($service->serviceType);
-                if ($chek_url == '/') {
-                    $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . $service->controlURL);
-                } else {
-                    $this->ctrlurl = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
-                }
+        // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
+        if (!$retcode = 200 OR filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
+            // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
+            $rec = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
+            $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
+            if ($this->terminal['PLAYER_CONTROL_ADDRESS']) {
             }
-            if ($service->serviceId == 'urn:upnp-org:serviceId:ConnectionManager') {
-                $chek_url           = (substr($service->controlURL, 0, 1));
-                $this->conn_manager = ($service->serviceType);
-                if ($chek_url == '/') {
-                    $this->conn_url = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . $service->controlURL);
-                } else {
-                    $this->conn_url = ($url['scheme'] . '://' . $this->ip . ':' . $this->port . '/' . $service->controlURL);
-                }
+            $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
+            if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
+                SQLUpdate('terminals', $rec); // update
+                //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
             }
         }
-        DebMes($this->conn_url);
-        DebMes($this->conn_manager);
-        DebMes($this->service_type);
-        $body = '<?xml version="1.0" encoding="utf-8"?>' . "\r\n";
-        $body .= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
-        $body .= '<s:Body>';
-        $body .= '<u:GetProtocolInfo xmlns:u="' . $this->conn_manager . '" />';
-        $body .= '</s:Body>';
-        $body .= '</s:Envelope>';
+        include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
+        include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         
-        $header = array(
-            'Host: ' . $this->ip . ':' . $this->port,
-            'User-Agent: Majordomo/ver-x.x UDAP/2.0 Win/7', //fudge the user agent to get desired video format
-            'Content-Length: ' . strlen($body),
-            'Connection: close',
-            'Content-Type: text/xml; charset="utf-8"',
-            'SOAPAction: "' . $this->conn_manager . '#GetProtocolInfo"'
-        );
-        $ch     = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $this->conn_url);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        $response = curl_exec($ch);
-        curl_close($ch);
+    }
+    
+    
+    // Get player status
+    function status()
+    {
+        // Defaults
+        $track_id      = -1;
+        $length        = 0;
+        $time          = 0;
+        $state         = 'unknown';
+        $volume        = 0;
+        $random        = FALSE;
+        $loop          = FALSE;
+        $repeat        = FALSE;
+        $current_speed = 1;
+        $curren_url    = '';
+        
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        //  для получения уровня громкости
+        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remotevolume->GetVolume();
+        $doc->loadXML($response);
+        $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        // Для получения состояния плеера
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->getState();
+        $doc->loadXML($response);
+        $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
+        if ($state == 'TRANSITIONING') {
+            $state = 'playing';
+        }
+        //Debmes ('current_speed '.$current_speed);
+        $response = $remote->getPosition();
+        $doc->loadXML($response);
+        $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
+        $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        // Results
+        if ($response) {
+            $this->reset_properties();
+            $this->success = TRUE;
+            $this->message = 'OK';
+            $this->data = array(
+                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int) $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'random' => (boolean) $random, // Random mode. Boolean. 
+                'loop' => (boolean) $loop, // Loop mode. Boolean.
+                'repeat' => (boolean) $repeat //Repeat mode. Boolean.
+            );
+        }
+        return $this->success;
+    }
+    
+    // Say
+    function sayToMedia($outlink, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        // преобразовываем файл в мп3 формат
+        $path_parts = pathinfo($outlink);
+        if ($path_parts['extension'] == 'wav') {
+            if (!defined('PATH_TO_FFMPEG')) {
+                if (IsWindowsOS()) {
+                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                } else {
+                    define("PATH_TO_FFMPEG", 'ffmpeg');
+                }
+				$oldname = $outlink;
+                $outlink = str_ireplace("." . $path_parts['extension'], ".mp3", $temp);
+			    if (!file_exists($outlink)) {
+                    shell_exec(PATH_TO_FFMPEG . " -i " . $oldname . " -acodec libmp3lame -ar 44100 " . $outlink . " 2>&1");
+			    }
+            }
+        }
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+        if (!remote_file_exists($message_link)) {
+            $message_link = BASE_URL . $m[0];
+        }
+        DebMes("Url to file ".$message_link);
+        // конец блока получения ссылки на файл 
+        
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->play($message_link);
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        // получаем все значения необходиміе для постройки правильного урла
-        //$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
-        $this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
-        DebMes($this->all_extension);
-    }
-    
-    private function instanceOnly($command, $id = 0)
-    {
-        $args = array(
-            'InstanceID' => $id
-        );
-        return $this->sendRequestToDevice($command, $args);
-    }
-    
-    private function sendRequestToDevice($command, $arguments)
-    {
-        $body = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>' . "\r\n";
-        $body .= '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
-        $body .= '<s:Body>';
-        $body .= '<u:' . $command . ' xmlns:u="' . $this->service_type . '">';
-        foreach ($arguments as $arg => $value) {
-            $body .= '<' . $arg . '>' . $value . '</' . $arg . '>';
+        //DebMes($response);
+        if ($doc->getElementsByTagName('PlayResponse')) {
+            $this->success = TRUE;
+            $this->message = 'Say message';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
         }
-        
-        $body .= '</u:' . $command . '>';
-        $body .= '</s:Body>';
-        $body .= '</s:Envelope>';
-        $header = array(
-            'Host: ' . $this->ip . ':' . $this->port,
-            'User-Agent: Majordomo/ver-x.x UDAP/2.0 Win/7', //fudge the user agent to get desired video format
-            'Content-Length: ' . strlen($body),
-            'Connection: close',
-            'Content-Type: text/xml; charset="utf-8"',
-            'SOAPAction: "' . $this->service_type . '#' . $command . '"'
-        );
-        $ch     = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $this->ctrlurl);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
+        return $this->success;
     }
     
-    public function play($url = "")
+    // Playlist: Get
+    function pl_get()
     {
+        $this->success = FALSE;
+        $this->message = 'Command execution error!';
+        $track_id      = -1;
+        $name          = 'unknow';
+        $curren_url    = '';
         
-        if ($url === "") {
-            return $this->sendRequestToDevice('Play', $args = array(
-                'InstanceID' => 0,
-                'Speed' => 1
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        // Для получения состояния плеера
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->getPosition();
+        $doc->loadXML($response);
+        $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
+        $name = 'Played url om the device';
+        $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
+        if ($response) {
+            // Results
+            $this->reset_properties();
+            $this->success = TRUE;
+            $this->message = 'OK';
+            $this->data = array(
+                'id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'name' => (string) $name, //Current speed for playing media. float.
+                'file' => (string) $curren_url //Current link for media in device. String.
+            );
+        }
+        return $this->success;
+    }
+	
+	// Get media volume level
+    function get_volume()
+    {
+        if ($this->status()) {
+            $volume = $this->data['volume'];
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+            $this->data = $volume;
+        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
+            $this->reset_properties(array(
+                'success' => TRUE,
+                'message' => 'OK'
             ));
+            $this->data = (int) getGlobal('ThisComputer.volumeMediaLevel');
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+        } 
+        return $this->success;
+    }
+	
+  ////////////////////////////////////////////////////////////////////////////// obrbotano
+    // Pause
+    function pause()
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->pause();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Pause enabled';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
         }
+        return $this->success;
+    }
+    
+    // Next
+    function next()
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->next();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Next file changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Previous
+    function previous()
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->previous();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Previous file changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Set volume
+    function set_volume($level)
+    {
+        $this->reset_properties();
+        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remotevolume->SetVolume($level);
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+	// Stop
+    function stop()
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->stop();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Stop play';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+    // Play
+    function play($input)
+    {
+        $this->reset_properties();
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        // для радио 101 ру
+        if (stripos($input, '?userid=0&setst')) {
+            $input = stristr($input, '&setst', True) . '.mp4';
+        }
+        $response = $remote->play($input);
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Play files';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+    
+    // Seek
+    function seek($position)
+    {
+        $this->reset_properties();
+         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->seek($position);
+        if ($remote) {
+            $this->success = TRUE;
+            $this->message = 'Position changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+    // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
+    private function search($ip = '239.255.255.250')
+    {
+        if (!$ip) {
+            return 0;
+        }
+        //create the socket
+        $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
+        socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
+        //all
+        $request = 'M-SEARCH * HTTP/1.1' . "\r\n";
+        $request .= 'HOST: 239.255.255.250:1900' . "\r\n";
+        $request .= 'MAN: "ssdp:discover"' . "\r\n";
+        $request .= 'MX: 2' . "\r\n";
+        $request .= 'ST: ssdp:all'."\r\n";
+        $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7' . "\r\n";
+        $request .= "\r\n";
         
-        // neobhodimo ostanovit vosproizvedenie
-        $this->instanceOnly('Stop');
+        @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
         
-        // berem Content-Type
-        if ($fp = fopen($url, 'r')) {
-            $meta = stream_get_meta_data($fp);
-            if (is_array($meta['wrapper_data'])) {
-                $items = $meta['wrapper_data'];
-                foreach ($items as $line) {
-                    if (preg_match('/Content-Type:(.+)/is', $line, $m)) {
-                        $content_type = trim($m[1]);
+        // send the data from socket
+        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array(
+            'sec' => '1',
+            'usec' => '128'
+        ));
+        $response = array();
+        do {
+            $buf = null;
+            if (($len = @socket_recvfrom($socket, $buf, 2048, 0, $ip, $port)) == -1) {
+                echo "socket_read() failed: " . socket_strerror(socket_last_error()) . "\n";
+            }
+            if (!is_null($buf)) {
+                $messages = explode("\r\n", $buf);
+                foreach ($messages as $row) {
+                    if (stripos($row, 'AVTransport')) {
+                        break;
+                    }
+                    if (stripos($row, 'loca') === 0 and stripos($row, $this->terminal['HOST'])) {
+                        $response = str_ireplace('location: ', '', $row);
                     }
                 }
             }
-            fclose($fp);
-        }
-        if ($content_type = 'application/octet-stream') {
-            $content_type = 'audio/mpeg';
-        }
-        DebMes('ct ' . $content_type);
-		// proveryaem
-		foreach($this->all_extension as $index => $urimetadata) {
-			if (stripos($urimetadata, 'http-get:*:'.$content_type.':*') !== FALSE) {
-				break ;
-			} else if (stripos($urimetadata, 'http-get:*:'.$content_type.':') !== FALSE) {
-				break ;
-			}
-		}
-
-        $type_data = substr($content_type, 0, strpos($content_type, '/'));
-        //DebMes($type_data);
-        DebMes ($urimetadata);
-        $MetaData = '&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;';
-        $MetaData .= '&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
-        $MetaData .= '&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;0&quot;&gt;';
-        $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
-        $MetaData .= '&lt;dc:title&gt;Majordomo mesage&lt;/dc:title&gt;';
-        $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
-        $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot;&gt;' . $url . '&lt;/res&gt;';
-        $MetaData .= '&lt;/item&gt;';
-        $MetaData .= '&lt;/DIDL-Lite&gt;';
-        //DebMes($MetaData);
-        
-        $args     = array(
-            'InstanceID' => 0,
-            'CurrentURI' => '<![CDATA[' . $url . ']]>',
-            'CurrentURIMetaData' => $MetaData
-        );
-        $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
-        
-        // создаем хмл документ
-        $doc = new \DOMDocument();
-        $doc->loadXML($response);
-        DebMes($response);
-        
-        $args     = array(
-            'InstanceID' => 0,
-            'Speed' => 1
-        );
-        $response = $this->sendRequestToDevice('Play', $args);
-        $doc->loadXML($response);
-        DebMes($response);
-        
-        if ($doc->getElementsByTagName('PlayResponse ')) {
-            while ($time<1) {
-               $response = $this->getPosition();
-               $doc->loadXML($response);
-               $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-            } 
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function setNext($url)
-    {
-        $tags = get_meta_tags($url);
-        $args = array(
-            'InstanceID' => 0,
-            'NextURI' => '<![CDATA[' . $url . ']]>',
-            'NextURIMetaData' => ''
-        );
-        return $this->sendRequestToDevice('SetNextAVTransportURI', $args);
-    }
-    
-    public function getState()
-    {
-        return $this->instanceOnly('GetTransportInfo');
-    }
-    
-    public function getPosition()
-    {
-        return $this->instanceOnly('getPositionInfo');
-    }
-    
-    public function getMedia()
-    {
-        return $this->instanceOnly('GetMediaInfo');
-    }
-    
-    public function stop()
-    {
-        $response = $this->instanceOnly('Stop');
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('StopResponse ')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function pause()
-    {
-        $response = $this->getState();
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        if ($doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue == 'PLAYING') {
-            $response = $this->instanceOnly('Pause');
-        } else {
-            $response = $this->sendRequestToDevice('Play', array(
-                'InstanceID' => 0,
-                'Speed' => 1
-            ));
-        }
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PauseResponse ') OR $doc->getElementsByTagName('PlayResponse ')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function next()
-    {
-        $response = $this->instanceOnly('Next');
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('NextResponse ')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function previous()
-    {
-        $response = $this->instanceOnly('Previous');
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PreviousResponse ')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    public function seek($target = 0)
-    {
-        // преобразуем в часы минуты и секунды
-        $hours    = floor($target / 3600);
-        $minutes  = floor($target % 3600 / 60);
-        $seconds  = $position % 60;
-        $response = $this->sendRequestToDevice('Seek', array(
-            'InstanceID' => 0,
-            'Unit' => 'REL_TIME',
-            'Target' => $hours . ':' . $minutes . ':' . $seconds
-        ));
-        // создаем хмл документ
-        $doc      = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('SeekResponse ')) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-    
-    // функция преобразования в секунды времени
-    public function parse_to_second($time)
-    {
-        $parsed  = date_parse($time);
-        $seconds = $parsed['hour'] * 3600 + $parsed['minute'] * 60 + $parsed['second'];
-        return $seconds;
+        } while (!is_null($buf));
+        socket_close($socket);
+        $response = str_ireplace("Location:", "", $response);
+        return $response;
     }
 }
+?>
