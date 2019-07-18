@@ -106,9 +106,23 @@ class dnla extends app_player_addon
     // Say
     function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        
+        // преобразовываем файл в мп3 формат
+        $path_parts = pathinfo($message_link);
+        if ($path_parts['extension'] == 'wav') {
+            if (!defined('PATH_TO_FFMPEG')) {
+                if (IsWindowsOS()) {
+                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                } else {
+                    define("PATH_TO_FFMPEG", 'ffmpeg');
+                }
+                $outlink = str_ireplace("." . $path_parts['extension'], ".mp3", $message_link);
+			    if (!file_exists($outlink)) {
+                    shell_exec(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec libmp3lame -ar 44100 " . $outlink . " 2>&1");
+			    }
+            }
+        }
         // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
             $server_ip = getLocalIp();
             if (!$server_ip) {
                 DebMes("Server IP not found", 'terminals');
@@ -323,7 +337,7 @@ class dnla extends app_player_addon
         $request .= 'HOST: 239.255.255.250:1900' . "\r\n";
         $request .= 'MAN: "ssdp:discover"' . "\r\n";
         $request .= 'MX: 2' . "\r\n";
-        $request .= 'ST: ssdp: all' . "\r\n";
+        $request .= 'ST: ssdp:all'."\r\n";
         $request .= 'USER-AGENT: Majordomo/ver-x.x UDAP/2.0 Win/7' . "\r\n";
         $request .= "\r\n";
         
