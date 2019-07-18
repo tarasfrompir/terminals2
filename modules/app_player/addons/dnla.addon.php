@@ -104,7 +104,7 @@ class dnla extends app_player_addon
     }
     
     // Say
-    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function sayToMedia($outlink, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         // преобразовываем файл в мп3 формат
         $path_parts = pathinfo($message_link);
