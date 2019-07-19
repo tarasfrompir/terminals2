@@ -172,10 +172,10 @@ class MediaRenderer
         $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
         $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
         //$MetaData .= '&lt;upnp:albumArtURI dlna:profileID="JPEG_TN"&gt;http://192.168.8.100:31415/art/whitebear.jpg&lt;/upnp:albumArtURI&gt;';		
-        $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot;&gt;' . $url . '&lt;/res&gt;';
+        $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot; size=&quot;'.get_remote_filesize($url).'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
-        //DebMes($MetaData);
+        DebMes($MetaData);
         //&lt;res protocolInfo="http-get:*:audio/mpeg:*" size="1135829" bitsPerSample="16" sampleFrequency="44100" nrAudioChannels="2" bitrate="40565" duration="00:00:28.000"&gt;http://192.168.8.100:31415/play/21A51710_mime=audio!mpeg_bits=16_channels=2_rate=044100_duration=28.mp3&lt;/res&gt;
 
 	$response = $this->sendRequestToDevice('SetAVTransportURI', array('InstanceID' => 0,'CurrentURI' => '<![CDATA[' . $url . ']]>','CurrentURIMetaData' => $MetaData));
@@ -322,4 +322,5 @@ class MediaRenderer
         $seconds = $parsed['hour'] * 3600 + $parsed['minute'] * 60 + $parsed['second'];
         return $seconds;
     }
+	
 }
