@@ -45,9 +45,9 @@ class MediaRenderer
                 }
             }
         }
-        DebMes($this->conn_url);
-        DebMes($this->conn_manager);
-        DebMes($this->service_type);
+        //DebMes($this->conn_url);
+        //DebMes($this->conn_manager);
+        //DebMes($this->service_type);
         $body = '<?xml version="1.0" encoding="utf-8"?>' . "\r\n";
         $body .= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
         $body .= '<s:Body>';
@@ -78,7 +78,7 @@ class MediaRenderer
         // получаем все значения необходиміе для постройки правильного урла
         //$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
         $this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
-        DebMes($this->all_extension);
+        //DebMes($this->all_extension);
     }
     
     private function instanceOnly($command, $id = 0)
@@ -91,8 +91,9 @@ class MediaRenderer
     
     private function sendRequestToDevice($command, $arguments)
     {
-        $body = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>' . "\r\n";
-        $body .= '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">';
+        $body = '<?xml version="1.0" encoding="UTF-8" ?>' . "\r\n";
+        $body .= '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">';
+		
         $body .= '<s:Body>';
         $body .= '<u:' . $command . ' xmlns:u="' . $this->service_type . '">';
         foreach ($arguments as $arg => $value) {
@@ -164,34 +165,51 @@ class MediaRenderer
         $type_data = substr($content_type, 0, strpos($content_type, '/'));
         //DebMes($type_data);
         DebMes ($urimetadata);
-        $MetaData = '&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;';
-        $MetaData .= '&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
-        $MetaData .= '&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;0&quot;&gt;';
-        $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
+
+        $MetaData = '&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
+        $MetaData .= '&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;1&quot;&gt;';
         $MetaData .= '&lt;dc:title&gt;Majordomo mesage&lt;/dc:title&gt;';
+        $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
         $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
+        //$MetaData .= '&lt;upnp:albumArtURI dlna:profileID="JPEG_TN"&gt;http://192.168.8.100:31415/art/whitebear.jpg&lt;/upnp:albumArtURI&gt;';		
         $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
         //DebMes($MetaData);
-        
-        $args     = array(
-            'InstanceID' => 0,
-            'CurrentURI' => '<![CDATA[' . $url . ']]>',
-            'CurrentURIMetaData' => $MetaData
-        );
-        $response = $this->sendRequestToDevice('SetAVTransportURI', $args);
+
+        //&lt;res protocolInfo="http-get:*:audio/mpeg:*" size="1135829" bitsPerSample="16" sampleFrequency="44100" nrAudioChannels="2" bitrate="40565" duration="00:00:28.000"&gt;http://192.168.8.100:31415/play/21A51710_mime=audio!mpeg_bits=16_channels=2_rate=044100_duration=28.mp3&lt;/res&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $response = $this->sendRequestToDevice('SetAVTransportURI', array('InstanceID' => 0,'CurrentURI' => '<![CDATA[' . $url . ']]>','CurrentURIMetaData' => $MetaData));
         
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
         DebMes($response);
         
-        $args     = array(
-            'InstanceID' => 0,
-            'Speed' => 1
-        );
-        $response = $this->sendRequestToDevice('Play', $args);
+		if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
+            return FALSE;
+        }
+		
+        $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
         $doc->loadXML($response);
         DebMes($response);
         
