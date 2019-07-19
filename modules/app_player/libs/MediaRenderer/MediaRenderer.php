@@ -183,15 +183,15 @@ class MediaRenderer
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        DebMes($response);
+        //DebMes($response);
         
-		if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
+	if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
             return FALSE;
         }
 		
         $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
         $doc->loadXML($response);
-        DebMes($response);
+        //DebMes($response);
         
         if ($doc->getElementsByTagName('PlayResponse ')) {
             //while ($time<1) {
