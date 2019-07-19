@@ -174,7 +174,7 @@ class MediaRenderer
         $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
         $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;';
         //$MetaData .= '&lt;upnp:albumArtURI dlna:profileID="JPEG_TN"&gt;http://192.168.8.100:31415/art/whitebear.jpg&lt;/upnp:albumArtURI&gt;';		
-        $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot; size=&quot;'.get_remote_filesize($url).'&quot; sampleFrequency=&quot;'.$info_data['sample_rate'].'&quot; bitrate=&quot;'.$info_data['bitrate'].'&quot; duration=&quot;'. floor($info_data['duration'] / 3600) . ':' . floor($info_data['duration'] % 3600 / 60) . ':' . $info_data['duration'] % 60 .'&quot;&gt;' . $url . '&lt;/res&gt;';
+        $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot; size=&quot;'.get_remote_filesize($url).'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
         DebMes($MetaData);
