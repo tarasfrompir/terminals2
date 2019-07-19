@@ -9,6 +9,18 @@ function remote_file_exists($url){
     return false;
 }
 
+function get_remote_filesize($url)
+{
+    $head = array_change_key_case(get_headers($url, 1));
+    // content-length of download (in bytes), read from Content-Length: field
+    $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+    // cannot retrieve file size, return "-1"
+    if (!$clen) {
+        return '0';
+    }
+    return $clen; // return size in bytes
+}
 function send_message_to_terminal($terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift)
 {
     if (!$terminal) {
