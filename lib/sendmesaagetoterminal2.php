@@ -21,6 +21,41 @@ function get_remote_filesize($url)
     }
     return $clen; // return size in bytes
 }
+
+function get_audio_file_info($file)
+{
+    if (!defined('PATH_TO_FFMPEG')) {
+        if (IsWindowsOS()) {
+            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+        } else {
+            define("PATH_TO_FFMPEG", 'ffmpeg');
+        }
+    }
+    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+	DebMes ($data);
+    if (preg_match("/: Invalid /", $data)) {
+        return false;
+    }
+    //get duration
+    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
+    if (!isset($duration[1])) {
+        return false;
+    }
+    $hours = $duration[1];
+    $minutes = $duration[2];
+    $seconds = $duration[3];
+	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+	// get all info about codec
+	preg_match("/.+Audio: (.+), (.\d+) Hz, (.\w+), \w(.\d+)\w?, (.\d+) kb/", $data, $format);
+	$out['format'] = $format[1];
+	$out['sample_rate'] = $format[2];
+	$out['type'] = $format[3];
+	$out['codec'] = $format[4];
+	$out['bitrate'] = $format[5];
+	
+    return $out;
+}
+
 function send_message_to_terminal($terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift)
 {
     if (!$terminal) {
