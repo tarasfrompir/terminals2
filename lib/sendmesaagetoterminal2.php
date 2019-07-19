@@ -32,7 +32,7 @@ function get_audio_file_info($file)
         }
     }
     $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-	DebMes ($data);
+    //DebMes ($data);
     if (preg_match("/: Invalid /", $data)) {
         return false;
     }
