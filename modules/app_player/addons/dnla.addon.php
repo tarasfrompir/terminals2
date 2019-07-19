@@ -141,13 +141,9 @@ class dnla extends app_player_addon
         
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
-        // создаем хмл документ
-        $doc = new \DOMDocument();
-        $doc->loadXML($response);
-        //DebMes($response);
-        if ($doc->getElementsByTagName('PlayResponse')) {
+        if ($response) {
             $this->success = TRUE;
-            $this->message = 'Say message';
+            $this->message = 'Play files';
         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
