@@ -152,19 +152,19 @@ class MediaRenderer
         if ($content_type = 'application/octet-stream') {
             $content_type = 'audio/mpeg';
         }
-        DebMes('ct ' . $content_type);
-		// proveryaem
-		foreach($this->all_extension as $index => $urimetadata) {
-			if (stripos($urimetadata, 'http-get:*:'.$content_type.':*') !== FALSE) {
-				break ;
-			} else if (stripos($urimetadata, 'http-get:*:'.$content_type.':') !== FALSE) {
-				break ;
-			}
+        //DebMes('ct ' . $content_type);
+	// proveryaem
+	foreach($this->all_extension as $index => $urimetadata) {
+		if (stripos($urimetadata, 'http-get:*:'.$content_type.':*') !== FALSE) {
+			break ;
+		} else if (stripos($urimetadata, 'http-get:*:'.$content_type.':') !== FALSE) {
+			break ;
 		}
+	}
 
         $type_data = substr($content_type, 0, strpos($content_type, '/'));
         //DebMes($type_data);
-        DebMes ($urimetadata);
+        //DebMes ($urimetadata);
 
         $MetaData = '&lt;DIDL-Lite xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:sec=&quot;http://www.sec.co.kr/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot;&gt;';
         $MetaData .= '&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;1&quot;&gt;';
@@ -176,29 +176,9 @@ class MediaRenderer
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
         //DebMes($MetaData);
-
         //&lt;res protocolInfo="http-get:*:audio/mpeg:*" size="1135829" bitsPerSample="16" sampleFrequency="44100" nrAudioChannels="2" bitrate="40565" duration="00:00:28.000"&gt;http://192.168.8.100:31415/play/21A51710_mime=audio!mpeg_bits=16_channels=2_rate=044100_duration=28.mp3&lt;/res&gt;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $response = $this->sendRequestToDevice('SetAVTransportURI', array('InstanceID' => 0,'CurrentURI' => '<![CDATA[' . $url . ']]>','CurrentURIMetaData' => $MetaData));
+	$response = $this->sendRequestToDevice('SetAVTransportURI', array('InstanceID' => 0,'CurrentURI' => '<![CDATA[' . $url . ']]>','CurrentURIMetaData' => $MetaData));
         
         // создаем хмл документ
         $doc = new \DOMDocument();
@@ -274,10 +254,7 @@ class MediaRenderer
         if ($doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue == 'PLAYING') {
             $response = $this->instanceOnly('Pause');
         } else {
-            $response = $this->sendRequestToDevice('Play', array(
-                'InstanceID' => 0,
-                'Speed' => 1
-            ));
+            $response = $this->sendRequestToDevice('Play', array( 'InstanceID' => 0,'Speed' => 1));
         }
         $doc->loadXML($response);
         //DebMes($response);
