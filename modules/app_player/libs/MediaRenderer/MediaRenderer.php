@@ -9,10 +9,9 @@ class MediaRenderer
 {
     public function __construct($server)
     {
-        // получаем айпи и порт устройства
-        $url        = parse_url($server);
-        $this->ip   = $url['host'];
-        $this->port = $url['port'];
+		if (!$server) {
+			return;
+		}
         // получаем XML
         $ch         = curl_init();
         curl_setopt($ch, CURLOPT_URL, $server);
@@ -20,7 +19,16 @@ class MediaRenderer
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
         curl_close($ch);
-        
+
+        if (!$content) {
+			return;
+		}
+
+        // получаем айпи и порт устройства
+        $url        = parse_url($server);
+        $this->ip   = $url['host'];
+        $this->port = $url['port'];
+
         // загружаем xml
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($content);
