@@ -188,10 +188,10 @@ class MediaRenderer
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        DebMes($response);
+        //DebMes($response);
         
-		if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
-            return FALSE;
+        if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
+            return $response;
         }
 		
         $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
@@ -204,10 +204,8 @@ class MediaRenderer
             //   $doc->loadXML($response);
             //   $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
             //} 
-            return TRUE;
-        } else {
-            return FALSE;
         }
+        return $response;
     }
     
     public function setNext($url)
