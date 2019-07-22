@@ -91,11 +91,11 @@ while (1) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
-            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT']) {
+            if (!gg($terminal['LINKED_OBJECT'] . '.BASY')) {
+                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] ) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
                         // zapisivaem sostoyanie pleera
-                        if ($terminal['LINKED_OBJECT'] AND !gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
+                        if (!gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
                             $out = getPlayerStatus($terminal['NAME']);
                             if (is_array($out) AND $out['state'] == 'playing') {
                                 sg($terminal['LINKED_OBJECT'] . '.rest_link', $out['file']);
