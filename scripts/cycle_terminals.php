@@ -92,7 +92,7 @@ while (1) {
             //DebMes('Проверяем наличие файла для запуска отделный поток для терминала ' . $terminal['ID'] . ' ' . microtime(true), 'terminals2');
             // запускаем все что имеет function sayttotext
             if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND !gg($terminal['LINKED_OBJECT'] . '.BASY') AND $terminal['LINKED_OBJECT']) {
+                if ($terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS'] AND $message['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT']) {
                     if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
                         // zapisivaem sostoyanie pleera
                         if ($terminal['LINKED_OBJECT'] AND !gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
@@ -122,8 +122,8 @@ while (1) {
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
             playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
-			usleep(500000);
-			DebMes($terminal['NAME']. gg($terminal['LINKED_OBJECT'] . '.rest_time'));
+	    usleep(500000);
+	    DebMes($terminal['NAME']. gg($terminal['LINKED_OBJECT'] . '.rest_time'));
             seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
             // надо еще с громкостью разобратся
             //обнуляем все значения
