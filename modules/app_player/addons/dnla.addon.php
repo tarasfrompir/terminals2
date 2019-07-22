@@ -165,6 +165,9 @@ class dnla extends app_player_addon
         // Для получения состояния плеера
         $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->getPosition();
+		if (!$response) {
+			return $this->success;
+		}
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
         $name = 'Played url om the device';
