@@ -204,7 +204,7 @@ class MediaRenderer
 		
         $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
         $doc->loadXML($response);
-        DebMes($response);
+        //DebMes($response);
         
         if ($doc->getElementsByTagName('PlayResponse ')) {
             //while ($time<1) {
