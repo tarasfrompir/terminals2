@@ -216,15 +216,6 @@ function getParams() {
     }
    }
 
-   $main_terminal=getTerminalsByName('MAIN')[0];
-   if (!$main_terminal['ID']) {
-    $main_terminal=array();
-    $main_terminal['NAME']='MAIN';
-    $main_terminal['TITLE']='MAIN';
-    $main_terminal['HOST']=$_SERVER['SERVER_ADDR'];
-    SQLInsert('terminals',$main_terminal);
-   }
-
    if (!$out['TERMINAL_TITLE'] && $session->data['TERMINAL']) {
     $new_terminal=array();
     $new_terminal['TITLE']=$session->data['TERMINAL'];
