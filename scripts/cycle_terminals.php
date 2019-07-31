@@ -118,21 +118,23 @@ while (1) {
     usleep(330000);
     // esli netu soobsheniy to probuem vosstanovit vosproizvodimoe
     $terminalsName = getObjectsByProperty('rest_link');
-    foreach ($terminalsName as $terminals) {
-        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-        if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
-            playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
-	    usleep(500000);
-	    DebMes($terminal['NAME']. gg($terminal['LINKED_OBJECT'] . '.rest_time'));
-            seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
-            // надо еще с громкостью разобратся
-            //обнуляем все значения
-            sg($terminal['LINKED_OBJECT'] . '.rest_link', '');
-            sg($terminal['LINKED_OBJECT'] . '.media_vol_level', '');
-            sg($terminal['LINKED_OBJECT'] . '.rest_time', '');
-            
-        }
-    }
+	if ($terminalsName) {
+		foreach ($terminalsName as $terminals) {
+			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+			if (!gg($terminal['LINKED_OBJECT'] . '.BASY') AND gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
+				playMedia(gg($terminal['LINKED_OBJECT'] . '.rest_link'), $terminal['NAME']);
+			usleep(500000);
+			DebMes($terminal['NAME']. gg($terminal['LINKED_OBJECT'] . '.rest_time'));
+				seekPlayerPosition($terminal['NAME'], gg($terminal['LINKED_OBJECT'] . '.rest_time'));
+				// надо еще с громкостью разобратся
+				//обнуляем все значения
+				sg($terminal['LINKED_OBJECT'] . '.rest_link', '');
+				sg($terminal['LINKED_OBJECT'] . '.media_vol_level', '');
+				sg($terminal['LINKED_OBJECT'] . '.rest_time', '');
+				
+			}
+		}
+	}
     usleep(330000);
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
