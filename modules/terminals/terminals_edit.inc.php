@@ -4,7 +4,7 @@
 * @version 0.3 (auto-set)
 */
 
-$typeterminals = array('chromecast'=>'mediaplayer', 'dnla'=>'mediaplayer', 'foobar'=>'mediaplayer', 'ghn'=>'googlehomenotifier', 'kodi'=>'mediaplayer', 'kodialt'=>'mediaplayer', 'lms'=>'mediaplayer', 'mainterm'=>'mediaplayer', 'majordroid'=>'majordroid','mpd'=>'mediaplayer', 'telegramm'=>'', 'vlc'=>'mediaplayer', 'vlcweb'=>'mediaplayer');
+$typeterminals = array('chromecast'=>'mediaplayer', 'dnla'=>'mediaplayer', 'foobar'=>'mediaplayer', 'ghn'=>'googlehomenotifier', 'kodi'=>'mediaplayer', 'kodialt'=>'mediaplayer', 'lms'=>'mediaplayer', 'mainterm'=>'mediaplayer', 'majordroid'=>'majordroid','mpd'=>'mediaplayer', 'telegramm'=>'text', 'vlc'=>'mediaplayer', 'vlcweb'=>'mediaplayer');
 
 if ($this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
