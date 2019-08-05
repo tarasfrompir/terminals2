@@ -133,7 +133,7 @@ function sayTo($ph, $level = 0, $destination = '')
             pingTerminalSafe($terminal['NAME']);
         } else if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
-			if ( $terminal['TTS_TYPE']!='') {
+			if ( $terminal['TTS_TYPE']=='mediaplayer') {
 		        $needgenerateaudio = true;
 		    }
 		} 
@@ -206,7 +206,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             pingTerminalSafe($terminal['NAME']);
         } else if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
-			if ( $terminal['TTS_TYPE']!='') {
+			if ( $terminal['TTS_TYPE']=='mediaplayer') {
 		        $needgenerateaudio = true;
 		    }
 		} 
