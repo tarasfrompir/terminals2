@@ -264,18 +264,9 @@ class terminals extends module
         
 		// update all terminals
         $terminals = SQLSelect("SELECT * FROM terminals");
-		$media = array("chromecast", "dnla", "foobar", "kodi", "kodialt", "lms", "mainter", "mpd", "vlc", "vlcweb");
-		$text = array("telegramm", "ghn");
+		$typeterminals = array("chromecast"=>'mediaplayer', "dnla"=>'mediaplayer', "foobar"=>'mediaplayer', "ghn"=>'googlehomenotifier', "kodi"=>'mediaplayer', "kodialt"=>'mediaplayer', "lms"=>'mediaplayer', "mainterm"=>'mediaplayer', "majordroid"=>'majordroid',"mpd"=>'mediaplayer', "telegramm"=>'', "vlc"=>'mediaplayer', "vlcweb"=>'mediaplayer');
         foreach ($terminals as $terminal) {
-            if ($terminal['MAJORDROID_API']) {
-                $terminal['PLAYER_TYPE'] = 'majordroid';
-            }
-            if (in_array( $terminal['PLAYER_TYPE'], $media)) {
-                $terminal['TTS_TYPE'] = 'mediaplayer';
-            } else if (in_array( $terminal['PLAYER_TYPE'], $text)) {
-                $terminal['TTS_TYPE'] = '';
-            }
-            
+            $terminal['TTS_TYPE'] = $typeterminals[$terminal['PLAYER_TYPE']];
             $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
