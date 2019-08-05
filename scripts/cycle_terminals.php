@@ -49,7 +49,7 @@ while (1) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-            if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayttotext")) {
+            if ($terminal['TTS_TYPE'] == 'googlehomenotifier' OR $terminal['TTS_TYPE'] == 'text') {
                 sayToTextSafe($message['ID'], $terminal['ID']);
                 $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
             }
@@ -67,7 +67,7 @@ while (1) {
             $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
             // запускаем все что имеет function sayttotext
             if (!gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if (strpos(file_get_contents(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php'), "function sayToMedia")) {
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' ) {
                     // zapisivaem sostoyanie pleera
                     if (!gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
                         $out = getPlayerStatus($terminal['NAME']);
