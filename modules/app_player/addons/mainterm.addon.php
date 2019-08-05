@@ -4,7 +4,7 @@
     Addon Main terminal for app_player
 */
 
-class mainter extends app_player_addon {
+class mainterm extends app_player_addon {
 
     // Private properties
     private $address;
