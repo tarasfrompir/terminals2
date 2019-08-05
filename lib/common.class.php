@@ -72,17 +72,8 @@ function sayReply($ph, $level = 0, $replyto = '')
         $said_status = sayTo($ph, $level, $terminal_rec['NAME']);
         if (!$said_status) {
             say($ph, $level);
-        } else {
-            //$rec = array();
-            //$rec['MESSAGE']   = $ph;
-            //$rec['ADDED']     = date('Y-m-d H:i:s');
-            //$rec['ROOM_ID']   = 0;
-            //$rec['MEMBER_ID'] = 0;
-            //if ($level > 0) $rec['IMPORTANCE'] = $level;
-            //$rec['ID'] = SQLInsert('shouts', $rec);
         }
     }
-    //processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
 }
 
 
@@ -142,12 +133,17 @@ function sayTo($ph, $level = 0, $destination = '')
             pingTerminalSafe($terminal['NAME']);
         } else if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
-		}
+			if ( $terminal['TTS_TYPE']!='') {
+		        $needgenerateaudio = true;
+		    }
+		} 
     }
 	
     $rec['ID'] = SQLInsert('shouts', $rec);
-	
-    processSubscriptionsSafe('SAYTO', array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAYTO', array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+	}
     
 	return 1;
 }
@@ -210,12 +206,17 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             pingTerminalSafe($terminal['NAME']);
         } else if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
-		}
+			if ( $terminal['TTS_TYPE']!='') {
+		        $needgenerateaudio = true;
+		    }
+		} 
     }
 	
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    processSubscriptionsSafe('SAY', array('level' => $message['IMPORTANCE'],'message' => $message['MESSAGE'],'id' => $message['ID'])); //, 'ignoreVoice'=>$ignoreVoice
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAY', array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+	}
 
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
@@ -237,8 +238,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
     }
-    //dprint(date('Y-m-d H:i:s')." Say OK",false);
-        return 1;
+
+    return 1;
 }
 
 function ask($prompt, $target = '')
