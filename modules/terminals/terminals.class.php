@@ -270,10 +270,10 @@ class terminals extends module
             if ($terminal['MAJORDROID_API']) {
                 $terminal['PLAYER_TYPE'] = 'majordroid';
             }
-			if (in_array("Irix", $media)) {
-				$terminal['TTS_TYPE'] = 'mediaplayer';
-            } else if (in_array("Irix", $text)) {
-				$terminal['TTS_TYPE'] = '';
+            if (in_array( $terminal['PLAYER_TYPE'], $media)) {
+                $terminal['TTS_TYPE'] = 'mediaplayer';
+            } else if (in_array( $terminal['PLAYER_TYPE'], $text)) {
+                $terminal['TTS_TYPE'] = '';
             }
             
             $terminal['CANPLAY'] = '1';
