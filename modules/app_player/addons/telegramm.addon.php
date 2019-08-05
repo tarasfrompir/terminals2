@@ -1,6 +1,6 @@
 <?php
 
-class bteleg extends app_player_addon
+class telegramm extends app_player_addon
 {
     
     // Private properties
