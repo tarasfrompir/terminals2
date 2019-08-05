@@ -142,7 +142,7 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
 	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAYTO', array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
 	}
     
 	return 1;
@@ -215,7 +215,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
 	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAY', array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'id' => $message['ID']));
+		processSubscriptionsSafe('SAY', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
 	}
 
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
