@@ -2,7 +2,7 @@
 /*
 	Addon Kodi (XBMC) for app_player
 */
-class ckodi extends app_player_addon {
+class kodi extends app_player_addon {
 	
 	// Private properties
 	private $curl;
