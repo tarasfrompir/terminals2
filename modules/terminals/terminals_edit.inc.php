@@ -64,7 +64,15 @@ if ($this->mode == 'update') {
 
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
 	   
-    $rec['TTS_TYPE'] = gr('tts_type');
+    //$rec['TTS_TYPE'] = gr('tts_type');
+	$media = array("chromecast", "dnla", "foobar", "kodi", "kodialt", "lms", "mainter", "mpd", "vlc", "vlcweb");
+	$text = array("telegramm", "ghn");
+    if (in_array( $rec['PLAYER_TYPE'], $media)) {
+        $rec['TTS_TYPE'] = 'mediaplayer';
+    } else if (in_array( $rec['PLAYER_TYPE'], $text)) {
+        $rec['TTS_TYPE'] = '';
+    }
+
     $rec['PLAYER_TYPE'] = gr('player_type');
     $rec['PLAYER_PORT'] = gr('player_port');
     $rec['PLAYER_USERNAME'] = gr('player_username');
