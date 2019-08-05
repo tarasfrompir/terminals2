@@ -253,32 +253,33 @@ class terminals extends module
      *
      * @access private
      */
-    function install($parent_name = '')
+     function install($parent_name = '')
     {
         // updates database
         // update main terminal
         $terminal                = getMainTerminal();
         $terminal['PLAYER_TYPE'] = 'mainterm';
+		$terminal['TTS_TYPE'] = 'mediaplayer';
         SQLUpdate('terminals', $terminal);
-        // update all terminals
+        
+		// update all terminals
         $terminals = SQLSelect("SELECT * FROM terminals");
+		$media = array("chromecast", "dnla", "foobar", "kodi", "kodialt", "lms", "mainter", "mpd", "vlc", "vlcweb");
+		$text = array("telegramm", "ghn");
         foreach ($terminals as $terminal) {
             if ($terminal['MAJORDROID_API']) {
                 $terminal['PLAYER_TYPE'] = 'majordroid';
-            } else {
-                $terminal['TTS_TYPE'] = 'mediaplayer';
+            }
+			if (in_array("Irix", $media)) {
+				$terminal['TTS_TYPE'] = 'mediaplayer';
+            } else if (in_array("Irix", $text)) {
+				$terminal['TTS_TYPE'] = '';
             }
             
             $terminal['CANPLAY'] = '1';
             SQLUpdate('terminals', $terminal);
         }
         
-        // обнуляем сообщения типа они все передані на терминалі
-        $messages = SQLSelect("SELECT * FROM shouts WHERE SOURCE LIKE '%^%'");
-        foreach ($messages as $message) {
-            $message['SOURCE'] = '';
-            SQLUpdate('shouts', $message);
-        }
         // запускаем цикл автоматом
         setGlobal('cycle_terminalsControl', 'restart');
         setGlobal('cycle_terminalsAutoRestart', '1');
@@ -288,7 +289,7 @@ class terminals extends module
         SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
         
 	// для исправления подписки после наладки необходимо будет удалить
-	unsubscribeFromEvent($this->name, 'SAY');
+        unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
         unsubscribeFromEvent($this->name, 'SAYREPLY');
