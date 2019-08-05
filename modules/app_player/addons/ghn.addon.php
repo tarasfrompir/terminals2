@@ -4,7 +4,7 @@
 	Addon Google Home Notifier for app_player
 */
 
-class cghn extends app_player_addon {
+class ghn extends app_player_addon {
 
 	// Private properties
 	private $address;
