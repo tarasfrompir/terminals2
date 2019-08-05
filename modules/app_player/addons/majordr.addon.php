@@ -4,7 +4,7 @@
 Addon MajorDroid for app_player
 */
 
-class cmajordr extends app_player_addon
+class majordr extends app_player_addon
 {
     
     // Constructor
