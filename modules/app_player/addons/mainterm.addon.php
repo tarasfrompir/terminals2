@@ -49,13 +49,12 @@ class mainterm extends app_player_addon {
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-		DebMes($message['FILE_LINK']);
-		//если нету ссылки то возвращаем назад
-		if (!$message['FILE_LINK']) {
+        //если нету ссылки то возвращаем наза
+        if (!$message['FILE_LINK']) {
             $this->success = FALSE;
             $this->message = 'Command execution error! Not found link';
-			return $this->success;
-		}
+	    return $this->success;
+	}
         $this->reset_properties();
         if($message['FILE_LINK']) {
             if(file_exists($message['FILE_LINK'])) {
