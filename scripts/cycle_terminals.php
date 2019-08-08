@@ -58,7 +58,7 @@ while (1) {
             }
         }
     }
-    sleep(1);
+    usleep(300000);
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
