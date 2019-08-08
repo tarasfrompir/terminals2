@@ -139,14 +139,15 @@ function sayTo($ph, $level = 0, $destination = '')
 		} 
     }
 	
-	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
-    }  else {
-        $rec['CHEKED']=1;
+	if (!$needgenerateaudio) {
+	   $rec['CHEKED']=1;
 	}
 	
     $rec['ID'] = SQLInsert('shouts', $rec);    
 	
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
+    }	
 	return 1;
 }
 
@@ -214,14 +215,15 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 		} 
     }
 		
-	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
-    }  else {
-        $rec['CHEKED']=1;
+	if (!$needgenerateaudio) {
+	   $rec['CHEKED']=1;
 	}
 	
+    $rec['ID'] = SQLInsert('shouts', $rec);    
 	
-    $rec['ID'] = SQLInsert('shouts', $rec);
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
+    }	
 
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
