@@ -212,7 +212,6 @@ class terminals extends module
         setGlobal('cycle_terminalsAutoRestart', '1');
         
         // modify base
-        SQLExec("ALTER TABLE `shouts` CHANGE `EVENT` `EVENT` VARCHAR(255) NOT NULL DEFAULT ''");
         SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
         
 	// для исправления подписки после наладки необходимо будет удалить
