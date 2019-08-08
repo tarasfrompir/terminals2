@@ -82,60 +82,38 @@ class chromecast extends app_player_addon
         }
         return $this->success;
     }
+
     // Say
-    function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        
-         // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $message_link, $m)) {
+        $this->reset_properties();
+		// берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $message['FILE_LINK'], $m)) {
             $server_ip = getLocalIp();
             if (!$server_ip) {
                 DebMes("Server IP not found", 'terminals');
                 return false;
             } else {
-                $message_link = 'http://' . $server_ip . $m[0];
+                $message['FILE_LINK'] = 'http://' . $server_ip . $m[0];
             }
         }
         //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!remote_file_exists($message_link)) {
-            $message_link = BASE_URL . $m[0];
+        if (!remote_file_exists($message['FILE_LINK'])) {
+            $message['FILE_LINK'] = BASE_URL . $m[0];
         }
-        //DebMes("Url to file ".$message_link);
-        // конец блока получения ссылки на файл 
         
-        $this->reset_properties();
-        if (strlen($message_link)) {
+        if (strlen($message['FILE_LINK'])) {
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
-                $cc->load($message_link, 0);
+                $cc->load($message['FILE_LINK'], 0);
                 $cc->play();
-                $this->success = TRUE;
-                $this->message = 'OK';
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-                $this->message = $e->getMessage();
-            }
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Input is missing!';
-        }
-        return $this->success;
-    }
-    
-    // Play
-    function play($input)
-    {
-        $this->reset_properties();
-        if (strlen($input)) {
-            try {
-                $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                $cc->requestId = time();
-                $cc->load($input, 0);
-                $cc->play();
-                $this->success = TRUE;
-                $this->message = 'OK';
+				
+				sleep ($message['TIME_MESSAGE']);
+				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+                $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                SQLUpdate('shouts', $rec);
+                sg($terminal['LINKED_OBJECT'].'.BASY',0);
             }
             catch (Exception $e) {
                 $this->success = FALSE;
