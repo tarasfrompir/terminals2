@@ -30,7 +30,7 @@ SQLExec("UPDATE shouts SET CHEKED='1'");
 $terminals = SQLSelect("SELECT * FROM terminals");
 foreach ($terminals as $terminal) {
     sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
-}
+} 
 
 while (1) {
     if (time() - $checked_time > 10) {
@@ -41,51 +41,24 @@ while (1) {
     if (time() - $clear_message > 180) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
-        SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE) ");
+		SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
     }
-    // отправка только текстовых сообщений
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND FILE_LINK='' AND CHEKED = '0' ORDER BY ID ASC");
-    if ($message) {
-        $out_terminals = explode("^", $message['SOURCE']);
-        foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-            if ($terminal['TTS_TYPE'] == 'googlehomenotifier' OR $terminal['TTS_TYPE'] == 'text') {
-                sayToTextSafe($message['ID'], $terminal['ID']);
-                $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-            }
-        }
-        // pomechaem chto obrabotano i zapusheno na generaciyu rechi i obnovlyaem v baze
-        $message['CHEKED'] = '1';
-        SQLUpdate('shouts', $message);
-    }
-    usleep(330000);
+	
     // отправка сообщений сгенерированных ТТС
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND FILE_LINK != '' AND CHEKED = '1' ORDER BY ID ASC");
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND CHEKED='1' ORDER BY ID ASC");
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-            // запускаем все что имеет function sayttotext
+			if (!$terminals) continue;
+			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
+			// запускаем все что имеет function sayttotext
             if (!gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' ) {
-                    // zapisivaem sostoyanie pleera
-                    if (!gg($terminal['LINKED_OBJECT'] . '.rest_link')) {
-                        $out = getPlayerStatus($terminal['NAME']);
-                        if (is_array($out) AND $out['state'] == 'playing') {
-                            sg($terminal['LINKED_OBJECT'] . '.rest_link', $out['file']);
-                            sg($terminal['LINKED_OBJECT'] . '.media_vol_level', $out['volume']);
-                            sg($terminal['LINKED_OBJECT'] . '.rest_time', $out['time']);
-                        }
-                    }
-                    sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
-                    sayTToMediaSafe($message['ID'], $terminal['ID']);
-                }
+                sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
+                send_message_to_terminalSafe($message, $terminal);
             }
-            $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
         }
-        SQLUpdate('shouts', $message);
     }
-    usleep(330000);
+    sleep(1);
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
