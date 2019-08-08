@@ -139,12 +139,14 @@ function sayTo($ph, $level = 0, $destination = '')
 		} 
     }
 	
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
 	if ($needgenerateaudio) {
 		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
+    }  else {
+        $rec['CHEKED']=1;
 	}
-    
+	
+    $rec['ID'] = SQLInsert('shouts', $rec);    
+	
 	return 1;
 }
 
@@ -211,12 +213,15 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 		    }
 		} 
     }
+		
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
+    }  else {
+        $rec['CHEKED']=1;
+	}
+	
 	
     $rec['ID'] = SQLInsert('shouts', $rec);
-
-	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAY', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
-	}
 
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
@@ -889,6 +894,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
+
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
             }
             curl_close($ch);
@@ -906,8 +912,6 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     } else {
         $result = LoadFile($cache_file);
     }
-
-
     endMeasure('getURL');
 
     return $result;
