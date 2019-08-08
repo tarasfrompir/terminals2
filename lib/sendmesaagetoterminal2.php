@@ -96,16 +96,7 @@ function send_message_to_terminal($message, $terminal)
             $player = new $terminal['PLAYER_TYPE']($terminal);
         }
     }
-    //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-
     $out = $player->say_message($message, $terminal);
-
-/* 	if ($out) {
-	    $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-        $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-        SQLUpdate('shouts', $rec);
-	}
-	sg($terminal['LINKED_OBJECT'].'.BASY',0); */
 }
 
 function send_message_to_terminalSafe($message, $terminal)
