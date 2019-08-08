@@ -160,19 +160,19 @@ class terminals extends module
             $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
             $message['TIME_MESSAGE'] = $details['time_shift'];
             $message['FILE_LINK'] = $details['filename'];
-            SQLUpdate('shouts', $message);
+			$message['CHEKED']=1;
+	        SQLUpdate('shouts', $message);
         } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
                 if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-                    //sg($terminal['LINKED_OBJECT'] . '.status', '1');
+                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
                 } else {
-                    //sg($terminal['LINKED_OBJECT'] . '.status', '0');
-                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
                     $terminal['IS_ONLINE']       = 0;
                 }
                 SQLUpdate('terminals', $terminal);
@@ -180,71 +180,7 @@ class terminals extends module
         }
     }
     
-    /**
-     * очередь сообщений 
-     *
-     * @access public
-     */
-    function terminalSayByCacheQueue($terminals, $details)
-    {
-        foreach ($terminals as $terminal) {
-            // Addons main class
-            include_once(DIR_MODULES . 'app_player/addons.php');
-            // Load addon
-            if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-                include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
-                if (class_exists($terminal['PLAYER_TYPE'])) {
-                    if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-                        $player = new $terminal['PLAYER_TYPE']($terminal);
-                    }
-                }
-            }
-            if (!$terminal['IS_ONLINE'] OR !method_exists($player, 'say') OR !$terminal['ID'] OR !$terminal['CANPLAY'] OR !$terminal['CANTTS'] OR $terminal['MIN_MSG_LEVEL'] > $details['level']) {
-                continue;
-            }
-            if ($terminal['IS_ONLINE']) {
-                sg($terminal['LINKED_OBJECT'] . '.status', '1');
-            }
-            if (!$terminal['MIN_MSG_LEVEL']) {
-                $terminal['MIN_MSG_LEVEL'] = 0;
-            }
-            if ($details['event'] == 'ASK') {
-                $details['level'] = 9999;
-            }
-            
-            // berem vse soobsheniya iz shoots dlya poiska soobsheniya s takoy frazoy
-            $messages = SQLSelect("SELECT * FROM shouts ORDER BY ID DESC LIMIT 0 , 100");
-            foreach ($messages as $message) {
-                if ($details['message'] == $message['MESSAGE']) {
-                    $number_message = $message['ID'];
-                    break;
-                }
-            }
-            
-            addScheduledJob('target-' . $terminal['NAME'] . '-number-' . $number_message, "send_message_to_terminal('" . $terminal['NAME'] . "','" . $details['message'] . "','" . $details['event'] . "','" . $details['member'] . "','" . $details['level'] . "','" . $details['filename'] . "','" . $details['linkfile'] . "','" . $details['lang'] . "','" . $details['langfull'] . "','" . $details['time_shift'] . "');", time(), $details['time_shift'] + 2);
-            
-            // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
-            $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'target-' . $terminal['NAME'] . '-number-' . "%' ORDER BY `TITLE` ASC");
-            $first_fields = reset($all_messages);
-            $runtime      = (strtotime($first_fields['RUNTIME']));
-            foreach ($all_messages as $message) {
-                $expire          = (strtotime($message['EXPIRE'])) - (strtotime($message['RUNTIME']));
-                $rec['ID']       = $message['ID'];
-                $rec['TITLE']    = $message['TITLE'];
-                $rec['COMMANDS'] = $message['COMMANDS'];
-                $rec['RUNTIME']  = date('Y-m-d H:i:s', $runtime);
-                $rec['EXPIRE']   = date('Y-m-d H:i:s', $runtime + $expire);
-                // proverka i udaleniye odinakovih soobsheniy
-                if ($prev_message['TITLE'] == $message['TITLE']) {
-                    SQLExec("DELETE FROM jobs WHERE ID='" . $rec['ID'] . "'");
-                } else {
-                    SQLUpdate('jobs', $rec);
-                }
-                $runtime      = $runtime + $expire;
-                $prev_message = $message;
-            }
-        }
-    }
+    
     
     /**
      * Install
