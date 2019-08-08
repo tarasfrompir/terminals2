@@ -49,12 +49,6 @@ class mainterm extends app_player_addon {
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        //если нету ссылки то возвращаем наза
-        if (!$message['FILE_LINK']) {
-            $this->success = FALSE;
-            $this->message = 'Command execution error! Not found link';
-	    return $this->success;
-	}
         $this->reset_properties();
         if($message['FILE_LINK']) {
             if(file_exists($message['FILE_LINK'])) {
@@ -63,8 +57,8 @@ class mainterm extends app_player_addon {
                 } else {
                     safe_exec('mplayer ' . $message['FILE_LINK'] . " >/dev/null 2>&1");
                 }
-                sleep ($message['TIME_MESSAGE']);
-                $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+				sleep ($message['TIME_MESSAGE']);
+				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
                 $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 SQLUpdate('shouts', $rec);
                 sg($terminal['LINKED_OBJECT'].'.BASY',0);
