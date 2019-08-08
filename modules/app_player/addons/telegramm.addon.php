@@ -24,35 +24,32 @@ class telegramm extends app_player_addon
     }
     
     // Say
-    function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        DebMes('Получили сообщение на Телеграм ' . $message . ' ' . microtime(true), 'terminals2');
+		$time_message = $message['TIME_MESSAGE'];
+		$outlink = $message['FILE_LINK'];
         $this->reset_properties();
-        //DebMes('Проверяем наличие модуля Телеграма ' . microtime(true), 'terminals2');
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             $users   = SQLSelect("SELECT * FROM tlg_user ");
             $c_users = count($users);
-            DebMes('Проверяем количество пользователей в модуле Телеграма для сообщения ' . $message . ' ' . microtime(true), 'terminals2');
-            if ($message AND $c_users) {
+            if ($message['MESSAGE'] AND $c_users) {
                 for ($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    DebMes('Отобрано пользователей в телеграме для сообщения ' . $message . ' ' . microtime(true), 'terminals2');
-                    $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message);
+                    $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
                     //$out = getURL($url,0);
-                    $out = getURLBackground($url, 0);
-                    
-                    if ($out = 'Ok') {
-                        DebMes('Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
-                        $this->success = TRUE;
-                        $this->message = 'OK';
-                    } else {
-                        DebMes('ОШИБКА! НЕ Отправили сообщение ' . $message . ' в телеграм ' . microtime(true), 'terminals2');
-                        $this->success = FALSE;
-                        $this->message = 'Command execution error!';
-                    }
+                    getURLBackground($url, 0);
+
+                    $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+                    $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                    SQLUpdate('shouts', $rec);
+
+                    sg($terminal['LINKED_OBJECT'].'.BASY',0);
+					
+                    $this->success = TRUE;
+                    $this->message = 'OK';
                 }
             } else {
                 $this->success = FALSE;
