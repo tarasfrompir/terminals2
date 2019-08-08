@@ -46,61 +46,6 @@ function get_audio_file_info($file)
     return $out;
 }
 
-function send_message_to_terminal($terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull, $timeshift)
-{
-    if (!$terminal) {
-        return 0;
-    }
-    
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=say";
-    $url .= "&play_terminal=" . $terminal;
-    $url .= "&param=" . urlencode($terminal . ',' . $message . ',' . $event . ',' . $member . ',' . $level . ',' . $filename . ',' . $linkfile . ',' . $lang . ',' . $langfull . ',' . $timeshift);
-    getURLBackground($url);
-    return 1;
-}
-
-function sayToText($messageid, $terminalid)
-{
-    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-    $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
-    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
-    include_once(DIR_MODULES . 'app_player/addons.php');
-    include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
-    if (class_exists($terminal['PLAYER_TYPE'])) {
-        if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-            $player = new $terminal['PLAYER_TYPE']($terminal);
-        }
-    }
-    //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-    while (!$out AND $count <2) {
-        $out = $player->sayttotext($message['MESSAGE'], $message['EVENT']);
-        $count = $count+1;
-    }
-	
-}
-
-function sayToTextSafe($messageid, $terminalid)
-{
-    //DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-    $data = array(
-        'sayToText' => 1,
-        'messageid' => $messageid,
-        'terminalid' => $terminalid
-    );
-    if (session_id()) {
-        $data[session_name()] = session_id();
-    }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    getURLBackground($url, 0);
-    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
-}
-
 // check terminal 
 function pingTerminal($terminal)
 {
@@ -142,10 +87,8 @@ function pingTerminalSafe($terminal)
     return $result;
 }
 
-function sayTToMedia($messageid, $terminalid)
+function send_message_to_terminal($message, $terminal)
 {
-    $message  = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $messageid . "'");
-    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminalid . "'");
     include_once(DIR_MODULES . 'app_player/addons.php');
     include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
     if (class_exists($terminal['PLAYER_TYPE'])) {
@@ -154,22 +97,23 @@ function sayTToMedia($messageid, $terminalid)
         }
     }
     //DebMes('Отправлено сообщение для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
-    while (!$out AND $count <2) {
-        $out = $player->sayToMedia($message['FILE_LINK'], $message['TIME_MESSAGE']);
-        $count = $count+1;
-    }
 
-	sleep($message['TIME_MESSAGE']+1);
-	sg($terminal['LINKED_OBJECT'].'.BASY',0);
+    $out = $player->say_message($message, $terminal);
+
+/* 	if ($out) {
+	    $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+        $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+        SQLUpdate('shouts', $rec);
+	}
+	sg($terminal['LINKED_OBJECT'].'.BASY',0); */
 }
 
-function sayTToMediaSafe($messageid, $terminalid)
+function send_message_to_terminalSafe($message, $terminal)
 {
-    //DebMes('Получили очередь в отдельный поток для терминала ' . $terminalid . ' ' . microtime(true), 'terminals2');
     $data = array(
-        'sayTToMedia' => 1,
-        'messageid' => $messageid,
-        'terminalid' => $terminalid
+        'send_message_to_terminal' => 1,
+        'message' => $message,
+        'terminal' => $terminal
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -181,6 +125,5 @@ function sayTToMediaSafe($messageid, $terminalid)
         }
     }
     getURLBackground($url, 0);
-    //DebMes('Запущена очередь в отделный поток для терминала ' . $terminals . ' ' . microtime(true), 'terminals2');
 }
 
