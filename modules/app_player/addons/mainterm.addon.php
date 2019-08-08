@@ -49,6 +49,7 @@ class mainterm extends app_player_addon {
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
+		DebMes($message['FILE_LINK']);
 		//если нету ссылки то возвращаем назад
 		if (!$message['FILE_LINK']) {
             $this->success = FALSE;
@@ -57,13 +58,14 @@ class mainterm extends app_player_addon {
 		}
         $this->reset_properties();
         if($message['FILE_LINK']) {
-            if(file_exists($outlink)) {
+            if(file_exists($message['FILE_LINK'])) {
                 if (IsWindowsOS()){
                     safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['FILE_LINK']);
                 } else {
                     safe_exec('mplayer ' . $message['FILE_LINK'] . " >/dev/null 2>&1");
                 }
-				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+                sleep ($message['TIME_MESSAGE']);
+                $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
                 $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 SQLUpdate('shouts', $rec);
                 sg($terminal['LINKED_OBJECT'].'.BASY',0);
