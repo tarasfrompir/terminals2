@@ -110,7 +110,11 @@ function sayTo($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
-    // add message to chat
+
+	// replace enter simbol
+	$ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
+
+    // add message to chat	
     $rec = array();
     $rec['MESSAGE'] = $ph;
     $rec['ADDED'] = date('Y-m-d H:i:s');
@@ -182,11 +186,11 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-    //dprint(date('Y-m-d H:i:s')." Say started",false);
 
-    //verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
-    //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
+	// replace enter simbol
+	$ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
 
+    // add message to chat	
     $rec = array();
     $rec['MESSAGE'] = $ph;
     $rec['ADDED'] = date('Y-m-d H:i:s');
