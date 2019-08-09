@@ -68,7 +68,6 @@ class mainterm extends app_player_addon {
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
-
         return $this->message;
     }
 }
