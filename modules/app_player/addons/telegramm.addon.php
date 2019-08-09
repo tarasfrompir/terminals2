@@ -39,15 +39,17 @@ class telegramm extends app_player_addon
                         $user_id = $users[$j]['NAME'];
                     }
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
-                    //$out = getURL($url,0);
-                    getURLBackground($url, 0);
-
-                    $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-                    $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                    SQLUpdate('shouts', $rec);
-
-                    $this->success = TRUE;
-                    $this->message = 'OK';
+                    $out = getURL($url,0);
+                    if ($out) {
+                        $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+                        $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                        SQLUpdate('shouts', $rec);
+                        $this->success = TRUE;
+                        $this->message = 'OK';
+                    } else {
+                        $this->success = FALSE;
+                        $this->message = 'Command execution error!';
+                    }
                 }
             } else {
                 $this->success = FALSE;
