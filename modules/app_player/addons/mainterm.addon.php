@@ -57,7 +57,7 @@ class mainterm extends app_player_addon {
                 } else {
                     safe_exec('mplayer ' . $message['FILE_LINK'] . " >/dev/null 2>&1");
                 }
-				sleep ($message['TIME_MESSAGE']);
+                sleep ($message['TIME_MESSAGE']);
                 $this->success = TRUE;
                 $this->message = 'OK';
             } else {
@@ -68,7 +68,7 @@ class mainterm extends app_player_addon {
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
-        sleep ($message['TIME_MESSAGE']);
+
         return $this->message;
     }
 }
