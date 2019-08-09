@@ -18,11 +18,11 @@ class majordroid extends app_player_addon
         $this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 7999 : $this->terminal['PLAYER_PORT']);
     }
     
-    // saytts
-    function sayttotext($message, $event) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+	// Say
+    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
-        if (strlen($message)) {
+        if (strlen($message['MESSAGE'])) {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             if ($socket === false) {
                 $this->success = FALSE;
@@ -35,14 +35,22 @@ class majordroid extends app_player_addon
                     $this->message = socket_strerror(socket_last_error($socket));
                     $this->message = iconv('CP1251', 'UTF-8', $this->message);
                 } else {
-                    if ($event == 'SAY' OR $event = 'SAYTO' OR $event = 'SAYREPLY') {
-                        $packet = 'tts:' . $message;
+                    if ($message['EVENT'] == 'SAY' OR $message['EVENT'] = 'SAYTO' OR $message['EVENT'] = 'SAYREPLY') {
+                        $packet = 'tts:' . $message['MESSAGE'];
                     } else {
-                        $packet = 'ask:' . $message;
+                        $packet = 'ask:' . $message['MESSAGE'];
                     }
-                    socket_write($socket, $packet, strlen($packet));
-                    $this->success = TRUE;
-                    $this->message = 'OK';
+                    $out = socket_write($socket, $packet, strlen($packet));
+					if ($out) {
+						$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+                        $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
+                        SQLUpdate('shouts', $rec);
+	                    $this->success = TRUE;
+                        $this->message = 'OK';
+					} else {
+                        $this->success = FALSE;
+                        $this->message = 'Command execution error!';
+					}
                 }
                 socket_close($socket);
             }
@@ -50,9 +58,11 @@ class majordroid extends app_player_addon
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
-        return $this->success;
+		sg($terminal['LINKED_OBJECT'].'.BASY',0);
+	    return $this->success;
     }
-    
+	
+	
     // Play
     function play($input)
     {
