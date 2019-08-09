@@ -40,16 +40,13 @@ class telegramm extends app_player_addon
                     }
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
                     $out = getURL($url,0);
-                    if ($out) {
-                        $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-                        $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                        SQLUpdate('shouts', $rec);
-                        $this->success = TRUE;
+					if ($out) {
+	                    $this->success = TRUE;
                         $this->message = 'OK';
-                    } else {
+					} else {
                         $this->success = FALSE;
                         $this->message = 'Command execution error!';
-                    }
+					}
                 }
             } else {
                 $this->success = FALSE;
@@ -59,7 +56,6 @@ class telegramm extends app_player_addon
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
-        sg($terminal['LINKED_OBJECT'].'.BASY',0);
         return $this->success;
     }
 }
