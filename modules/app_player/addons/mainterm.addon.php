@@ -61,7 +61,6 @@ class mainterm extends app_player_addon {
 				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
                 $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 SQLUpdate('shouts', $rec);
-                sg($terminal['LINKED_OBJECT'].'.BASY',0);
 				
                 $this->success = TRUE;
                 $this->message = 'OK';
@@ -73,6 +72,7 @@ class mainterm extends app_player_addon {
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
+        sg($terminal['LINKED_OBJECT'].'.BASY',0);
         return $this->message;
     }
 }
