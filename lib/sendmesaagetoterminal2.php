@@ -97,10 +97,12 @@ function send_message_to_terminal($message, $terminal)
         }
     }
     $out = $player->say_message($message, $terminal);
+	DebMes('out - '. $out);
 	if ($out) {
 		$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
         $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
         SQLUpdate('shouts', $rec);
+        usleep(200000);
         sg($terminal['LINKED_OBJECT'].'.BASY',0);
 	}
 }
