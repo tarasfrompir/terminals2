@@ -84,6 +84,29 @@ class chromecast extends app_player_addon
     }
 
     // Say
+    function play($input) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        $this->reset_properties();
+		if (strlen($input)) {
+            try {
+                $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+                $cc->requestId = time();
+                $cc->load($input, 0);
+                $cc->play();
+				$this->success = TRUE;
+                $this->message = 'Ok!';
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+                $this->message = $e->getMessage();
+            }
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Input is missing!';
+        }
+        return $this->success;
+    }
+        // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
@@ -104,7 +127,7 @@ class chromecast extends app_player_addon
         
         if (strlen($message['FILE_LINK'])) {
             try {
-                $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+                $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
                 $cc->load($message['FILE_LINK'], 0);
                 $cc->play();
