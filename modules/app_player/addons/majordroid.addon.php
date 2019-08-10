@@ -41,13 +41,13 @@ class majordroid extends app_player_addon
                         $packet = 'ask:' . $message['MESSAGE'];
                     }
                     $out = socket_write($socket, $packet, strlen($packet));
-					if ($out) {
-	                    $this->success = TRUE;
+                    if ($out) {
+	                $this->success = TRUE;
                         $this->message = 'OK';
 					} else {
                         $this->success = FALSE;
                         $this->message = 'Command execution error!';
-					}
+                     }
                 }
                 socket_close($socket);
             }
