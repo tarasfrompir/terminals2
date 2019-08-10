@@ -41,6 +41,7 @@ class majordroid extends app_player_addon
                         $packet = 'ask:' . $message['MESSAGE'];
                     }
                     $out = socket_write($socket, $packet, strlen($packet));
+                    usleep(100000);
                     if ($out) {
 	                $this->success = TRUE;
                         $this->message = 'OK';
