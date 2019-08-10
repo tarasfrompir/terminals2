@@ -117,26 +117,17 @@ class chromecast extends app_player_addon
                 DebMes("Server IP not found", 'terminals');
                 return false;
             } else {
-                $message['FILE_LINK'] = 'http://' . $server_ip . $m[0];
+                $filelink = 'http://' . $server_ip . $m[0];
             }
         }
-        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!remote_file_exists($message['FILE_LINK'])) {
-            $message['FILE_LINK'] = BASE_URL . $m[0];
-        }
-        
-        if (strlen($message['FILE_LINK'])) {
+        if (strlen($filelink)) {
             try {
                 $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                $cc->requestId = time();
-                $cc->load($message['FILE_LINK'], 0);
+                $cc->load($filelink, 0);
                 $cc->play();
-				
-				sleep ($message['TIME_MESSAGE']);
-				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-                $rec['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                SQLUpdate('shouts', $rec);
-                sg($terminal['LINKED_OBJECT'].'.BASY',0);
+                sleep ($message['TIME_MESSAGE']);
+				$this->success = TRUE;
+                $this->message = 'OK';
             }
             catch (Exception $e) {
                 $this->success = FALSE;
