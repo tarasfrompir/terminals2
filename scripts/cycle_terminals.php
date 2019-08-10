@@ -49,16 +49,20 @@ while (1) {
     if ($message) {
         $out_terminals = explode("^", $message['SOURCE']);
         foreach ($out_terminals as $terminals) {
-			if (!$terminals) continue;
-			$terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-			// запускаем все что имеет function sayttotext
+            if (!$terminals) {
+                continue;
+            }
+            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
+            // запускаем все что имеет function sayttotext
             if (!gg($terminal['LINKED_OBJECT'] . '.BASY')) {
                 sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
+                $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
                 send_message_to_terminalSafe($message, $terminal);
             }
         }
     }
-    usleep(300000);
+    SQLUpdate('shouts', $message);
+    usleep(100000);
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
