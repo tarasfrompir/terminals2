@@ -40,13 +40,14 @@ class telegramm extends app_player_addon
                     }
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
                     $out = getURL($url,0);
-					if ($out) {
-	                    $this->success = TRUE;
+                    usleep(100000);
+                    if ($out) {
+	                $this->success = TRUE;
                         $this->message = 'OK';
-					} else {
+                    } else {
                         $this->success = FALSE;
                         $this->message = 'Command execution error!';
-					}
+                    }
                 }
             } else {
                 $this->success = FALSE;
