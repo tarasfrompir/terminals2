@@ -72,8 +72,17 @@ function sayReply($ph, $level = 0, $replyto = '')
         $said_status = sayTo($ph, $level, $terminal_rec['NAME']);
         if (!$said_status) {
             say($ph, $level);
+        } else {
+            //$rec = array();
+            //$rec['MESSAGE']   = $ph;
+            //$rec['ADDED']     = date('Y-m-d H:i:s');
+            //$rec['ROOM_ID']   = 0;
+            //$rec['MEMBER_ID'] = 0;
+            //if ($level > 0) $rec['IMPORTANCE'] = $level;
+            //$rec['ID'] = SQLInsert('shouts', $rec);
         }
     }
+    processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
 }
 
 
@@ -110,10 +119,8 @@ function sayTo($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
-
 	// replace enter simbol
 	$ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
-
     // add message to chat	
     $rec = array();
     $rec['MESSAGE'] = $ph;
@@ -131,7 +138,6 @@ function sayTo($ph, $level = 0, $destination = '')
     } else {
         $terminals = getTerminalsByCANTTS();
     }
-
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME']);
@@ -186,10 +192,8 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-
 	// replace enter simbol
 	$ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
-
     // add message to chat	
     $rec = array();
     $rec['MESSAGE'] = $ph;
@@ -199,7 +203,6 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['EVENT'] = 'SAY';
     $rec['SOURCE'] = '';
     $rec['IMPORTANCE'] = $level;
-
     if ($member_id) {
         $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
         return;
@@ -228,12 +231,9 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 	if ($needgenerateaudio) {
 		processSubscriptionsSafe('SAYTO', array('level' => $rec['IMPORTANCE'], 'message' => $rec['MESSAGE'], 'id' => $rec['ID']));
     }	
-
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
     }
-
-
 //    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
 //        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
 //            $passed = time() - (int)getGlobal('lastSayTime');
@@ -242,14 +242,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 //            }
 //        }
 //    }
-
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
-
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
     }
-
     return 1;
 }
 
@@ -693,64 +690,6 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 }
 
 /**
- * Summary of playMedia
- * @param mixed $path Path
- * @param mixed $host Host (default 'localhost')
- * @return int
- */
-function playMedia($path, $host = 'localhost', $safe_play = FALSE)
-{
-    if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
-        eval(SETTINGS_HOOK_PLAYMEDIA);
-    }
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-    if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
-    }
-    if (!$terminal['ID']) {
-        $terminal = getMainTerminal();
-    }
-    if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
-    }
-    if (!$terminal['ID']) {
-        return 0;
-    }
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=" . ($safe_play ? 'safe_play' : 'play');
-    $url .= "&terminal_id=" . $terminal['ID'];
-    $url .= "&param=" . urlencode($path);
-    getURLBackground($url);
-    return 1;
-}
-
-function stopMedia($host = 'localhost')
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-    if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
-    }
-    if (!$terminal['ID']) {
-        $terminal = getMainTerminal();
-    }
-    if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
-    }
-    if (!$terminal['ID']) {
-        return 0;
-    }
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=stop";
-    $url .= "&terminal_id=" . $terminal['ID'];
-    getURLBackground($url);
-    return 1;
-}
-
-/**
  * Summary of runScript
  * @param mixed $id ID
  * @param mixed $params Params (default '')
@@ -900,7 +839,6 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
-
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
             }
             curl_close($ch);
@@ -918,6 +856,8 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     } else {
         $result = LoadFile($cache_file);
     }
+
+
     endMeasure('getURL');
 
     return $result;
@@ -1282,29 +1222,6 @@ function getPassedText($updatedTime)
     return $passedText;
 }
 
-function getMediaDurationSeconds($file)
-{
-    if (!defined('PATH_TO_FFMPEG')) {
-        if (IsWindowsOS()) {
-            define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-        } else {
-            define("PATH_TO_FFMPEG", 'ffmpeg');
-        }
-    }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
-    if (preg_match("/: Invalid /", $dur)) {
-        return false;
-    }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
-    if (!isset($duration[1])) {
-        return false;
-    }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
-}
-
 /**
  * Encode/Decode a string for safe transfer to a URL
  * @param mixed $string String
@@ -1420,79 +1337,34 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-/**
- * Summary of player status
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @return  'id'              => (int), //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'name'            => (string), //Playback status. String: stopped/playing/paused/transporting/unknown
- *          'file'            => (string), //Current link for media in device. String.
- *          'track_id'        => (int)$track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- *          'length'          => (int)$length, //Track length in seconds. Integer. If unknown = 0.
- *          'time'            => (int)$time, //Current playback progress (in seconds). If unknown = 0.
- *          'state'           => (string)$state, //Playback status. String: stopped/playing/paused/unknown
- *          'volume'          => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
- *          'random'          => (boolean)$random, // Random mode. Boolean.
- *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
- *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
- */
-function getPlayerStatus($host = 'localhost')
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
-    }
-    if (!$terminal) {
-        return;
-    }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'pl_get'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    $terminal = array();
-    if ($player->json['success'] && is_array($player->json['data'])) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
-    }
-    $player->command = 'status'; // Команда
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
-    if ($player->json['success'] && is_array($player->json['data'])) {
-        $terminal = array_merge($terminal, $player->json['data']);
-        //DebMes($player->json['data']);
-        return ($terminal);
-    } else {
-        // Если произошла ошибка, выводим ее описание
-        return ($player->json['message']);
-    }
+function remote_file_exists($url){
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if( $httpCode == 200 ){return true;}
+    return false;
 }
 
-/**
- * This function change  position on the played media in player
- * @param mixed $host Host (default 'localhost') name or ip of terminal
- * @param mixed $time second (default 0) to positon from start time
- */
-function seekPlayerPosition($host = 'localhost', $time = 0)
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function logAction($action_type,$details='') {
+    global $session;
+    $rec=array();
+    $rec['ADDED']=date('Y-m-d H:i:s');
+    if ($session->data['SITE_USERNAME']) {
+        $rec['USER']=$session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
+        $rec['USER']='Control Panel';
     }
-    if (!$terminal) {
-        return;
+    if ($session->data['TERMINAL']) {
+        $rec['TERMINAL']=$session->data['TERMINAL'];
+    } else {
+        $rec['TERMINAL']='';
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
-    $player = new app_player();
-    $player->play_terminal = $terminal['NAME']; // Имя терминала
-    $player->command = 'seek'; // Команда
-    $player->param = $time; // Параметр
-    $player->ajax = TRUE;
-    $player->intCall = TRUE;
-    $player->usual($out);
+    $rec['ACTION_TYPE']=$action_type;
+    $rec['TITLE']=$details;
+    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
+    $rec['IP']=$_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log',$rec);
 
-    return $player->json['message'];
 }
