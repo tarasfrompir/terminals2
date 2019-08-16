@@ -24,15 +24,22 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 // set all message cheked
+SQLExec("UPDATE shouts SET SOURCE='' ");
 SQLExec("UPDATE shouts SET CHEKED='1'");
-
+		
 // set all terminal as free when restart cycle
 $terminals = SQLSelect("SELECT * FROM terminals");
 foreach ($terminals as $terminal) {
     sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
 } 
 
+// get number last message
+//$message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
+$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC")['ID'];
+$number_message = $number_message + 1;
+echo 'start nomber '.$number_message.PHP_EOL;
 while (1) {
+	// time update cicle of terminal
     if (time() - $checked_time > 10) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
@@ -43,26 +50,38 @@ while (1) {
         SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
 		SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
     }
+
+	// CHEK next message for terminals ready
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message ."'");
+
+	if ($message and $message['CHEKED'] == 1 ) {
+	    $number_message = $number_message + 1;
+		usleep(100000);
+        //DebMes($number_message);
+		echo $number_message.PHP_EOL;
 	
-    // отправка сообщений сгенерированных ТТС
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%^' AND CHEKED='1' ORDER BY ID ASC");
-    if ($message) {
-        $out_terminals = explode("^", $message['SOURCE']);
-        foreach ($out_terminals as $terminals) {
-            if (!$terminals) {
-                continue;
-            }
-            $terminal = SQLSelectOne("SELECT * FROM terminals WHERE ID = '" . $terminals . "'");
-            // запускаем все что имеет function sayttotext
-            if (!gg($terminal['LINKED_OBJECT'] . '.BASY')) {
-                sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
-                $message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $message['SOURCE']);
-                send_message_to_terminalSafe($message, $terminal);
-            }
-        }
-    }
-    SQLUpdate('shouts', $message);
-    usleep(100000);
+	}
+	
+  	// chek all old message and send message to terminals
+    $out_terminals = getObjectsByProperty('BASY', '==', '0');
+	foreach ($out_terminals as $terminals) {
+		if (!$terminals) {
+			continue;
+		}
+		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' AND CHEKED = '1' ORDER BY ID ASC");
+	
+		// запускаем все что имеет function sayttotext
+		if ($old_message) {
+			sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
+			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+			send_message_to_terminalSafe($old_message, $terminal);
+		}
+		if ($old_message) {
+			SQLUpdate('shouts', $old_message);
+		}
+	}   
+
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
