@@ -41,7 +41,7 @@ class telegramm extends app_player_addon
                     $url = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
                     getURLBackground($url,0);
                     usleep(100000);
-                    $this->success = TRUE;
+	                $this->success = TRUE;
                     $this->message = 'OK';
 				}
             } else {
