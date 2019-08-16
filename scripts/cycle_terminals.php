@@ -37,7 +37,7 @@ foreach ($terminals as $terminal) {
 //$message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC")['ID'];
 $number_message = $number_message + 1;
-echo 'start nomber '.$number_message.PHP_EOL;
+
 while (1) {
 	// time update cicle of terminal
     if (time() - $checked_time > 10) {
