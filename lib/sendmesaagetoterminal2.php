@@ -36,8 +36,8 @@ function pingTerminalSafe($terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    $result = getURLBackground($url, 0);
-    return $result;
+    getURLBackground($url, 0);
+    return 1;
 }
 
 function send_message_to_terminal($message, $terminal)
