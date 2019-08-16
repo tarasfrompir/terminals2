@@ -98,7 +98,7 @@ function send_message_to_terminal($message, $terminal)
     }
     $out = $player->say_message($message, $terminal);
 	usleep(100000);
-	DebMes('out - '. $out. ' '.$terminal['NAME']);
+	//DebMes('out - '. $out. ' '.$terminal['NAME']);
 	if (!$out) {
             $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
             $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
