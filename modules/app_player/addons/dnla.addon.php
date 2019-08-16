@@ -148,6 +148,7 @@ class dnla extends app_player_addon
             $this->success = FALSE;
             $this->message = 'Command execution error!';
         }
+        sleep ($message['TIME_MESSAGE']);
         return $this->success;
     }
     
