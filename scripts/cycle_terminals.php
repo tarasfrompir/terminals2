@@ -57,9 +57,6 @@ while (1) {
 	if ($message and $message['CHEKED'] == 1 ) {
 	    $number_message = $number_message + 1;
 		usleep(100000);
-        //DebMes($number_message);
-		echo $number_message.PHP_EOL;
-	
 	}
 	
   	// chek all old message and send message to terminals
