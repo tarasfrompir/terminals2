@@ -32,8 +32,8 @@ class dnla extends app_player_addon
    		DebMes('cont - '.$content);
 
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if (!$retcode = 200 AND filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false AND !stripos($content, 'AVTransport')) {
-			
+        if (!$retcode = 200 AND !stripos($content, 'AVTransport')) {
+			DebMes('scan');
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
 
             $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
