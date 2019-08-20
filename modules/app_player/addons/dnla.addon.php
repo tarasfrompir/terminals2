@@ -28,18 +28,22 @@ class dnla extends app_player_addon
         $content = curl_exec($ch);
         $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        
+
+   		DebMes('cont - '.$content);
+
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if (!$retcode = 200 OR filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false) {
+        if (!$retcode = 200 AND filter_var($this->terminal['PLAYER_CONTROL_ADDRESS'], FILTER_VALIDATE_URL) === false AND !stripos($content, 'AVTransport')) {
+			
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
-            $rec                                      = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
+
             $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
             if ($this->terminal['PLAYER_CONTROL_ADDRESS']) {
-            }
-            $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
-            if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
-                SQLUpdate('terminals', $rec); // update
-                //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                $rec = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
+                $rec['PLAYER_CONTROL_ADDRESS'] = $this->terminal['PLAYER_CONTROL_ADDRESS'];
+                if (is_string($rec['PLAYER_CONTROL_ADDRESS'])) {
+                    SQLUpdate('terminals', $rec); // update
+                    //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+				}
             }
         }
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
@@ -328,9 +332,11 @@ class dnla extends app_player_addon
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250')
     {
+		DebMes('ip '.$ip);
         if (!$ip) {
             return 0;
         }
+
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
@@ -350,7 +356,6 @@ class dnla extends app_player_addon
             'sec' => '1',
             'usec' => '128'
         ));
-        $response = array();
         do {
             $buf = null;
             if (($len = @socket_recvfrom($socket, $buf, 2048, 0, $ip, $port)) == -1) {
@@ -359,18 +364,20 @@ class dnla extends app_player_addon
             if (!is_null($buf)) {
                 $messages = explode("\r\n", $buf);
                 foreach ($messages as $row) {
-                    if (stripos($row, 'AVTransport')) {
-                        break;
-                    }
                     if (stripos($row, 'loca') === 0 and stripos($row, $this->terminal['HOST'])) {
                         $response = str_ireplace('location: ', '', $row);
+                        $out = str_ireplace('location:', '', $response);
+                    }
+                    if (stripos($row, 'AVTransport')) {
+						$out = $response;
+                        break;
                     }
                 }
             }
         } while (!is_null($buf));
         socket_close($socket);
-        $response = str_ireplace("Location:", "", $response);
-        return $response;
+		DebMes($out);
+        return $out;
     }
 }
 ?>
