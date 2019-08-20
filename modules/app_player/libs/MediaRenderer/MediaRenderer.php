@@ -9,11 +9,11 @@ class MediaRenderer
 {
     public function __construct($server)
     {
-		if (!$server) {
-			return;
-		}
+        if (!$server) {
+            return;
+        }
         // получаем XML
-        $ch         = curl_init();
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $server);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -179,7 +179,7 @@ class MediaRenderer
         $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot; size=&quot;'.get_remote_filesize($url).'&quot; sampleFrequency=&quot;'.$info_data['Audio_sample_rate'].'&quot; nrAudioChannels=&quot;'.$info_data['Audio_chanel'].'&quot; duration=&quot;' . gmdate('H:i:s', $info_data['duration']) . '&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
-        DebMes($MetaData);
+        //DebMes($MetaData);
         //&lt;res protocolInfo="http-get:*:audio/mpeg:*" size="1135829" bitsPerSample="16" sampleFrequency="44100" nrAudioChannels="2" bitrate="40565" duration="00:00:28.000"&gt;http://192.168.8.100:31415/play/21A51710_mime=audio!mpeg_bits=16_channels=2_rate=044100_duration=28.mp3&lt;/res&gt;
 
 		
