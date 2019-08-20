@@ -133,8 +133,7 @@ class dnla extends app_player_addon
         }
         DebMes("Url to file " . $message_link);
         // конец блока получения ссылки на файл 
-        
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
         if ($response) {
             $this->success = TRUE;
