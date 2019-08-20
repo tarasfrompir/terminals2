@@ -9,9 +9,9 @@ include_once './lib/threads.php';
 set_time_limit(0);
 
 include_once("./load_settings.php");
-include_once(DIR_MODULES . "control_modules/control_modules.class.php");
+//include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
-$ctl = new control_modules();
+//$ctl = new control_modules();
 
 include_once(DIR_MODULES . 'terminals/terminals.class.php');
 
