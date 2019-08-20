@@ -53,9 +53,8 @@ class MediaRenderer
                 }
             }
         }
-        //DebMes($this->conn_url);
-        //DebMes($this->conn_manager);
-        //DebMes($this->service_type);
+        
+		// получаем все значения необходиміе для постройки правильного урла
         $body = '<?xml version="1.0" encoding="utf-8"?>' . "\r\n";
         $body .= '<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">';
         $body .= '<s:Body>';
@@ -80,13 +79,10 @@ class MediaRenderer
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
         curl_close($ch);
-        // создаем хмл документ
-        $doc = new \DOMDocument();
+          $doc = new \DOMDocument();
         $doc->loadXML($response);
-        // получаем все значения необходиміе для постройки правильного урла
-        //$all_extension = $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue;
+
         $this->all_extension = explode(",", $doc->getElementsByTagName('GetProtocolInfoResponse')->item(0)->nodeValue);
-        //DebMes($this->all_extension);
     }
     
     private function instanceOnly($command, $id = 0)
@@ -135,13 +131,9 @@ class MediaRenderer
     {
         
         if ($url === "") {
-            return $this->sendRequestToDevice('Play', $args = array(
-                'InstanceID' => 0,
-                'Speed' => 1
-            ));
+            return $this->sendRequestToDevice('Play', $args = array('InstanceID' => 0,'Speed' => 1));
         }
         
-        // neobhodimo ostanovit vosproizvedenie
         $this->instanceOnly('Stop');
         
         // berem Content-Type
@@ -171,8 +163,8 @@ class MediaRenderer
         }
 
         $type_data = substr($content_type, 0, strpos($content_type, '/'));
-        //DebMes($type_data);
-        //DebMes ($urimetadata);
+        DebMes($type_data);
+        DebMes ($urimetadata);
 		
 		//get all information about audiofile
 		//$info_data = get_audio_file_info($url);
@@ -181,13 +173,13 @@ class MediaRenderer
         $MetaData .= '&lt;item id=&quot;0&quot; parentID=&quot;-1&quot; restricted=&quot;1&quot;&gt;';
         $MetaData .= '&lt;upnp:class&gt;object.item.' . $type_data . 'Item&lt;/upnp:class&gt;';
         $MetaData .= '&lt;dc:title&gt;Majordomo mesage&lt;/dc:title&gt;'; 
-        $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;&lt;upnp:artist&gt;Unknown&lt;/upnp:artist&gt;';
-        $MetaData .= '&lt;upnp:genre&gt;Unknown&lt;/upnp:genre&gt;';
+        $MetaData .= '&lt;dc:creator&gt;Majordomoterminal&lt;/dc:creator&gt;&lt;upnp:artist&gt;Majordomo&lt;/upnp:artist&gt;';
+        $MetaData .= '&lt;upnp:genre&gt;Message&lt;/upnp:genre&gt;';
         //$MetaData .= '&lt;upnp:albumArtURI dlna:profileID="JPEG_TN"&gt;http://192.168.8.100:31415/art/whitebear.jpg&lt;/upnp:albumArtURI&gt;';		
         $MetaData .= '&lt;res protocolInfo=&quot;' . $urimetadata . '&quot; size=&quot;'.get_remote_filesize($url).'&quot;&gt;' . $url . '&lt;/res&gt;';
         $MetaData .= '&lt;/item&gt;';
         $MetaData .= '&lt;/DIDL-Lite&gt;';
-        //DebMes($MetaData);
+        DebMes($MetaData);
         //&lt;res protocolInfo="http-get:*:audio/mpeg:*" size="1135829" bitsPerSample="16" sampleFrequency="44100" nrAudioChannels="2" bitrate="40565" duration="00:00:28.000"&gt;http://192.168.8.100:31415/play/21A51710_mime=audio!mpeg_bits=16_channels=2_rate=044100_duration=28.mp3&lt;/res&gt;
 
 		
@@ -196,24 +188,23 @@ class MediaRenderer
         // создаем хмл документ
         $doc = new \DOMDocument();
         $doc->loadXML($response);
-        //DebMes($response);
+        DebMes($response);
         
-        if (!$doc->getElementsByTagName('SetAVTransportURIResponse')) {
-            return $response;
+        if (!$doc->getElementsByTagName('SetAVTransportURIResponse ')) {
+           return $response;
         }
 		
         $response = $this->sendRequestToDevice('Play', array('InstanceID' => 0,'Speed' => 1));
+        // создаем хмл документ
+        $doc = new \DOMDocument();
         $doc->loadXML($response);
-        //DebMes($response);
         
         if ($doc->getElementsByTagName('PlayResponse ')) {
-            //while ($time<1) {
-            //   $response = $this->getPosition();
-            //   $doc->loadXML($response);
-            //   $time = $this->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-            //} 
+            return $response;
         }
-        return $response;
+		
+
+		return false;
     }
     
     public function setNext($url)
