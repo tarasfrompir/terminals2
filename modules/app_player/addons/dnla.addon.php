@@ -322,7 +322,6 @@ class dnla extends app_player_addon
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250')
     {
-		DebMes('ip '.$ip);
         if (!$ip) {
             return false;
         }
