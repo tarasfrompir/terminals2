@@ -6,12 +6,6 @@ Addon dnla for app_player
 
 class dnla extends app_player_addon
 {
-    
-    // Private properties
-    private $curl;
-    private $address;
-    
-    // Constructor
     function __construct($terminal)
     {
         $this->title       = 'Устройства с поддержкой протокола DLNA';
@@ -28,14 +22,10 @@ class dnla extends app_player_addon
         $content = curl_exec($ch);
         $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
-   		DebMes('cont - '.$content);
-
+        
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
-        if (!$content AND !$retcode = 200 AND !stripos($content, 'AVTransport')) {
-			DebMes('scan');
+        if ($retcode != 200 OR !stripos($content, 'AVTransport')) {
             // сделано специально для тех устройств которые периодически меняют свои порты и ссылки  на CONTROL_ADDRESS
-
             $this->terminal['PLAYER_CONTROL_ADDRESS'] = $this->search($this->terminal['HOST']);
             if ($this->terminal['PLAYER_CONTROL_ADDRESS']) {
                 $rec = SQLSelectOne('SELECT * FROM terminals WHERE HOST="' . $this->terminal['HOST'] . '"');
@@ -334,9 +324,8 @@ class dnla extends app_player_addon
     {
 		DebMes('ip '.$ip);
         if (!$ip) {
-            return 0;
+            return false;
         }
-
         //create the socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
@@ -376,7 +365,6 @@ class dnla extends app_player_addon
             }
         } while (!is_null($buf));
         socket_close($socket);
-		DebMes($out);
         return $out;
     }
 }
