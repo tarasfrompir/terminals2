@@ -18,6 +18,7 @@ addClassProperty('Terminals', 'name');
 addClassProperty('Terminals', 'media_vol_level');
 addClassProperty('Terminals', 'message_vol_level');
 addClassProperty('Terminals', 'location');
+addClassProperty('Terminals', 'min_message_level');
 
 $rec = getTerminalByID($id);
 
