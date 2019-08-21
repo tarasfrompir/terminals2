@@ -9,9 +9,6 @@ include_once './lib/threads.php';
 set_time_limit(0);
 
 include_once("./load_settings.php");
-//include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-
-//$ctl = new control_modules();
 
 include_once(DIR_MODULES . 'terminals/terminals.class.php');
 
@@ -46,8 +43,8 @@ while (1) {
     //время жизни сообщений
     if (time() - $clear_message > 180) {
         $clear_message = time();
-        SQLExec("UPDATE shouts SET SOURCE='' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
-		SQLExec("UPDATE shouts SET CHEKED='1' WHERE ADDED< (NOW() - INTERVAL 3 MINUTE)");
+        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 3 MINUTE)");
+		SQLExec("UPDATE shouts SET CHEKED = '1' WHERE ADDED < (NOW() - INTERVAL 3 MINUTE)");
     }
 
 	// CHEK next message for terminals ready
