@@ -85,30 +85,45 @@ class mpd extends app_player_addon {
 
 	}
 	
-	
-	// Say
-	function say($param) {
-		$this->reset_properties();
-		//$terminal, $message, $event, $member, $level, $filename, $linkfile, $lang, $langfull
-	        $out = explode(',', $param);
-	        $input = $out[6];
-		if(strlen($input)) {
-			if($this->mpd_connect()) {
+	    // Say
+    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        $outlink    = $message['FILE_LINK'];
+       
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
+        if (!remote_file_exists($message_link)) {
+            $message_link = BASE_URL . $m[0];
+        }
+        //DebMes("Url to file " . $message_link);
+        // конец блока получения ссылки на файл 
+
+        if($this->mpd_connect()) {
 				$this->mpd->PLClear();
 				//$this->mpd->DBRefresh();
-				$this->mpd->PLAdd($input);
+				$this->mpd->PLAdd($message_link);
 				$this->mpd->Play();
 				$this->mpd->Disconnect();
 				$this->reset_properties();
 				$this->success = TRUE;
 				$this->message = 'OK';
-			}
-		} else {
-			$this->success = FALSE;
-			$this->message = 'Input is missing!';
-		}
-		return $this->success;
-	}
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        sleep($message['TIME_MESSAGE']);
+        return $this->success;
+    }
+	
 	// Play
 	function play($input) {
 		$this->reset_properties();
