@@ -123,8 +123,8 @@ class chromecast extends app_player_addon
         if (strlen($filelink)) {
             try {
                 $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-                //$cc->load($filelink, 0);
-                //$cc->play();
+                $cc->load($filelink, 0);
+                $cc->play();
                 sleep ($message['TIME_MESSAGE']);
                 $this->success = TRUE;
                 $this->message = 'OK';
