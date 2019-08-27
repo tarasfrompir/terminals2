@@ -46,7 +46,7 @@ class chromecast extends app_player_addon
                 'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => (int) $result['status'][0]['volume']['level'], // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => (int) $result['status'][0]['volume']['level']*100, // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
