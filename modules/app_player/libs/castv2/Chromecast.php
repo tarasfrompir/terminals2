@@ -146,7 +146,7 @@ class GChromecast
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
-		return $response;
+		return json_decode($response,TRUE);
 	}
 	
 	public function getMediaSession() {
