@@ -364,24 +364,6 @@ class GChromecast
 		$this->getCastMessage();
 	}
 	
-	public function load1() {
-		$this->getMediaSession(); // Auto-reconnects
-		$json = '{"type":"LOAD", "media":{"contentId":"http://ic4.101.ru:8000/a175","streamType":"BUFFERED","contentType":"audio/mp3"},"autoplay":"false","currentTime":"0","requestId":'.$this->requestId.'}';
-		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
-		$r = "";
-		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
-			$r = $this->getCastMessage();
-		}
-		// Grab the mediaSessionId
-		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
-			$this->mediaid = $m[1];
-		}
-		if (!$this->mediaid) {
-			$this->mediaid=1;
-		}
-		DebMes ($this->mediaid);
-	}
-	
 	public function load($url, $currentTime) {
 		$this->getMediaSession(); // Auto-reconnects
 		
