@@ -36,7 +36,7 @@ class chromecast extends app_player_addon
         $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
         $cc->requestId = time();
         $result        = $cc->getMediaSession();
-        
+        DebMes($result);
         if ($result) {
             $this->reset_properties();
             $this->success = TRUE;
@@ -46,10 +46,11 @@ class chromecast extends app_player_addon
                 'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => (int) $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => (int) $result['status'][0]['volume']['level'], // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (boolean) $repeat //Repeat mode. Boolean.
+                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
             );
         }
         return $this->success;
@@ -106,7 +107,8 @@ class chromecast extends app_player_addon
         }
         return $this->success;
     }
-        // Say
+    
+	// Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
