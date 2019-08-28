@@ -68,7 +68,7 @@ if ($this->mode == 'update') {
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
 	   
     //$rec['TTS_TYPE'] = gr('tts_type');
-	$rec['TTS_TYPE'] = $typeterminals[$rec['PLAYER_TYPE']];
+    $rec['TTS_TYPE'] = $typeterminals[$rec['PLAYER_TYPE']];
 
     $rec['PLAYER_TYPE'] = gr('player_type');
     $rec['PLAYER_PORT'] = gr('player_port');
@@ -85,6 +85,10 @@ if ($this->mode == 'update') {
         addClassObject('Terminals', 'terminal'.$maxnomber);
         $rec['LINKED_OBJECT'] = 'terminal'.$maxnomber;
     }
+	
+    $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
+    $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
+
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
     
     $rec['HOST'] = gr('host');
