@@ -116,7 +116,6 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = 0;
     if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
 
 	$terminals = array();
     if ($destination) {
