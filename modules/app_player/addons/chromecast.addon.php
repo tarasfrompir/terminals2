@@ -203,6 +203,21 @@ class chromecast extends app_player_addon
         }
         return $this->success;
     }
+	// Get volume
+	public function get_volume() {
+		$this->reset_properties();
+		$cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+                $cc->requestId = time();
+                $status = $cc->getStatus();
+		if(!is_null($this->data = intval($status['status']['volume']['level']*100))) {
+                        $this->success = TRUE;
+			$this->message = 'OK';
+		} else {
+			$this->success = FALSE;
+                        $this->message = 'Level is missing!';
+		}
+		return $this->success;
+	}
     
 }
 
