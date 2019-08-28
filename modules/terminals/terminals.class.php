@@ -363,6 +363,11 @@ class terminals extends module
      */
     function install($parent_name = "")
     {
+        // add class and properties
+        addClass('Terminals', 'SDevices');
+        addClassProperty('Terminals', 'name');
+        
+        
         subscribeToEvent($this->name, 'SAY', '', 0);
         subscribeToEvent($this->name, 'SAYREPLY', '', 0);
         subscribeToEvent($this->name, 'SAYTO', '', 0);
