@@ -425,6 +425,8 @@ class terminals extends module
  terminals: LATEST_ACTIVITY datetime
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
+ terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
 EOD;
         parent::dbInstall($data);
 
