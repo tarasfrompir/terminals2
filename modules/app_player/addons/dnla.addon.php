@@ -127,20 +127,20 @@ class dnla extends app_player_addon
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!remote_file_exists($message_link)) {
-            $message_link = BASE_URL . $m[0];
-        }
-        //DebMes("Url to file " . $message_link);
-        // конец блока получения ссылки на файл 
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->play($message_link);
-        if ($response) {
-            $this->success = TRUE;
-            $this->message = 'Play files';
+		if (remote_file_exists($message_link)) {
+            try {
+				$remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+				$response = $remote->play($message_link);
+                $this->success = TRUE;
+                $this->message = 'OK';
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+                $this->message = $e->getMessage();
+            }
         } else {
             $this->success = FALSE;
-            $this->message = 'Command execution error!';
+            $this->message = 'Input is missing!';
         }
         sleep($message['TIME_MESSAGE']);
         return $this->success;
