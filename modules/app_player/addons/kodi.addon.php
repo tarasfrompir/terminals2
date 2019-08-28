@@ -234,11 +234,8 @@ class kodi extends app_player_addon {
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!remote_file_exists($message_link)) {
-            $message_link = BASE_URL . $m[0];
-        }
-	    if(strlen($message_link)) {
+
+	    if(remote_file_exists($message_link)) {
 		if($this->kodi_request('Player.Open', array('item'=>array('file'=>$message_link)))) {
 			$this->success = TRUE;
 			$this->message = 'OK';
