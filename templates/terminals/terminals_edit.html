@@ -95,6 +95,14 @@
             <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
             <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
         </div>
+        [#if TTS_TYPE="mediaplayer"#] 
+		      <div class="form-group ">
+            <label class="col-lg-4 control-label" for="tts_type">Уровень громкости сообщений:</label>
+		         	<div class="col-lg-5">
+            	<input type="range" name="message_volume_level" value="[#MESSAGE_VOLUME_LEVEL#]"  min="0" max="100" style="width:100%; height: 30px; display: inline-block;" data-highlight="true"></input> 
+            </div>
+        </div>
+		      [#endif#]
     </div>
 
 
@@ -188,6 +196,15 @@
             </script>
         </div>
     </div>
+     
+    <div class="form-group ">
+        <label class="col-lg-4 control-label" for="tts_type">Уровень громкости терминала:</label>
+	       <div class="col-lg-5">
+           	<input type="range" name="terminal_volume_level" value="[#TERMINAL_VOLUME_LEVEL#]"  min="0" max="100" style="width:100%; height: 30px; display: inline-block;" data-highlight="true"></input> 
+        </div>
+    </div>
+ 
+ 
     <div id='player_port' class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="player_port" value="[#PLAYER_PORT#]"></div>
