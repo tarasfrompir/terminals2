@@ -136,7 +136,7 @@ function sayTo($ph, $level = 0, $destination = '')
 		    }
 		} 
     }
-    $rec['EVENT'] = 'SAYTO'
+    $rec['EVENT'] = 'SAYTO';
 	$rec['CHEKED']=1;
 	
     $rec['ID'] = SQLInsert('shouts', $rec);    
