@@ -272,6 +272,9 @@ class terminals extends module
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
  terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  
+ terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ 
  shouts: ID int(10) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
