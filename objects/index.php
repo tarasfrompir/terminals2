@@ -175,6 +175,10 @@ if ($object != '') {
    processSubscriptions(gr('event'), json_decode(gr('params'),true));
 } elseif ($script != '') {
    runScript($script, $_REQUEST);
+} elseif (gr('pingTerminal')) {
+    pingTerminal(gr('terminal'));
+} elseif (gr('send_message_to_terminal')) {
+    send_message_to_terminal(gr('message'), gr('terminal'));
 }
 
 endMeasure('TOTAL'); // end calculation of execution time
