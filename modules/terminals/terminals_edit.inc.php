@@ -42,6 +42,8 @@ if ($this->mode == 'update') {
     $rec['PLAYER_USERNAME'] = gr('player_username');
     $rec['PLAYER_PASSWORD'] = gr('player_password');
     $rec['LINKED_OBJECT'] = gr('linked_object');
+    $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
+    $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
     /*
     global $level_linked_property;
     $rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
