@@ -124,12 +124,11 @@ class chromecast extends app_player_addon
                 $filelink = 'http://' . $server_ip . $m[0];
             }
         }
-        if (strlen($filelink)) {
+        if (remote_file_exists($filelink)) {
             try {
                 $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->load($filelink, 0);
                 $cc->play();
-                sleep ($message['TIME_MESSAGE']);
                 $this->success = TRUE;
                 $this->message = 'OK';
             }
@@ -141,6 +140,7 @@ class chromecast extends app_player_addon
             $this->success = FALSE;
             $this->message = 'Input is missing!';
         }
+		sleep ($message['TIME_MESSAGE']);
         return $this->success;
     }
     
