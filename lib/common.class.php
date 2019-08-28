@@ -68,21 +68,11 @@ function sayReply($ph, $level = 0, $replyto = '')
         $source = 'terminal_not_found';
         say($ph, $level);
     } else {
-        $source = 'terminal' . $terminal_rec['ID'];
-        $said_status = sayTo($ph, $level, $terminal_rec['NAME']);
-        if (!$said_status) {
-            say($ph, $level);
-        } else {
-            //$rec = array();
-            //$rec['MESSAGE']   = $ph;
-            //$rec['ADDED']     = date('Y-m-d H:i:s');
-            //$rec['ROOM_ID']   = 0;
-            //$rec['MEMBER_ID'] = 0;
-            //if ($level > 0) $rec['IMPORTANCE'] = $level;
-            //$rec['ID'] = SQLInsert('shouts', $rec);
-        }
+        $source = 'terminal - ' . $terminal_rec['ID'];
+        sayTo($ph, $level, $terminal_rec['NAME']);
     }
-    processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
+	// запуск этой функции уже будет в функции САЙ или САЙТУ - небходимо исключить этот вариант из возможности подписки
+    //processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
 }
 
 
@@ -128,7 +118,33 @@ function sayTo($ph, $level = 0, $destination = '')
     if ($level > 0) $rec['IMPORTANCE'] = $level;
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    $processed = processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'destination' => $destination));
+	$terminals = array();
+    if ($destination) {
+        if (!$terminals = getTerminalsByName($destination, 1)) {
+            $terminals = getTerminalsByHost($destination, 1);
+        }
+    } else {
+        $terminals = getTerminalsByCANTTS();
+    }
+    foreach ($terminals as $terminal) {
+        if (!$terminal['IS_ONLINE']) {
+            pingTerminalSafe($terminal['NAME']);
+        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+            $rec['SOURCE'] .= $terminal['ID'] . '^';
+			if ( $terminal['TTS_TYPE']=='mediaplayer') {
+		        $needgenerateaudio = true;
+		    }
+		} 
+    }
+	
+	$rec['CHEKED']=1;
+	
+    $rec['ID'] = SQLInsert('shouts', $rec);    
+	
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAYTO', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 
+    }
+	
     return 1;
 }
 
@@ -175,9 +191,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = $member_id;
     $rec['SOURCE'] = $source;
-
     if ($level > 0) $rec['IMPORTANCE'] = $level;
-    $rec['ID'] = SQLInsert('shouts', $rec);
+
 
     if ($member_id) {
         $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
@@ -197,11 +212,32 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             }
         }
     }
+	
+    $terminals = array();
+    $terminals = getTerminalsByCANTTS();
+     
+    foreach ($terminals as $terminal) {
+        if (!$terminal['IS_ONLINE']) {
+            pingTerminalSafe($terminal['NAME']);
+        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+            $rec['SOURCE'] .= $terminal['ID'] . '^';
+			$rec['CHEKED']=0;
+			if ( $terminal['TTS_TYPE']=='mediaplayer') {
+		        $needgenerateaudio = true;
+		    }
+		} 
+    }
+		
+    $rec['CHEKED']=1;
+    $rec['ID'] = SQLInsert('shouts', $rec);    
+	
+	if ($needgenerateaudio) {
+		processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
+    }	
 
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
 
-    processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
 
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
