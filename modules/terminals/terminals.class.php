@@ -143,7 +143,6 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
-              // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' ) {
             
                                 //'filename' => '$cached_filename',
@@ -160,7 +159,6 @@ class terminals extends module
             $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
             $message['TIME_MESSAGE'] = $details['time_shift'];
             $message['FILE_LINK'] = $details['filename'];
-			$message['CHEKED']=1;
 	        SQLUpdate('shouts', $message);
         } else  if ($event == 'HOURLY') {
             // check terminals
