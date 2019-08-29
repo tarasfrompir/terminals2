@@ -60,7 +60,7 @@ while (1) {
 			continue;
 		}
 		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' AND CHEKED = '1' ORDER BY ID ASC");
+		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 	
 		// запускаем все что имеет function sayttotext
 		if ($old_message) {
