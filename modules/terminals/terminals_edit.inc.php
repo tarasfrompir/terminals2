@@ -74,6 +74,8 @@ if ($this->mode == 'update') {
     if ($ok) {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
+            sg($rec['LINKED_OBJECT'] .'.location',$location);
+            sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
