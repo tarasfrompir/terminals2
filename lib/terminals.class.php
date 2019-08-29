@@ -397,18 +397,17 @@ function pingTerminalSafe($terminal, $details = '')
     getURLBackground($url, 0);
 }
 
-function send_message_to_terminal($message, $terminal)
+function send_message($message, $terminal)
 {
-    include_once(DIR_MODULES . 'app_player/addons.php');
-    include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
-    if (class_exists($terminal['PLAYER_TYPE'])) {
-        if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
-            $player = new $terminal['PLAYER_TYPE']($terminal);
-        }
-    }
-    $out = $player->say_message($message, $terminal);
+    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
+    if (file_exists($addon_file)) {
+        include_once($addon_file);
+        $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
+        $out = $tts->say_message($message, $terminal);
+	}
 	usleep(100000);
-	//DebMes('out - '. $out. ' '.$terminal['NAME']);
+	DebMes('out - '. $out. ' '.$terminal['NAME']);
 	if (!$out) {
             $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
             $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
@@ -417,7 +416,7 @@ function send_message_to_terminal($message, $terminal)
 	sg($terminal['LINKED_OBJECT'].'.BASY',0);	
 }
 
-function send_message_to_terminalSafe($message, $terminal)
+function send_messageSafe($message, $terminal)
 {
     $data = array(
         'send_message_to_terminal' => 1,
