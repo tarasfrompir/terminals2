@@ -416,17 +416,7 @@ class terminals extends module
 EOD;
         parent::dbInstall($data);
 
-        $terminals = SQLSelect("SELECT * FROM terminals WHERE TTS_TYPE='' AND CANTTS=1");
-        foreach ($terminals as $terminal) {
-            if ($terminal['MAJORDROID_API']) {
-                $terminal['TTS_TYPE'] = 'majordroid';
-            } else {
-                $terminal['TTS_TYPE'] = 'mediaplayer';
-            }
-            SQLUpdate('terminals', $terminal);
-        }
-
-    }
+  }
 // --------------------------------------------------------------------
 }
 
