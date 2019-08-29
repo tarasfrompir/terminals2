@@ -326,6 +326,7 @@ class terminals extends module
                 SQLUpdate('terminals', $terminal);
             }
         } elseif ($event == 'SAYREPLY') {
+            // disabled not work
         } 
     }
 
@@ -379,10 +380,11 @@ class terminals extends module
             SQLUpdate('terminals', $terminal);
         }
         
-        subscribeToEvent($this->name, 'SAY', '', 0);
-        subscribeToEvent($this->name, 'SAYREPLY', '', 0);
-        subscribeToEvent($this->name, 'SAYTO', '', 0);
-        subscribeToEvent($this->name, 'ASK', '', 0);
+        unsubscribeFromEvent($this->name, 'SAY');
+        unsubscribeFromEvent($this->name, 'SAYTO');
+        unsubscribeFromEvent($this->name, 'ASK');
+        unsubscribeFromEvent($this->name, 'SAYREPLY');
+        
         subscribeToEvent($this->name, 'SAY_CACHED_READY', 0);
         subscribeToEvent($this->name, 'HOURLY');
         parent::install($parent_name);
