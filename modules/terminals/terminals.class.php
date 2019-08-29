@@ -276,8 +276,6 @@ class terminals extends module
             } else {
                 $duration = getMediaDurationSeconds($details['CACHED_FILENAME'])+1;
             }
-			DebMes($details['CACHED_FILENAME']);
-			DebMes(getMediaDurationSeconds($details['CACHED_FILENAME']));
             $rec['ID'] = $details['ID'];
             $rec['MESSAGE_DURATION'] = $duration;
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
@@ -416,7 +414,7 @@ class terminals extends module
 EOD;
         parent::dbInstall($data);
 
-  }
+    }
 // --------------------------------------------------------------------
 }
 
