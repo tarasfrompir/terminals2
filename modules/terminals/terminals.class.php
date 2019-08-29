@@ -370,8 +370,8 @@ class terminals extends module
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
         foreach ($terminals as $terminal) {
             addClassObject('Terminals', $terminal['NAME']);
-            $rec['LINKED_OBJECT'] = $terminal['NAME'];
-            SQLUpdate('terminals', $rec);
+            $terminal['LINKED_OBJECT'] = $terminal['NAME'];
+            SQLUpdate('terminals', $terminal);
         }
         
         subscribeToEvent($this->name, 'SAY', '', 0);
