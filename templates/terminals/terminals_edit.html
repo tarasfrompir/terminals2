@@ -138,6 +138,10 @@
 
 
     <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
+	<div class="form-group ">
+            <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#>:</label>
+            <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
+        </div>
         <div class="form-group">
             <label class="col-lg-4 control-label" for="tts_type"><#LANG_TTS_TYPE#>:</label>
             <div class="col-lg-5">
