@@ -20,9 +20,8 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
-// set all message cheked
+// set all message clear
 SQLExec("UPDATE shouts SET SOURCE='' ");
-SQLExec("UPDATE shouts SET CHEKED='1'");
 		
 // set all terminal as free when restart cycle
 $terminals = SQLSelect("SELECT * FROM terminals");
@@ -33,7 +32,7 @@ foreach ($terminals as $terminal) {
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC")['ID'];
 $number_message = $number_message + 1;
-
+DebMes($number_message);
 while (1) {
 	// time update cicle of terminal
     if (time() - $checked_time > 10) {
@@ -44,7 +43,6 @@ while (1) {
     if (time() - $clear_message > 180) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 3 MINUTE)");
-		SQLExec("UPDATE shouts SET CHEKED = '1' WHERE ADDED < (NOW() - INTERVAL 3 MINUTE)");
     }
 
 	// CHEK next message for terminals ready
@@ -66,9 +64,10 @@ while (1) {
 	
 		// запускаем все что имеет function sayttotext
 		if ($old_message) {
-			sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
+			//sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
 			send_messageSafe($old_message, $terminal);
+			DebMes($old_message);
 		}
 		if ($old_message) {
 			SQLUpdate('shouts', $old_message);
