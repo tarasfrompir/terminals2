@@ -57,8 +57,15 @@
     </div>
 </div>
     [#module name="linkedobject" object_field="linked_object"#]
-
-    <!--#
+<div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <div class="col-lg-4"><select name="location" class="form-control">
+   <option value="">-
+    [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
+   [#end LOCATIONS#]
+  </select></div>
+</div>
+<!--#
         <script language="javascript">
             function majordroidChanged() {
                 if ($('#majordroid_api').is(':checked')) {
