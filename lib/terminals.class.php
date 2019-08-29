@@ -359,27 +359,31 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 }
 
 // check terminal 
-function pingTerminal($terminal)
+function pingTerminal($terminal, $details)
 {
-    $terminals = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
-    if (ping($terminals['HOST'])) {
-        sg($terminals['LINKED_OBJECT'] . '.status', '1');
-        $terminals['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $terminals['IS_ONLINE']       = 1;
+    if ($details['ID']) $rec['ID'] = $details['ID'];
+	if (ping($details['HOST'])) {
+		sg($details['LINKED_OBJECT'] . '.status', '1');
+        $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $details['IS_ONLINE'] = 1;
     } else {
-        sg($terminals['LINKED_OBJECT'] . '.status', '0');
-        $terminals['IS_ONLINE']       = 0;
+        sg($details['LINKED_OBJECT'] . '.status', '0');
+        $rec['IS_ONLINE'] = 0;
     }
-    SQLUpdate('terminals', $terminals);
+    SQLUpdate('terminals', $rec);
 }
 
 
 // check terminal Safe
-function pingTerminalSafe($terminal)
+function pingTerminalSafe($terminal, $details = '')
 {
+    if (!is_array($details)) {
+        $details = array();
+    }
     $data = array(
         'pingTerminal' => 1,
-        'terminal' => $terminal
+        'terminal' => $terminal,
+		'params' => json_encode($details)
     );
     if (session_id()) {
         $data[session_name()] = session_id();
