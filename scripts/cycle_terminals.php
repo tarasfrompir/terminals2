@@ -68,7 +68,7 @@ while (1) {
 		if ($old_message) {
 			sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
-			send_message_to_terminalSafe($old_message, $terminal);
+			send_messageSafe($old_message, $terminal);
 		}
 		if ($old_message) {
 			SQLUpdate('shouts', $old_message);
