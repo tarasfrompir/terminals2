@@ -246,7 +246,6 @@ shouts - Shoutbox
  shouts: CACHED_FILENAME varchar(255) NOT NULL DEFAULT ''
  shouts: EVENT varchar(255) NOT NULL DEFAULT ''
  shouts: MESSAGE_DURATION int(10) NOT NULL DEFAULT '0'
- shouts: CHEKED int(1) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
  }
