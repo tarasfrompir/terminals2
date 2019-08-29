@@ -310,20 +310,23 @@ class terminals extends module
                 //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
                 $this->terminalSayByCacheQueue($terminal_rec, $details['level'], $filename, $details['message']);
             }
-
-        } elseif ($event == 'HOURLY') {
+        } else  if ($event == 'HOURLY') {
             // check terminals
+            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
-                if (ping($terminal['HOST'])) {
+                if (ping($terminal['HOST']) OR ping(processTitle($terminal['HOST']))) {
+                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE'] = 1;
-                    SQLUpdate('terminals', $terminal);
+                    $terminal['IS_ONLINE']       = 1;
+                } else {
+                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+                    $terminal['IS_ONLINE']       = 0;
                 }
+                SQLUpdate('terminals', $terminal);
             }
-            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)'); //
         } elseif ($event == 'SAYREPLY') {
-        }
+        } 
     }
 
     /**
