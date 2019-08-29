@@ -257,65 +257,33 @@ class terminals extends module
      *
      * @access public
      */
-    function processSubscription($event, $details = '')
+    /**
+     * terminals subscription events
+     *
+     * @access public
+     */
+     function processSubscription($event, $details = '')
     {
-        $this->getConfig();
-        DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
-        if ($event == 'SAY') {
-            $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1 AND TTS_TYPE!=''");
-            foreach ($terminals as $terminal_rec) {
-                $this->terminalSay($terminal_rec, $details['message'], $details['level']);
-            }
-        } elseif ($event == 'SAYTO' || $event == 'ASK') {
-            $terminal_rec = array();
-            if ($details['destination']) {
-                if (!$terminal_rec = getTerminalsByName($details['destination'], 1)[0]) {
-                    $terminal_rec = getTerminalsByHost($details['destination'], 1)[0];
-                }
-            }
-            if (!$terminal_rec['ID']) {
-                return false;
-            }
-            if ($event == 'ASK') {
-                $details['level'] = 'ask';
-            }
-            $this->terminalSay($terminal_rec, $details['message'], $details['level']);
-        } elseif ($event == 'SAY_CACHED_READY') {
-            $filename = $details['filename'];
-            if (!file_exists($filename)) return false;
-            if ($details['event']) {
-                $source_event = $details['event'];
+        // если происходит событие SAY_CACHED_READY то запускаемся
+        if ($event == 'SAY_CACHED_READY' ) {
+            DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
+            // берем длинну сообщения
+            if (getMediaDurationSeconds($details['filename']) < 2) {
+                $details['time_shift'] = 2;
             } else {
-                $source_event = 'SAY';
+                $details['time_shift'] = getMediaDurationSeconds($details['filename'])+1;
             }
-            if ($source_event == 'SAY') {
-                $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1");
-                foreach ($terminals as $terminal_rec) {
-                    //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                    $this->terminalSayByCacheQueue($terminal_rec, $details['level'], $filename, $details['message']);
-                }
-            } elseif ($source_event == 'SAYTO' || $source_event == 'ASK') {
-                $terminal_rec = array();
-                if ($details['destination']) {
-                    if (!$terminal_rec = getTerminalsByName($details['destination'], 1)[0]) {
-                        $terminal_rec = getTerminalsByHost($details['destination'], 1)[0];
-                    }
-                }
-                if (!$terminal_rec['ID']) {
-                    return false;
-                }
-                if ($source_event == 'ASK') {
-                    $details['level'] = 9999;
-                }
-                //$this->terminalSayByCache($terminal_rec, $filename, $details['level']);
-                $this->terminalSayByCacheQueue($terminal_rec, $details['level'], $filename, $details['message']);
-            }
+        
+            $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
+            $message['TIME_MESSAGE'] = $details['time_shift'];
+            $message['FILE_LINK'] = $details['filename'];
+	        SQLUpdate('shouts', $message);
         } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
-                if (ping($terminal['HOST']) OR ping(processTitle($terminal['HOST']))) {
+                if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
                     sg($terminal['LINKED_OBJECT'] . '.status', '1');
                     $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                     $terminal['IS_ONLINE']       = 1;
@@ -325,11 +293,8 @@ class terminals extends module
                 }
                 SQLUpdate('terminals', $terminal);
             }
-        } elseif ($event == 'SAYREPLY') {
-            // disabled not work
-        } 
+        }
     }
-
     /**
      * очередь сообщений
      *
