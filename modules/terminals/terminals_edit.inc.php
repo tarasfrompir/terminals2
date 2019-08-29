@@ -57,6 +57,7 @@ if ($this->mode == 'update') {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
     }
+    $location = gr('location');
     /*
     global $level_linked_property;
     $rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
