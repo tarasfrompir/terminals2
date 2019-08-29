@@ -361,15 +361,17 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 // check terminal 
 function pingTerminal($terminal)
 {
-    if (ping($terminal['HOST'])) {
-        sg($terminal['LINKED_OBJECT'] . '.status', '1');
-        $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $terminal['IS_ONLINE']       = 1;
+	DebMes($terminal);
+	$terminals = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
+    if (ping($terminals['HOST'])) {
+        sg($terminals['LINKED_OBJECT'] . '.status', '1');
+        $terminals['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $terminals['IS_ONLINE']       = 1;
     } else {
-        sg($terminal['LINKED_OBJECT'] . '.status', '0');
-        $terminal['IS_ONLINE']       = 0;
+        sg($terminals['LINKED_OBJECT'] . '.status', '0');
+        $terminals['IS_ONLINE']       = 0;
     }
-    SQLUpdate('terminals', $terminal);
+    SQLUpdate('terminals', $terminals);
 }
 
 
@@ -389,8 +391,8 @@ function pingTerminalSafe($terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
+	DebMes($url);
     getURLBackground($url, 0);
-    return 1;
 }
 
 function send_message_to_terminal($message, $terminal)
