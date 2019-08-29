@@ -361,8 +361,7 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 // check terminal 
 function pingTerminal($terminal)
 {
-	DebMes($terminal);
-	$terminals = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
+    $terminals = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
     if (ping($terminals['HOST'])) {
         sg($terminals['LINKED_OBJECT'] . '.status', '1');
         $terminals['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
@@ -391,7 +390,6 @@ function pingTerminalSafe($terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-	DebMes($url);
     getURLBackground($url, 0);
 }
 
