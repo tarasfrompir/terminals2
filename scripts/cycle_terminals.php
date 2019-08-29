@@ -48,7 +48,7 @@ while (1) {
 	// CHEK next message for terminals ready
     $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message ."'");
 
-	if ($message and $message['CHEKED'] == 1 ) {
+	if ($message and $message['SOURCE'] ) {
 	    $number_message = $number_message + 1;
 	} else {
 		usleep(500000);	
