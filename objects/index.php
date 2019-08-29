@@ -176,7 +176,7 @@ if ($object != '') {
 } elseif ($script != '') {
    runScript($script, $_REQUEST);
 } elseif (gr('pingTerminal')) {
-    pingTerminal(gr('terminal'));
+    pingTerminal(gr('terminal'), json_decode(gr('params'),true));
 } elseif (gr('send_message_to_terminal')) {
     send_message_to_terminal(gr('message'), gr('terminal'));
 }
