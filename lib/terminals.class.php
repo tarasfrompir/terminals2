@@ -361,21 +361,15 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 // check terminal 
 function pingTerminal($terminal)
 {
-    //DebMes("Терминал-".$terminal . ' офлайн и его запускаем на пинг '. microtime(true), 'terminals2');
-    $Cheked_terminal = SQLSelectOne("SELECT * FROM terminals WHERE NAME = '" . $terminal . "' OR TITLE = '" . $terminal . "' OR HOST = '" . $terminal . "'");
-    if (ping($Cheked_terminal['HOST'])) {
-        //DebMes("Пропингованый Терминал-".$terminal . ' онлайн и обновляем его статус '. microtime(true), 'terminals2');
-        sg($Cheked_terminal['LINKED_OBJECT'] . '.status', '1');
-        $Cheked_terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $Cheked_terminal['IS_ONLINE']       = 1;
+    if (ping($terminal['HOST'])) {
+        sg($terminal['LINKED_OBJECT'] . '.status', '1');
+        $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $terminal['IS_ONLINE']       = 1;
     } else {
-        //DebMes("Пропингованый Терминал-".$terminal . ' офлайн и обновляем его статус '. microtime(true), 'terminals2');
-        sg($Cheked_terminal['LINKED_OBJECT'] . '.status', '0');
-        $Cheked_terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $Cheked_terminal['IS_ONLINE']       = 0;
+        sg($terminal['LINKED_OBJECT'] . '.status', '0');
+        $terminal['IS_ONLINE']       = 0;
     }
-    SQLUpdate('terminals', $Cheked_terminal);
-    //DebMes("Пропингованый Терминал-".$terminal . ' состояние обновлено '. microtime(true), 'terminals2');
+    SQLUpdate('terminals', $terminal);
 }
 
 
