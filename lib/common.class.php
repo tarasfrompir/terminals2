@@ -128,7 +128,7 @@ function sayTo($ph, $level = 0, $destination = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME']);
-        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
 			if ( $terminal['TTS_TYPE']=='mediaplayer') {
 		        $needgenerateaudio = true;
@@ -218,7 +218,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME']);
-        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANPLAY'] AND $terminal['CANTTS']) {
+        } else if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS']) {
             $rec['SOURCE'] .= $terminal['ID'] . '^';
 			$rec['CHEKED']=0;
 			if ( $terminal['TTS_TYPE']=='mediaplayer') {
