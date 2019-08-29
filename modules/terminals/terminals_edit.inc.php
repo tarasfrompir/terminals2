@@ -58,10 +58,6 @@ if ($this->mode == 'update') {
         $rec['LINKED_OBJECT'] = $rec['NAME'];
     }
     $location = gr('location');
-    /*
-    global $level_linked_property;
-    $rec['LEVEL_LINKED_PROPERTY'] = $level_linked_property;
-    */
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
     $rec['HOST'] = gr('host');
