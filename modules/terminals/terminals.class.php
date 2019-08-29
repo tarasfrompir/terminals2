@@ -268,16 +268,15 @@ class terminals extends module
         if ($event == 'SAY_CACHED_READY' ) {
             DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
             // берем длинну сообщения
-            if (getMediaDurationSeconds($details['filename']) < 2) {
-                $details['time_shift'] = 2;
+            if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
+                $duration = 2;
             } else {
-                $details['time_shift'] = getMediaDurationSeconds($details['filename'])+1;
+                $duration = getMediaDurationSeconds($details['CACHED_FILENAME'])+1;
             }
-        
-            $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$details['message_id']."'");
-            $message['TIME_MESSAGE'] = $details['time_shift'];
-            $message['FILE_LINK'] = $details['filename'];
-	        SQLUpdate('shouts', $message);
+            $rec['ID'] = $details['ID'];
+            $rec['MESSAGE_DURATION'] = $duration;
+            $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
+	        SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
@@ -407,7 +406,6 @@ class terminals extends module
  terminals: LATEST_REQUEST_TIME datetime
  terminals: LATEST_ACTIVITY datetime
  terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
- terminals: LEVEL_LINKED_PROPERTY varchar(255) NOT NULL DEFAULT ''
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
 EOD;
