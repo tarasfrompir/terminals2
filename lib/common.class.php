@@ -194,7 +194,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
 
     if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source, 'message_id' => $rec['ID']));
+        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
         return;
     }
 
@@ -230,7 +230,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ID'] = SQLInsert('shouts', $rec);    
 	
 	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id)); //, 'ignoreVoice'=>$ignoreVoice
+		processSubscriptionsSafe('SAY', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'message_id' => $rec['ID'])); //, 'ignoreVoice'=>$ignoreVoice
     }	
 
     setGlobal('lastSayTime', time());
