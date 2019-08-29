@@ -366,7 +366,13 @@ class terminals extends module
         // add class and properties
         addClass('Terminals', 'SDevices');
         addClassProperty('Terminals', 'name');
-        
+        //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
+        $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
+        foreach ($terminals as $terminal) {
+            addClassObject('Terminals', $terminal['NAME']);
+            $rec['LINKED_OBJECT'] = $terminal['NAME'];
+            SQLUpdate('terminals', $rec);
+        }
         
         subscribeToEvent($this->name, 'SAY', '', 0);
         subscribeToEvent($this->name, 'SAYREPLY', '', 0);
