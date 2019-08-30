@@ -32,7 +32,7 @@ foreach ($terminals as $terminal) {
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC")['ID'];
 $number_message = $number_message + 1;
-DebMes($number_message);
+DebMes('Start terminals cycle');
 while (1) {
 	// time update cicle of terminal
     if (time() - $checked_time > 10) {
@@ -40,17 +40,16 @@ while (1) {
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
     //время жизни сообщений
-    if (time() - $clear_message > 180) {
+    if (time() - $clear_message > 300) {
         $clear_message = time();
-        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 3 MINUTE)");
+        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 5 MINUTE)");
     }
 
 	// CHEK next message for terminals ready
     $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message ."'");
 
-	if ($message and $message['SOURCE'] ) {
+	if ($message ) {
 	    $number_message = $number_message + 1;
-		DebMes($number_message);
 	} else {
 		usleep(500000);	
 	}
