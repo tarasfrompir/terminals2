@@ -177,8 +177,8 @@ if ($object != '') {
    runScript($script, $_REQUEST);
 } elseif (gr('pingTerminal')) {
     pingTerminal(gr('terminal'), json_decode(gr('params'),true));
-} elseif (gr('send_message_to_terminal')) {
-    send_message_to_terminal(gr('message'), gr('terminal'));
+} elseif (gr('send_message')) {
+    send_message(gr('message'), gr('terminal'));
 }
 
 endMeasure('TOTAL'); // end calculation of execution time
