@@ -4,22 +4,21 @@ class mainterminal extends tts_addon
 {
     function __construct($terminal)
     {
-        $this->title = "MediaPlayer";
+        $this->title = "Основной терминал системы";
         parent::__construct($terminal);
     }
 
     // Say
-    function sayCached($phrase, $level = 0, $cached_file = '') //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        $this->reset_properties();
-        if($message['FILE_LINK']) {
-            if(file_exists($message['FILE_LINK'])) {
+        if($message['CACHED_FILENAME']) {
+            if(file_exists($message['CACHED_FILENAME'])) {
                 if (IsWindowsOS()){
-                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['FILE_LINK']);
+                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['CACHED_FILENAME']);
                 } else {
-                    safe_exec('mplayer ' . $message['FILE_LINK'] . " >/dev/null 2>&1");
+                    safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
                 }
-                sleep ($message['TIME_MESSAGE']);
+        		sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
                 $this->message = 'OK';
             } else {
