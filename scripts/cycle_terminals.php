@@ -51,7 +51,7 @@ while (1) {
 	if ($message ) {
 	    $number_message = $number_message + 1;
 	} else {
-		usleep(500000);	
+		usleep(200000);	
 	}
   	// chek all old message and send message to terminals
     $out_terminals = getObjectsByProperty('basy', '==', '0');
@@ -62,15 +62,12 @@ while (1) {
 		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
 		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 	
-		// запускаем все что имеет function sayttotext
 		if ($old_message) {
-			//sg($terminal['LINKED_OBJECT'] . '.basy', 1);
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+			SQLUpdate('shouts', $old_message);
+			sg($terminal['LINKED_OBJECT'] . '.basy', 1);
 			send_messageSafe($old_message, $terminal);
 			//DebMes($old_message);
-		}
-		if ($old_message) {
-			SQLUpdate('shouts', $old_message);
 		}
 	}   
 
