@@ -417,7 +417,7 @@ function send_message($message, $terminal)
             $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
 	} */
-	sg($terminal['LINKED_OBJECT'].'.BASY',0);	
+	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
 
 function send_messageSafe($message, $terminal)
@@ -437,5 +437,5 @@ function send_messageSafe($message, $terminal)
         }
     }
     getURLBackground($url, 0);
-    return 1;
+	return 1;
 }
