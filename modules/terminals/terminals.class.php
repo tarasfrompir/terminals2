@@ -339,6 +339,8 @@ class terminals extends module
         addClass('Terminals', 'SDevices');
         addClassProperty('Terminals', 'name');
         addClassProperty('Terminals', 'location');
+        addClassProperty('Terminals', 'basy');
+		
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
         foreach ($terminals as $terminal) {
