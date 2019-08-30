@@ -399,24 +399,18 @@ function pingTerminalSafe($terminal, $details = '')
 
 function send_message($message, $terminal)
 {
-	DebMes('s m');
-	
-	DebMes($message);
-	DebMes($terminal);
-  /*   include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
+    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file)) {
         include_once($addon_file);
-        $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
+        $tts = new $terminal['TTS_TYPE']($terminal);
         $out = $tts->say_message($message, $terminal);
 	}
-	usleep(100000);
-	DebMes('out - '. $out. ' '.$terminal['NAME']);
 	if (!$out) {
-            $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-            $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
-            SQLUpdate('shouts', $rec);
-	} */
+        $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+        $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
+        SQLUpdate('shouts', $rec);
+	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
 
@@ -437,5 +431,5 @@ function send_messageSafe($message, $terminal)
         }
     }
     getURLBackground($url, 0);
-	return 1;
+    return 1;
 }
