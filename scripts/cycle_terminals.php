@@ -26,7 +26,7 @@ SQLExec("UPDATE shouts SET SOURCE='' ");
 // set all terminal as free when restart cycle
 $terminals = SQLSelect("SELECT * FROM terminals");
 foreach ($terminals as $terminal) {
-    sg($terminal['LINKED_OBJECT'] . '.BASY', 0);
+    sg($terminal['LINKED_OBJECT'] . '.basy', 0);
 } 
 
 // get number last message
