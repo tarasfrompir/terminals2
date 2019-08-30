@@ -399,7 +399,11 @@ function pingTerminalSafe($terminal, $details = '')
 
 function send_message($message, $terminal)
 {
-    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+	DebMes('s m');
+	
+	DebMes($message);
+	DebMes($terminal);
+  /*   include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file)) {
         include_once($addon_file);
@@ -412,14 +416,14 @@ function send_message($message, $terminal)
             $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
             $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
-	}
+	} */
 	sg($terminal['LINKED_OBJECT'].'.BASY',0);	
 }
 
 function send_messageSafe($message, $terminal)
 {
     $data = array(
-        'send_message_to_terminal' => 1,
+        'send_message' => 1,
         'message' => $message,
         'terminal' => $terminal
     );
@@ -433,4 +437,5 @@ function send_messageSafe($message, $terminal)
         }
     }
     getURLBackground($url, 0);
+    return 1;
 }
