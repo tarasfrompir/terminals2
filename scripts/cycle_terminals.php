@@ -50,11 +50,12 @@ while (1) {
 
 	if ($message and $message['SOURCE'] ) {
 	    $number_message = $number_message + 1;
+		DebMes($number_message);
 	} else {
 		usleep(500000);	
 	}
   	// chek all old message and send message to terminals
-    $out_terminals = getObjectsByProperty('BASY', '==', '0');
+    $out_terminals = getObjectsByProperty('basy', '==', '0');
 	foreach ($out_terminals as $terminals) {
 		if (!$terminals) {
 			continue;
@@ -64,10 +65,10 @@ while (1) {
 	
 		// запускаем все что имеет function sayttotext
 		if ($old_message) {
-			//sg($terminal['LINKED_OBJECT'] . '.BASY', 1);
+			//sg($terminal['LINKED_OBJECT'] . '.basy', 1);
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
 			send_messageSafe($old_message, $terminal);
-			DebMes($old_message);
+			//DebMes($old_message);
 		}
 		if ($old_message) {
 			SQLUpdate('shouts', $old_message);
