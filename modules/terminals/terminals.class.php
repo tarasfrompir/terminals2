@@ -191,72 +191,6 @@ class terminals extends module
     }
 
 
-    function terminalSayByCache($terminal_rec, $cached_filename, $level)
-    {
-        $min_level = getGlobal('ThisComputer.minMsgLevel');
-        if ($terminal_rec['MIN_MSG_LEVEL']) {
-            $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
-        }
-        if ($level < $min_level) {
-            return false;
-        }
-        if ($terminal_rec['MAJORDROID_API'] || $terminal_rec['PLAYER_TYPE'] == 'ghn') {
-            return;
-        }
-        if ($terminal_rec['CANPLAY'] && $terminal_rec['PLAYER_TYPE'] != '') {
-            if (preg_match('/\/cms\/cached.+/', $cached_filename, $m)) {
-                $server_ip = getLocalIp();
-                if (!$server_ip) {
-                    DebMes("Server IP not found", 'terminals');
-                    return false;
-                } else {
-                    $cached_filename = 'http://' . $server_ip . $m[0];
-                }
-            } else {
-                DebMes("Unknown file path format: " . $cached_filename, 'terminals');
-                return false;
-            }
-            DebMes("Playing cached to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $cached_filename, 'terminals');
-            playMedia($cached_filename, $terminal_rec['TITLE']);
-        }
-    }
-
-    function terminalSay($terminal_rec, $message, $level)
-    {
-        $asking = 0;
-        if ($level === 'ask') {
-            $level = 9999;
-            $asking = 1;
-        }
-        $min_level = getGlobal('ThisComputer.minMsgLevel');
-        if ($terminal_rec['MIN_MSG_LEVEL']) {
-            $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
-        }
-        if ($level < $min_level) {
-            return false;
-        }
-        DebMes("Saying to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message, 'terminals');
-        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
-        if (file_exists($addon_file)) {
-            include_once($addon_file);
-            $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
-            if ($asking) {
-                $result = $tts->ask($message, $level);
-            } else {
-                $result = $tts->say($message, $level);
-            }
-        } else {
-            DebMes("Could not find $addon_file", 'terminals');
-        }
-        return $result;
-    }
-
-    /**
-     * terminals subscription events
-     *
-     * @access public
-     */
     /**
      * terminals subscription events
      *
@@ -297,34 +231,7 @@ class terminals extends module
             }
         }
     }
-    /**
-     * очередь сообщений
-     *
-     * @access public
-     */
-    function terminalSayByCacheQueue($terminal_rec, $level, $cached_filename, $message)
-    {
 
-        $min_level = getGlobal('ThisComputer.minMsgLevel');
-        if ($terminal_rec['MIN_MSG_LEVEL']) {
-            $min_level = (int)processTitle($terminal_rec['MIN_MSG_LEVEL']);
-        }
-        if ($level < $min_level) {
-            return false;
-        }
-        DebMes("Saying cached to " . $terminal_rec['TITLE'] . ' (level ' . $level . '): ' . $message . " (file: $cached_filename)", 'terminals');
-        $result = false;
-        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal_rec['TTS_TYPE'] . '.addon.php';
-        if (file_exists($addon_file)) {
-            include_once($addon_file);
-            $tts = new $terminal_rec['TTS_TYPE']($terminal_rec);
-            $result = $tts->sayCached($message, $level, $cached_filename);
-        } else {
-            DebMes("Could not find $addon_file", 'terminals');
-        }
-        return $result;
-    }
 
     /**
      * Install
@@ -340,6 +247,10 @@ class terminals extends module
         addClassProperty('Terminals', 'name');
         addClassProperty('Terminals', 'location');
         addClassProperty('Terminals', 'basy');
+	    
+        // запускаем цикл автоматом
+        setGlobal('cycle_terminalsControl', 'restart');
+        setGlobal('cycle_terminalsAutoRestart', '1');
 		
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
