@@ -22,19 +22,19 @@ setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 // set all message clear
 SQLExec("UPDATE shouts SET SOURCE='' ");
-		
+
 // set all terminal as free when restart cycle
 $terminals = SQLSelect("SELECT * FROM terminals");
 foreach ($terminals as $terminal) {
     sg($terminal['LINKED_OBJECT'] . '.basy', 0);
-} 
+}
 
 // get number last message
-$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC")['ID'];
-$number_message = $number_message + 1;
+$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
+$number_message = $number_message['ID'] + 1;
 DebMes('Start terminals cycle');
 while (1) {
-	// time update cicle of terminal
+    // time update cicle of terminal
     if (time() - $checked_time > 10) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
@@ -44,45 +44,45 @@ while (1) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 5 MINUTE)");
     }
-
-	// CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message ."'");
-
-	if ($message ) {
-	    $number_message = $number_message + 1;
-	} else {
-		usleep(200000);	
-	}
-  	// chek all old message and send message to terminals
+    
+    // CHEK next message for terminals ready
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message . "'");
+    
+    if ($message) {
+        $number_message = $number_message + 1;
+    } else {
+        usleep(200000);
+    }
+    // chek all old message and send message to terminals
     $out_terminals = getObjectsByProperty('basy', '==', '0');
-	foreach ($out_terminals as $terminals) {
-		if (!$terminals) {
-			continue;
-		}
-		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-	    // если есть сообщение для этого терминала то пускаем его
-		if ($old_message) {
-			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
-			SQLUpdate('shouts', $old_message);
-			// если в состоянии плеера нету данных для восстановления, то запоминаем ее
-			if (!gg($terminal['LINKED_OBJECT'].'.playerdata')) {
-		    	    $player_state = getPlayerStatus($terminal['NAME']);
-			    if (is_array($player_state) AND $player_state['file'] AND strpos($player_state['file'], 'cached/voice')== false) {
-				    sg($terminal['LINKED_OBJECT'].'.playerdata',json_encode($player_state));
-		    	    }
-			}
-			sg($terminal['LINKED_OBJECT'] . '.basy', 1);
-			send_messageSafe($old_message, $terminal);
-		} else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'), true)) {
-			// inache vosstanavlivaem vosproizvodimoe
-			stopMedia($terminal['HOST']);
-			setPlayerVolume($terminal['HOST'], $restored_info['volume']);
-                        playMedia($restored_info['file'], $terminal['NAME']);
-			seekPlayerPosition($terminal['NAME'], $restored_info['time']);
-			sg($terminal['LINKED_OBJECT'].'.playerdata','');
-		}
-	}   
+    foreach ($out_terminals as $terminals) {
+        if (!$terminals) {
+            continue;
+        }
+        $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
+        // если есть сообщение для этого терминала то пускаем его
+        if ($old_message) {
+            $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
+            // если в состоянии плеера нету данных для восстановления, то запоминаем ее
+            if (!gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $terminal['TTS_TYPE'] == 'mediaplayer') {
+                $player_state = getPlayerStatus($terminal['NAME']);
+                if (is_array($player_state) AND $player_state['file'] AND strpos($player_state['file'], 'cached/voice') == false) {
+                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($player_state));
+                }
+            }
+            sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+            send_messageSafe($old_message, $terminal);
+        } else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer') {
+            // inache vosstanavlivaem vosproizvodimoe
+            stopMedia($terminal['HOST']);
+            setPlayerVolume($terminal['HOST'], $restored_info['volume']);
+            playMedia($restored_info['file'], $terminal['NAME']);
+            seekPlayerPosition($terminal['NAME'], $restored_info['time']);
+            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+        }
+    }
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
