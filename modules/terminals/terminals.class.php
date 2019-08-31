@@ -245,7 +245,6 @@ class terminals extends module
         // add class and properties
         addClass('Terminals', 'SDevices');
         addClassProperty('Terminals', 'name');
-        addClassProperty('Terminals', 'location');
         addClassProperty('Terminals', 'basy');
 	    
         // запускаем цикл автоматом
