@@ -61,13 +61,18 @@ while (1) {
 		}
 		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
 		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-	
+	    // esli est soobshenie to puskem ego
 		if ($old_message) {
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
 			SQLUpdate('shouts', $old_message);
+			//sg($terminal['LINKED_OBJECT'].'.restoredata',getPlayerStatus($terminal['NAME']));
 			sg($terminal['LINKED_OBJECT'] . '.basy', 1);
 			send_messageSafe($old_message, $terminal);
-			//DebMes($old_message);
+		} else {
+			// inache vosstanavlivaem vosproizvodimoe
+			//setPlayerVolume($terminal['HOST'], $terminal['TERMINAL_VOLUME_LEVEL']);
+            //playMedia($message['CACHED_FILENAME'], $terminal['NAME']);
+			//seekPlayerPosition($terminal['NAME'], $time = 0);
 		}
 	}   
 
