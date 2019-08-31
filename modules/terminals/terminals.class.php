@@ -248,6 +248,11 @@ class terminals extends module
         addClassProperty('Terminals', 'basy');
         addClassProperty('Terminals', 'playerdata');
 	    
+	// update main terminal
+        $terminal = getMainTerminal();
+        $terminal['TTS_TYPE'] = 'mainterminal';
+        SQLUpdate('terminals', $terminal);
+	    
         // запускаем цикл автоматом
         setGlobal('cycle_terminalsControl', 'restart');
         setGlobal('cycle_terminalsAutoRestart', '1');
