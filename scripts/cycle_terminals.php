@@ -61,21 +61,27 @@ while (1) {
 		}
 		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
 		$old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message ."' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-	    // esli est soobshenie to puskem ego
+	    // если есть сообщение для этого терминала то пускаем его
 		if ($old_message) {
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
 			SQLUpdate('shouts', $old_message);
-			//sg($terminal['LINKED_OBJECT'].'.restoredata',getPlayerStatus($terminal['NAME']));
+			// если в состоянии плеера нету данных для восстановления, то запоминаем ее
+			if (!gg($terminal['LINKED_OBJECT'].'.playerdata')) {
+		    	    $player_state = getPlayerStatus($terminal['NAME']);
+			    if (is_array($player_state) AND $player_state['file'] AND strpos($player_state['file'], 'cached/voice')== false) {
+				    sg($terminal['LINKED_OBJECT'].'.playerdata',json_encode($player_state));
+		    	    }
+			}
 			sg($terminal['LINKED_OBJECT'] . '.basy', 1);
 			send_messageSafe($old_message, $terminal);
-		} else {
+		} else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'), true)) {
 			// inache vosstanavlivaem vosproizvodimoe
-			//setPlayerVolume($terminal['HOST'], $terminal['TERMINAL_VOLUME_LEVEL']);
-            //playMedia($message['CACHED_FILENAME'], $terminal['NAME']);
-			//seekPlayerPosition($terminal['NAME'], $time = 0);
+			setPlayerVolume($terminal['HOST'], $restored_info['volume']);
+                        playMedia($restored_info['file'], $terminal['NAME']);
+			seekPlayerPosition($terminal['NAME'], $restored_info['time']);
+			sg($terminal['LINKED_OBJECT'].'.playerdata','');
 		}
 	}   
-
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
