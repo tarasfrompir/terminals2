@@ -17,7 +17,7 @@ $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0"
 if ($location) {
      $out['LOCATION_TITLE'] = processTitle($location);
 } else {
-     $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.location'));
+     $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
 }
 
 if ($this->mode == 'update') {
@@ -70,7 +70,7 @@ if ($this->mode == 'update') {
     if ($ok) {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
-            sg($rec['LINKED_OBJECT'] .'.location',$location);
+            sg($rec['LINKED_OBJECT'] .'.linkedRoom',$location);
             sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
         } else {
             $new_rec = 1;
