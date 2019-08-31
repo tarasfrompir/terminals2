@@ -76,6 +76,7 @@ while (1) {
 			send_messageSafe($old_message, $terminal);
 		} else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'), true)) {
 			// inache vosstanavlivaem vosproizvodimoe
+			stopMedia($terminal['HOST']);
 			setPlayerVolume($terminal['HOST'], $restored_info['volume']);
                         playMedia($restored_info['file'], $terminal['NAME']);
 			seekPlayerPosition($terminal['NAME'], $restored_info['time']);
