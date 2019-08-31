@@ -246,6 +246,7 @@ class terminals extends module
         addClass('Terminals', 'SDevices');
         addClassProperty('Terminals', 'name');
         addClassProperty('Terminals', 'basy');
+        addClassProperty('Terminals', 'playerdata');
 	    
         // запускаем цикл автоматом
         setGlobal('cycle_terminalsControl', 'restart');
