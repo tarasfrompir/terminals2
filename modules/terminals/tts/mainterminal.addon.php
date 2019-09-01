@@ -18,7 +18,7 @@ class mainterminal extends tts_addon
                 } else {
                     safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
                 }
-        		sleep ($message['MESSAGE_DURATION']);
+                sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
                 $this->message = 'OK';
             } else {
