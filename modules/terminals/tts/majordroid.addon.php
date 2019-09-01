@@ -32,6 +32,7 @@ class majordroid extends tts_addon {
                 return 0;
             }
             $result = socket_write($socket, $in, strlen($in));
+            usleep(200000);
             socket_close($socket);
             return $result;
         }
