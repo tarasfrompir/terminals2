@@ -35,7 +35,7 @@ $number_message = $number_message['ID'] + 1;
 DebMes('Start terminals cycle');
 while (1) {
     // time update cicle of terminal
-    if (time() - $checked_time > 10) {
+    if (time() - $checked_time > 60) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
