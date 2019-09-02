@@ -206,9 +206,9 @@ class terminals extends module
 				usleep(10000);
 			}
 			if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
-                $duration = 2;
+                $duration = 1;
             } else {
-                $duration = getMediaDurationSeconds($details['CACHED_FILENAME'])+1;
+                $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
             }
             $rec['ID'] = $details['ID'];
             $rec['MESSAGE_DURATION'] = $duration;
