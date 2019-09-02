@@ -51,7 +51,7 @@ while (1) {
     if ($message) {
         $number_message = $number_message + 1;
     } else {
-        usleep(200000);
+        sleep(1);
     }
     // chek all old message and send message to terminals
     $out_terminals = getObjectsByProperty('basy', '==', '0');
