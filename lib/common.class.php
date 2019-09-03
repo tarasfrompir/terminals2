@@ -55,6 +55,8 @@ function sayReplySafe($ph, $level = 0, $replyto = '')
 function sayReply($ph, $level = 0, $replyto = '')
 {
     $source = '';
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
     if ($replyto) {
         $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%" . DBSafe($replyto) . "%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
         $orig_msg = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
@@ -109,6 +111,8 @@ function sayTo($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
     // add message to chat
     $rec = array();
     $rec['MESSAGE'] = $ph;
@@ -178,7 +182,8 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
 
-    //dprint(date('Y-m-d H:i:s')." Say started",false);
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
 
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
