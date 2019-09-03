@@ -44,7 +44,7 @@ while (1) {
     }
     
     // CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT EXISTS(SELECT * FROM shouts WHERE ID='" . $number_message . "')");
+    $message = SQLSelectOne("SELECT EXISTS(SELECT * FROM shouts WHERE ID = '" . $number_message . "')");
     
     if ($message) {
         $number_message = $number_message + 1;
@@ -57,7 +57,7 @@ while (1) {
         if (!$terminals) {
             continue;
         }
-        $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если есть сообщение для этого терминала то пускаем его
         if ($old_message) {
