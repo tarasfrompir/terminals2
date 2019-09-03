@@ -20,16 +20,18 @@ $checked_time = 0;
 $terminalss = getObjectsByProperty('basy', '==', '1');
 foreach ($terminalss as $terminals) {
 	if (!$terminals ) {
-		echo serialize($terminal);
-        continue;
+            continue;
 	}
     $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
     sg($terminal['LINKED_OBJECT'] . '.basy', 0);
 }
 
+SQLExec("UPDATE shouts SET SOURCE = '' ");
+		
 // get number last message
 $number_message = SQLSelectOne("SELECT ID FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
+
 DebMes('Start terminals cycle');
 while (1) {
     // time update cicle of terminal
@@ -55,14 +57,14 @@ while (1) {
     $out_terminals = getObjectsByProperty('basy', '==', '0');
     foreach ($out_terminals as $terminals) {
         if (!$terminals ) {
-			usleep(200000);
+            usleep(200000);
             break;
 		}
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC LIMIT 1");
         // если есть сообщение для этого терминала то пускаем его
         if ($old_message['ID'] AND $terminal['ONLINE'] == 1) {
-			// убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
+            // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             // если в состоянии плеера нету данных для восстановления, то запоминаем ее
@@ -74,7 +76,7 @@ while (1) {
             }
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             send_messageSafe($old_message, $terminal);
-			usleep(200000);
+            usleep(200000);
         } else if ($old_message['ID'] AND $terminal['ONLINE'] == 0) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
@@ -86,7 +88,7 @@ while (1) {
             playMedia($restored_info['file'], $terminal['NAME']);
             seekPlayerPosition($terminal['NAME'], $restored_info['time']);
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-			usleep(200000);
+            usleep(200000);
         }
     }
     
