@@ -44,7 +44,7 @@ while (1) {
     }
     
     // CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID='" . $number_message . "'");
+    $message = SQLSelectOne("SELECT EXISTS(SELECT * FROM shouts WHERE ID='" . $number_message . "')");
     
     if ($message) {
         $number_message = $number_message + 1;
