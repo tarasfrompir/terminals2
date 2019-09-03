@@ -10,10 +10,6 @@ set_time_limit(0);
 
 include_once("./load_settings.php");
 
-include_once(DIR_MODULES . 'terminals/terminals.class.php');
-
-$terminals = new terminals();
-
 $checked_time = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
@@ -57,10 +53,11 @@ while (1) {
         if (!$terminals) {
             continue;
         }
-        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
+        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC LIMIT 1");
         // если есть сообщение для этого терминала то пускаем его
         if ($old_message) {
+			// убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             // если в состоянии плеера нету данных для восстановления, то запоминаем ее
