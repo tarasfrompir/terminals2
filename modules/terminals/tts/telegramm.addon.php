@@ -14,7 +14,6 @@ class telegramm extends tts_addon {
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-		DebMes($message['MESSAGE']);
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             $users   = SQLSelect("SELECT * FROM tlg_user ");
             $c_users = count($users);
