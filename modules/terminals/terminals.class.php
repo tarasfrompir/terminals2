@@ -253,10 +253,6 @@ class terminals extends module
         $terminal['TTS_TYPE'] = 'mainterminal';
         SQLUpdate('terminals', $terminal);
 	    
-        // запускаем цикл автоматом
-        setGlobal('cycle_terminalsControl', 'restart');
-        setGlobal('cycle_terminalsAutoRestart', '1');
-		
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
         foreach ($terminals as $terminal) {
