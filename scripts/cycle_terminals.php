@@ -31,7 +31,7 @@ SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
 $number_message = SQLSelectOne("SELECT ID FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
-Echo $number_message;
+
 DebMes('Start terminals cycle');
 while (1) {
     // time update cicle of terminal
