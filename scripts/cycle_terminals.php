@@ -18,8 +18,6 @@ $checked_time = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
-setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-
 // set all message clear
 SQLExec("UPDATE shouts SET SOURCE='' ");
 
