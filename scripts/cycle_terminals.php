@@ -1,30 +1,32 @@
 <?php
 
 chdir(dirname(__FILE__) . '/../');
-
-include_once './config.php';
-include_once './lib/loader.php';
-include_once './lib/threads.php';
-
+include_once("./config.php");
+include_once("./lib/loader.php");
+include_once("./lib/threads.php");
 set_time_limit(0);
 
+// connecting to database
+$db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
+
 include_once("./load_settings.php");
+include_once(DIR_MODULES . "control_modules/control_modules.class.php");
+$ctl = new control_modules();
+include_once(DIR_MODULES . 'terminals/terminals.class.php');
+echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
+$terminals = new terminals();
+echo date("H:i:s") . " Init module " . PHP_EOL;
 
 $checked_time = 0;
 
-echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
-
-// set all message clear
-SQLExec("UPDATE shouts SET SOURCE='' ");
-
 // set all terminal as free when restart cycle
-$terminals = SQLSelect("SELECT * FROM terminals");
+$terminals = getObjectsByProperty('basy', '==', '1');
 foreach ($terminals as $terminal) {
     sg($terminal['LINKED_OBJECT'] . '.basy', 0);
 }
 
 // get number last message
-$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
+$number_message = SQLSelectOne("SELECT ID FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
 DebMes('Start terminals cycle');
 while (1) {
