@@ -56,14 +56,11 @@ while (1) {
     foreach ($out_terminals as $terminals) {
         if (!$terminals ) {
             continue;
-		}
+	}
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC LIMIT 1");
         // если есть сообщение для этого терминала то пускаем его
         if ($old_message['ID'] AND $terminal['IS_ONLINE']) {
-            // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
-            $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
-            SQLUpdate('shouts', $old_message);
             // если в состоянии плеера нету данных для восстановления, то запоминаем ее
             //if (!gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $terminal['TTS_TYPE'] == 'mediaplayer') {
             //    $player_state = getPlayerStatus($terminal['NAME']);
@@ -75,7 +72,10 @@ while (1) {
 		usleep(500000);
 	        continue;
 	    }
-            sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+            // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
+            $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
+	    sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             send_messageSafe($old_message, $terminal);
 			// если же терминал отпингован и к нему нету доступа то удаляем его из очереди
         } else if ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
