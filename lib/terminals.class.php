@@ -380,6 +380,7 @@ function send_message($terminalname, $message, $terminal)
         $out = $tts->say_message($message, $terminal);
 	}
 	if (!$out) {
+            DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
             $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
             $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
