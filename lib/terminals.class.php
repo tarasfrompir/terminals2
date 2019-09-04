@@ -407,9 +407,11 @@ function send_message($message, $terminal)
         $out = $tts->say_message($message, $terminal);
 	}
 	if (!$out) {
-        $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-        $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
-        SQLUpdate('shouts', $rec);
+           if (pingTerminal($terminal['NAME'], $terminal)) {
+		   $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+            	   $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
+                   SQLUpdate('shouts', $rec);
+	   }	   
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
