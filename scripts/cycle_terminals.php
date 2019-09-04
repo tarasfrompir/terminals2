@@ -71,8 +71,8 @@ while (1) {
                     sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($player_state));
                 }
             }
-			if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['$old_message['SOURCE']']) {
-                            usleep(200000);
+			if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
+				usleep(200000);
 			    continue;
 	        }
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
