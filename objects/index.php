@@ -178,7 +178,7 @@ if ($object != '') {
 } elseif (gr('pingTerminal')) {
     pingTerminal(gr('terminal'), json_decode(gr('params'),true));
 } elseif (gr('send_message')) {
-    send_message(gr('message'), gr('terminal'));
+    send_message( gr('terminalname'), json_decode(gr('message'), true), json_decode(gr('terminal'), true));
 }
 
 endMeasure('TOTAL'); // end calculation of execution time
