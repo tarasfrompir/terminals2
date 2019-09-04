@@ -7,11 +7,9 @@ include_once("./lib/threads.php");
 set_time_limit(0);
 
 include_once("./load_settings.php");
-include_once(DIR_MODULES . "control_modules/control_modules.class.php");
-$ctl = new control_modules();
-include_once(DIR_MODULES . 'terminals/terminals.class.php');
+
 echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
-$terminals = new terminals();
+
 echo date("H:i:s") . " Init module " . PHP_EOL;
 
 $checked_time = 0;
@@ -73,13 +71,14 @@ while (1) {
                     sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($player_state));
                 }
             }
+			if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['$old_message['SOURCE']']) {
+			    continue;
+	        }
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             send_messageSafe($old_message, $terminal);
-            usleep(100000);
         } else if ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
-            usleep(100000);
         } else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer') {
             // inache vosstanavlivaem vosproizvodimoe
             stopMedia($terminal['HOST']);
@@ -87,9 +86,9 @@ while (1) {
             playMedia($restored_info['file'], $terminal['NAME']);
             seekPlayerPosition($terminal['NAME'], $restored_info['time']);
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-            usleep(200000);
         }
-    }
+        usleep(200000);
+	}
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
