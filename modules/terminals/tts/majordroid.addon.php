@@ -7,9 +7,9 @@ class majordroid extends tts_addon {
         parent::__construct($terminal);
     }
 
-    function say($phrase, $level = 0)
+    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        return $this->sendMajorDroidCommand('tts:'.$phrase);
+        return $this->sendMajorDroidCommand('tts:'.$message['CACHED_FILENAME']);
     }
 
     function ask($phrase, $level = 0) {
