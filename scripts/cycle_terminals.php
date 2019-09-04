@@ -72,6 +72,7 @@ while (1) {
                 }
             }
 			if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['$old_message['SOURCE']']) {
+                            usleep(200000);
 			    continue;
 	        }
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
