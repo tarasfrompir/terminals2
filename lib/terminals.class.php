@@ -337,14 +337,17 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 function pingTerminal($terminal, $details)
 {
     if ($details['ID']) $rec['ID'] = $details['ID'];
+	DebMes("Try to ping terminal - " . $terminal , 'terminals');
 	if (ping($details['HOST'])) {
 		sg($details['LINKED_OBJECT'] . '.status', '1');
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
         $details['IS_ONLINE'] = 1;
+		DebMes("Terminal - " . $terminal .' is online', 'terminals');
     } else {
         sg($details['LINKED_OBJECT'] . '.status', '0');
         $rec['IS_ONLINE'] = 0;
-    }
+		DebMes("Terminal - " . $terminal .' is offline', 'terminals');
+	}
     SQLUpdate('terminals', $rec);
 }
 // check terminal Safe
@@ -371,19 +374,29 @@ function pingTerminalSafe($terminal, $details = '')
 }
 function send_message($terminalname, $message, $terminal)
 {
-    DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-    if (file_exists($addon_file)) {
-        include_once($addon_file);
-        $tts = new $terminal['TTS_TYPE']($terminal);
-        $out = $tts->say_message($message, $terminal);
-	}
-	if (!$out) {
-            DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-            $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-            $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
-            SQLUpdate('shouts', $rec);
+    try {
+		DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
+		if (file_exists($addon_file)) {
+			include_once($addon_file);
+			$tts = new $terminal['TTS_TYPE']($terminal);
+			$out = $tts->say_message($message, $terminal);
+			if (!$out) {
+				DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+				pingTerminal($terminal['NAME'], $terminal);
+				$rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
+				SQLUpdate('shouts', $rec);
+			} else {
+				DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
+			}
+		} else {
+			sleep (1);
+			DebMes("Terminal not right confiured - " . $terminalname , 'terminals');
+		}
+	} catch(Exception $e) {
+			DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
