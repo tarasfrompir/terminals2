@@ -16,7 +16,7 @@ class mainterminal extends tts_addon
                 if (IsWindowsOS()){
                     safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['CACHED_FILENAME']);
                 } else {
-                    safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
+                   // safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
                 }
                 sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
