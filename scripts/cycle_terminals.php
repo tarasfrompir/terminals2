@@ -72,23 +72,27 @@ while (1) {
                 }
             }
 			if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
-				usleep(200000);
+				usleep(500000);
 			    continue;
 	        }
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             send_messageSafe($old_message, $terminal);
+			// если же терминал отпингован и к нему нету доступа то удаляем его из очереди
         } else if ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
-        } else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer') {
+        } else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer' AND $terminal['IS_ONLINE']) {
             // inache vosstanavlivaem vosproizvodimoe
             stopMedia($terminal['HOST']);
             setPlayerVolume($terminal['HOST'], $restored_info['volume']);
             playMedia($restored_info['file'], $terminal['NAME']);
             seekPlayerPosition($terminal['NAME'], $restored_info['time']);
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-        }
-        usleep(200000);
+        } else if ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer' AND !$terminal['IS_ONLINE']) {
+            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');			
+		}
+
+        usleep(300000);
 	}
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
