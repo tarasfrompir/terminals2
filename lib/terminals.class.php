@@ -427,17 +427,17 @@ function send_messageSafe($message, $terminal)
     if (session_id()) {
         $data[session_name()] = session_id();
     }
-	if (is_array($message)) {
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
+    if (is_array($message)) {
         foreach ($message as $k => $v) {
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-	if (is_array($terminal)) {
+    if (is_array($terminal)) {
         foreach ($terminal as $k => $v) {
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
     getURLBackground($url, 0);
     return 1;
 }
