@@ -397,7 +397,7 @@ function pingTerminalSafe($terminal, $details = '')
     getURLBackground($url, 0);
 }
 
-function send_message($message, $terminal)
+function send_message($terminalname, $message, $terminal)
 {
     include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
@@ -407,11 +407,11 @@ function send_message($message, $terminal)
         $out = $tts->say_message($message, $terminal);
 	}
 	if (!$out) {
-           if (pingTerminal($terminal['NAME'], $terminal)) {
-		   $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
-            	   $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
-                   SQLUpdate('shouts', $rec);
-	   }	   
+        if (pingTerminal($terminal['NAME'], $terminal)) {
+		    $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '".$message['ID']."'");
+            $rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
+            SQLUpdate('shouts', $rec);
+	    }	   
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
@@ -420,18 +420,24 @@ function send_messageSafe($message, $terminal)
 {
     $data = array(
         'send_message' => 1,
-        'message' => $message,
-        'terminal' => $terminal
+		'terminalname' => $terminal['NAME'],
+        'message' => json_encode($message),
+        'terminal' => json_encode($terminal)
     );
     if (session_id()) {
         $data[session_name()] = session_id();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
+	if (is_array($message)) {
+        foreach ($message as $k => $v) {
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
+	if (is_array($terminal)) {
+        foreach ($terminal as $k => $v) {
+            $url .= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
     getURLBackground($url, 0);
     return 1;
 }
