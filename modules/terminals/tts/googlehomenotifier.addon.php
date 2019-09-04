@@ -17,7 +17,7 @@ class googlehomenotifier extends tts_addon {
                 $port = '8091';
             }
             $host = $this->terminal['HOST'];
-            $url = 'http://' . $host . ':' . $port . '/google-home-notifier?language=' . $language . '&text=' . urlencode($phrase);
+            $url = 'http://' . $host . ':' . $port . '/google-home-notifier?language=' . $language . '&text=' . urlencode($message['MESSAGE']);
             getURL($url, 0);
         	usleep (200000);
             $this->success = TRUE;
