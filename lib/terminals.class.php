@@ -399,6 +399,7 @@ function pingTerminalSafe($terminal, $details = '')
 
 function send_message($terminalname, $message, $terminal)
 {
+    DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
     include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file)) {
@@ -436,6 +437,7 @@ function send_messageSafe($message, $terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
+	DebMes("Sending Message with Safe- " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminal['NAME'] , 'terminals');
     getURLBackground($url, 0);
     return 1;
 }
