@@ -24,7 +24,7 @@ foreach ($terminalss as $terminals) {
     sg($terminal['LINKED_OBJECT'] . '.basy', 0);
 }
 
-SQLExec("UPDATE shouts SET SOURCE = '' ");
+//SQLExec("UPDATE shouts SET SOURCE = '' ");
 		
 // get number last message
 $number_message = SQLSelectOne("SELECT ID FROM shouts ORDER BY ID DESC");
