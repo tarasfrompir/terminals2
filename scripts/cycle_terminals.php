@@ -20,7 +20,7 @@ foreach ($terminalss as $terminals) {
 	if (!$terminals ) {
             continue;
 	}
-    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
+    $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
     sg($terminal['LINKED_OBJECT'] . '.basy', 0);
 }
 
@@ -40,11 +40,11 @@ while (1) {
     //время жизни сообщений
     if (time() - $clear_message > 60) {
         $clear_message = time();
-        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 1 MINUTE) LIMIT 10");
+        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 1 MINUTE)");
     }
     
     // CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "' LIMIT 1");
+    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'1");
     
     if ($message) {
         $number_message = $number_message + 1;
@@ -57,8 +57,8 @@ while (1) {
         if (!$terminals ) {
             continue;
 	}
-        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "' LIMIT 1");
-        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC LIMIT 1");
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если есть сообщение для этого терминала то пускаем его
         if ($old_message['ID'] AND $terminal['IS_ONLINE']) {
             // если в состоянии плеера нету данных для восстановления, то запоминаем ее
