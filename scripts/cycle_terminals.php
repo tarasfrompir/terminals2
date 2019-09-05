@@ -27,7 +27,7 @@ foreach ($terminalss as $terminals) {
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 		
 // get number last message
-$number_message = SQLSelectOne("SELECT ID FROM shouts ORDER BY ID DESC");
+$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
 
 DebMes('Start terminals cycle');
