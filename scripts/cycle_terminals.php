@@ -44,7 +44,7 @@ while (1) {
     }
     
     // CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'1");
+    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
     
     if ($message) {
         $number_message = $number_message + 1;
