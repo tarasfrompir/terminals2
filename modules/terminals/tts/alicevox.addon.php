@@ -13,45 +13,6 @@ class alicevox extends tts_addon
     }
     
     // Say
-   // function sayToMedia($message_link, $time_message) //SETTINGS_SITE_LANGUAGE_CODE=код языка
-//    {
-  //      // преобразовываем файл в вав формат
-//        $path_parts = pathinfo($message_link);
-////        if ($path_parts['extension'] != 'wav') {
-//            if (!defined('PATH_TO_FFMPEG')) {
-//                if (IsWindowsOS()) {
-//                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-//                } else {
-//                    define("PATH_TO_FFMPEG", 'ffmpeg');
-//                }
-//                $outlink = str_ireplace("." . $path_parts['extension'], ".wav", $message_link);
-//                $out     = shell_exec(PATH_TO_FFMPEG . " -i " . $message_link . " -acodec pcm_s16le -ar 44100 " . $outlink . " 2>&1");
-//            }
-//        }
-        
-
-        
-
-//        } else {
-//            $this->success = FALSE;
-//            $this->message = 'Input is missing!';
-//        }
-//        return $this->success;
-//    }
-
-    // Default command
-    function command($command, $parameter)
-    {
-        if (!$json = json_decode($parameter)) {
-            $json = array();
-        }
-        if ($this->kodi_request($command, $json)) {
-            $this->success = TRUE;
-            $this->message = 'OK';
-        }
-        return $this->success;
-    }
-    // Say
     public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if($message['CACHED_FILENAME']) {
