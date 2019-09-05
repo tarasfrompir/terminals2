@@ -202,7 +202,7 @@ class terminals extends module
         if ($event == 'SAY_CACHED_READY' ) {
             DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
 			// ждем файл сообщения
-            while (file_exists($details['CACHED_FILENAME']) AND $count < 100 ) {
+            while (!file_exists($details['CACHED_FILENAME']) AND $count < 100 ) {
 				usleep(100000);
 				$count++;
 			}
