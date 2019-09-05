@@ -29,32 +29,9 @@ class alicevox extends tts_addon
 //            }
 //        }
         
-//        // берем ссылку http
-//        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
-//            $server_ip = getLocalIp();
-////            if (!$server_ip) {
-//                DebMes("Server IP not found", 'terminals');
-//                return false;
-//            } else {
-//                $outlink = 'http://' . $server_ip . $m[0];
-//            }
-//        }
+
         
-//        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-//        if (!remote_file_exists($outlink)) {
-//            $outlink = BASE_URL . $m[0];
-//        }
-        
-//        if (strlen($outlink)) {
-//            if ($this->kodi_request('Addons.ExecuteAddon', array(
-//                'addonid' => 'script.alicevox.master',
-//                'params' => array(
-//                    $outlink
-//                )
-//            ))) {
-//                $this->success = TRUE;
-//                $this->message = 'OK';
-//            }
+
 //        } else {
 //            $this->success = FALSE;
 //            $this->message = 'Input is missing!';
@@ -79,12 +56,17 @@ class alicevox extends tts_addon
     {
         if($message['CACHED_FILENAME']) {
             if(file_exists($message['CACHED_FILENAME'])) {
-                if (IsWindowsOS()){
-                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['CACHED_FILENAME']);
+                // берем ссылку http
+                if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
+                    $server_ip = getLocalIp();
+                    if (!$server_ip) {
+                       DebMes("Server IP not found", 'terminals');
+                       return false;
                 } else {
-                   // safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
+                    $outlink = 'http://' . $server_ip . $m[0];
                 }
-                sleep ($message['MESSAGE_DURATION']);
+                    
+               sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
                 $this->message = 'OK';
             } else {
