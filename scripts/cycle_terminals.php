@@ -69,7 +69,7 @@ while (1) {
                 }
             }
 	    if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
-		usleep(200000);
+		usleep(100000);
 	        continue;
 	    }
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
@@ -95,7 +95,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');			
 		}
 
-        usleep(300000);
+        usleep(100000);
 	}
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
