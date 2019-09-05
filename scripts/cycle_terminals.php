@@ -38,9 +38,9 @@ while (1) {
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
     //время жизни сообщений
-    if (time() - $clear_message > 300) {
+    if (time() - $clear_message > 60) {
         $clear_message = time();
-        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 5 MINUTE)");
+        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL 1 MINUTE) LIMIT 10");
     }
     
     // CHEK next message for terminals ready
@@ -95,7 +95,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');			
 		}
 
-        usleep(100000);
+        usleep(200000);
 	}
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
