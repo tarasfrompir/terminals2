@@ -374,7 +374,7 @@ function pingTerminalSafe($terminal, $details = '')
 }
 function send_message($terminalname, $message, $terminal)
 {
-    try {
+    try {	
 		DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
@@ -384,21 +384,22 @@ function send_message($terminalname, $message, $terminal)
 			$out = $tts->say_message($message, $terminal);
 			if (!$out) {
 				DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-				pingTerminal($terminal['NAME'], $terminal);
 				$rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '".$message['ID']."'");
 				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
 				SQLUpdate('shouts', $rec);
+				pingTerminal($terminal['NAME'], $terminal);
 			} else {
 				DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
 			}
 		} else {
-                    sleep (1);
-                    DebMes("Terminal not right confiured - " . $terminalname , 'terminals');
+            sleep (1);
+            DebMes("Terminal not right confiured - " . $terminalname , 'terminals');
 		}
 	} catch(Exception $e) {
            DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
+	DebMes("Finish Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 }
 function send_messageSafe($message, $terminal)
 {
@@ -422,7 +423,7 @@ function send_messageSafe($message, $terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-	DebMes("Sending Message with Safe- " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminal['NAME'] , 'terminals');
+    DebMes("Sending Message with Safe- " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminal['NAME'] , 'terminals');
     getURLBackground($url, 0);
     return 1;
 }
