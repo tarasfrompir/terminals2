@@ -41,7 +41,7 @@ while (1) {
     }
     
     $out_terminals = getObjectsByProperty('basy', '==', '0');
-    DebMes("Array of free terminal ".serialize($out_terminals) , 'terminals');
+    //DebMes("Array of free terminal ".serialize($out_terminals) , 'terminals');
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
