@@ -20,7 +20,7 @@ foreach($terminals as $terminal){
 // get number last message
 $number_message=SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message=$number_message['ID']+1;
-DebMes("Start nomber message - ".$number_message,'terminals');
+DebMes("Max nomber message - ".$number_message,'terminals');
 DebMes('Start terminals cycle');
 while(1){
 	// time update cicle of terminal
@@ -37,6 +37,7 @@ while(1){
 	$message=SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '".$number_message."'");
 	if($message){
 		$number_message=$number_message+1;
+		DebMes("Max nomber message - ".$number_message,'terminals');
 	}
 	else{
 		usleep(500000);
