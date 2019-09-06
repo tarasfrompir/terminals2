@@ -45,10 +45,15 @@ while (1) {
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
-            DebMes("No free terminals", 'terminals');
+            DebMes("No free terminal ".$terminals, 'terminals');
             continue;
         }
         $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        // если пустой терминал пропускаем
+        if (!$terminal) {
+            DebMes("No information of terminal".$terminal['NAME'], 'terminals');
+            continue;
+        }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если отсутствует сообщение пропускаем
         if (!$old_message['MESSAGE']) {
