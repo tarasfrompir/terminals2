@@ -9,11 +9,14 @@ echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 $checked_time = 0;
 // set all terminal as free when restart cycle
-$outs         = getObjectsByProperty('basy', '==', '1');
+$outs = getObjectsByProperty('basy');
+DebMes("Array of basy terminal ".serialize($outs) , 'terminals');
 foreach ($outs as $out) {
     if (!$out) {
+        DebMes("Cannot find basy terminals " , 'terminals');
         continue;
     }
+    DebMes("Set terminal not basy ".$out , 'terminals');
     sg($out . '.basy', 0);
 }
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
@@ -43,9 +46,11 @@ while (1) {
     }
     
     $out_terminals = getObjectsByProperty('basy', '==', '0');
+    DebMes("Array of free terminal ".serialize($out_terminals) , 'terminals');
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
+            DebMes("No free terminals", 'terminals');
             continue;
         }
         $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
@@ -58,6 +63,7 @@ while (1) {
         if (!$terminal['IS_ONLINE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
+            DebMes("Disable message - " . $terminal['NAME'], 'terminals');
             continue;
         }
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
@@ -87,7 +93,7 @@ while (1) {
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
         }
     }
-    
+    DebMes('Start terminals cycle');
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
