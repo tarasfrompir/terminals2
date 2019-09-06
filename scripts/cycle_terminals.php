@@ -9,13 +9,12 @@ echo date("H:i:s")." Running ".basename(__FILE__).PHP_EOL;
 echo date("H:i:s")." Init module ".PHP_EOL;
 $checked_time=0;
 // set all terminal as free when restart cycle
-$terminalss=getObjectsByProperty('basy','==','1');
-foreach($terminalss as $terminals){
-	if(!$terminals){
+$terminals=getObjectsByProperty('basy','==','1');
+foreach($terminals as $terminal){
+	if(!$terminal){
 		continue;
 	}
-	$terminal=SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '".$terminals."'");
-	sg($terminal['LINKED_OBJECT'].'.basy',0);
+	sg($terminal.'.basy',0);
 }
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
