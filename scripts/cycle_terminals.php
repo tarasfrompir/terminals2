@@ -51,15 +51,15 @@ while(1){
 		$terminal=SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '".$terminals."'");
 		$old_message=SQLSelectOne("SELECT * FROM shouts WHERE ID <= '".$number_message."' AND SOURCE LIKE '%".$terminal['ID']."^%' ORDER BY ID ASC");
 		// если есть сообщение для этого терминала то пускаем его
-		if($old_message['ID']AND$terminal['IS_ONLINE']){
+		if($old_message['ID'] AND $terminal['IS_ONLINE']){
 			// если в состоянии плеера нету данных для восстановления, то запоминаем ее
-			if(!gg($terminal['LINKED_OBJECT'].'.playerdata')AND$terminal['TTS_TYPE']=='mediaplayer'){
+			if(!gg($terminal['LINKED_OBJECT'].'.playerdata') AND $terminal['TTS_TYPE']=='mediaplayer'){
 				$player_state=getPlayerStatus($terminal['NAME']);
-				if(is_array($player_state)AND$player_state['file']ANDstrpos($player_state['file'],'cached/voice')==false){
+				if(is_array($player_state) AND $player_state['file'] AND strpos($player_state['file'],'cached/voice')==false){
 					sg($terminal['LINKED_OBJECT'].'.playerdata',json_encode($player_state));
 				}
 			}
-			if(($terminal['TTS_TYPE']=='mediaplayer'OR$terminal['TTS_TYPE']=='mainterminal')AND!$old_message['CACHED_FILENAME']){
+			if(($terminal['TTS_TYPE']=='mediaplayer' OR $terminal['TTS_TYPE']=='mainterminal') AND !$old_message['CACHED_FILENAME']){
 				usleep(100000);
 				continue;
 			}
@@ -71,11 +71,11 @@ while(1){
 			DebMes("Start message on cycke - ".json_encode($message,JSON_UNESCAPED_UNICODE)."to : ".json_encode($terminal,JSON_UNESCAPED_UNICODE),'terminals');
 			// если же терминал отпингован и к нему нету доступа то удаляем его из очереди
 		}
-		elseif($old_message['ID']AND!$terminal['IS_ONLINE']){
+		elseif($old_message['ID'] AND !$terminal['IS_ONLINE']){
 			$old_message['SOURCE']=str_replace($terminal['ID'].'^','',$old_message['SOURCE']);
 			SQLUpdate('shouts',$old_message);
 		}
-		elseif($restored_info=json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'),true)AND$terminal['TTS_TYPE']=='mediaplayer'AND$terminal['IS_ONLINE']){
+		elseif($restored_info=json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'),true) AND $terminal['TTS_TYPE']=='mediaplayer' AND $terminal['IS_ONLINE']){
 			// inache vosstanavlivaem vosproizvodimoe
 			stopMedia($terminal['HOST']);
 			// восстанавливаем громкость если необходимо
@@ -86,7 +86,7 @@ while(1){
 			seekPlayerPosition($terminal['NAME'],$restored_info['time']);
 			sg($terminal['LINKED_OBJECT'].'.playerdata','');
 		}
-		elseif($restored_info=json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'),true)AND$terminal['TTS_TYPE']=='mediaplayer'AND!$terminal['IS_ONLINE']){
+		elseif($restored_info=json_decode(gg($terminal['LINKED_OBJECT'].'.playerdata'),true) AND $terminal['TTS_TYPE']=='mediaplayer' AND !$terminal['IS_ONLINE']){
 			sg($terminal['LINKED_OBJECT'].'.playerdata','');
 		}
 		usleep(200000);
