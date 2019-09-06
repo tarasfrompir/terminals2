@@ -81,7 +81,7 @@ while (1) {
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
         }
         // если тип терминала передающий только текстовое сообщение  
-        if (!$terminal['TTS_TYPE'] == 'mediaplayer' OR !$terminal['TTS_TYPE'] == 'mainterminal') {
+        if ($terminal['TTS_TYPE'] == 'majordroid' OR $terminal['TTS_TYPE'] == 'telegramm' OR $terminal['TTS_TYPE'] == 'googlehomenotifier') {
             // запускаем его воспроизведение
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
