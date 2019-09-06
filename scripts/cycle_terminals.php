@@ -9,16 +9,11 @@ echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 $checked_time = 0;
 // set all terminal as free when restart cycle
-$outs = getObjectsByProperty('basy');
-DebMes("Array of basy terminal ".serialize($outs) , 'terminals');
-foreach ($outs as $out) {
-    if (!$out) {
-        DebMes("Cannot find basy terminals " , 'terminals');
-        continue;
-    }
-    DebMes("Set terminal not basy ".$out , 'terminals');
-    sg($out . '.basy', 0);
-}
+$term = SQLSelect("SELECT * FROM terminals");
+foreach ($term as $t) {
+    sg($t['LINKED_OBJECT'] . '.BASY', 0);
+} 
+
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
