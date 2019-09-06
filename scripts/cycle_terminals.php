@@ -93,7 +93,6 @@ while (1) {
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
         }
     }
-    DebMes('Start terminals cycle');
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
