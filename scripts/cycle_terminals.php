@@ -9,12 +9,12 @@ echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 $checked_time = 0;
 // set all terminal as free when restart cycle
-$terminals    = getObjectsByProperty('basy', '==', '1');
-foreach ($terminals as $terminal) {
-    if (!$terminal) {
+$outs = getObjectsByProperty('basy', '==', '1');
+foreach ($outs as $out) {
+    if (!$out) {
         continue;
     }
-    sg($terminal . '.basy', 0);
+    sg($out . '.basy', 0);
 }
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
@@ -47,10 +47,13 @@ while (1) {
         if (!$terminals) {
             continue;
         }
-        $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+		if (!$terminal['ID']) {
+           continue;
+        }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если есть сообщение для этого терминала то пускаем его
-        if ($old_message['ID'] AND $terminal['IS_ONLINE']) {
+        if ($old_message['MESSAGE'] AND $terminal['IS_ONLINE']) {
             // если в состоянии плеера нету данных для восстановления, то запоминаем ее
             if (!gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $terminal['TTS_TYPE'] == 'mediaplayer') {
                 $player_state = getPlayerStatus($terminal['NAME']);
@@ -67,7 +70,7 @@ while (1) {
             SQLUpdate('shouts', $old_message);
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             send_messageSafe($old_message, $terminal);
-            DebMes("Start message on cycke - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . json_encode($terminal, JSON_UNESCAPED_UNICODE), 'terminals');
+            DebMes("Start message on cycke - " . json_encode($old_message, JSON_UNESCAPED_UNICODE) . "to : " . json_encode($terminal, JSON_UNESCAPED_UNICODE), 'terminals');
             // если же терминал отпингован и к нему нету доступа то удаляем его из очереди
         } elseif ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
