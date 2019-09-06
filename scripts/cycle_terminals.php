@@ -38,58 +38,55 @@ while (1) {
     if ($message) {
         $number_message = $number_message + 1;
         DebMes("Max nomber message - " . $number_message, 'terminals');
-    } else {
-        usleep(500000);
+	} else {
+        sleep(1);
     }
-    // chek all old message and send message to terminals
-    $out_terminals = getObjectsByProperty('basy', '==', '0');
+	
+	$out_terminals = getObjectsByProperty('basy', '==', '0');
     foreach ($out_terminals as $terminals) {
-        if (!$terminals) {
+        // если пустой терминал пропускаем
+		if (!$terminals ) {
             continue;
-        }
-        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-		if (!$terminal['ID']) {
-           continue;
-        }
+	    }
+		$terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-        // если есть сообщение для этого терминала то пускаем его
-        if ($old_message['MESSAGE'] AND $terminal['IS_ONLINE']) {
-            // если в состоянии плеера нету данных для восстановления, то запоминаем ее
-            if (!gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $terminal['TTS_TYPE'] == 'mediaplayer') {
-                $player_state = getPlayerStatus($terminal['NAME']);
-                if (is_array($player_state) AND $player_state['file'] AND strpos($player_state['file'], 'cached/voice') == false) {
-                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($player_state));
-                }
-            }
-            if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
-                usleep(100000);
-                continue;
-            }
+		// если отсутствует сообщение пропускаем
+		if (!$old_message['MESSAGE']) {
+            continue;
+	    }
+		// если терминал оффлайн удаляем из работы эту запись и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
+		if (!$terminal['IS_ONLINE'] ) {
+			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
+            continue;
+	    }
+		// если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
+        if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
+	        continue;
+	    } else {
+			// иначе запускаем его воспроизведение
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
+			//записываем что терминал занят
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+			//передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
-            DebMes("Start message on cycke - " . json_encode($old_message, JSON_UNESCAPED_UNICODE) . "to : " . json_encode($terminal, JSON_UNESCAPED_UNICODE), 'terminals');
-            // если же терминал отпингован и к нему нету доступа то удаляем его из очереди
-        } elseif ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
+		}
+		// если тип терминала передающий только текстовое сообщение  
+        if (!$terminal['TTS_TYPE'] == 'mediaplayer' OR !$terminal['TTS_TYPE'] == 'mainterminal') {
+  			// запускаем его воспроизведение
+            // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
-        } elseif ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer' AND $terminal['IS_ONLINE']) {
-            // inache vosstanavlivaem vosproizvodimoe
-            stopMedia($terminal['HOST']);
-            // восстанавливаем громкость если необходимо
-            if ($restored_info['volume'] != $terminal['TERMINAL_VOLUME_LEVEL']) {
-                setPlayerVolume($terminal['HOST'], $restored_info['volume']);
-            }
-            playMedia($restored_info['file'], $terminal['NAME']);
-            seekPlayerPosition($terminal['NAME'], $restored_info['time']);
-            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-        } elseif ($restored_info = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true) AND $terminal['TTS_TYPE'] == 'mediaplayer' AND !$terminal['IS_ONLINE']) {
-            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-        }
-    }
-    usleep(200000);
+			//записываем что терминал занят
+            sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+			//передаем сообщение на терминал передающий только текстовое сообщение 
+            send_messageSafe($old_message, $terminal);
+	    }		
+	}
+
+    
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         exit;
     }
