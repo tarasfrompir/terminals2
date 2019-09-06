@@ -72,6 +72,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
+            DebMes("Send message - " . $terminal['NAME'], 'terminals');
         }
         // если тип терминала передающий только текстовое сообщение  
         if (!$terminal['TTS_TYPE'] == 'mediaplayer' OR !$terminal['TTS_TYPE'] == 'mainterminal') {
@@ -83,6 +84,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
+            DebMes("Send message - " . $terminal['NAME'], 'terminals');
         }
     }
     
