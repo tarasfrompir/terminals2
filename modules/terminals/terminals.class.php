@@ -201,16 +201,23 @@ class terminals extends module
         // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' ) {
             DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
-			// ждем файл сообщения
+            // ждем файл сообщения
             while (!file_exists($details['CACHED_FILENAME']) AND $count < 100 ) {
-				usleep(100000);
-				$count++;
-			}
+                usleep(100000);
+                $count++;
+            }
             // берем длинну сообщения
-			if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
+            if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
                 $duration = 1;
             } else {
                 $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
+            }
+	    // если терминала не имеет инфу для восстановления то запоминаем состояние плеера
+            if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+                $restore_data = getPlayerStatus($terminal['NAME']);
+                if (stripos($restore_data['file'], '/\/cms\/cached') === false OR !$restore_data['file']) {
+                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+		}
             }
             $rec['ID'] = $details['ID'];
             $rec['MESSAGE_DURATION'] = $duration;
