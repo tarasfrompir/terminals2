@@ -215,7 +215,7 @@ class terminals extends module
 	    // если терминала не имеет инфу для восстановления то запоминаем состояние плеера
             if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
                 $restore_data = getPlayerStatus($terminal['NAME']);
-                if (stripos($restore_data['file'], '/\/cms\/cached') === false OR !$restore_data['file']) {
+                if (stripos($restore_data['file'], '/\/cms\/cached') === false OR $restore_data['file']) {
                     sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
 		}
             }
