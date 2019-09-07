@@ -222,7 +222,7 @@ class terminals extends module
             $rec['ID'] = $details['ID'];
             $rec['MESSAGE_DURATION'] = $duration;
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
-	        SQLUpdate('shouts', $rec);
+            SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
             // check terminals
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
