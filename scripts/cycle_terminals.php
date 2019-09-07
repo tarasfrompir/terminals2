@@ -75,12 +75,12 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             // если терминала не имеет инфу для восстановления то запоминаем состояние плеера
-            if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
-                $restore_data = getPlayerStatus($terminal['NAME']);
-                if (stripos($restore_data['file'], '/\/cms\/cached') === false) {
-                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-                }
-            }
+            //if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+            //    $restore_data = getPlayerStatus($terminal['NAME']);
+            //    if (stripos($restore_data['file'], '/\/cms\/cached') === false) {
+            //        sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+             //   }
+            //}
             //записываем что терминал занят
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
