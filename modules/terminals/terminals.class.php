@@ -212,13 +212,6 @@ class terminals extends module
             } else {
                 $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
             }
-	    // если терминала не имеет инфу для восстановления то запоминаем состояние плеера
-            if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
-                $restore_data = getPlayerStatus($terminal['NAME']);
-                if (stripos($restore_data['file'], '/\/cms\/cached') === false ) {
-                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-		}
-            }
             $rec['ID'] = $details['ID'];
             $rec['MESSAGE_DURATION'] = $duration;
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
