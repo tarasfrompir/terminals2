@@ -9,10 +9,10 @@ echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 $checked_time = 0;
 // set all terminal as free when restart cycle
-$term = SQLSelect("SELECT * FROM terminals");
+$term         = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
     sg($t['LINKED_OBJECT'] . '.BASY', 0);
-} 
+}
 
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
@@ -45,13 +45,13 @@ while (1) {
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
-            DebMes("No free terminal ".$terminals, 'terminals');
+            DebMes("No free terminal " . $terminals, 'terminals');
             continue;
         }
-        $terminal    = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         // если пустой терминал пропускаем
         if (!$terminal) {
-            DebMes("No information of terminal".$terminal['NAME'], 'terminals');
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
@@ -74,6 +74,13 @@ while (1) {
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
+            // если терминала не имеет инфу для восстановления то запоминаем состояние плеера
+            if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+                $restore_data = getPlayerStatus($terminal['NAME']);
+                if (stripos($restore_data['file'], '/\/cms\/cached') === false) {
+                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+                }
+            }
             //записываем что терминал занят
             sg($terminal['LINKED_OBJECT'] . '.basy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
