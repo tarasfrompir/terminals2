@@ -9,7 +9,7 @@ echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 $checked_time = 0;
 // set all terminal as free when restart cycle
-$term = SQLSelect("SELECT * FROM terminals");
+$term         = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
     sg($t['LINKED_OBJECT'] . '.BASY', 0);
 }
@@ -57,22 +57,23 @@ while (1) {
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['MESSAGE'] AND $terminal['TTS_TYPE'] == 'mediaplayer') {
-	    try {
+            try {
                 $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if (is_array($restored)) {
-                    DebMes("Restore volume on the terminal - " . $terminal['NAME'] , 'terminals');
+                    DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
                     setPlayerVolume($terminal['NAME'], $restored['volume']);
                     // если есть файл для воспроизведения то тоже его восстанавливаем
                     if ($restored['file']) {
                         playMedia($restored['file'], $terminal['NAME']);
-                        DebMes("Restore media on the terminal - " . $terminal['NAME'] , 'terminals');
-		    }
+                        DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
+                    }
                 }
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
                 continue;
             }
-        } catch(Exception $e) {
-           DebMes("Error with restore playaed - " . $terminal['NAME'] , 'terminals');
+            catch (Exception $e) {
+                DebMes("Error with restore playaed - " . $terminal['NAME'], 'terminals');
+            }
         }
         // для остальных плееров просто пропускаем итерацию и при отсутствии сообщения 
         if (!$old_message['MESSAGE']) {
