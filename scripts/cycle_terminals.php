@@ -49,14 +49,27 @@ while (1) {
             continue;
         }
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
-        // если пустой терминал пропускаем
+        // если пустая инфа о терминале пропускаем
         if (!$terminal) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-        // если отсутствует сообщение пропускаем
-        if (!$old_message['MESSAGE']) {
+        // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
+        if (!$old_message['MESSAGE'] AND $terminal['TTS_TYPE'] == 'mediaplayer') {
+			$restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
+            if (is_array($restored)) {
+				setPlayerVolume($terminal['NAME'], $restored['volume']);
+				echo ($restored);
+				if ($restored['file']) {
+					playMedia($restored['file'], $terminal['NAME']);
+				}
+			}
+            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+            continue;
+        }
+		// для Отсальных плееров просто пропускаем итерацию
+		if (!$old_message['MESSAGE']) {
             continue;
         }
         // если терминал оффлайн удаляем из работы эту запись и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
@@ -79,7 +92,8 @@ while (1) {
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
-        }
+            continue;
+		}
         // если тип терминала передающий только текстовое сообщение  
         if ($terminal['TTS_TYPE'] == 'majordroid' OR $terminal['TTS_TYPE'] == 'telegramm' OR $terminal['TTS_TYPE'] == 'googlehomenotifier') {
             // запускаем его воспроизведение
@@ -91,7 +105,8 @@ while (1) {
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
-        }
+            continue;
+		}
     }
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
