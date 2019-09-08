@@ -60,7 +60,7 @@ while (1) {
             $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
             if (is_array($restored)) {
                 setPlayerVolume($terminal['NAME'], $restored['volume']);
-                echo ($restored);
+                // если есть файл для воспроизведения то тоже его восстанавливаем
                 if ($restored['file']) {
                     playMedia($restored['file'], $terminal['NAME']);
                 }
