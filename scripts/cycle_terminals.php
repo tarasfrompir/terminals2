@@ -57,19 +57,19 @@ while (1) {
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['MESSAGE'] AND $terminal['TTS_TYPE'] == 'mediaplayer') {
-			$restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
+            $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
             if (is_array($restored)) {
-				setPlayerVolume($terminal['NAME'], $restored['volume']);
-				echo ($restored);
-				if ($restored['file']) {
-					playMedia($restored['file'], $terminal['NAME']);
-				}
-			}
+                setPlayerVolume($terminal['NAME'], $restored['volume']);
+                echo ($restored);
+                if ($restored['file']) {
+                    playMedia($restored['file'], $terminal['NAME']);
+                }
+            }
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
             continue;
         }
-		// для Отсальных плееров просто пропускаем итерацию
-		if (!$old_message['MESSAGE']) {
+        // для остальных плееров просто пропускаем итерацию и при отсутствии сообщения 
+        if (!$old_message['MESSAGE']) {
             continue;
         }
         // если терминал оффлайн удаляем из работы эту запись и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
@@ -93,7 +93,7 @@ while (1) {
             send_messageSafe($old_message, $terminal);
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
             continue;
-		}
+        }
         // если тип терминала передающий только текстовое сообщение  
         if ($terminal['TTS_TYPE'] == 'majordroid' OR $terminal['TTS_TYPE'] == 'telegramm' OR $terminal['TTS_TYPE'] == 'googlehomenotifier') {
             // запускаем его воспроизведение
@@ -106,7 +106,7 @@ while (1) {
             send_messageSafe($old_message, $terminal);
             DebMes("Send message - " . $terminal['NAME'], 'terminals');
             continue;
-		}
+        }
     }
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
