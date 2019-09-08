@@ -60,18 +60,20 @@ while (1) {
             if (!$old_message['MESSAGE'] AND $terminal['TTS_TYPE'] == 'mediaplayer') {
                 $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if (is_array($restored)) {
+                    DebMes("Restore volume on the terminal - " . $terminal['NAME'] , 'terminals');
                     setPlayerVolume($terminal['NAME'], $restored['volume']);
                     // если есть файл для воспроизведения то тоже его восстанавливаем
                     if ($restored['file']) {
                         playMedia($restored['file'], $terminal['NAME']);
-                    }
+                        DebMes("Restore media on the terminal - " . $terminal['NAME'] , 'terminals');
+		    }
                 }
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
                 continue;
             }
         } catch(Exception $e) {
            DebMes("Error with restore playaed - " . $terminal['NAME'] , 'terminals');
-	    }
+        }
         // для остальных плееров просто пропускаем итерацию и при отсутствии сообщения 
         if (!$old_message['MESSAGE']) {
             continue;
