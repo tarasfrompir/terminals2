@@ -387,6 +387,10 @@ function send_message($terminalname, $message, $terminal)
 				setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
             }
         }
+	} catch(Exception $e) {
+           DebMes("Terminal job terminated, not get information abaut terminal - " . $terminalname , 'terminals');
+	}
+	try {
 		DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
@@ -405,7 +409,7 @@ function send_message($terminalname, $message, $terminal)
 			}
 		} else {
             sleep (1);
-            DebMes("Terminal not right confiured - " . $terminalname , 'terminals');
+            DebMes("Terminal not right configured - " . $terminalname , 'terminals');
 		}
 	} catch(Exception $e) {
            DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
