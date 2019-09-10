@@ -15,8 +15,6 @@ class mediaplayer extends tts_addon
             if (file_exists($message['CACHED_FILENAME'])) {
                 if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
-                    stopMedia($terminal['HOST']);
-                    setPlayerVolume($terminal['HOST'], $terminal['MESSAGE_VOLUME_LEVEL']);
                     playMedia($message['CACHED_FILENAME'], $terminal['NAME']);
                     sleep($message['MESSAGE_DURATION']);
                     $this->success = TRUE;
