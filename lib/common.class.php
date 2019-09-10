@@ -119,7 +119,7 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['ADDED'] = date('Y-m-d H:i:s');
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = 0;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
+    $rec['IMPORTANCE'] = $level;
 
 	$terminals = array();
     if ($destination) {
@@ -194,7 +194,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = $member_id;
     $rec['SOURCE'] = $source;
-    if ($level > 0) $rec['IMPORTANCE'] = $level;
+    $rec['IMPORTANCE'] = $level;
 
 
     if ($member_id) {
