@@ -336,18 +336,20 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 // check terminal 
 function pingTerminal($terminal, $details)
 {
-    if ($details['ID']) $rec['ID'] = $details['ID'];
-	DebMes("Try to ping terminal - " . $terminal , 'terminals');
-	if (ping($details['HOST'])) {
-		sg($details['LINKED_OBJECT'] . '.status', '1');
+    if ($details['ID']) {
+        $rec['ID'] = $details['ID'];
+    }
+    DebMes("Try to ping terminal - " . $terminal , 'terminals');
+    if (ping($details['HOST'])) {
+        sg($details['LINKED_OBJECT'] . '.status', '1');
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $details['IS_ONLINE'] = 1;
-		DebMes("Terminal - " . $terminal .' is online', 'terminals');
+        $rec['IS_ONLINE'] = 1;
+        DebMes("Terminal - " . $terminal .' is online', 'terminals');
     } else {
         sg($details['LINKED_OBJECT'] . '.status', '0');
         $rec['IS_ONLINE'] = 0;
-		DebMes("Terminal - " . $terminal .' is offline', 'terminals');
-	}
+        DebMes("Terminal - " . $terminal .' is offline', 'terminals');
+    }
     SQLUpdate('terminals', $rec);
 }
 // check terminal Safe
