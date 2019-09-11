@@ -207,13 +207,20 @@ class terminals extends module
                 $count++;
             }
             // берем длинну сообщения
-            if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
+            //if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
+            //    $duration = 2;
+            //} else {
+            //    $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
+            //}
+            //$rec['MESSAGE_DURATION'] = $duration;
+            // берем длинну сообщения
+            if (get_media_info($details['CACHED_FILENAME'])['duration'] < 2) {
                 $duration = 2;
             } else {
-                $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
+                $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
             }
-            $rec['ID'] = $details['ID'];
-            $rec['MESSAGE_DURATION'] = $duration;
+            $rec['MESSAGE_DURATION'] = $duration + 1;
+	    $rec['ID'] = $details['ID'];
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
             SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
