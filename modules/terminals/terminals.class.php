@@ -208,7 +208,7 @@ class terminals extends module
             }
             // берем длинну сообщения
             if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
-                $duration = 1;
+                $duration = 2;
             } else {
                 $duration = get_media_info($details['CACHED_FILENAME']);
             }
