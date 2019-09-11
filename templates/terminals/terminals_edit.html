@@ -133,12 +133,17 @@
                     <input type="checkbox" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
                 </label>
             </div>
-        </div>
+		</div>
     </div>
 
 
     <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
-	    <div class="form-group ">
+        <div class="form-group">
+			<div class="col-lg-offset-2 col-lg-5 ">
+				<label align="center" for="min_msg_level">Раздел настроек связанный с системными сообщениями на этот терминал</label>
+			</div>
+		</div>
+        <div class="form-group ">
             <label class="col-lg-4 control-label" for="min_msg_level">Использовать СИСТЕМНЫЙ уровень важности сообщений:</label>
             <div class="col-lg-5"><input type="checkbox" value="1" id='systemMML' name="systemMML" [#if USE_SYSTEM_MML="1"#] checked[#endif#]></div>
         </div>
@@ -180,6 +185,11 @@
 </div>
 
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
+    <div class="form-group">
+		<div class="col-lg-offset-2 col-lg-5 ">
+			<label align="center" for="min_msg_level">Раздел настроек связанный с воспроизведением медиа на этот терминал</label>
+		</div>
+	</div>
 	<div class="form-group ">
 		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_TYPE#>:
 		</label>
