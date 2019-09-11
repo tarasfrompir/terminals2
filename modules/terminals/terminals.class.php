@@ -324,7 +324,7 @@ class terminals extends module
  terminals: LATEST_REQUEST varchar(255) NOT NULL DEFAULT ''
  terminals: LATEST_REQUEST_TIME datetime
  terminals: LATEST_ACTIVITY datetime
- terminals: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''
+ terminals: USE_SYSTEM_MML int(1) NOT NULL DEFAULT ''
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
 EOD;
