@@ -380,14 +380,14 @@ function send_message($terminalname, $message, $terminal)
 		// получаем состояние плеераесли еще нету 
         if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             $restore_data = getPlayerStatus($terminal['NAME']);
-            if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
-                // если это не файл из сообщения
-                DebMes("Write info ebaut terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-                sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-                // остановим медиа и установим громкость
+		// если это не файл из сообщения системы
+	    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
+                // остановим медиа
                 stopMedia($terminalname);
-		usleep(200000);
-                setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
+                DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+                sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+                //установим громкость
+                 setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
                 $out['ID'] = $terminal['ID'];
                 $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
                 SQLUpdate('terminals', $out);
