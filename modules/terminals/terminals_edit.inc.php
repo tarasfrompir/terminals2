@@ -53,6 +53,7 @@ if ($this->mode == 'update') {
     $rec['LINKED_OBJECT'] = gr('linked_object');
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
+    $rec['USE_SYSTEM_MML'] = gr('systemMML');
     if ($rec['LINKED_OBJECT'] == '') {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
