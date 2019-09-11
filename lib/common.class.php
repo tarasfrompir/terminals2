@@ -141,14 +141,14 @@ function sayTo($ph, $level = 0, $destination = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
-        } else if ($rec['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+        } else if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
                     $needgenerateaudio = true;
                 }
             }
-        } else if (!$rec['USE_SYSTEM_MML']) {
+        } else if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
@@ -249,14 +249,14 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
-        } else if ($rec['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+        } else if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
                     $needgenerateaudio = true;
                 }
             }
-        } else if (!$rec['USE_SYSTEM_MML']) {
+        } else if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
