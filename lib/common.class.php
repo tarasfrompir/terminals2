@@ -1,6 +1,7 @@
 <?php
 
-function getSystemSerial($force_update = 0) {
+function getSystemSerial($force_update = 0)
+{
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
         $serial = '';
@@ -30,7 +31,7 @@ function sayReplySafe($ph, $level = 0, $replyto = '')
         'sayReply' => 1,
         'ph' => $ph,
         'level' => $level,
-        'replyto' => $replyto,
+        'replyto' => $replyto
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -56,10 +57,14 @@ function sayReply($ph, $level = 0, $replyto = '')
 {
     $source = '';
     // replace enter simbol
-    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
+    $ph     = str_replace(array(
+        "\r\n",
+        "\r",
+        "\n"
+    ), '', $ph);
     if ($replyto) {
         $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%" . DBSafe($replyto) . "%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
-        $orig_msg = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
+        $orig_msg     = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
         if ($orig_msg['ID']) {
             $source = $orig_msg['SOURCE'];
         }
@@ -73,7 +78,7 @@ function sayReply($ph, $level = 0, $replyto = '')
         $source = 'terminal - ' . $terminal_rec['ID'];
         sayTo($ph, $level, $terminal_rec['NAME']);
     }
-	// запуск этой функции уже будет в функции САЙ или САЙТУ - небходимо исключить этот вариант из возможности подписки
+    // запуск этой функции уже будет в функции САЙ или САЙТУ - небходимо исключить этот вариант из возможности подписки
     //processSubscriptionsSafe('SAYREPLY', array('level' => $level, 'message' => $ph, 'replyto' => $replyto, 'source' => $source));
 }
 
@@ -84,7 +89,7 @@ function sayToSafe($ph, $level = 0, $destination = '')
         'sayTo' => 1,
         'ph' => $ph,
         'level' => $level,
-        'destination' => $destination,
+        'destination' => $destination
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -112,16 +117,20 @@ function sayTo($ph, $level = 0, $destination = '')
         return 0;
     }
     // replace enter simbol
-    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
+    $ph                = str_replace(array(
+        "\r\n",
+        "\r",
+        "\n"
+    ), '', $ph);
     // add message to chat
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = 0;
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = 0;
     $rec['IMPORTANCE'] = $level;
-
-	$terminals = array();
+    
+    $terminals = array();
     if ($destination) {
         if (!$terminals = getTerminalsByName($destination, 1)) {
             $terminals = getTerminalsByHost($destination, 1);
@@ -132,21 +141,30 @@ function sayTo($ph, $level = 0, $destination = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
-        } else if ($rec['IMPORTANCE'] >= (int)getGlobal('minMsgLevel') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-            $rec['SOURCE'] .= $terminal['ID'] . '^';
-			if ( $terminal['TTS_TYPE']=='mediaplayer' OR $terminal['TTS_TYPE']=='mainterminal') {
-		        $needgenerateaudio = true;
-		    }
-		} 
+        } else if ($rec['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
+                    $needgenerateaudio = true;
+                }
+            }
+        } else if (!$rec['USE_SYSTEM_MML']) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
+                    $needgenerateaudio = true;
+                }
+            }
+        }
     }
     $rec['EVENT'] = 'SAYTO';
-	
-    $rec['ID'] = SQLInsert('shouts', $rec);    
-	DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAYTO', $rec); //, 
+    
+    $rec['ID'] = SQLInsert('shouts', $rec);
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    if ($needgenerateaudio) {
+        processSubscriptionsSafe('SAYTO', $rec); //, 
     }
-	
+    
     return 1;
 }
 
@@ -157,7 +175,7 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
         'ph' => $ph,
         'level' => $level,
         'member_id' => $member_id,
-        'source' => $source,
+        'source' => $source
     );
     if (session_id()) {
         $data[session_name()] = session_id();
@@ -181,77 +199,100 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-
+    
     // replace enter simbol
-    $ph = str_replace(array("\r\n", "\r", "\n"), '',  $ph);
-
+    $ph = str_replace(array(
+        "\r\n",
+        "\r",
+        "\n"
+    ), '', $ph);
+    
     verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
-
-    $rec = array();
-    $rec['MESSAGE'] = $ph;
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['ROOM_ID'] = 0;
-    $rec['MEMBER_ID'] = $member_id;
-    $rec['SOURCE'] = $source;
+    
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = $member_id;
+    $rec['SOURCE']     = $source;
     $rec['IMPORTANCE'] = $level;
-
-
+    
+    
     if ($member_id) {
-        $processed = processSubscriptionsSafe('COMMAND', array('level' => $level, 'message' => $ph, 'member_id' => $member_id, 'source' => $source));
+        $processed = processSubscriptionsSafe('COMMAND', array(
+            'level' => $level,
+            'message' => $ph,
+            'member_id' => $member_id,
+            'source' => $source
+        ));
         return;
     }
-
+    
     if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
         eval(SETTINGS_HOOK_BEFORE_SAY);
     }
-
-
-    if ($level >= (int)getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
+    
+    
+    if ($level >= (int) getGlobal('minMsgLevel') && !$ignoreVoice && !$member_id) {
         if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
-            $passed = time() - (int)getGlobal('lastSayTime');
+            $passed = time() - (int) getGlobal('lastSayTime');
             if ($passed > 20) {
                 playSound('dingdong', 1, $level);
             }
         }
     }
-	
+    
     $terminals = array();
     $terminals = getTerminalsByCANTTS();
-     
+    
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
-        } else if ($rec['IMPORTANCE'] >= (int)getGlobal('minMsgLevel') AND $rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-            $rec['SOURCE'] .= $terminal['ID'] . '^';
-			if ( $terminal['TTS_TYPE']=='mediaplayer' OR $terminal['TTS_TYPE']=='mainterminal') {
-		        $needgenerateaudio = true;
-		    }
-		} 
+        } else if ($rec['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
+                    $needgenerateaudio = true;
+                }
+            }
+        } else if (!$rec['USE_SYSTEM_MML']) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') {
+                    $needgenerateaudio = true;
+                }
+            }
+        }
     }
     $rec['EVENT'] = 'SAY';
-    $rec['ID'] = SQLInsert('shouts', $rec);    
-	
-	DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
-	
-	if ($needgenerateaudio) {
-		processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
-    }	
-
+    $rec['ID']    = SQLInsert('shouts', $rec);
+    
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+    
+    if ($needgenerateaudio) {
+        processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
+    }
+    
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
-
-
+    
+    
     if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
         eval(SETTINGS_HOOK_AFTER_SAY);
     }
     //dprint(date('Y-m-d H:i:s')." Say OK",false);
-
+    
 }
 
 function ask($prompt, $target = '')
 {
-    processSubscriptionsSafe('ASK', array('prompt' => $prompt, 'message' => $prompt, 'target' => $target, 'destination' => $target));
+    processSubscriptionsSafe('ASK', array(
+        'prompt' => $prompt,
+        'message' => $prompt,
+        'target' => $target,
+        'destination' => $target
+    ));
 }
 
 /**
@@ -263,7 +304,9 @@ function processCommand($command)
 {
     global $pattern_matched;
     if (!$pattern_matched) {
-        getObject("ThisComputer")->callMethod("commandReceived", array("command" => $command));
+        getObject("ThisComputer")->callMethod("commandReceived", array(
+            "command" => $command
+        ));
     }
 }
 
@@ -275,23 +318,30 @@ function processCommand($command)
 function timeConvert($tm)
 {
     $tm = trim($tm);
-
+    
     if (preg_match('/^(\d+):(\d+)$/', $tm, $m)) {
-        $hour = $m[1];
-        $minute = $m[2];
-        $trueTime = mktime($hour, $minute, 0, (int)date('m'), (int)date('d'), (int)date('Y'));
+        $hour     = $m[1];
+        $minute   = $m[2];
+        $trueTime = mktime($hour, $minute, 0, (int) date('m'), (int) date('d'), (int) date('Y'));
     } elseif (preg_match('/^(\d+)$/', $tm, $m)) {
         $trueTime = $tm;
     }
-
+    
     return $trueTime;
 }
 
 
 function getNumberWord($number, $suffix)
 {
-    $keys = array(2, 0, 1, 1, 1, 2);
-    $mod = abs($number) % 100;
+    $keys       = array(
+        2,
+        0,
+        1,
+        1,
+        1,
+        2
+    );
+    $mod        = abs($number) % 100;
     $suffix_key = ($mod > 7 && $mod < 20) ? 2 : $keys[min($mod % 10, 5)];
     return $suffix[$suffix_key];
 }
@@ -306,22 +356,22 @@ function timeNow($tm = 0)
     if (!$tm) {
         $tm = time();
     }
-
-    $h = (int)date('G', $tm);
-    $m = (int)date('i', $tm);
+    
+    $h  = (int) date('G', $tm);
+    $m  = (int) date('i', $tm);
     $ms = '';
-
+    
     if (LANG_HOURS_ARRAY and LANG_MINUTE_ARRAY) {
         $array = explode(',', LANG_HOURS_ARRAY);
-        $hw = $h . ' ' . getNumberWord($h, $array);
+        $hw    = $h . ' ' . getNumberWord($h, $array);
         if ($m > 0) {
             $array = explode(',', LANG_MINUTE_ARRAY);
-            $ms = $m . ' ' . getNumberWord($m, $array);
+            $ms    = $m . ' ' . getNumberWord($m, $array);
         }
     } else {
         $hw = date('H:i', $tm);
     }
-
+    
     $res = trim($hw . " " . $ms);
     return $res;
 }
@@ -334,8 +384,8 @@ function isWeekEnd()
 {
     if (date('w') == 0 || date('w') == 6)
         return true; // sunday, saturday
-
-
+    
+    
     return false;
 }
 
@@ -347,7 +397,7 @@ function isWeekDay()
 {
     if (IsWeekEnd())
         return false;
-
+    
     return true;
 }
 
@@ -360,7 +410,7 @@ function timeIs($tm)
 {
     if (date('H:i') == $tm)
         return true;
-
+    
     return false;
 }
 
@@ -372,10 +422,10 @@ function timeIs($tm)
 function timeBefore($tm)
 {
     $trueTime = timeConvert($tm);
-
+    
     if (time() <= $trueTime)
         return true;
-
+    
     return false;
 }
 
@@ -387,10 +437,10 @@ function timeBefore($tm)
 function timeAfter($tm)
 {
     $trueTime = timeConvert($tm);
-
+    
     if (time() >= $trueTime)
         return true;
-
+    
     return false;
 }
 
@@ -404,7 +454,7 @@ function timeBetween($tm1, $tm2)
 {
     $trueTime1 = timeConvert($tm1);
     $trueTime2 = timeConvert($tm2);
-
+    
     if ($trueTime1 > $trueTime2) {
         if ($trueTime2 < time()) {
             $trueTime2 += 24 * 60 * 60;
@@ -412,10 +462,10 @@ function timeBetween($tm1, $tm2)
             $trueTime1 -= 24 * 60 * 60;
         }
     }
-
+    
     if ((time() >= $trueTime1) && (time() <= $trueTime2))
         return true;
-
+    
     return false;
 }
 
@@ -430,13 +480,13 @@ function timeBetween($tm1, $tm2)
 function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 {
     clearScheduledJob($title);
-    $rec = array();
-    $rec['TITLE'] = $title;
+    $rec             = array();
+    $rec['TITLE']    = $title;
     $rec['COMMANDS'] = $commands;
-    $rec['RUNTIME'] = date('Y-m-d H:i:s', $datetime);
-    $rec['EXPIRE'] = date('Y-m-d H:i:s', $datetime + $expire);
-    $rec['ID'] = SQLInsert('jobs', $rec);
-
+    $rec['RUNTIME']  = date('Y-m-d H:i:s', $datetime);
+    $rec['EXPIRE']   = date('Y-m-d H:i:s', $datetime + $expire);
+    $rec['ID']       = SQLInsert('jobs', $rec);
+    
     return $rec['ID'];
 }
 
@@ -457,7 +507,7 @@ function clearScheduledJob($title)
  */
 function deleteScheduledJob($id)
 {
-    SQLExec("DELETE FROM jobs WHERE ID = " . (int)$id);
+    SQLExec("DELETE FROM jobs WHERE ID = " . (int) $id);
 }
 
 
@@ -495,7 +545,7 @@ function clearTimeOut($title)
 function timeOutExists($title)
 {
     $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
-    return (int)$job['ID'];
+    return (int) $job['ID'];
 }
 
 /**
@@ -505,25 +555,25 @@ function timeOutExists($title)
 function runScheduledJobs()
 {
     SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . date('Y-m-d H:i:s') . "'");
-
+    
     $sqlQuery = "SELECT *
                   FROM jobs
                  WHERE PROCESSED = 0
                    AND EXPIRED   = 0
                    AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'";
-
-    $jobs = SQLSelect($sqlQuery);
+    
+    $jobs  = SQLSelect($sqlQuery);
     $total = count($jobs);
-
+    
     for ($i = 0; $i < $total; $i++) {
         //echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
         $jobs[$i]['PROCESSED'] = 1;
-        $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
-
+        $jobs[$i]['STARTED']   = date('Y-m-d H:i:s');
+        
         SQLUpdate('jobs', $jobs[$i]);
-
+        
         if ($jobs[$i]['COMMANDS'] != '') {
-            $url = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
+            $url    = BASE_URL . '/objects/?job=' . $jobs[$i]['ID'];
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
@@ -542,7 +592,7 @@ function runScheduledJobs()
 function textToNumbers($text)
 {
     $newtext = ($text);
-
+    
     return $newtext;
 }
 
@@ -554,35 +604,35 @@ function textToNumbers($text)
  */
 function recognizeTime($text, &$newText)
 {
-    $result = 0;
-    $found = 0;
+    $result   = 0;
+    $found    = 0;
     $new_time = time();
-    $text = ($text);
-
-    if (preg_match('/через (\d+) '.LANG_PATTERN_SECOND.'.?/isu', $text, $m)) {
+    $text     = ($text);
+    
+    if (preg_match('/через (\d+) ' . LANG_PATTERN_SECOND . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1];
-        $newText = trim(str_replace($m[0], '', $text));
-        $found = 1;
-    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_MINUTE.'.?/isu', $text, $m)) {
+        $newText  = trim(str_replace($m[0], '', $text));
+        $found    = 1;
+    } elseif (preg_match('/через (\d+) ' . LANG_PATTERN_MINUTE . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60;
-        $newText = trim(str_replace($m[0], '', $text));
-        $found = 1;
-    } elseif (preg_match('/через (\d+) '.LANG_PATTERN_HOUR.'.?/isu', $text, $m)) {
+        $newText  = trim(str_replace($m[0], '', $text));
+        $found    = 1;
+    } elseif (preg_match('/через (\d+) ' . LANG_PATTERN_HOUR . '.?/isu', $text, $m)) {
         $new_time = time() + $m[1] * 60 * 60;
-        $newText = trim(str_replace($m[0], '', $text));
-        $found = 1;
+        $newText  = trim(str_replace($m[0], '', $text));
+        $found    = 1;
     } elseif (preg_match('/в (\d+):(\d+)/isu', $text, $m)) {
-        $new_time = mktime($m[1], $m[2], 0, (int)date('m'), (int)date('d'), (int)date('Y'));
-        $newText = trim(str_replace($m[0], '', $text));
-        $found = 1;
+        $new_time = mktime($m[1], $m[2], 0, (int) date('m'), (int) date('d'), (int) date('Y'));
+        $newText  = trim(str_replace($m[0], '', $text));
+        $found    = 1;
     }
-
+    
     $newText = ($newText);
-
+    
     if ($found) {
         $result = $new_time;
     }
-
+    
     return $result;
 }
 
@@ -614,9 +664,9 @@ function registeredEventTime($eventName)
                    AND EVENT_NAME = '" . DBSafe($eventName) . "'
                  ORDER BY ADDED DESC
                  LIMIT 1";
-
+    
     $rec = SQLSelectOne($sqlQuery);
-
+    
     if ($rec['ID']) {
         return $rec['TM'];
     } else {
@@ -634,15 +684,15 @@ function getRandomLine($filename)
     if (file_exists(ROOT . 'cms/texts/' . $filename . '.txt')) {
         $filename = ROOT . 'cms/texts/' . $filename . '.txt';
     }
-
+    
     if (file_exists($filename)) {
-        $data = LoadFile($filename);
-        $data = str_replace("\r", '', $data);
-        $data = str_replace("\n\n", "\n", $data);
+        $data  = LoadFile($filename);
+        $data  = str_replace("\r", '', $data);
+        $data  = str_replace("\n\n", "\n", $data);
         $lines = mb_split("\n", $data);
         $total = count($lines);
-        $line = $lines[round(rand(0, $total - 1))];
-
+        $line  = $lines[round(rand(0, $total - 1))];
+        
         if ($line != '') {
             return $line;
         }
@@ -659,31 +709,31 @@ function getRandomLine($filename)
 function playSound($filename, $exclusive = 0, $priority = 0)
 {
     global $ignoreSound;
-
+    
     if (file_exists(ROOT . 'cms/sounds/' . $filename . '.mp3'))
         $filename = ROOT . 'cms/sounds/' . $filename . '.mp3';
     elseif (file_exists(ROOT . 'cms/sounds/' . $filename))
         $filename = ROOT . 'cms/sounds/' . $filename;
-
+    
     if (defined('SETTINGS_HOOK_BEFORE_PLAYSOUND') && SETTINGS_HOOK_BEFORE_PLAYSOUND != '')
         eval(SETTINGS_HOOK_BEFORE_PLAYSOUND);
-
+    
     if (!$ignoreSound) {
         if (file_exists($filename)) {
             if (IsWindowsOS())
                 safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
             else {
-                if (defined('AUDIO_PLAYER') && AUDIO_PLAYER!='') {
+                if (defined('AUDIO_PLAYER') && AUDIO_PLAYER != '') {
                     $audio_player = AUDIO_PLAYER;
                 } else {
                     $audio_player = 'mplayer';
                 }
-                safe_exec($audio_player.' ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
+                safe_exec($audio_player . ' ' . $filename . " >/dev/null 2>&1", $exclusive, $priority);
             }
-
+            
         }
     }
-
+    
     if (defined('SETTINGS_HOOK_AFTER_PLAYSOUND') && SETTINGS_HOOK_AFTER_PLAYSOUND != '')
         eval(SETTINGS_HOOK_AFTER_PLAYSOUND);
 }
@@ -704,7 +754,7 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
-    $call_stack = array();
+    $call_stack   = array();
     if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
         $call_stack = $_GET['m_c_s'];
     }
@@ -714,7 +764,7 @@ function runScriptSafe($id, $params = '')
         return 0;
     }
     $call_stack[] = $current_call;
-    $data = array(
+    $data         = array(
         'script' => $id,
         'm_c_s' => $call_stack
     );
@@ -765,10 +815,10 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
         $filename_part = substr($filename_part, 0, 200) . md5($filename_part);
     }
     $cache_file = ROOT . 'cms/cached/urls/' . $filename_part . '.html';
-
+    
     if (!$cache || !is_file($cache_file) || ((time() - filemtime($cache_file)) > $cache)) {
         try {
-
+            
             //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
             startMeasure('curl_prepare');
             $ch = curl_init();
@@ -778,32 +828,32 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
             @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
+            curl_setopt($ch, CURLOPT_TIMEOUT, 45); // operation timeout 45 seconds
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // bad style, I know...
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
+            
             if ($background) {
                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
                 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
             }
-
+            
             if ($username != '' || $password != '') {
                 curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
-
+            
             $url_parsed = parse_url($url);
-            $host = $url_parsed['host'];
-
+            $host       = $url_parsed['host'];
+            
             $use_proxy = false;
             if (defined('USE_PROXY') && USE_PROXY != '') {
                 $use_proxy = true;
             }
-
+            
             if ($host == '127.0.0.1' || $host == 'localhost') {
                 $use_proxy = false;
             }
-
+            
             if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
                 $p = preg_quote(HOME_NETWORK);
                 $p = str_replace('\*', '\d+?', $p);
@@ -814,40 +864,41 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                     $use_proxy = false;
                 }
             }
-
+            
             if ($use_proxy) {
                 curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
                 if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
                     curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
                 }
             }
-
+            
             $tmpfname = ROOT . 'cms/cached/cookie.txt';
             curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
-
+            
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
             $result = curl_exec($ch);
             endMeasure('curl_exec');
-
-
+            
+            
             startMeasure('curl_post');
             if (!$background && curl_errno($ch)) {
-                $errorInfo = curl_error($ch);
-                $info = curl_getinfo($ch);
-                $backtrace = debug_backtrace();
+                $errorInfo  = curl_error($ch);
+                $info       = curl_getinfo($ch);
+                $backtrace  = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
-                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info),'geturl_error');
+                DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
             curl_close($ch);
             endMeasure('curl_post');
-
-
-        } catch (Exception $e) {
+            
+            
+        }
+        catch (Exception $e) {
             registerError('geturl', $url . ' ' . get_class($e) . ', ' . $e->getMessage());
         }
-
+        
         if ($cache > 0) {
             CreateDir(ROOT . 'cms/cached/urls');
             SaveFile($cache_file, $result);
@@ -855,10 +906,10 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
     } else {
         $result = LoadFile($cache_file);
     }
-
-
+    
+    
     endMeasure('getURL');
-
+    
     return $result;
 }
 
@@ -873,13 +924,13 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 function safe_exec($command, $exclusive = 0, $priority = 0, $on_complete = '')
 {
     $rec = array();
-
-    $rec['ADDED'] = date('Y-m-d H:i:s');
-    $rec['COMMAND'] = $command;
-    $rec['EXCLUSIVE'] = (int)$exclusive;
-    $rec['PRIORITY'] = (int)$priority;
+    
+    $rec['ADDED']       = date('Y-m-d H:i:s');
+    $rec['COMMAND']     = $command;
+    $rec['EXCLUSIVE']   = (int) $exclusive;
+    $rec['PRIORITY']    = (int) $priority;
     $rec['ON_COMPLETE'] = $on_complete;
-
+    
     $rec['ID'] = SQLInsert('safe_execs', $rec);
     return $rec['ID'];
 }
@@ -897,11 +948,12 @@ function execInBackground($cmd)
             //pclose(popen("start /B ". $cmd, "r"));
             if (class_exists('COM')) {
                 $WshShell = new COM("WScript.Shell");
-                $oExec = $WshShell->Run("cmd /C \"" . $cmd . "\"", 0, false);
+                $oExec    = $WshShell->Run("cmd /C \"" . $cmd . "\"", 0, false);
             } else {
                 system($cmd);
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
         }
     } else {
@@ -920,12 +972,12 @@ function getFilesTree($destination, $sort = 'name')
     if (substr($destination, -1) == '/' || substr($destination, -1) == '\\') {
         $destination = substr($destination, 0, strlen($destination) - 1);
     }
-
+    
     $res = array();
-
+    
     if (!is_dir($destination))
         return $res;
-
+    
     if ($dir = @opendir($destination)) {
         while (($file = readdir($dir)) !== false) {
             if (is_dir($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
@@ -941,11 +993,11 @@ function getFilesTree($destination, $sort = 'name')
         }
         closedir($dir);
     }
-
+    
     if ($sort == 'name') {
         sort($res, SORT_STRING);
     }
-
+    
     return $res;
 }
 
@@ -961,7 +1013,7 @@ function isOnline($host)
                   FROM pinghosts
                  WHERE HOSTNAME = '" . DBSafe($host) . "'
                     OR TITLE =    '" . DBSafe($host) . "'";
-
+    
     $rec = SQLSelectOne($sqlQuery);
     if (!$rec['STATUS'] || $rec['STATUS'] == 2) {
         return 0;
@@ -978,25 +1030,25 @@ function isOnline($host)
  */
 function checkAccess($object_type, $object_id)
 {
-
+    
     global $access_rules_cached;
-
+    
     startMeasure('checkAccess');
-
+    
     if (!isset($access_rules_cached)) {
-        $all_rules=SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
-        foreach($all_rules as $rule) {
-            $access_rules_cached[$rule['OBJECT_TYPE'].$rule['OBJECT_ID']]=1;
+        $all_rules = SQLSelect("SELECT OBJECT_TYPE, OBJECT_ID FROM security_rules");
+        foreach ($all_rules as $rule) {
+            $access_rules_cached[$rule['OBJECT_TYPE'] . $rule['OBJECT_ID']] = 1;
         }
     }
-
-    if (!isset($access_rules_cached[$object_type.$object_id])) {
+    
+    if (!isset($access_rules_cached[$object_type . $object_id])) {
         endMeasure('checkAccess');
         return true;
     }
-
+    
     include_once(DIR_MODULES . 'security_rules/security_rules.class.php');
-    $sc = new security_rules();
+    $sc     = new security_rules();
     $result = $sc->checkAccess($object_type, $object_id);
     endMeasure('checkAccess');
     return $result;
@@ -1010,34 +1062,34 @@ function checkAccess($object_type, $object_id)
  */
 function registerError($code = 'custom', $details = '')
 {
-
-    $e = new \Exception;
+    
+    $e         = new \Exception;
     $backtrace = $e->getTraceAsString();
-
+    
     DebMes("Error registered (type: $code):\n" . $details . "\nBacktrace:\n" . $backtrace, 'error');
     $code = trim($code);
-
+    
     if ($code == 'sql') {
         return 0;
     }
-
+    
     $error_rec = SQLSelectOne("SELECT * FROM system_errors WHERE CODE = '" . DBSafe($code) . "'");
-
+    
     if (!$error_rec['ID']) {
-        $error_rec['CODE'] = $code;
+        $error_rec['CODE']         = $code;
         $error_rec['KEEP_HISTORY'] = 1;
-        $error_rec['ID'] = SQLInsert('system_errors', $error_rec);
+        $error_rec['ID']           = SQLInsert('system_errors', $error_rec);
     }
-
+    
     $error_rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-    @$error_rec['ACTIVE'] = (int)$error_rec['ACTIVE'] + 1;
+    @$error_rec['ACTIVE'] = (int) $error_rec['ACTIVE'] + 1;
     SQLUpdate('system_errors', $error_rec);
-
-    $history_rec = array();
+    
+    $history_rec             = array();
     $history_rec['ERROR_ID'] = $error_rec['ID'];
     $history_rec['COMMENTS'] = $details . "\nBacktrace:\n" . $backtrace;
-    $history_rec['ADDED'] = $error_rec['LATEST_UPDATE'];
-
+    $history_rec['ADDED']    = $error_rec['LATEST_UPDATE'];
+    
     //Temporary disabled
     /*
     $xrayUrl = BASE_URL . ROOTHTML.'popup/xray.html?ajax=1&md=xray&op=getcontent&view_mode=';
@@ -1047,18 +1099,18 @@ function registerError($code = 'custom', $details = '')
     $history_rec['TIMERS_DATA']     = getURL($xrayUrl . 'timers', 0);
     $history_rec['EVENTS_DATA']     = getURL($xrayUrl . 'events', 0);
     $history_rec['DEBUG_DATA']      = getURL($xrayUrl . 'debmes', 0);
-     */
+    */
     $history_rec['ID'] = SQLInsert('system_errors_data', $history_rec);
-
+    
     if (!$error_rec['KEEP_HISTORY']) {
-        SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=" . (int)$error_rec['ID'] . " AND ID != '" . $history_rec['ID'] . "'");
+        SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=" . (int) $error_rec['ID'] . " AND ID != '" . $history_rec['ID'] . "'");
     } else {
-        $tmp = SQLSelect("SELECT ID FROM system_errors_data WHERE ERROR_ID=" . (int)$error_rec['ID'] . " ORDER BY ID DESC LIMIT 50");
+        $tmp = SQLSelect("SELECT ID FROM system_errors_data WHERE ERROR_ID=" . (int) $error_rec['ID'] . " ORDER BY ID DESC LIMIT 50");
         if ($tmp[0]['ID'] && count($tmp) == 50) {
             $tmp = array_reverse($tmp);
-            SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=" . (int)$error_rec['ID'] . " AND ID<" . $tmp[0]['ID']);
+            SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID=" . (int) $error_rec['ID'] . " AND ID<" . $tmp[0]['ID']);
         }
-
+        
     }
 }
 
@@ -1070,7 +1122,7 @@ function IsWindowsOS()
 {
     if (substr(php_uname(), 0, 7) === "Windows")
         return true;
-
+    
     return false;
 }
 
@@ -1085,7 +1137,7 @@ function makePayload($data)
     foreach ($data as $v) {
         $res .= chr($v);
     }
-
+    
     return $res;
 }
 
@@ -1096,13 +1148,13 @@ function makePayload($data)
  */
 function HexStringToArray($buf)
 {
-    $res = array();
+    $res       = array();
     $bufLength = strlen($buf) - 1;
-
+    
     for ($i = 0; $i < $bufLength; $i += 2) {
         $res[] = (hexdec($buf[$i] . $buf[$i + 1]));
     }
-
+    
     return $res;
 }
 
@@ -1113,12 +1165,12 @@ function HexStringToArray($buf)
  */
 function HexStringToString($buf)
 {
-    $res = '';
+    $res       = '';
     $bufLength = strlen($buf) - 1;
     for ($i = 0; $i < $bufLength; $i += 2) {
         $res .= chr(hexdec($buf[$i] . $buf[$i + 1]));
     }
-
+    
     return $res;
 }
 
@@ -1129,18 +1181,18 @@ function HexStringToString($buf)
  */
 function binaryToString($buf)
 {
-    $res = '';
+    $res       = '';
     $bufLength = strlen($buf);
-
+    
     for ($i = 0; $i < $bufLength; $i++) {
         $num = dechex(ord($buf[$i]));
         if (strlen($num) == 1) {
             $num = '0' . $num;
         }
-
+        
         $res .= $num;
     }
-
+    
     return $res;
 }
 
@@ -1148,7 +1200,7 @@ function verbose_log($data)
 {
     if (defined('VERBOSE_LOG') && VERBOSE_LOG == 1) {
         if (defined('VERBOSE_LOG_IGNORE') && VERBOSE_LOG_IGNORE != '') {
-            $tmp = explode(',', VERBOSE_LOG_IGNORE);
+            $tmp   = explode(',', VERBOSE_LOG_IGNORE);
             $total = count($tmp);
             for ($i = 0; $i < $total; $i++) {
                 $regex = trim($tmp[$i]);
@@ -1161,7 +1213,7 @@ function verbose_log($data)
         global $argv;
         if (!isset($verbose_thread_id)) {
             $verbose_thread_id = date('H:i:s') . '_' . rand(1000, 9999);
-            $cmd = '';
+            $cmd               = '';
             if ($_SERVER['REQUEST_URI'] != '') {
                 $cmd = $_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'];
             } elseif ($argv[0] != '') {
@@ -1170,12 +1222,12 @@ function verbose_log($data)
             }
             DebMes('th_' . $verbose_thread_id . ' start ' . $cmd, 'verbose');
         }
-        $bt = debug_backtrace();
+        $bt       = debug_backtrace();
         $total_bt = count($bt);
-        $max_bt = 5;
+        $max_bt   = 5;
         //$bt = array_reverse($bt);
-        $bt = array_slice($bt, 1, $max_bt);
-        $total = count($bt);
+        $bt       = array_slice($bt, 1, $max_bt);
+        $total    = count($bt);
         if ($total > 0) {
             $res_trace = array();
             for ($i = 0; $i < $total; $i++) {
@@ -1197,13 +1249,20 @@ function verbose_log($data)
 function return_memory_usage()
 {
     $size = memory_get_usage(true);
-    $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+    $unit = array(
+        'b',
+        'kb',
+        'mb',
+        'gb',
+        'tb',
+        'pb'
+    );
     return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 }
 
 function getPassedText($updatedTime)
 {
-    $passed = time() - $updatedTime;
+    $passed     = time() - $updatedTime;
     $passedText = '';
     if ($passed < 10) {
         $passedText = LANG_DEVICES_PASSED_NOW;
@@ -1229,7 +1288,15 @@ function getPassedText($updatedTime)
 function urlsafe_b64encode($string)
 {
     $data = base64_encode($string);
-    $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
+    $data = str_replace(array(
+        '+',
+        '/',
+        '='
+    ), array(
+        '-',
+        '_',
+        ''
+    ), $data);
     $data = urlencode($data);
     return $data;
 }
@@ -1237,7 +1304,13 @@ function urlsafe_b64encode($string)
 function urlsafe_b64decode($string)
 {
     $data = urldecode($data);
-    $data = str_replace(array('-', '_'), array('+', '/'), $string);
+    $data = str_replace(array(
+        '-',
+        '_'
+    ), array(
+        '+',
+        '/'
+    ), $string);
     $mod4 = strlen($data) % 4;
     if ($mod4) {
         $data .= substr('====', $mod4);
@@ -1256,21 +1329,29 @@ function rgbToHsv($r, $g, $b)
     $s;
     $v;
     $d = $max - $min;
-    if ($max == $min) $h = 0;
+    if ($max == $min)
+        $h = 0;
     else {
         if ($max == $r) {
             $h = 60 * (($g - $b) / $d);
-            if ($g < $b) $h += 360;
+            if ($g < $b)
+                $h += 360;
         } elseif ($max == $g) {
             $h = 60 * (($b - $r) / $d) + 120;
         } elseif ($max == $b) {
             $h = 60 * (($r - $g) / $d) + 240;
         }
     }
-    if ($max == 0) $s = 0;
-    else $s = 1 - ($min / $max);
+    if ($max == 0)
+        $s = 0;
+    else
+        $s = 1 - ($min / $max);
     $v = $max;
-    return array(round($h, 2), round($s, 2), round($v, 2));
+    return array(
+        round($h, 2),
+        round($s, 2),
+        round($v, 2)
+    );
 }
 
 function hsvToRgb($h, $s, $v)
@@ -1279,14 +1360,16 @@ function hsvToRgb($h, $s, $v)
     $g;
     $b;
     $h = intval($h);
-    if ($h < 0) $h = 0;
-    if ($h > 360) $h = 360;
-
+    if ($h < 0)
+        $h = 0;
+    if ($h > 360)
+        $h = 360;
+    
     $Vmin = ((100 - $s) * $v) / 100;
-    $a = ($v - $Vmin) * (($h % 60) / 60);
+    $a    = ($v - $Vmin) * (($h % 60) / 60);
     $Vinc = $Vmin + $a;
     $Vdec = $v - $a;
-    $Hi = intval($h / 60) % 6;
+    $Hi   = intval($h / 60) % 6;
     if ($Hi == 0) {
         $r = $v;
         $g = $Vinc;
@@ -1312,18 +1395,22 @@ function hsvToRgb($h, $s, $v)
         $g = $Vmin;
         $b = $Vdec;
     }
-
+    
     $r = intval(($r * 255) / 100);
     $g = intval(($g * 255) / 100);
     $b = intval(($b * 255) / 100);
-
-    return array($r, $g, $b);
+    
+    return array(
+        $r,
+        $g,
+        $b
+    );
 }
 
 function hexToHsv($hex)
 {
-    $hex = str_replace('#', '', $hex);
-    $length = strlen($hex);
+    $hex      = str_replace('#', '', $hex);
+    $length   = strlen($hex);
     $rgb['r'] = hexdec($length == 6 ? substr($hex, 0, 2) : ($length == 3 ? str_repeat(substr($hex, 0, 1), 2) : 0));
     $rgb['g'] = hexdec($length == 6 ? substr($hex, 2, 2) : ($length == 3 ? str_repeat(substr($hex, 1, 1), 2) : 0));
     $rgb['b'] = hexdec($length == 6 ? substr($hex, 4, 2) : ($length == 3 ? str_repeat(substr($hex, 2, 1), 2) : 0));
@@ -1336,36 +1423,40 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-function remote_file_exists($url){
+function remote_file_exists($url)
+{
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_NOBODY, true);
     curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if( $httpCode == 200 ){return true;}
+    if ($httpCode == 200) {
+        return true;
+    }
     return false;
 }
 
-function logAction($action_type,$details='') {
+function logAction($action_type, $details = '')
+{
     global $session;
-    $rec=array();
-    $rec['ADDED']=date('Y-m-d H:i:s');
+    $rec          = array();
+    $rec['ADDED'] = date('Y-m-d H:i:s');
     if ($session->data['SITE_USERNAME']) {
-        $rec['USER']=$session->data['SITE_USERNAME'];
-    } elseif (preg_match('/^\/admin\.php/',$_SERVER['REQUEST_URI'])) {
-        $rec['USER']='Control Panel';
+        $rec['USER'] = $session->data['SITE_USERNAME'];
+    } elseif (preg_match('/^\/admin\.php/', $_SERVER['REQUEST_URI'])) {
+        $rec['USER'] = 'Control Panel';
     }
     if ($session->data['TERMINAL']) {
-        $rec['TERMINAL']=$session->data['TERMINAL'];
+        $rec['TERMINAL'] = $session->data['TERMINAL'];
     } else {
-        $rec['TERMINAL']='';
+        $rec['TERMINAL'] = '';
     }
-    $rec['ACTION_TYPE']=$action_type;
-    $rec['TITLE']=$details;
-    $rec['TITLE']=mb_substr($rec['TITLE'],0,250,'utf-8');
-    $rec['IP']=$_SERVER['REMOTE_ADDR'];
-    SQLInsert('actions_log',$rec);
-
+    $rec['ACTION_TYPE'] = $action_type;
+    $rec['TITLE']       = $details;
+    $rec['TITLE']       = mb_substr($rec['TITLE'], 0, 250, 'utf-8');
+    $rec['IP']          = $_SERVER['REMOTE_ADDR'];
+    SQLInsert('actions_log', $rec);
+    
 }
 
 function get_media_info($file)
@@ -1384,36 +1475,36 @@ function get_media_info($file)
     }
     //get duration
     preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $data, $duration);
-
+    
     if (!isset($duration[1])) {
         return false;
     }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3]+1;
-	$out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
-	// get all info about codec
-	preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
+    $hours           = $duration[1];
+    $minutes         = $duration[2];
+    $seconds         = $duration[3] + 1;
+    $out['duration'] = $seconds + ($minutes * 60) + ($hours * 60 * 60);
+    // get all info about codec
+    preg_match("/Audio: (.+), (.\d+) Hz, (.\w+), (.+), (.\d+) kb/", $data, $format);
     
-	if ($format) {
-		$out['Audio_format'] = $format[1];
-		$out['Audio_sample_rate'] = $format[2];
-		$out['Audio_type'] = $format[3];
-		$out['Audio_codec'] = $format[4];
-		$out['Audio_bitrate'] = $format[5];
-		if ($out['Audio_type'] == 'mono' ) {
-			$out['Audio_chanel'] = 1;
-		} else {
-			$out['Audio_chanel'] = 2;
-		}	
-	}
+    if ($format) {
+        $out['Audio_format']      = $format[1];
+        $out['Audio_sample_rate'] = $format[2];
+        $out['Audio_type']        = $format[3];
+        $out['Audio_codec']       = $format[4];
+        $out['Audio_bitrate']     = $format[5];
+        if ($out['Audio_type'] == 'mono') {
+            $out['Audio_chanel'] = 1;
+        } else {
+            $out['Audio_chanel'] = 2;
+        }
+    }
     preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
     if ($formatv) {
-		$out['Video_format'] = $formatv[1];
-	    $out['Video_size'] = $formatv[2];
-	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
-	    $out['Video_fps'] = $formatv[5];
-	}
+        $out['Video_format']  = $formatv[1];
+        $out['Video_size']    = $formatv[2];
+        $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
+        $out['Video_fps']     = $formatv[5];
+    }
     return $out;
 }
 
@@ -1422,7 +1513,7 @@ function get_remote_filesize($url)
     $head = array_change_key_case(get_headers($url, 1));
     // content-length of download (in bytes), read from Content-Length: field
     $clen = isset($head['content-length']) ? $head['content-length'] : 0;
-
+    
     // cannot retrieve file size, return "-1"
     if (!$clen) {
         return '0';
