@@ -210,10 +210,10 @@ class terminals extends module
             if (getMediaDurationSeconds($details['CACHED_FILENAME']) < 2) {
                 $duration = 2;
             } else {
-                $duration = get_media_info($details['CACHED_FILENAME']);
+                $duration = getMediaDurationSeconds($details['CACHED_FILENAME']);
             }
             $rec['ID'] = $details['ID'];
-            $rec['MESSAGE_DURATION'] = $duration['duration'];
+            $rec['MESSAGE_DURATION'] = $duration;
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
             SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
