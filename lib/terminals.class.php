@@ -384,6 +384,7 @@ function send_message($terminalname, $message, $terminal)
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
                 // остановим медиа и установим громкость
                 stopMedia($terminalname);
+		usleep(200000);
                 setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
                 $out['ID'] = $terminal['ID'];
                 $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
