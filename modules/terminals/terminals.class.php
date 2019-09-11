@@ -218,7 +218,7 @@ class terminals extends module
             SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
             // check terminals
-            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 60 MINUTE)');
+            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)');
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
                 if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
