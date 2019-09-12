@@ -156,7 +156,7 @@ class terminals extends module
             global $log_enabled;
             $this->config['LOG_ENABLED'] = $log_enabled;
             global $terminals_timeout;           
-			$this->config['TERMINALS_TIMEOUT'] = $terminals_timeout;
+            $this->config['TERMINALS_TIMEOUT'] = trim($terminals_timeout);
             $this->saveConfig();
             
             $this->redirect("?ok=1");
