@@ -376,6 +376,9 @@ function pingTerminalSafe($terminal, $details = '')
 }
 function send_message($terminalname, $message, $terminal)
 {
+	include_once(DIR_MODULES . "terminals/terminals.class.php");
+    $ter = new terminals();
+	$ter->getConfig();
     try {
 		// получаем состояние плеераесли еще нету 
         if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
@@ -384,20 +387,20 @@ function send_message($terminalname, $message, $terminal)
 	    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
                 // остановим медиа
                 stopMedia($terminalname);
-                DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
                 //установим громкость
-                 setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
+                setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
                 $out['ID'] = $terminal['ID'];
                 $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
                 SQLUpdate('terminals', $out);
             }
         }
 	} catch(Exception $e) {
-           DebMes("Terminal job terminated, not get information abaut terminal - " . $terminalname , 'terminals');
+           if ($ter->config['LOG_ENABLED']) DebMes("Terminal job terminated, not get information abaut terminal - " . $terminalname , 'terminals');
 	}
 	try {
-		DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
 		if (file_exists($addon_file)) {
@@ -405,23 +408,23 @@ function send_message($terminalname, $message, $terminal)
 			$tts = new $terminal['TTS_TYPE']($terminal);
 			$out = $tts->say_message($message, $terminal);
 			if (!$out) {
-				DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+				if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 				$rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '".$message['ID']."'");
 				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
 				SQLUpdate('shouts', $rec);
 				pingTerminal($terminal['NAME'], $terminal);
 			} else {
-				DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
+				if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
 			}
 		} else {
             sleep (1);
-            DebMes("Terminal not right configured - " . $terminalname , 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname , 'terminals');
 		}
 	} catch(Exception $e) {
-           DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
+           if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
-	DebMes("Finish Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+	if ($ter->config['LOG_ENABLED']) DebMes("Finish Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 }
 function send_messageSafe($message, $terminal)
 {
@@ -445,7 +448,6 @@ function send_messageSafe($message, $terminal)
             $url .= '&' . $k . '=' . urlencode($v);
         }
     }
-    DebMes("Sending Message with Safe- " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminal['NAME'] , 'terminals');
     getURLBackground($url, 0);
     return 1;
 }
