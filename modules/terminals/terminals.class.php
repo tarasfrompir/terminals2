@@ -237,8 +237,9 @@ class terminals extends module
             } else {
                 $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
             }
+            if ($this->config['LOG_ENABLED']) DebMes("Processing $event: finish result - " . $details['CACHED_FILENAME'], 'terminals');
             $rec['MESSAGE_DURATION'] = $duration + 1;
-	        $rec['ID'] = $details['ID'];
+            $rec['ID'] = $details['ID'];
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
             SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
