@@ -60,7 +60,7 @@ while (1) {
     }
     
     $out_terminals = getObjectsByProperty('basy', '==', '0');
-    if ($ter->config['LOG_ENABLED']) DebMes("Array of free terminal ".serialize($out_terminals) , 'terminals');
+  
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
@@ -106,9 +106,9 @@ while (1) {
             continue;
         }
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
-        if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND !$old_message['CACHED_FILENAME']) {
+        if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') AND !$old_message['CACHED_FILENAME']) {
             continue;
-        } else if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal') AND $old_message['CACHED_FILENAME']) {
+        } else if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') AND $old_message['CACHED_FILENAME']) {
             // иначе запускаем его воспроизведение
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
