@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 Addon Kodi (XBMC) for app_player
 */
@@ -7,6 +7,14 @@ class alicevox extends tts_addon
     function __construct($terminal)
     {
         $this->title = "Alicevox";
+		$this->curl = curl_init();
+		$this->address = 'http://192.18.1.51:8080';
+		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($this->curl, CURLOPT_TIMEOUT, 5);
+		curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($this->curl, CURLOPT_USERPWD, 'xbmc:xbmc');
+
         parent::__construct($terminal);
     }
     
@@ -20,7 +28,16 @@ class alicevox extends tts_addon
 					include_once(DIR_MODULES . "app_player/addons/kodi.addon.php");
                     $kodi = new kodi();
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
-                    $kodi->kodi_request('Addons.ExecuteAddon', array('addonid' => 'script.alicevox.master','params' => array($message['CACHED_FILENAME'])));
+		    $json = array('jsonrpc' => '2.0', 'method' => 'Addons.ExecuteAddon', 'params' => array('addonid' => 'script.alicevox.master','params' => array($message['CACHED_FILENAME'])), 'id' => (int)$['ID']);
+		    $request = json_encode($json);
+                    curl_setopt($this->curl, CURLOPT_URL, $this->address.'/jsonrpc?request='.urlencode($request));
+
+		    if($result = curl_exec($this->curl)) {
+			$code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+                    }
+		    if ($code==200 ) {
+			//vse ok
+                    }
                     sleep($message['MESSAGE_DURATION']);
                     $this->success = TRUE;
                     $this->message = 'OK';
@@ -39,3 +56,4 @@ class alicevox extends tts_addon
         return $this->success;
     }
 }
+
