@@ -128,6 +128,15 @@ class terminals extends module
      */
     function admin(&$out)
     {
+        $this->getConfig();
+		$out['LOG_ENABLED'] = $this->config['LOG_ENABLED'];
+
+        if ($this->config['TERMINALS_TIMEOUT']) {
+			$out['TERMINALS_TIMEOUT'] = $this->config['TERMINALS_TIMEOUT'];
+		} else {
+			$out['TERMINALS_TIMEOUT'] = 10;
+		}
+
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -142,6 +151,15 @@ class terminals extends module
                 $this->delete_terminals($this->id);
                 $this->redirect("?");
             }
+        }
+		if ($this->view_mode == 'update_settings') {
+            global $log_enabled;
+            $this->config['LOG_ENABLED'] = $log_enabled;
+            global $terminals_timeout;           
+			$this->config['TERMINALS_TIMEOUT'] = $terminals_timeout;
+            $this->saveConfig();
+            
+            $this->redirect("?ok=1");
         }
     }
 
@@ -200,7 +218,7 @@ class terminals extends module
     {
         // если происходит событие SAY_CACHED_READY то запускаемся
         if ($event == 'SAY_CACHED_READY' ) {
-            DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
+            if ($this->config['LOG_ENABLED']) DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
             // ждем файл сообщения
             while (!file_exists($details['CACHED_FILENAME']) AND $count < 100 ) {
                 usleep(100000);
@@ -220,7 +238,7 @@ class terminals extends module
                 $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
             }
             $rec['MESSAGE_DURATION'] = $duration + 1;
-	    $rec['ID'] = $details['ID'];
+	        $rec['ID'] = $details['ID'];
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
             SQLUpdate('shouts', $rec);
         } else  if ($event == 'HOURLY') {
