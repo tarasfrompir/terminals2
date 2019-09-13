@@ -54,7 +54,11 @@ if ($this->mode == 'update') {
     $rec['USE_SYSTEM_MML'] = gr('systemMML');
     
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
-    
+    // автозаполнение поля 
+    if ($rec['MIN_MSG_LEVEL'] == '') {
+        $rec['MIN_MSG_LEVEL'] = 0;
+    }
+    // автодополнение обьекта 
     if ($rec['LINKED_OBJECT'] == '') {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
