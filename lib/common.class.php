@@ -57,11 +57,7 @@ function sayReply($ph, $level = 0, $replyto = '')
 {
     $source = '';
     // replace enter simbol
-    $ph     = str_replace(array(
-        "\r\n",
-        "\r",
-        "\n"
-    ), '', $ph);
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     if ($replyto) {
         $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST LIKE '%" . DBSafe($replyto) . "%' ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
         $orig_msg     = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE!='' AND MESSAGE LIKE '%" . DBSafe($replyto) . "%' AND ADDED>=(NOW() - INTERVAL 30 SECOND) ORDER BY ADDED DESC LIMIT 1");
@@ -117,11 +113,7 @@ function sayTo($ph, $level = 0, $destination = '')
         return 0;
     }
     // replace enter simbol
-    $ph                = str_replace(array(
-        "\r\n",
-        "\r",
-        "\n"
-    ), '', $ph);
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // add message to chat
     $rec               = array();
     $rec['MESSAGE']    = $ph;
