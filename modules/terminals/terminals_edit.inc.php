@@ -19,9 +19,7 @@ if ($location) {
 } else {
      $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
 }
-if ($out['MIN_MSG_LEVEL']=='') {
-    $out['MIN_MSG_LEVEL'] == '0';
-}
+
 if ($this->mode == 'update') {
     $ok = 1;
 
