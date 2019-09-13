@@ -246,17 +246,18 @@ class terminals extends module
             // check terminals
             $terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
             foreach ($terminals as $terminal) {
-                if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
-                    sg($terminal['LINKED_OBJECT'] . '.status', '1');
-                    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-                    $terminal['IS_ONLINE']       = 1;
-                } else {
-                    sg($terminal['LINKED_OBJECT'] . '.status', '0');
-                    $terminal['IS_ONLINE']       = 0;
-                }
-                SQLUpdate('terminals', $terminal);
+                //if (ping($terminal['HOST']) or ping(processTitle($terminal['HOST']))) {
+                //    sg($terminal['LINKED_OBJECT'] . '.status', '1');
+                //    $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                //    $terminal['IS_ONLINE']       = 1;
+                //} else {
+                //    sg($terminal['LINKED_OBJECT'] . '.status', '0');
+                //    $terminal['IS_ONLINE']       = 0;
+                //}
+                //SQLUpdate('terminals', $terminal);
+		pingTerminalSafe($terminal['NAME'], $terminal)
             }
-            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 90 MINUTE)');
+            SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 150 MINUTE)');
         }
     }
 
