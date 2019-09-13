@@ -255,7 +255,7 @@ class terminals extends module
                 //    $terminal['IS_ONLINE']       = 0;
                 //}
                 //SQLUpdate('terminals', $terminal);
-		pingTerminalSafe($terminal['NAME'], $terminal)
+		pingTerminalSafe($terminal['NAME'], $terminal);
             }
             SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 150 MINUTE)');
         }
