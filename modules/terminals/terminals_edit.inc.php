@@ -19,7 +19,9 @@ if ($location) {
 } else {
      $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
 }
-
+if ($out['MIN_MSG_LEVEL']=='') {
+    $out['MIN_MSG_LEVEL'] == '0';
+}
 if ($this->mode == 'update') {
     $ok = 1;
 
@@ -41,8 +43,6 @@ if ($this->mode == 'update') {
     $rec['CANPLAY'] = gr('canplay', 'int');
     $rec['CANTTS'] = gr('cantts', 'int');
 
-    $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
-
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
     
     $rec['TTS_TYPE'] = gr('tts_type');
@@ -54,6 +54,9 @@ if ($this->mode == 'update') {
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
     $rec['USE_SYSTEM_MML'] = gr('systemMML');
+    
+    $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
+    
     if ($rec['LINKED_OBJECT'] == '') {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
