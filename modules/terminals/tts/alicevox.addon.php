@@ -26,19 +26,31 @@ class alicevox extends tts_addon
             if (file_exists($message['CACHED_FILENAME'])) {
                 if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
-                    $json = array('jsonrpc' => '2.0','method' => 'Addons.ExecuteAddon','params' => array('addonid' => 'script.alicevox.master','params' => array($message['CACHED_FILENAME'])),'id' => (int) $message['ID']);
-                    $request = json_encode($json);
+                    $json                       = array(
+                        'jsonrpc' => '2.0',
+                        'method' => 'Addons.ExecuteAddon',
+                        'params' => array(
+                            'addonid' => 'script.alicevox.master',
+                            'params' => array(
+                                $message['CACHED_FILENAME']
+                            )
+                        ),
+                        'id' => (int) $message['ID']
+                    );
+                    $request                    = json_encode($json);
                     curl_setopt($this->curl, CURLOPT_URL, $this->address . '/jsonrpc?request=' . urlencode($request));
                     
                     if ($result = curl_exec($this->curl)) {
                         $code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
                     }
                     if ($code == 200) {
-                        //vse ok
+                        sleep($message['MESSAGE_DURATION']);
+                        $this->success = TRUE;
+                        $this->message = 'OK';
+                    } else {
+                        $this->success = FALSE;
+                        $this->message = 'Command execution error!';
                     }
-                    sleep($message['MESSAGE_DURATION']);
-                    $this->success = TRUE;
-                    $this->message = 'OK';
                 } else {
                     $this->success = FALSE;
                     $this->message = 'Input is missing!';
