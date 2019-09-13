@@ -21,7 +21,6 @@ $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
 DebMes("Start number message - " . $number_message, 'terminals');
 DebMes('Start terminals cycle');
-
 // берем конфигурацию с модуля терминалов
 $ter->getConfig();
 if ($ter->config['TERMINALS_TIMEOUT']) {
@@ -30,7 +29,6 @@ if ($ter->config['TERMINALS_TIMEOUT']) {
     $terminals_time_out = 10;
 }
 if ($ter->config['LOG_ENABLED']) DebMes("Get timeout for message - " . $terminals_time_out. " minutes", 'terminals');
-
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 10) {
@@ -60,7 +58,6 @@ while (1) {
     }
     
     $out_terminals = getObjectsByProperty('basy', '==', '0');
-  
     foreach ($out_terminals as $terminals) {
         // если пустой терминал пропускаем
         if (!$terminals) {
