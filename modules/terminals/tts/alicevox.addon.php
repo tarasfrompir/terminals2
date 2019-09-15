@@ -15,7 +15,7 @@ class alicevox extends tts_addon
         curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($this->curl, CURLOPT_USERPWD, 'xbmc:xbmc');
         
-        parent::__construct($terminal);
+        //parent::__construct($terminal);
     }
     
     
