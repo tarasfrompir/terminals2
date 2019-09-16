@@ -379,11 +379,12 @@ class GChromecast
 		$this->getCastMessage();
 	}
 	
-	public function load($url, $currentTime) {
+    public function load($url, $currentTime) {
+	$this->getMediaSession(); // Auto-reconnects
+	if ($this->appid != 'CC1AD845') {
 		$this->launch('CC1AD845');
-		$this->getMediaSession(); // Auto-reconnects
-		
-		if (preg_match('/\.mp3/', $url)) {
+	}		
+	if (preg_match('/\.mp3/', $url)) {
             $content_type = 'audio/mp3';
         } elseif (preg_match('/mp4/', $url)) {
             $content_type = 'video/mp4';
