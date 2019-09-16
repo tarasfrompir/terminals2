@@ -146,12 +146,13 @@ class GChromecast
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
+		//DebMes($response);
 		return json_decode($response,TRUE);
 	}
 	
 	public function getMediaSession() {
 		$this->getStatus(); 
-		if ($this->appid == 'CC1AD845') {
+		if ($this->appid ) {
 			$this->connect(); // Auto-reconnects
 		} else {
 			$this->launch('CC1AD845');
@@ -379,6 +380,7 @@ class GChromecast
 	}
 	
 	public function load($url, $currentTime) {
+		$this->launch('CC1AD845');
 		$this->getMediaSession(); // Auto-reconnects
 		
 		if (preg_match('/\.mp3/', $url)) {
