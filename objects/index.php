@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Object handler project script
  *
@@ -7,11 +6,8 @@
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.0
  */
-
 list($usec, $sec) = explode(" ",microtime());
 $script_started_time = ((float)$usec + (float)$sec);
-
-
 //Define('MASTER_HOST', 'homenetserver.jbk'); // uncomment to use master host
 if (defined('MASTER_URL') && MASTER_URL != '')
 {
@@ -41,23 +37,16 @@ if (defined('MASTER_URL') && MASTER_URL != '')
    
    exit;
 }
-
 // NORMAL HANDLER
 chdir(dirname(__FILE__) . '/..');
-
 include_once("./config.php");
 include_once("./lib/loader.php");
-
-
 startMeasure('TOTAL'); // start calculation of execution time
-
 include_once(DIR_MODULES . "application.class.php");
 include_once("./load_settings.php");
-
 if (gr('prj')) {
    $session = new session("prj");
 }
-
 if ($argv[1] != '') {
    $commandLine = 1;
    if (preg_match('/^(.+?)\.(.+?)$/is', $argv[1], $matches)) {
@@ -65,7 +54,6 @@ if ($argv[1] != '') {
       $object = $matches[1];
       $m = $matches[2];
    }
-
    $total = count($argv);
    
    for ($i = 1; $i < $total; $i++) {
@@ -79,34 +67,27 @@ if ($argv[1] != '') {
       }
    }
 }
-
 if (preg_match('/\/\?(\w+)\.(\w+)/', $_SERVER['REQUEST_URI'], $matches)) {
    $_GET['op'] = 'm';
    $_GET['object'] = $matches[1];
    $_GET['m'] = $matches[2];
 }
-
 foreach ($_GET as $k => $v) {
    $request .= '&' . $k . '=' . $v;
 }
-
 if (!$request && $commandLine) {
    $request = implode(' ', $argv);
 }
-
 //echo "object: $object op: $op m: $m status: $status ";exit;
 if (!$commandLine) {
    ignore_user_abort(1);
    header('Content-Type: text/html; charset=utf-8');
 }
-
-
 if ($module != '') {
  include_once(DIR_MODULES.$module.'/'.$module.'.class.php');
  $mdl=new $module();
  echo $mdl->usual($_GET);
 }
-
 if ($object != '') {
    $obj = getObject($object);
    
@@ -173,6 +154,11 @@ if ($object != '') {
    sayTo(gr('ph'),gr('level'),gr('destination'));
 } elseif (gr('processSubscriptions')) {
    processSubscriptions(gr('event'), json_decode(gr('params'),true));
+} elseif (gr('processSubscriptionsOutput')) {
+   $output = processSubscriptions(gr('event'), json_decode(gr('params'),true),true);
+   if ($output) {
+      echo $output;
+   }
 } elseif ($script != '') {
    runScript($script, $_REQUEST);
 } elseif (gr('pingTerminal')) {
@@ -183,5 +169,5 @@ if ($object != '') {
 
 endMeasure('TOTAL'); // end calculation of execution time
 //performanceReport(); // print performance report
-
 // ob_end_flush();
+
