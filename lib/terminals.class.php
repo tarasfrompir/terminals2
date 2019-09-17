@@ -412,7 +412,7 @@ function send_message($terminalname, $message, $terminal)
 				$rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '".$message['ID']."'");
 				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
 				SQLUpdate('shouts', $rec);
-				pingTerminal($terminal['NAME'], $terminal);
+				pingTerminalSafe($terminal['NAME'], $terminal);
 			} else {
 				if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
 			}
