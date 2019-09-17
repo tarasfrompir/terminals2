@@ -309,7 +309,7 @@ class GChromecast
 	
 	public function Mute() {
         //$this->getStatus(); // Auto-reconnects
-		while (($response['status']['volume']['muted'])== TRUE AND $count < 20) {
+		while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
 		    //$this->getCastMessage();
             usleep(100000);
@@ -320,7 +320,7 @@ class GChromecast
 	
 	public function UnMute() {
         //$this->getStatus(); // Auto-reconnects
-		while (($response['status']['volume']['muted'])== FALSE AND $count < 20) {
+		while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
 		    //$this->getCastMessage();
             usleep(100000);
