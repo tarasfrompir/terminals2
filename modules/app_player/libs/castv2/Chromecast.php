@@ -119,7 +119,7 @@ class GChromecast
 		$oldtransportid = $this->transportid;
 		while ($this->transportid == "" || $this->transportid == $oldtransportid) {
 			$r = $this->getCastMessage();
-			usleep(10);
+			usleep(100);
 		}
 	}
 	
@@ -128,6 +128,7 @@ class GChromecast
 
 		// Get the status of the chromecast in general and return it
 		// also fills in the transportId of any currently running app
+		$this->getCastMessage();
 		$this->cc_connect();
 		$this->testLive();
 		$c = new CastMessage();
@@ -308,33 +309,33 @@ class GChromecast
 	}
 	
 	public function Mute() {
-        //$this->getStatus(); // Auto-reconnects
+        //$this->getMediaSession();
 		while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
-		    //$this->getCastMessage();
-            usleep(100000);
+		    $this->getCastMessage();
+            usleep(100);
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}	
 	}
 	
 	public function UnMute() {
-        //$this->getStatus(); // Auto-reconnects
+        //$this->getMediaSession();
 		while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
-		    //$this->getCastMessage();
-            usleep(100000);
+		    $this->getCastMessage();
+            usleep(100);
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}		
 	}
 	
 	public function SetVolume($volume) {
-        //$this->getStatus(); // Auto-reconnects
+        //$this->getMediaSession();
 		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
-		    //$this->getCastMessage();
-            usleep(100000);
+		    $this->getCastMessage();
+            usleep(100);
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}
