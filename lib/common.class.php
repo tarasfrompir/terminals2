@@ -304,19 +304,6 @@ function processCommand($command)
 }
 
 /**
- * Summary of processCommand
- * @param mixed $command Command
- * @return void
- */
-function processCommand($command)
-{
-    global $pattern_matched;
-    if (!$pattern_matched) {
-        getObject("ThisComputer")->callMethod("commandReceived", array("command" => $command));
-    }
-}
-
-/**
  * Summary of timeConvert
  * @param mixed $tm Time
  * @return int|string
