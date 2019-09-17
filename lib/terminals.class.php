@@ -255,12 +255,15 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE)
     if (!$terminal['ID']) {
         return 0;
     }
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=" . ($safe_play ? 'safe_play' : 'play');
-    $url .= "&terminal_id=" . $terminal['ID'];
-    $url .= "&param=" . urlencode($path);
-    getURLBackground($url);
-    return 1;
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command = ($safe_play ? 'safe_play' : 'play'); // Команда
+    $player->param = $path; // Параметр
+    $player->ajax = TRUE;
+    $player->intCall = TRUE;
+    $player->usual($out);
+    return $player->json['message'];
 }
 /**
  * Summary of stopMedia
@@ -284,11 +287,14 @@ function stopMedia($host = 'localhost')
     if (!$terminal['ID']) {
         return 0;
     }
-    $url = BASE_URL . ROOTHTML . 'ajax/app_player.html?';
-    $url .= "&command=stop";
-    $url .= "&terminal_id=" . $terminal['ID'];
-    getURLBackground($url);
-    return 1;
+    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    $player = new app_player();
+    $player->play_terminal = $terminal['NAME']; // Имя терминала
+    $player->command = 'stop'; // Команда
+    $player->ajax = TRUE;
+    $player->intCall = TRUE;
+    $player->usual($out);
+    return $player->json['message'];
 }
 /**
  * This function change volume on the terminal
