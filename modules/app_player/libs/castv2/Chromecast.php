@@ -331,7 +331,7 @@ class GChromecast
 	
 	public function SetVolume($volume) {
         //$this->getStatus(); // Auto-reconnects
-		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) AND $count < 20) {
+		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
 		    //$this->getCastMessage();
             usleep(100000);
