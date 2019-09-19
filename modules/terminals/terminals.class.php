@@ -341,6 +341,7 @@ class terminals extends module
  terminals: CANTTS int(1) NOT NULL DEFAULT '0'
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
  terminals: TTS_TYPE char(20) NOT NULL DEFAULT '' 
+ terminals: TTS_PORT char(5) NOT NULL DEFAULT '' 
  terminals: PLAYER_TYPE char(20) NOT NULL DEFAULT ''
  terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
