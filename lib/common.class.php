@@ -295,6 +295,7 @@ function ask($ph, $destination = '')
             pingTerminalSafe($terminal['NAME'], $terminal);
         } 
 		processSubscriptionsSafe('ASK', array('message' => $ph, 'destination' => $terminal));
+	    DebMes("Make Message - " . $ph . " with EVENT ASK ", 'terminals');
     }
 
 }
