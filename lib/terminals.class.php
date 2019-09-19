@@ -430,7 +430,6 @@ function send_message($terminalname, $message, $terminal)
            if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
-	if ($ter->config['LOG_ENABLED']) DebMes("Finish Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 }
 function send_messageSafe($message, $terminal)
 {
