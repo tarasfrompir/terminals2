@@ -4,6 +4,7 @@ class telegramm extends tts_addon {
 
     function __construct($terminal) {
         $this->title="Telegramm module";
+        $this->description = 'Работает с помощью  модуля Телеграм. Без этого модуля ничего работать не будет.';
         unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
