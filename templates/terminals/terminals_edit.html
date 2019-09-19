@@ -174,9 +174,9 @@
 				.addon-descriptiontts { display: block; margin-top: 10px; }
 			</style>
 			<script type="text/javascript">
-				function tts_type_select(type) {
-					$('small.addon-descriptiontts').addClass('hidden');
-					$('small#'+type+'_description').removeClass('hidden');
+			function tts_type_select(type) {
+			$('small.addon-descriptiontts').addClass('hidden');
+			$('small#'+type+'_description').removeClass('hidden');
                         if (type == 'mainterminal') {
                             $('#tts_volume').hide();
                             $('#tts_port').hide();
@@ -185,6 +185,9 @@
                             $('#tts_port').show();
     			} else if (type == 'majordroid_tts') {
                             $('#tts_volume').show();
+                            $('#tts_port').show();
+			} else if (type == 'alicevox') {
+                            $('#tts_volume').hide();
                             $('#tts_port').show();
     			} else if (type == 'googlehomenotifier') {
                             $('#tts_volume').hide();
