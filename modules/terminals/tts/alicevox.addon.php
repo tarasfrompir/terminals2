@@ -6,7 +6,9 @@ class alicevox extends tts_addon
 {
     function __construct($terminal)
     {
+		$this->terminal = $terminal;
         $this->title   = "Alicevox";
+		$this->description = 'Работает на ХВМС устройствах с установленным скриптом  Аливокс.';
         $this->curl    = curl_init();
         $this->address = 'http://192.18.1.51:8080';
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
@@ -15,7 +17,7 @@ class alicevox extends tts_addon
         curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($this->curl, CURLOPT_USERPWD, 'xbmc:xbmc');
         
-        //parent::__construct($terminal);
+        parent::__construct($terminal);
     }
     
     
