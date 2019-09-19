@@ -6,7 +6,7 @@ class majordroid_tts extends tts_addon {
         $this->terminal = $terminal;
         $this->title="MajorDroid";
         $this->description = 'Используется на устройствах которые имеют в себе MajorDroid API.';
-        $this->port = (empty($this->terminal['TTS_PORT'])?7999:$this->terminal['TTS_PORT']);
+        $this->port = empty($this->terminal['TTS_PORT'])?7999:$this->terminal['TTS_PORT'];
         parent::__construct($terminal);
     }
 
@@ -21,7 +21,6 @@ class majordroid_tts extends tts_addon {
 	
     function sendMajorDroidCommand($cmd) {
         if ($this->terminal['HOST']) {
-            if (!preg_match('/^\d/', $address)) return 0;
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             if ($socket === false) {
                 return 0;
