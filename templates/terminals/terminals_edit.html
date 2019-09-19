@@ -240,6 +240,7 @@
 		</label>
 		<div class="col-lg-5">
 			<select name="player_type" class="form-control" onchange="return player_type_select($(this).val());">
+                               <option label="Выберите тип плеера">Выберите тип плеера</option>
 				<option value=""><#LANG_DEFAULT#>
 				[#begin PLAYER_ADDONS#]
 				<option value="[#VALUE#]"[#if VALUE="<#PLAYER_TYPE#>"#] selected[#endif#]>[#TITLE#]
