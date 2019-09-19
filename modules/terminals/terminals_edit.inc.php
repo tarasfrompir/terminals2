@@ -53,6 +53,7 @@ if ($this->mode == 'update') {
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
     $rec['USE_SYSTEM_MML'] = gr('systemMML');
     
+    $rec['TTS_PORT'] = gr('tts_port');
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
     // автозаполнение поля 
     if ($rec['MIN_MSG_LEVEL'] == '') {
