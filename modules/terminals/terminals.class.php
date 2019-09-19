@@ -236,23 +236,24 @@ class terminals extends module
             $rec['ID'] = $details['ID'];
             $rec['CACHED_FILENAME'] = $details['CACHED_FILENAME'];
             SQLUpdate('shouts', $rec);
-        } else  if ($event == 'ASK') {
+        } else if ($event == 'ASK') {
             $this->getConfig();
             $terminal = $details['destination'];
-            try {
-                if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($details['message'], JSON_UNESCAPED_UNICODE) . "to : " . $terminal['NAME'], 'terminals');
+			try {
+                if ($this->config['LOG_ENABLED']) DebMes("Sending Message - " . $details['message'] . "to : " . $terminal['NAME'], 'terminals');
                 include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
 		        if (file_exists($addon_file) AND $terminal['TTS_TYPE']=='majordoid_tts') {
 			        include_once($addon_file);
 			        $tts = new $terminal['TTS_TYPE']($terminal);
 			        $tts->ask($details['message']);
+					if ($this->config['LOG_ENABLED']) DebMes("Sending Message - " . $details['message'] . "to : " . $terminal['NAME'], 'terminals');
 		        } else {
                     sleep (1);
-                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminal['NAME'] , 'terminals');
+                    if ($this->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminal['NAME'] , 'terminals');
 		        }
 	        } catch(Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
+                if ($this->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
 	        }
         } else  if ($event == 'HOURLY') {
             // check terminals
