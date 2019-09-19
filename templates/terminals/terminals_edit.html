@@ -180,13 +180,16 @@
                         if (type == 'mainterminal') {
                             $('#tts_volume').hide();
                             $('#tts_port').hide();
-    					} else if (type == 'mediaplayer') {
+    			} else if (type == 'mediaplayer') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
-    					} else if (type == 'majordroid_tts') {
+    			} else if (type == 'majordroid_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
-    					} else {
+    			} else if (type == 'googlehomenotifier') {
+                            $('#tts_volume').hide();
+                            $('#tts_port').show();
+    			} else {
                             $('#tts_port').hide();
                             $('#tts_volume').hide();
                         }
