@@ -280,14 +280,23 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     
 }
 
-function ask($prompt, $target = '')
+function ask($ph, $destination = '')
 {
-    processSubscriptionsSafe('ASK', array(
-        'prompt' => $prompt,
-        'message' => $prompt,
-        'target' => $target,
-        'destination' => $target
-    ));
+	if (!$destination) {
+        return 0;
+    }
+   if ($destination) {
+        if (!$terminals = getTerminalsByName($destination, 1)) {
+            $terminals = getTerminalsByHost($destination, 1);
+        }
+    }
+    foreach ($terminals as $terminal) {
+        if (!$terminal['IS_ONLINE']) {
+            pingTerminalSafe($terminal['NAME'], $terminal);
+        } 
+		processSubscriptionsSafe('ASK', array('message' => $ph, 'destination' => $terminal));
+    }
+
 }
 
 /**
