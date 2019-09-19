@@ -9,6 +9,7 @@ class alicevox extends tts_addon
         $this->terminal = $terminal;
         $this->title   = "Alicevox";
         $this->description = 'Работает на ХВМС устройствах с установленным скриптом  Аливокс.';
+        $this->address = 'http://xbmc:xbmc@'.$this->terminal['HOST'].':'.(empty($this->terminal['TTS_PORT'])?8080:$this->terminal['TTS_PORT']);
         parent::__construct($terminal);
     }
     
@@ -20,11 +21,8 @@ class alicevox extends tts_addon
             if (file_exists($message['CACHED_FILENAME'])) {
                 if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
-                    $url="http://xbmc:xbmc@".$this->terminal['HOST'].":".$this->terminal['TTS_PORT']."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$message['CACHED_FILENAME']."\"]},\"id\":1}";
-
-
+                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$message['CACHED_FILENAME']."\"]},\"id\":1}";
                     $result = getURL($url, 0);
- 
                     if ($result) {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
