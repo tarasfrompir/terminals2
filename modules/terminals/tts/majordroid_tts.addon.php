@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 class majordroid_tts extends tts_addon {
 
@@ -14,7 +14,11 @@ class majordroid_tts extends tts_addon {
     {
         return $this->sendMajorDroidCommand('tts:'.$message['MESSAGE']);
     }
-
+    
+	function ask($phrase, $level=0) {
+        return $this->sendMajorDroidCommand('ask:'.$phrase);
+    }
+	
     function sendMajorDroidCommand($cmd) {
         if ($this->terminal['HOST']) {
             if (!preg_match('/^\d/', $address)) return 0;
