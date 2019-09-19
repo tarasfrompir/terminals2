@@ -163,7 +163,7 @@
         <label class="col-lg-4 control-label" for="tts_type">Тип плеера TTS:</label>
         <div class="col-lg-5">
             <select id="tts_type" name="tts_type" class="form-control" onchange="return tts_type_select($(this).val());">
-		<option value="">Выберите тип TTS</option>
+		<option value=""  disabled>>Выберите тип TTS</option>
                 [#begin TTS_ADDONS#]
                     <option value="[#NAME#]"[#if NAME="<#TTS_TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
                 [#end TTS_ADDONS#]
