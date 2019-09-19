@@ -99,6 +99,7 @@ outHash($rec, $out);
 
 $out['TTS_ADDONS'] = array();
 if (is_dir(DIR_MODULES . 'terminals/tts')) {
+    include_once(DIR_MODULES . 'terminals/tts_addon.class.php');
     $addons = scandir(DIR_MODULES . 'terminals/tts');
     if (is_array($addons)) {
         foreach ($addons as $addon_file) {
@@ -106,12 +107,25 @@ if (is_dir(DIR_MODULES . 'terminals/tts')) {
             if (is_file($addon_file)) {
                 if (strtolower(substr($addon_file, -10)) == '.addon.php') {
                     $addon_name = basename($addon_file, '.addon.php');
-                    $out['TTS_ADDONS'][] = array('NAME'=>$addon_name);
+                    include_once($addon_file);
+                    if (class_exists($addon_name)) {
+                        if (is_subclass_of($addon_name, 'tts_addon', TRUE)) {
+                            if ($tts = new $addon_name(NULL)) {
+                                // Results
+                                $out['TTS_ADDONS'][] = array(
+                                    'TITLE' => $tts->title,
+                                    'NAME' => $addon_name,
+                                    'DESCRIPTION' => $tts->description,
+                                );
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
+
 
 if (is_dir(DIR_MODULES . 'app_player/addons')) {
     include_once(DIR_MODULES . 'app_player/addons.php');
