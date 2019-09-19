@@ -3,7 +3,8 @@
 class googlehomenotifier extends tts_addon {
 
     function __construct($terminal) {
-        $this->title="GoogleHomeNotifier API";
+        $this->title="GoogleHomeNotifier";
+        $this->description = 'Работатет с устройствами Гугл Нотифиер. Передает аудиосообщения.';
         parent::__construct($terminal);
     }
 
