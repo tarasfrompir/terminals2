@@ -130,9 +130,6 @@ function sayTo($ph, $level = 0, $destination = '')
         $terminals = getTerminalsByCANTTS();
     }
     foreach ($terminals as $terminal) {
-        if (!$terminal['IS_ONLINE']) {
-            pingTerminalSafe($terminal['NAME'], $terminal);
-        } 
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
@@ -240,9 +237,6 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $terminals = getTerminalsByCANTTS();
     
     foreach ($terminals as $terminal) {
-        if (!$terminal['IS_ONLINE']) {
-            pingTerminalSafe($terminal['NAME'], $terminal);
-        } 
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
