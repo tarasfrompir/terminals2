@@ -130,7 +130,10 @@ function sayTo($ph, $level = 0, $destination = '')
         $terminals = getTerminalsByCANTTS();
     }
     foreach ($terminals as $terminal) {
-        if (!$terminal['IS_ONLINE']) {
+        if (!$terminal['NAME']) {
+            continue;
+	}
+	if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } else if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
             //if ($terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
@@ -241,6 +244,9 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $terminals = getTerminalsByCANTTS();
     
     foreach ($terminals as $terminal) {
+        if (!$terminal['NAME']) {
+            continue;
+	}
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } else if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
