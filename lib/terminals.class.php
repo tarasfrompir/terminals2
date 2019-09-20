@@ -385,8 +385,9 @@ function send_message($terminalname, $message, $terminal)
     include_once(DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
-    if (!$terminal) {
-        return;
+    if (!$terminal['TTS_TYPE'] OR !$terminal['CAN_TTS']) {
+      if ($ter->config['LOG_ENABLED']) DebMes("Terminal not configured  - " . json_encode($terminal, JSON_UNESCAPED_UNICODE) , 'terminals');
+      return;
     }
     try {
         // получаем состояние плеераесли еще нету 
