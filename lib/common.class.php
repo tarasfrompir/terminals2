@@ -130,7 +130,7 @@ function sayTo($ph, $level = 0, $destination = '')
         $terminals = getTerminalsByCANTTS();
     }
     foreach ($terminals as $terminal) {
-        if (!$terminal['NAME']) {
+        if (!$terminal['TTS_TYPE'] OR !$terminal['CAN_TTS']) {
             continue;
 	}
 	if (!$terminal['IS_ONLINE']) {
@@ -244,7 +244,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $terminals = getTerminalsByCANTTS();
     
     foreach ($terminals as $terminal) {
-        if (!$terminal['NAME']) {
+        if (!$terminal['TTS_TYPE'] OR !$terminal['CAN_TTS']) {
             continue;
 	}
         if (!$terminal['IS_ONLINE']) {
