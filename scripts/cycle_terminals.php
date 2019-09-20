@@ -1,20 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@tarasfrompir 
-1
-10tarasfrompir/terminals2
- Code Issues 0 Pull requests 0 Projects 0 Wiki Security Insights Settings
-terminals2/scripts/cycle_terminals.php
-@tarasfrompir tarasfrompir Update cycle_terminals.php
-51d0d7c 21 hours ago
-140 lines (137 sloc)  8.19 KB
-  
 <?php
 chdir(dirname(__FILE__) . '/../');
 include_once("./config.php");
@@ -154,15 +137,4 @@ while (1) {
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-© 2019 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
+
