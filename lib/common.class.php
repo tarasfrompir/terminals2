@@ -133,28 +133,25 @@ function sayTo($ph, $level = 0, $destination = '')
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } 
-        if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
-            //if ($terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+        if (!$terminal['USE_SYSTEM_MML']) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
+                    $needgenerateaudio = true;
+                }
+            }
+        } else  {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
                     $needgenerateaudio = true;
                 }
             }
         } 
-        if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-            // if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
-                    $needgenerateaudio = true;
-                }
-            }
-        }
     }
     $rec['EVENT'] = 'SAYTO';
-    
     $rec['ID'] = SQLInsert('shouts', $rec);
+
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
     if ($needgenerateaudio) {
         DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
@@ -245,14 +242,6 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     foreach ($terminals as $terminal) {
         if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
-        }
-        if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
-                    $needgenerateaudio = true;
-                }
-            }
         } 
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
@@ -261,7 +250,14 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
                     $needgenerateaudio = true;
                 }
             }
-        }
+        } else  {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
+                    $needgenerateaudio = true;
+                }
+            }
+        } 
     }
     $rec['EVENT'] = 'SAY';
     $rec['ID']    = SQLInsert('shouts', $rec);
