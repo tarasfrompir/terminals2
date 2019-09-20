@@ -239,8 +239,7 @@ class terminals extends module
         } else if ($event == 'ASK') {
             $this->getConfig();
             $terminal = $details['destination'];
-			try {
-                if ($this->config['LOG_ENABLED']) DebMes("Sending Message - " . $details['message'] . "to : " . $terminal['NAME'], 'terminals');
+                try {
                 include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
 		        if (file_exists($addon_file) AND $terminal['TTS_TYPE']=='majordroid_tts') {
