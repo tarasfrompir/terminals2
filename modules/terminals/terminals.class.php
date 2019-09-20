@@ -240,9 +240,9 @@ class terminals extends module
             $this->getConfig();
             $terminal = $details['destination'];
                 try {
-                include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-		        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-		        if (file_exists($addon_file) AND $terminal['TTS_TYPE']=='majordroid_tts') {
+                    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+                    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
+                    if (file_exists($addon_file) AND $terminal['TTS_TYPE']=='majordroid_tts') {
 			        include_once($addon_file);
 			        $tts = new $terminal['TTS_TYPE']($terminal);
 			        if (method_exists($tts,'ask')) {
