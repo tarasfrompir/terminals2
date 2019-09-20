@@ -1,3 +1,20 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@tarasfrompir 
+1
+10tarasfrompir/terminals2
+ Code Issues 0 Pull requests 0 Projects 0 Wiki Security Insights Settings
+terminals2/scripts/cycle_terminals.php
+@tarasfrompir tarasfrompir Update cycle_terminals.php
+51d0d7c 21 hours ago
+140 lines (137 sloc)  8.19 KB
+  
 <?php
 chdir(dirname(__FILE__) . '/../');
 include_once("./config.php");
@@ -8,12 +25,6 @@ include_once("./load_settings.php");
 echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
 echo date("H:i:s") . " Init module " . PHP_EOL;
 include_once(DIR_MODULES . "terminals/terminals.class.php");
-
-// ОБЯЗАТЕЛЬНО добавлять в список  если чего нового добавили
-$audio_terminals = array("mediaplayer", "mainterminal", "alicevox");
-$can_restored_audio = array("mediaplayer");
-
-
 $ter = new terminals();
 $checked_time = 0;
 // set all terminal as free when restart cycle
@@ -78,7 +89,7 @@ while (1) {
         }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
-        if (!$old_message['MESSAGE'] AND in_array($terminal['TTS_TYPE'],  $can_restored_audio )) {
+        if (!$old_message['MESSAGE'] AND $terminal['TTS_TYPE'] == 'mediaplayer') {
             try {
                 $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if (is_array($restored)) {
@@ -109,9 +120,9 @@ while (1) {
             continue;
         }
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
-        if (in_array($terminal['TTS_TYPE'], $audio_terminals) AND !$old_message['CACHED_FILENAME']) {
+        if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') AND !$old_message['CACHED_FILENAME']) {
             continue;
-        } else if (in_array($terminal['TTS_TYPE'], $audio_terminals) AND $old_message['CACHED_FILENAME']) {
+        } else if (($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') AND $old_message['CACHED_FILENAME']) {
             // иначе запускаем его воспроизведение
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -122,8 +133,9 @@ while (1) {
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
             continue;
-        } else if (!in_array($terminal['TTS_TYPE'], $audio_terminals)) {
-            // если тип терминала передающий только текстовое сообщение  
+        }
+        // если тип терминала передающий только текстовое сообщение  
+        if ($terminal['TTS_TYPE'] == 'majordroid' OR $terminal['TTS_TYPE'] == 'telegramm' OR $terminal['TTS_TYPE'] == 'googlehomenotifier') {
             // запускаем его воспроизведение
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -142,3 +154,15 @@ while (1) {
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
