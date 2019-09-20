@@ -386,7 +386,7 @@ function send_message($terminalname, $message, $terminal)
     $ter = new terminals();
     $ter->getConfig();
     if (!$terminal) {
-        continue;
+        return;
     }
     try {
         // получаем состояние плеераесли еще нету 
