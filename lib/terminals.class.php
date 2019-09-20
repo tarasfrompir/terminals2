@@ -382,15 +382,11 @@ function pingTerminalSafe($terminal, $details = '')
 }
 function send_message($terminalname, $message, $terminal)
 {
-    include_once(DIR_MODULES . "terminals/terminals.class.php");
+	include_once(DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
-    $ter->getConfig();
-    if (!$terminal['TTS_TYPE'] OR !$terminal['CAN_TTS']) {
-      if ($ter->config['LOG_ENABLED']) DebMes("Terminal not configured  - " . json_encode($terminal, JSON_UNESCAPED_UNICODE) , 'terminals');
-      return;
-    }
+	$ter->getConfig();
     try {
-        // получаем состояние плеераесли еще нету 
+		// получаем состояние плеераесли еще нету 
         if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             $restore_data = getPlayerStatus($terminal['NAME']);
 		// если это не файл из сообщения системы

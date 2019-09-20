@@ -130,17 +130,19 @@ function sayTo($ph, $level = 0, $destination = '')
         $terminals = getTerminalsByCANTTS();
     }
     foreach ($terminals as $terminal) {
-	if (!$terminal['IS_ONLINE']) {
+        if (!$terminal['IS_ONLINE']) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } else if ($terminal['USE_SYSTEM_MML'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            //if ($terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
                     $needgenerateaudio = true;
                 }
             }
         } else if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            // if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['LINKED_OBJECT'] AND $terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
                 if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox') {
                     $needgenerateaudio = true;
