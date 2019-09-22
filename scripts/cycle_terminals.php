@@ -37,7 +37,8 @@ if ($ter->config['TERMINALS_TIMEOUT']) {
 if ($ter->config['LOG_ENABLED']) DebMes("Get timeout for message - " . $terminals_time_out. " minutes", 'terminals');
 while (1) {
     // time update cicle of terminal
-    if (time() - $checked_time > 10) {
+    if (time() - $checked_time > 60) {
+		$ter->getConfig();
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
@@ -46,7 +47,6 @@ while (1) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL ".$terminals_time_out." MINUTE)");
 		// когда в настройках терминалов изменили таймаут для сообщений то получаем по новой
-		$ter->getConfig();
 		if (!$ter->config['TERMINALS_TIMEOUT'] ) {
 			$terminals_time_out = 10;
 		} else if ($ter->config['TERMINALS_TIMEOUT'] != $terminals_time_out ) {
@@ -75,6 +75,14 @@ while (1) {
         if (!$terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
+        }
+        // если терминалы офлайн то пингуем их
+		if (!$ter->config['TERMINALS_PING'] ) {
+     		$ter->config['TERMINALS_PING'] = 10;
+	    }
+        if (!$terminal['IS_ONLINE'] AND (time() > 60*$ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+            if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal" . $terminal['NAME'], 'terminals');
+            pingTerminalSafe($terminal['NAME'], $terminal);
         }
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
