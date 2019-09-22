@@ -349,10 +349,12 @@ function pingTerminal($terminal, $details)
     if (ping($details['HOST'])) {
         sg($details['LINKED_OBJECT'] . '.status', '1');
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 1;
         DebMes("Terminal - " . $terminal .' is online', 'terminals');
     } else {
         sg($details['LINKED_OBJECT'] . '.status', '0');
+        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 0;
         DebMes("Terminal - " . $terminal .' is offline', 'terminals');
     }
