@@ -136,7 +136,11 @@ class terminals extends module
 		} else {
 			$out['TERMINALS_TIMEOUT'] = 10;
 		}
-
+        if ($this->config['TERMINALS_PING']) {
+			$out['TERMINALS_PING'] = $this->config['TERMINALS_PING'];
+		} else {
+			$out['TERMINALS_PING'] = 27;
+		}
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -157,6 +161,8 @@ class terminals extends module
             $this->config['LOG_ENABLED'] = $log_enabled;
             global $terminals_timeout;           
             $this->config['TERMINALS_TIMEOUT'] = trim($terminals_timeout);
+            global $terminals_ping;           
+            $this->config['TERMINALS_PING'] = trim($terminals_ping);
             $this->saveConfig();
             
             $this->redirect("?ok=1");
