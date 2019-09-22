@@ -342,6 +342,10 @@ function setTerminalMML($host = 'localhost', $mml=0) {
 // check terminal 
 function pingTerminal($terminal, $details)
 {
+    if (!$terminal) {
+        return;
+    }
+    sg($terminal['LINKED_OBJECT'].'.basy',0);
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
@@ -359,6 +363,7 @@ function pingTerminal($terminal, $details)
         DebMes("Terminal - " . $terminal .' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
+    sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
 // check terminal Safe
 function pingTerminalSafe($terminal, $details = '')
