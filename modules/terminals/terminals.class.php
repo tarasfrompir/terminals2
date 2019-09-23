@@ -286,6 +286,7 @@ class terminals extends module
         addClassProperty('Terminals', 'name');
         addClassProperty('Terminals', 'basy');
         addClassProperty('Terminals', 'playerdata');
+        addClassProperty('Terminals', 'username');
 	    
 	// update main terminal
         $terminal = getMainTerminal();
