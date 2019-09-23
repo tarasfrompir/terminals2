@@ -291,19 +291,24 @@ class terminals extends module
         $terminal = getMainTerminal();
         $terminal['TTS_TYPE'] = 'mainterminal';
         SQLUpdate('terminals', $terminal);
+
         // remove old files
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
+
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
         foreach ($terminals as $terminal) {
-            if ($terminal['TTS_TYPE']=='majordroid') {
-                $terminal['TTS_TYPE']='majordroid_tts';
-            }
             addClassObject('Terminals', $terminal['NAME']);
             $terminal['LINKED_OBJECT'] = $terminal['NAME'];
             SQLUpdate('terminals', $terminal);
         }
-        
+        //редактируем терминалы под новые настройки
+        $terminals = SQLSelect("SELECT * FROM terminals");
+        foreach ($terminals as $terminal) {
+            if ($terminal['TTS_TYPE']=='majordroid') {
+                $terminal['TTS_TYPE']='majordroid_tts';
+            }
+        }        
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
