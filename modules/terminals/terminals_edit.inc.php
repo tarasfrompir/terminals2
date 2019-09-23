@@ -46,12 +46,8 @@ if ($this->mode == 'update') {
         $ok = 0;
     }
 
-    $rec['CANPLAY'] = gr('canplay', 'int');
-    $rec['CANTTS'] = gr('cantts', 'int');
-
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
-    
-    $rec['TTS_TYPE'] = gr('tts_type');
+    $rec['CANPLAY'] = gr('canplay', 'int');
     $rec['PLAYER_TYPE'] = gr('player_type');
     $rec['PLAYER_PORT'] = gr('player_port');
     $rec['PLAYER_USERNAME'] = gr('player_username');
@@ -60,9 +56,14 @@ if ($this->mode == 'update') {
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
     $rec['USE_SYSTEM_MML'] = gr('systemMML');
-    
+    $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
+
+    $rec['CANTTS'] = gr('cantts', 'int');    
+    $rec['TTS_TYPE'] = gr('tts_type');
     $rec['TTS_PORT'] = gr('tts_port');
+
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
+
     // автозаполнение поля 
     if ($rec['MIN_MSG_LEVEL'] == '') {
         $rec['MIN_MSG_LEVEL'] = 0;
@@ -74,9 +75,8 @@ if ($this->mode == 'update') {
     }
     $location = gr('location');
     $user = gr('user');
-    $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
-
     $rec['HOST'] = gr('host');
+
     if (!$rec['HOST']) {
         $out['ERR_HOST'] = 1;
         $ok = 0;
