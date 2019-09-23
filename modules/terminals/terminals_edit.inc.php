@@ -20,6 +20,14 @@ if ($location) {
      $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
 }
 
+global $user;
+$out['USER'] = SQLSelect("SELECT ID, USERNAME, NAME FROM users ORDER BY USERNAME+0");
+if ($user) {
+     $out['USER_NAME'] = processTitle($user);
+} else {
+     $out['USER_NAME'] = processTitle(gg($rec['LINKED_OBJECT'] .'.username'));
+}
+
 if ($this->mode == 'update') {
     $ok = 1;
 
@@ -65,6 +73,7 @@ if ($this->mode == 'update') {
         $rec['LINKED_OBJECT'] = $rec['NAME'];
     }
     $location = gr('location');
+    $user = gr('user');
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
     $rec['HOST'] = gr('host');
@@ -79,6 +88,7 @@ if ($this->mode == 'update') {
             SQLUpdate($table_name, $rec); // update
             sg($rec['LINKED_OBJECT'] .'.linkedRoom',$location);
             sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
+            sg($rec['LINKED_OBJECT'] .'.username', $user);
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
