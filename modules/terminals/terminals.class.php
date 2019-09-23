@@ -308,6 +308,7 @@ class terminals extends module
             if ($terminal['TTS_TYPE']=='majordroid') {
                 $terminal['TTS_TYPE']='majordroid_tts';
             }
+            SQLUpdate('terminals', $terminal);
         }        
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
