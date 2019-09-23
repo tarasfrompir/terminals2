@@ -65,6 +65,16 @@
    [#end LOCATIONS#]
   </select></div>
 </div>
+<div class="form-group ">
+  <label class="col-lg-4 control-label">Постоянный пользователь данного устройства: <#LANG_HCB#>user<#LANG_HCE#></label>
+  <div class="col-lg-4"><select name="user" class="form-control">
+   <option value="">-
+    [#begin USER#]<option value="[#USERNAME#]"[#if USERNAME="<#USER_NAME#>"#] selected[#endif#]>[#USERNAME#]
+   [#end USER#]
+  </select>
+  <p style="display: block; font-size: 80%;" >Данную настройку производить только тогда, когда терминалом пользуется ОДИН пользователь(личный телефон и т.д.).</p>
+  </div>
+</div>
 
 <script language="javascript">
  function canPlayChanged() {
