@@ -8,7 +8,7 @@ class alicevox extends tts_addon
     {
         $this->terminal = $terminal;
         $this->title   = "Alicevox";
-        $this->description = 'Работает на ХВМС устройствах с установленным скриптом  Аливокс.';
+        $this->description = 'Работает на медиацентрах KODI  с установленным плагином  Аливокс.';
         $this->address = 'http://xbmc:xbmc@'.$this->terminal['HOST'].':'.(empty($this->terminal['TTS_PORT'])?8080:$this->terminal['TTS_PORT']);
         parent::__construct($terminal);
     }
