@@ -9,10 +9,10 @@ class dnla_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = 'Устройства с поддержкой протокола DLNA';
-        $this->description = 'Описание: Проигрывание видео - аудио ';
-        $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
+        $this->description = 'Проигрывание системных сообщений ';
+        $this->description .= 'на всех устройства поддерживающих протокол DNLA. ';
         $this->terminal = $terminal;
-		$this->setting = json_decode($this->terminal['TTS_SETING'], true);
+        $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
         // proverka na otvet
         $ch = curl_init();
