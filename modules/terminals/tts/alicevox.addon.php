@@ -24,8 +24,8 @@ class alicevox extends tts_addon
                 if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$message['CACHED_FILENAME']."\"]},\"id\":1}";
-                    $result = getURL($url, 0);
-                    if ($result) {
+                    $result = json_decode(getURL($url, 0), true);
+                    if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
                         $this->message = 'OK';
@@ -52,9 +52,10 @@ class alicevox extends tts_addon
     function ping()
     {
         // proverka na otvet
-        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"http://192.168.1.1//pustoy.wav\"]},\"id\":1}";
-        $result = getURL($url, 0);
-        if (!$result) {
+        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"http://192.168.1.1/pustoy.wav\"]},\"id\":1}";
+        $result = json_decode(getURL($url, 0), true);
+        DebMes($result);
+        if ($result['error']) {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
         } else {
