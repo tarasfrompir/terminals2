@@ -33,21 +33,18 @@ class dnla_tts extends tts_addon
                 if (is_string($rec['TTS_SETING'])) {
                     SQLUpdate('terminals', $rec); // update
                     //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
-				}
+                }
             }
         }
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         
     }
-    
-    
  
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $outlink = $message['CACHED_FILENAME'];
-
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
             $server_ip = getLocalIp();
@@ -73,7 +70,64 @@ class dnla_tts extends tts_addon
         sleep($message['TIME_MESSAGE']);
         return $this->success;
     }
+
+    // Get media volume level
+    function get_volume()
+    {
+        // создаем хмл документ
+        $doc = new \DOMDocument();
+        //  для получения уровня громкости
+        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
+        $response     = $remotevolume->GetVolume();
+        $doc->loadXML($response);
+        $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        if ($volume) {
+            $this->success = TRUE;
+            $this->message = 'Volume get';
+            $this->data    = $volume;    
+	} else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+	}
+        return $this->success;
+    }
+
+    // Set volume
+    function set_volume($level)
+    {
+        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
+        $response = $remotevolume->SetVolume($level);
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
     
+	// Set volume
+    function ping()
+    {
+        // proverka na otvet
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->setting['TTS_CONTROL_ADDRESS']);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $content = curl_exec($ch);
+        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($retcode != 200 OR !stripos($content, 'AVTransport')) {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        } else {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+        }
+        return $this->success;
+    }
+	
     // функция автозаполнения поля PLAYER_CONTROL_ADDRESS при его отсутствии
     private function search($ip = '239.255.255.250')
     {
@@ -95,10 +149,7 @@ class dnla_tts extends tts_addon
         @socket_sendto($socket, $request, strlen($request), 0, $ip, 1900);
         
         // send the data from socket
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array(
-            'sec' => '1',
-            'usec' => '128'
-        ));
+        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => '1', 'usec' => '128'));
         do {
             $buf = null;
             if (($len = @socket_recvfrom($socket, $buf, 2048, 0, $ip, $port)) == -1) {
@@ -112,7 +163,7 @@ class dnla_tts extends tts_addon
                         $out = str_ireplace('location:', '', $response);
                     }
                     if (stripos($row, 'AVTransport')) {
-						$out = $response;
+                        $out = $response;
                         break;
                     }
                 }
@@ -121,5 +172,6 @@ class dnla_tts extends tts_addon
         socket_close($socket);
         return $out;
     }
+
 }
 ?>
