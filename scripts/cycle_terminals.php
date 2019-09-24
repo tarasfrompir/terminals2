@@ -10,7 +10,7 @@ echo date("H:i:s") . " Init module " . PHP_EOL;
 include_once(DIR_MODULES . "terminals/terminals.class.php");
 
 // ОБЯЗАТЕЛЬНО добавлять в список  если чего нового добавили
-$audio_terminals = array("mediaplayer", "mainterminal", "alicevox");
+$audio_terminals = array("mediaplayer", "mainterminal", "alicevox", "dnla_tts");
 $can_restored_audio = array("mediaplayer");
 
 
