@@ -10,8 +10,7 @@ class alicevox extends tts_addon
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         $this->title   = "Alicevox";
-        $this->description = 'Работает на медиацентрах KODI  с установленным плагином  Alicevox. Ссылка на плагин - https://github.com/SergMicar/script.alicevox.master Ссылка на тему форума - https://mjdm.ru/forum/viewtopic.php?f=5&t=2893&start=120' ;
-        $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
+        $this->description = 'Работает на медиацентрах KODI  с установленным плагином  Alicevox. <a href="https://github.com/SergMicar/script.alicevox.master">Ссылка на плагин</a>  <a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2893&start=120">Ссылка на тему форума</a>' ;        $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
         parent::__construct($terminal);
     }
     
