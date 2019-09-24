@@ -30,6 +30,9 @@ if ($user) {
 
 // seting for terminals tts
 $out['TTS'] = json_decode($rec['TTS_SETING'], true);
+if (!$out['TTS']) {
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
+}
 
 if ($this->mode == 'update') {
     $ok = 1;
@@ -63,7 +66,8 @@ if ($this->mode == 'update') {
 
     $rec['CANTTS'] = gr('cantts', 'int');    
     $rec['TTS_TYPE'] = gr('tts_type');
-    $rec['TTS_SETING'] = json_encode(array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address')));
+	$out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
+    $rec['TTS_SETING'] = json_encode($out['TTS']);
 
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
