@@ -47,4 +47,20 @@ class alicevox extends tts_addon
         }
         return $this->success;
     }
+
+    // ping terminal
+    function ping()
+    {
+        // proverka na otvet
+        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"http://192.168.1.1//pustoy.wav\"]},\"id\":1}";
+        $result = getURL($url, 0);
+        if (!$result) {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        } else {
+            $this->success = TRUE;
+            $this->message = 'Volume changed';
+        }
+        return $this->success;
+    }
 }
