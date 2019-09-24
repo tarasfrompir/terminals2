@@ -32,7 +32,7 @@ class dnla_tts extends tts_addon
                 $rec['TTS_SETING'] = json_encode($this->setting);
                 if (is_string($rec['TTS_SETING'])) {
                     SQLUpdate('terminals', $rec); // update
-                    DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
+                    //DebMes('Добавлен адрес управления устройством - '.$rec['PLAYER_CONTROL_ADDRESS']);
 				}
             }
         }
@@ -59,7 +59,7 @@ class dnla_tts extends tts_addon
             }
         }
 
-        DebMes("Url to file " . $message_link);
+        //DebMes("Url to file " . $message_link);
         // конец блока получения ссылки на файл 
         $remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
