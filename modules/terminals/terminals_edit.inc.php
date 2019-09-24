@@ -28,6 +28,9 @@ if ($user) {
      $out['USER_NAME'] = processTitle(gg($rec['LINKED_OBJECT'] .'.username'));
 }
 
+// seting for terminals tts
+$out['TTS'] = json_decode($rec['TTS_SETING'], true);
+
 if ($this->mode == 'update') {
     $ok = 1;
 
@@ -60,7 +63,7 @@ if ($this->mode == 'update') {
 
     $rec['CANTTS'] = gr('cantts', 'int');    
     $rec['TTS_TYPE'] = gr('tts_type');
-    $rec['TTS_PORT'] = gr('tts_port');
+    $rec['TTS_SETING'] = json_encode(array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address')));
 
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
