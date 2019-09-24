@@ -12,19 +12,14 @@ $table_name = 'terminals';
 
 $rec = getTerminalByID($id);
 
-global $location;
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
-if ($location) {
-     $out['LOCATION_TITLE'] = processTitle($location);
-} else {
-     $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
+if (gg($rec['LINKED_OBJECT'] .'.linkedRoom')) {
+    $out['LOCATION_TITLE'] = processTitle(gg($rec['LINKED_OBJECT'] .'.linkedRoom'));
 }
 
-global $user;
-$out['USER'] = SQLSelect("SELECT ID, USERNAME, NAME FROM users ORDER BY USERNAME+0");
-if ($user) {
-     $out['USER_NAME'] = processTitle($user);
-} else {
+
+$out['USER'] = SQLSelect("SELECT ID, USERNAME FROM users ORDER BY USERNAME+0");
+if (gg($rec['LINKED_OBJECT'] .'.username')) {
      $out['USER_NAME'] = processTitle(gg($rec['LINKED_OBJECT'] .'.username'));
 }
 
@@ -71,6 +66,11 @@ if ($this->mode == 'update') {
     $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
     $rec['TTS_SETING'] = json_encode($out['TTS']);
 
+    // write info for terminal user and location
+    $out['LOCATION_TITLE'] = gr('location');
+    $out['USER_NAME'] = gr('user');
+	
+	
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
     // автозаполнение поля 
@@ -82,8 +82,6 @@ if ($this->mode == 'update') {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
     }
-    $location = gr('location');
-    $user = gr('user');
     $rec['HOST'] = gr('host');
 
     if (!$rec['HOST']) {
@@ -95,9 +93,9 @@ if ($this->mode == 'update') {
     if ($ok) {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
-            sg($rec['LINKED_OBJECT'] .'.linkedRoom',$location);
+            sg($rec['LINKED_OBJECT'] .'.linkedRoom',$out['LOCATION_TITLE']);
             sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
-            sg($rec['LINKED_OBJECT'] .'.username', $user);
+            sg($rec['LINKED_OBJECT'] .'.username', $out['USER_NAME']);
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
