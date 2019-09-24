@@ -66,7 +66,9 @@ if ($this->mode == 'update') {
 
     $rec['CANTTS'] = gr('cantts', 'int');    
     $rec['TTS_TYPE'] = gr('tts_type');
-	$out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
+
+    // write seting for tts terminals
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
     $rec['TTS_SETING'] = json_encode($out['TTS']);
 
     $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
