@@ -54,7 +54,6 @@ class alicevox extends tts_addon
         // proverka na otvet
         $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"http://192.168.1.1/pustoy.wav\"]},\"id\":1}";
         $result = json_decode(getURL($url, 0), true);
-        DebMes($result);
         if ($result['error']) {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
