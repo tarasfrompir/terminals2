@@ -3,6 +3,9 @@
 class googlehomenotifier extends tts_addon {
 
     function __construct($terminal) {
+        $this->terminal = $terminal;
+        // содержит в себе все настройки терминала кроме айпи адреса
+        $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         $this->title="GoogleHomeNotifier";
         $this->description = 'Работатет с устройствами Гугл Нотифиер. Передает текстовые сообзения с параметром языка настроеннго в мажордомо.';
         parent::__construct($terminal);
@@ -12,7 +15,7 @@ class googlehomenotifier extends tts_addon {
     public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if($message['MESSAGE']) {
-            $port = $this->terminal['PLAYER_PORT'];
+            $port = $this->setting['TTS_PORT'];
             $language = SETTINGS_SITE_LANGUAGE;
             if (!$port) {
                 $port = '8091';
