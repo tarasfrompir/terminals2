@@ -199,7 +199,9 @@
             <output name="message_volume_level_cypher" id="message_volume_level_cypher"><#MESSAGE_VOLUME_LEVEL#></output>
         </div>
     </div>
-    <div id='tts_port' class="form-group ">
+
+    [#begin TTS#]
+	<div id='tts_port' class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">Порт доступа TTS:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_port" value="[#TTS_PORT#]"></div>
     </div>
@@ -216,6 +218,7 @@
         <label class="col-lg-4 control-label" for="inputTitle">Адрес управления ДЛНА устройства TTS:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_control_address" value="[#TTS_CONTROL_ADDRESS#]"></div>
     </div>
+    [#end TTS#]
 </div>
 
 
