@@ -345,7 +345,7 @@ function pingTerminal($terminal, $details)
     if (!$terminal) {
         return;
     }
-    sg($details['LINKED_OBJECT'].'.basy',0);
+    sg($details['LINKED_OBJECT'].'.basy',1);
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
@@ -389,11 +389,11 @@ function pingTerminalSafe($terminal, $details = '')
 }
 function send_message($terminalname, $message, $terminal)
 {
-	include_once(DIR_MODULES . "terminals/terminals.class.php");
+    include_once(DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
-	$ter->getConfig();
+    $ter->getConfig();
     try {
-		// получаем состояние плеераесли еще нету 
+        // получаем состояние плеераесли еще нету 
         if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             $restore_data = getPlayerStatus($terminal['NAME']);
 		// если это не файл из сообщения системы
