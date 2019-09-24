@@ -354,14 +354,16 @@ function pingTerminal($terminal, $details)
     if (file_exists($addon_file)) {
         include_once DIR_MODULES . 'terminals/tts_addon.class.php';
         include_once($addon_file);
-            $ping_terminal = new $details['TTS_TYPE']($details);
-            if (method_exists($ping_terminal,'ping')) {
-                $out=$ping_terminal->ping();
-                DebMes("Try to ping - " . $terminal .' with class function', 'terminals');
-             }
-    } else {
+		$ping_terminal = new $details['TTS_TYPE']($details);
+		if (method_exists($ping_terminal,'ping')) {
+		     $out = $ping_terminal->ping();
+			 DebMes("Try to ping - " . $terminal .' with class function', 'terminals');
+			 DebMes($out);
+		} else {
         $out=ping($details['HOST']);
-        DebMes("Try to ping - " . $terminal .' with standart function', 'terminals');
+        DebMes("Try to ping - " . $terminal .' with standart function', 'terminals'); 
+			 DebMes($out);
+		}
     }		
     if ($out) {
         sg($details['LINKED_OBJECT'] . '.status', '1');
