@@ -71,24 +71,58 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
 
-    // Get media volume level
-    function get_volume()
+    // Get player status
+    function status()
     {
+        // Defaults
+        $track_id      = -1;
+        $length        = 0;
+        $time          = 0;
+        $state         = 'unknown';
+        $volume        = 0;
+        $random        = FALSE;
+        $loop          = FALSE;
+        $repeat        = FALSE;
+        $current_speed = 1;
+        $curren_url    = '';
+        
         // создаем хмл документ
         $doc = new \DOMDocument();
         //  для получения уровня громкости
         $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
-        $response     = $remotevolume->GetVolume();
+        $response = $remotevolume->GetVolume();
         $doc->loadXML($response);
-        $volume = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-        if ($volume) {
+        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        // Для получения состояния плеера
+        $remote   = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
+        $response = $remote->getState();
+        $doc->loadXML($response);
+        $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
+        if ($state == 'TRANSITIONING') {
+            $state = 'playing';
+        }
+        //Debmes ('current_speed '.$current_speed);
+        $response = $remote->getPosition();
+        $doc->loadXML($response);
+        $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
+        $length   = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time     = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        // Results
+        if ($response) {
+            $this->reset_properties();
             $this->success = TRUE;
-            $this->message = 'Volume get';
-            $this->data    = $volume;    
-	} else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-	}
+            $this->message = 'OK';
+            $this->data    = array(
+                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int) $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'random' => (boolean) $random, // Random mode. Boolean. 
+                'loop' => (boolean) $loop, // Loop mode. Boolean.
+                'repeat' => (boolean) $repeat //Repeat mode. Boolean.
+            );
+        }
         return $this->success;
     }
 
