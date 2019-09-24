@@ -177,7 +177,13 @@
                             $('#tts_name').hide();
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
-                } else {
+                } else if (type == 'dlna_tts') {
+                            $('#tts_volume').show();
+                            $('#tts_port').hide();
+                            $('#tts_name').hide();
+                            $('#tts_password').hide();
+                            $('#tts_control_address').show();
+		} else {
                             $('#tts_port').hide();
                             $('#tts_volume').hide();
                             $('#tts_name').hide();
