@@ -349,8 +349,20 @@ function pingTerminal($terminal, $details)
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-    DebMes("Try to ping terminal - " . $terminal , 'terminals');
-    if (ping($details['HOST'])) {
+	// пробуем найти встроенные функции пинга для этого вида терминала
+	$addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
+    if (file_exists($addon_file)) {
+        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+        include_once($addon_file);
+		$ping_terminal = new $details['TTS_TYPE']($details);
+		if (method_exists($ping_terminal,'ping')) {
+		     $out=$ping_terminal->ping();
+			 DebMes("Try to ping - " . $terminal .' with class function', 'terminals');
+		}
+	} else {
+        $out=ping($details['HOST']);
+        DebMes("Try to ping - " . $terminal .' with standart function', 'terminals');    }		
+    if ($out) {
         sg($details['LINKED_OBJECT'] . '.status', '1');
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
