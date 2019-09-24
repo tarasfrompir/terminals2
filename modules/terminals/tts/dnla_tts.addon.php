@@ -107,7 +107,7 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
     
-	// Set volume
+    // ping terminal
     function ping()
     {
         // proverka na otvet
