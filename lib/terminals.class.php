@@ -432,7 +432,7 @@ function send_message($terminalname, $message, $terminal)
                 if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
 			}
         } else {
-		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function status"  , 'terminals');
+		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
 		}
     } catch(Exception $e) {
         if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
