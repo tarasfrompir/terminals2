@@ -88,11 +88,6 @@ class dnla_tts extends tts_addon
         
         // создаем хмл документ
         $doc = new \DOMDocument();
-        //  для получения уровня громкости
-        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
-        $response = $remotevolume->GetVolume();
-        $doc->loadXML($response);
-        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
         // Для получения состояния плеера
         $remote   = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
         $response = $remote->getState();
@@ -109,6 +104,11 @@ class dnla_tts extends tts_addon
         $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
         $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
         $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        //  для получения уровня громкости
+        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
+        $response = $remotevolume->GetVolume();
+        $doc->loadXML($response);
+        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
         // Results
         if ($response) {
             $this->data    = array(
