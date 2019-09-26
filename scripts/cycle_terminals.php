@@ -88,7 +88,7 @@ while (1) {
         // если отсутствует сообщение и тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['MESSAGE'] AND in_array($terminal['TTS_TYPE'],  $can_restored_audio )) {
             try {
-                $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
+                $restored = gg($terminal['LINKED_OBJECT'] . '.playerdata');
                 if (is_array($restored)) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
                     setPlayerVolume($terminal['NAME'], $restored['volume']);
@@ -119,8 +119,9 @@ while (1) {
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
         if (in_array($terminal['TTS_TYPE'], $audio_terminals) AND !$old_message['CACHED_FILENAME']) {
             continue;
-        } else if (in_array($terminal['TTS_TYPE'], $audio_terminals) AND $old_message['CACHED_FILENAME']) {
-            // иначе запускаем его воспроизведение
+        }
+        // иначе запускаем его воспроизведение
+        if (in_array($terminal['TTS_TYPE'], $audio_terminals) AND $old_message['CACHED_FILENAME']) {
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
@@ -130,9 +131,10 @@ while (1) {
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
             continue;
-        } else if (!in_array($terminal['TTS_TYPE'], $audio_terminals)) {
-            // если тип терминала передающий только текстовое сообщение  
-            // запускаем его воспроизведение
+        }
+        // если тип терминала передающий только текстовое сообщение  
+        // запускаем его воспроизведение
+        if (!in_array($terminal['TTS_TYPE'], $audio_terminals)) {
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
