@@ -101,19 +101,20 @@ class dnla_tts extends tts_addon
         if ($state == 'TRANSITIONING') {
             $state = 'playing';
         }
-        //Debmes ('current_speed '.$current_speed);
+        //Debmes ($response);
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $length   = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
-        $time     = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        $name = 'Played url om the device';
+        $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
+        $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         // Results
         if ($response) {
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
             $this->data    = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+				'name' => (string) $name, //Current speed for playing media. float.
+                'file' => (string) $curren_url, //Current link for media in device. String.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
@@ -122,8 +123,10 @@ class dnla_tts extends tts_addon
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
                 'repeat' => (boolean) $repeat //Repeat mode. Boolean.
             );
-        }
-        return $this->success;
+        } else {
+			$this->data = false;
+		}
+        return $this->data;
     }
 
     // Play
@@ -136,22 +139,6 @@ class dnla_tts extends tts_addon
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Play files';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        return $this->success;
-    }
-
-    // Stop
-    function stop()
-    {
-        $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->stop();
-        if ($response) {
-            $this->success = TRUE;
-            $this->message = 'Stop play';
         } else {
             $this->success = FALSE;
             $this->message = 'Command execution error!';
