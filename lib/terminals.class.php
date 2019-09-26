@@ -416,7 +416,7 @@ function send_message($terminalname, $message, $terminal)
 	try {
         if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             $restore_data = $tts->status();
-            if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
+            if (stripos($restore_data['file'], '/cms/cached/voice') === false AND $restore_data ) {
                 if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
                 // остановим медиа
                 if (method_exists($tts,'stop')) $tts->stop();
