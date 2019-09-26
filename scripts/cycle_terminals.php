@@ -5,8 +5,6 @@ include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 set_time_limit(0);
 include_once("./load_settings.php");
-echo date("H:i:s") . " Running " . basename(__FILE__) . PHP_EOL;
-echo date("H:i:s") . " Init module " . PHP_EOL;
 include_once(DIR_MODULES . "terminals/terminals.class.php");
 
 // ОБЯЗАТЕЛЬНО добавлять в список  если чего нового добавили
@@ -30,7 +28,8 @@ foreach ($term as $t) {
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
-DebMes('Start terminals cycle');
+
+DebMes( date("H:i:s") . " Running " . basename(__FILE__) );
 
 if ($ter->config['TERMINALS_TIMEOUT']) {
 	$terminals_time_out = $ter->config['TERMINALS_TIMEOUT'];
@@ -38,6 +37,7 @@ if ($ter->config['TERMINALS_TIMEOUT']) {
     $terminals_time_out = 10;
 }
 if ($ter->config['LOG_ENABLED']) DebMes("Get timeout for message - " . $terminals_time_out. " minutes", 'terminals');
+
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
