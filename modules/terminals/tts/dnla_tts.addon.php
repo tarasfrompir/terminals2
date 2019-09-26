@@ -42,7 +42,7 @@ class dnla_tts extends tts_addon
     }
  
     // Say
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $outlink = $message['CACHED_FILENAME'];
         // берем ссылку http
