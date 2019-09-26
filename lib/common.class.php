@@ -132,6 +132,11 @@ function sayTo($ph, $level = 0, $destination = '')
         $terminals = getTerminalsByCANTTS();
     }
     foreach ($terminals as $terminal) {
+		// если пустая инфа о терминале пропускаем
+        if (!$terminal) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
@@ -241,6 +246,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $terminals = getTerminalsByCANTTS();
     
     foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
