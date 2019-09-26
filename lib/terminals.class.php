@@ -416,24 +416,24 @@ function send_message($terminalname, $message, $terminal)
 	try {
         if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             $restore_data = $tts->status();
-		    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
+            if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
                 if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
                 // остановим медиа
                 if (method_exists($tts,'stop')) $tts->stop();
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
                 //установим громкость для сообщений
-		        if (method_exists($tts,'set_volume')) {
-					$tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
-				}
+                if (method_exists($tts,'set_volume')) {
+                    $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
+                }
                 $out['ID'] = $terminal['ID'];
                 $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
                 SQLUpdate('terminals', $out);
             } else {
                 if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
-			}
+            }
         } else {
-		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
-		}
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
+        }
     } catch(Exception $e) {
         if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
 	    sg($terminal['LINKED_OBJECT'].'.basy',0);
@@ -443,18 +443,20 @@ function send_message($terminalname, $message, $terminal)
 		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		if (method_exists($tts,'say_message')) {
 			$out = $tts->say_message($message, $terminal);
-			if (!$out) {
+		} else if (method_exists($tts,'say_media_message')) {
+			$out = $tts->say_media_message($message, $terminal);
+		} else {
+            sleep (1);
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname , 'terminals');
+		}
+		if (!$out) {
 				if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 				$rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '".$message['ID']."'");
 				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
 				SQLUpdate('shouts', $rec);
 				pingTerminalSafe($terminal['NAME'], $terminal);
-			} else {
-				if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
-			}
 		} else {
-            sleep (1);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname , 'terminals');
+				if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
 		}
 	} catch(Exception $e) {
            if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
