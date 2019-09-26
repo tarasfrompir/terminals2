@@ -95,7 +95,7 @@ while (1) {
         // если отсутствует сообщение и есть тип плеер и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['MESSAGE'] AND in_array($terminal['TTS_TYPE'],  $can_restored_audio )) {
             try {
-                $restored = gg($terminal['LINKED_OBJECT'] . '.playerdata');
+                $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if (is_array($restored)) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
                     setPlayerVolume($terminal['NAME'], $restored['volume']);
