@@ -142,6 +142,22 @@ class dnla_tts extends tts_addon
         }
         return $this->success;
     }
+
+    // Stop
+    function stop()
+    {
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->stop();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Stop play';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
 	
     // Set volume
     function set_volume($level)
