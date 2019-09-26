@@ -34,14 +34,11 @@ class chromecast_tts extends tts_addon
             }
         }
 
-        //DebMes("Url to file " . $message_link);
-        // конец блока получения ссылки на файл 
-		DebMes($message_link);
-		$cc = new GChromecast($this->terminal['HOST'], empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT']);
+        $cc = new GChromecast($this->terminal['HOST'], empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT']);
         $cc->requestId = time();
         $cc->load($message_link, 0);
-        $response = $cc->play();
-		//DebMes($response);
+        $cc->play();
+        //DebMes($response);
         $this->success = TRUE;
         $this->message = 'Play files';
 
