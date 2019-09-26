@@ -100,7 +100,7 @@ class dnla_tts extends tts_addon
         $response = $remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $name = 'Played url om the device';
+        $name = 'Played url on the device';
         $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
         $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
         $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
@@ -113,7 +113,7 @@ class dnla_tts extends tts_addon
         if ($response) {
             $this->data    = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-				'name' => (string) $name, //Current speed for playing media. float.
+                'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $curren_url, //Current link for media in device. String.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
