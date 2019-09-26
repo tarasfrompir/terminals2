@@ -111,6 +111,8 @@ function sayTo($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
+    // array of text terminals
+    $text_terminals = array("telegramm", "majordroid_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // add message to chat
@@ -133,14 +135,14 @@ function sayTo($ph, $level = 0, $destination = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox' OR $terminal['TTS_TYPE'] == 'dnla_tts') {
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
                     $needgenerateaudio = true;
                 }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox' OR $terminal['TTS_TYPE'] == 'dnla_tts') {
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
                     $needgenerateaudio = true;
                 }
             }
@@ -148,6 +150,12 @@ function sayTo($ph, $level = 0, $destination = '')
     }
     $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
+
+    if (file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
+        include_once($addon_file);
+        $tts = new $terminal['TTS_TYPE']($terminal);
+    }
+
 
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
     if ($needgenerateaudio) {
@@ -189,6 +197,8 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
+    // array of text terminals
+    $text_terminals = array("telegramm", "majordroid_tts");
     
     // replace enter simbol
     $ph = str_replace(array(
@@ -240,14 +250,14 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox' OR $terminal['TTS_TYPE'] == 'dnla_tts') {
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
                     $needgenerateaudio = true;
                 }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE'] == 'mediaplayer' OR $terminal['TTS_TYPE'] == 'mainterminal' OR $terminal['TTS_TYPE'] == 'alicevox' OR $terminal['TTS_TYPE'] == 'dnla_tts') {
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
                     $needgenerateaudio = true;
                 }
             }
@@ -1442,14 +1452,14 @@ function get_media_info($file)
 		$out['Audio_codec'] = $format[4];
 		$out['Audio_bitrate'] = $format[5];
 		if ($out['Audio_type'] == 'mono' ) {
-			$out['Audio_chanel'] = 1;
+                     $out['Audio_chanel'] = 1;
 		} else {
-			$out['Audio_chanel'] = 2;
+                     $out['Audio_chanel'] = 2;
 		}	
 	}
     preg_match("/Video: (.+),\s(.\d+x.\d+) (.+), (.+), (.+), (.+), (.+), (.+) /", $data, $formatv);
     if ($formatv) {
-		$out['Video_format'] = $formatv[1];
+            $out['Video_format'] = $formatv[1];
 	    $out['Video_size'] = $formatv[2];
 	    $out['Video_bitrate'] = str_ireplace("kb/s", "", $formatv[4]);
 	    $out['Video_fps'] = $formatv[5];
