@@ -13,22 +13,25 @@ include_once(DIR_MODULES . "terminals/terminals.class.php");
 $audio_terminals = array("mediaplayer", "mainterminal", "alicevox", "dnla_tts");
 $can_restored_audio = array("mediaplayer");
 
-
+// берем конфигурацию с модуля терминалов - общие настройки
 $ter = new terminals();
+$ter->getConfig();
 $checked_time = 0;
+
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
     sg($t['LINKED_OBJECT'] . '.BASY', 0);
 }
+
+// reset all message when reload cicle
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
+
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
-DebMes("Start number message - " . $number_message, 'terminals');
 DebMes('Start terminals cycle');
-// берем конфигурацию с модуля терминалов
-$ter->getConfig();
+
 if ($ter->config['TERMINALS_TIMEOUT']) {
 	$terminals_time_out = $ter->config['TERMINALS_TIMEOUT'];
 } else {
@@ -38,7 +41,7 @@ if ($ter->config['LOG_ENABLED']) DebMes("Get timeout for message - " . $terminal
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
-		$ter->getConfig();
+        $ter->getConfig();
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
