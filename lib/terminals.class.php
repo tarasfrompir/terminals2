@@ -405,34 +405,35 @@ function send_message($terminalname, $message, $terminal)
     include_once(DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
+
+    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
+    if (file_exists($addon_file)) {
+        include_once($addon_file);
+        $tts = new $terminal['TTS_TYPE']($terminal);
+    }
 	// get terminal info
 	try {
-        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-        if (file_exists($addon_file) AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
-            include_once($addon_file);
-            $tts = new $terminal['TTS_TYPE']($terminal);
-            if (method_exists($tts,'status')) {
-                $restore_data = $tts->status();
-			    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
-                    if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-                    // остановим медиа
-                    if (method_exists($tts,'stop')) $tts->stop();
-                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-                    //установим громкость для сообщений
-					if (method_exists($tts,'set_volume')) $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
-                    $out['ID'] = $terminal['ID'];
-                    $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
-                    SQLUpdate('terminals', $out);
-                } else {
-                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
+        if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+            $restore_data = $tts->status();
+		    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
+                if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+                // остановим медиа
+                if (method_exists($tts,'stop')) $tts->stop();
+                sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+                //установим громкость для сообщений
+		        if (method_exists($tts,'set_volume')) {
+					$tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
 				}
+                $out['ID'] = $terminal['ID'];
+                $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
+                SQLUpdate('terminals', $out);
             } else {
-				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function status"  , 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
 			}
         } else {
-            if ($this->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have info abaut player or addon not exist" , 'terminals');
-        }
+		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function status"  , 'terminals');
+		}
     } catch(Exception $e) {
         if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
 	    sg($terminal['LINKED_OBJECT'].'.basy',0);
@@ -440,11 +441,7 @@ function send_message($terminalname, $message, $terminal)
     // try send message to terminal
     try {
 		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-		if (file_exists($addon_file)) {
-			include_once($addon_file);
-			$tts = new $terminal['TTS_TYPE']($terminal);
+		if (method_exists($tts,'say_message')) {
 			$out = $tts->say_message($message, $terminal);
 			if (!$out) {
 				if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
