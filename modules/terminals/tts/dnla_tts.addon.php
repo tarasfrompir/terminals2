@@ -126,6 +126,23 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
 
+    // Play
+    function play($input, $position=0)
+    {
+        $remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
+        $response = $remote->load($input);
+        $response = $remote->seek($position);
+        $response = $remote->play();
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Play files';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
     // Set volume
     function set_volume($level)
     {
