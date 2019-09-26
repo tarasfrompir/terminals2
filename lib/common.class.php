@@ -151,12 +151,6 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    if (file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
-        include_once($addon_file);
-        $tts = new $terminal['TTS_TYPE']($terminal);
-    }
-
-
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
     if ($needgenerateaudio) {
         DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
