@@ -405,27 +405,40 @@ function send_message($terminalname, $message, $terminal)
     include_once(DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
-    try {
-        // получаем состояние плеераесли еще нету 
-        if ($terminal['TTS_TYPE'] == 'mediaplayer' AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
-            $restore_data = getPlayerStatus($terminal['NAME']);
-		// если это не файл из сообщения системы
-	    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
-                // остановим медиа
-                stopMedia($terminalname);
-                if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-                sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-                //установим громкость
-                setPlayerVolume($terminalname, $terminal['MESSAGE_VOLUME_LEVEL']);
-                $out['ID'] = $terminal['ID'];
-                $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
-                SQLUpdate('terminals', $out);
-            }
-        }
-	} catch(Exception $e) {
-           if ($ter->config['LOG_ENABLED']) DebMes("Terminal job terminated, not get information abaut terminal - " . $terminalname , 'terminals');
-	}
+	// get terminal info
 	try {
+        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+        $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
+        if (file_exists($addon_file) AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+            include_once($addon_file);
+            $tts = new $terminal['TTS_TYPE']($terminal);
+            if (method_exists($tts,'status')) {
+                $restore_data = $tts->status();
+			    if (stripos($restore_data['file'], '/cms/cached/voice') === false) {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+                    // остановим медиа
+                    if (method_exists($tts,'stop')) $tts->stop();
+                    sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+                    //установим громкость для сообщений
+					if (method_exists($tts,'set_volume')) $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
+                    $out['ID'] = $terminal['ID'];
+                    $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
+                    SQLUpdate('terminals', $out);
+                } else {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
+				}
+            } else {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function status"  , 'terminals');
+			}
+        } else {
+            if ($this->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have info abaut player or addon not exist" , 'terminals');
+        }
+    } catch(Exception $e) {
+        if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
+	    sg($terminal['LINKED_OBJECT'].'.basy',0);
+    }
+    // try send message to terminal
+    try {
 		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		include_once DIR_MODULES . 'terminals/tts_addon.class.php';
 		$addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
@@ -448,6 +461,7 @@ function send_message($terminalname, $message, $terminal)
 		}
 	} catch(Exception $e) {
            if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
+		   sg($terminal['LINKED_OBJECT'].'.basy',0);
 	}
 	sg($terminal['LINKED_OBJECT'].'.basy',0);	
 }
