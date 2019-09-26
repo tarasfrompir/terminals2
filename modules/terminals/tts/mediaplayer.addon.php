@@ -9,7 +9,7 @@ class mediaplayer extends tts_addon
     }
     
     // Say
-    public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if ($message['CACHED_FILENAME']) {
             if (file_exists($message['CACHED_FILENAME'])) {
