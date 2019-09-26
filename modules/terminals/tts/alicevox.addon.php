@@ -51,7 +51,7 @@ class alicevox extends tts_addon
     function ping()
     {
         // proverka na otvet
-        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
+        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"http://192.168.1.1/pustoy.wav\"]},\"id\":1}";
         $result = json_decode(getURL($url, 0), true);
         if ($result['error']) {
             $this->success = FALSE;
