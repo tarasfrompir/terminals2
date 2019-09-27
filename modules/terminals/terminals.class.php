@@ -284,7 +284,7 @@ class terminals extends module
         // add class and properties
         addClass('Terminals', 'SDevices');
         addClassProperty('Terminals', 'name');
-        addClassProperty('Terminals', 'basy');
+        addClassProperty('Terminals', 'busy');
         addClassProperty('Terminals', 'playerdata');
         addClassProperty('Terminals', 'username');
 	    
