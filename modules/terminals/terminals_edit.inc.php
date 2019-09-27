@@ -94,6 +94,7 @@ if ($this->mode == 'update') {
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
             sg($rec['LINKED_OBJECT'] .'.linkedRoom',$out['LOCATION_TITLE']);
+            sg($rec['LINKED_OBJECT'] .'.busy', '0');
             sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
             sg($rec['LINKED_OBJECT'] .'.username', $out['USER_NAME']);
         } else {
