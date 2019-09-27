@@ -19,7 +19,7 @@ $checked_time = 0;
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
-    sg($t['LINKED_OBJECT'] . '.BASY', 0);
+    sg($t['LINKED_OBJECT'] . '.busy', 0);
 }
 
 // reset all message when reload cicle
@@ -67,7 +67,7 @@ while (1) {
         sleep(1);
     }
     
-    $out_terminals = getObjectsByProperty('basy', '==', '0');
+    $out_terminals = getObjectsByProperty('busy', '==', '0');
     foreach ($out_terminals as $terminals) {
 
         // если пустой терминал пропускаем
