@@ -19,7 +19,7 @@ $checked_time = 0;
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
-    sg($t['LINKED_OBJECT'] . '.busy', 0);
+    sg($t['LINKED_OBJECT'] . '.busy', '0');
 }
 
 // reset all message when reload cicle
