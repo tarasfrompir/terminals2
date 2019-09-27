@@ -141,7 +141,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
@@ -155,7 +155,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.basy', 1);
+            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
