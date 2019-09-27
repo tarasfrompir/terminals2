@@ -436,7 +436,6 @@ function send_message($terminalname, $message, $terminal)
         }
     } catch(Exception $e) {
         if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
-	    sg($terminal['LINKED_OBJECT'].'.basy',0);
     }
     // try send message to terminal
     try {
@@ -460,9 +459,8 @@ function send_message($terminalname, $message, $terminal)
 		}
 	} catch(Exception $e) {
            if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
-		   sg($terminal['LINKED_OBJECT'].'.basy',0);
 	}
-	sg($terminal['LINKED_OBJECT'].'.basy',0);	
+	sg($terminal['LINKED_OBJECT'].'.basy','0');	
 }
 function send_messageSafe($message, $terminal)
 {
