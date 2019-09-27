@@ -67,7 +67,7 @@ class dnla_tts extends tts_addon
             $this->success = FALSE;
             $this->message = 'Command execution error!';
         }
-        sleep($message['TIME_MESSAGE']);
+        sleep($message['MESSAGE_DURATION']);
         return $this->success;
     }
 
