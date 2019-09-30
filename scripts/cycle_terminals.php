@@ -97,7 +97,7 @@ while (1) {
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 
         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
-        if (!$old_message['MESSAGE']) {
+        if (!$old_message['ID']) {
             try {
                 $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if ($restored['volume'] AND method_exists($tts[$terminal['ID']],'set_volume')) {
