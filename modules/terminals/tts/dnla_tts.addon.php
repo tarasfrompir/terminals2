@@ -11,6 +11,7 @@ class dnla_tts extends tts_addon
         $this->title       = 'Устройства с поддержкой протокола DLNA';
         $this->description = 'Проигрывание системных сообщений ';
         $this->description .= 'на всех устройства поддерживающих протокол DNLA. ';
+        $this->description .= 'Пингование устройства проводится проверкой ИменнО СервисА.';
         $this->terminal = $terminal;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
