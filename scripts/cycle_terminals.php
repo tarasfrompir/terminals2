@@ -77,9 +77,9 @@ while (1) {
         }
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
  
-        if (!$terminal['TTS_TYPE'] OR (!method_exists($tts[$terminal['ID']],'__construct') AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php'))) {
+        if (!$tts[$terminal['ID']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
-    		// обьявляем новый обьект которого нет в массиве $tts
+            // обьявляем новый обьект которого нет в массиве $tts
             $tts[$terminal['ID']] = new $terminal['TTS_TYPE']($terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
     	}
