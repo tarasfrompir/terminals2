@@ -48,7 +48,7 @@ class majordroid_tts extends tts_addon {
          if ($result) {
             $this->data    = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-				'name' => (string) $name, //Current speed for playing media. float.
+                'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $file, //Current link for media in device. String.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
