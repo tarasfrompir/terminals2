@@ -96,56 +96,7 @@ class dnla extends app_player_addon
         }
         return $this->success;
     }
-    
-    // Say
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
-    {
-        $outlink    = $message['FILE_LINK'];
-        // преобразовываем файл в мп3 формат
-        $path_parts = pathinfo($outlink);
-        if ($path_parts['extension'] == 'wav') {
-            if (!defined('PATH_TO_FFMPEG')) {
-                if (IsWindowsOS()) {
-                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-                } else {
-                    define("PATH_TO_FFMPEG", 'ffmpeg');
-                }
-                $oldname = $outlink;
-                $outlink = str_ireplace("." . $path_parts['extension'], ".mp3", $oldname);
-                if (!file_exists($outlink)) {
-                    shell_exec(PATH_TO_FFMPEG . " -i " . $oldname . " -acodec libmp3lame -ar 44100 " . $outlink . " 2>&1");
-                }
-            }
-        }
-        // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
-                return false;
-            } else {
-                $message_link = 'http://' . $server_ip . $m[0];
-            }
-        }
-        //  в некоторых системах есть по несколько серверов, поэтому если файл отсутствует, то берем путь из BASE_URL
-        if (!remote_file_exists($message_link)) {
-            $message_link = BASE_URL . $m[0];
-        }
-        //DebMes("Url to file " . $message_link);
-        // конец блока получения ссылки на файл 
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->play($message_link);
-        if ($response) {
-            $this->success = TRUE;
-            $this->message = 'Play files';
-        } else {
-            $this->success = FALSE;
-            $this->message = 'Command execution error!';
-        }
-        sleep($message['TIME_MESSAGE']);
-        return $this->success;
-    }
-    
+	
     // Playlist: Get
     function pl_get()
     {
