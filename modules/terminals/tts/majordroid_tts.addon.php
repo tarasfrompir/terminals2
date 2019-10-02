@@ -20,10 +20,6 @@ class majordroid_tts extends tts_addon {
         return $this->sendMajorDroidCommand('ask:'.$phrase);
     }
 	
-    // Volume
-    function set_volume($volume) {
-        return $this->sendMajorDroidCommand('volume:'.$volume);
-    }
 
 	// Get player status
     function status()
