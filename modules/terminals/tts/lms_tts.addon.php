@@ -15,7 +15,7 @@ class lms_tts extends tts_addon {
 		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес плеера.';
 		
 		$this->terminal = $terminal;
-        $this->setting = json_decode($this->terminal['TTS_SETING'], true);		
+                $this->setting = json_decode($this->terminal['TTS_SETING'], true);		
 		// Curl
 		$this->curl = curl_init();
 		$this->address = 'http://'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?9000:$this->setting['TTS_PORT']);
@@ -38,7 +38,6 @@ class lms_tts extends tts_addon {
 				$data,
 			)
 		);
-		$this->reset_properties();
 		curl_setopt($this->curl, CURLOPT_POST, TRUE);
 		curl_setopt($this->curl, CURLOPT_URL, $this->address.'/jsonrpc.js');
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($jsonrpc));
