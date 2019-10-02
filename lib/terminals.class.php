@@ -415,13 +415,16 @@ function send_message($terminalname, $message, $terminal)
 	// get terminal info
 	try {
         if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+            if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " get info abaut media"  , 'terminals');
             $restore_data = $tts->status();
             if (stripos($restore_data['file'], '/cms/cached/voice') === false AND $restore_data ) {
                 if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
                 // остановим медиа
+                if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " woth stopped"  , 'terminals');
                 if (method_exists($tts,'stop')) $tts->stop();
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
                 //установим громкость для сообщений
+                if ($this->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " set volume"  , 'terminals');
                 if (method_exists($tts,'set_volume')) {
                     $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
                 }
@@ -441,10 +444,12 @@ function send_message($terminalname, $message, $terminal)
     try {
 		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 		if (method_exists($tts,'say_message')) {
-			$out = $tts->say_message($message, $terminal);
+         	$out = $tts->say_message($message, $terminal);
+           if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname , 'terminals');
 		} else if (method_exists($tts,'say_media_message')) {
 			$out = $tts->say_media_message($message, $terminal);
-		} else {
+           if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname , 'terminals');
+        } else {
             sleep (1);
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname , 'terminals');
 		}
@@ -458,7 +463,7 @@ function send_message($terminalname, $message, $terminal)
 				if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
 		}
 	} catch(Exception $e) {
-           if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
 	}
 	sg($terminal['LINKED_OBJECT'].'.busy', 0);	
 }
