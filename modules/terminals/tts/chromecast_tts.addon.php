@@ -11,7 +11,10 @@ class chromecast_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = 'Google Chromecast';
-        $this->description = 'Описание: Цифровой медиаплеер от компании Google.';
+	$this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.';
+	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply()<p>';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса)<p>';
+	    
         //$this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
         $this->terminal = $terminal;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);       

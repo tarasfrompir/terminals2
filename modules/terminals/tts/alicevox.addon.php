@@ -11,7 +11,8 @@ class alicevox extends tts_addon
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         $this->title   = "Alicevox";
         $this->description = '<b>Описание:</b>&nbsp; Работает на медиацентрах KODI  с установленным плагином  Alicevox.<br>Ссылка на &nbsp;<a href="https://github.com/SergMicar/script.alicevox.master">плагин</a><br>Ссылка на &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2893">тему форума</a><p>';        
-        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса)';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply()<p>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" устройства проводится проверкой состояния сервиса)';
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
         parent::__construct($terminal);
     }
