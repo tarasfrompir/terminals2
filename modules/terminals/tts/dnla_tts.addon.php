@@ -39,6 +39,7 @@ class dnla_tts extends tts_addon
         }
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
+        parent::__construct($terminal);
         
     }
  
