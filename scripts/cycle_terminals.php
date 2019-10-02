@@ -144,7 +144,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
             continue;
         }
 
@@ -158,7 +158,7 @@ while (1) {
             sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Send message - " . $terminal['NAME'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
             continue;
         }
     }
