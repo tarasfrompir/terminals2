@@ -9,9 +9,9 @@ class dnla_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = 'Устройства с поддержкой протокола DLNA';
-        $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол DNLA<br>';
-	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply()<br>';
-        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса)';
+        $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол DNLA.<br>';
+	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).';
         
 	$this->terminal = $terminal;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
