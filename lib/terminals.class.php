@@ -345,6 +345,7 @@ function pingTerminal($terminal, $details)
     if (!$terminal) {
         return;
     }
+    sg($terminal['LINKED_OBJECT'].'.busy', 1);
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
@@ -375,6 +376,7 @@ function pingTerminal($terminal, $details)
         DebMes("Terminal - " . $terminal .' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
+    sg($terminal['LINKED_OBJECT'].'.busy', 0);
 }
 // check terminal Safe
 function pingTerminalSafe($terminal, $details = '')
