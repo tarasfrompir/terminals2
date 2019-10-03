@@ -172,10 +172,16 @@
                             $('#tts_password').show();
                             $('#tts_control_address').hide();
                } else if (type == 'vlc_tts') {
-                            $('#tts_volume').hide();
+                            $('#tts_volume').show();
                             $('#tts_port').hide();
                             $('#tts_name').hide();
                             $('#tts_password').hide();
+                            $('#tts_control_address').hide();
+               } else if (type == 'vlcweb_tts') {
+                            $('#tts_volume').show();
+                            $('#tts_port').show();
+                            $('#tts_name').hide();
+                            $('#tts_password').show();
                             $('#tts_control_address').hide();
                 } else if (type == 'googlehomenotifier') {
                             $('#tts_volume').hide();
