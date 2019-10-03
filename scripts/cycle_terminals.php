@@ -86,9 +86,8 @@ while (1) {
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
  
        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
-        if (!$old_message['ID']) {
+        if (!$old_message['ID'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
             try {
-                $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
                 if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
                     $tts[$terminal['ID']]->set_volume($restored['volume']);
@@ -99,6 +98,7 @@ while (1) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
                 }
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+				usleep (200000);
                 continue;
             }
             catch (Exception $e) {
