@@ -148,6 +148,12 @@ class GChromecast
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
 		//DebMes($response);
+		// get app id
+		if (preg_match("/appId/s", $response)) {
+			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
+			$this->appid = $matches[1];
+			//DebMes ($this->appid);
+		}
 		return json_decode($response,TRUE);
 	}
 	
@@ -239,12 +245,7 @@ class GChromecast
 			$this->transportid = $matches[1];
 			//DebMes ($this->transportid);
 		}
-		// get app id
-		if (preg_match("/appId/s", $response)) {
-			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$this->appid = $matches[1];
-			//DebMes ($this->appid);
-		}
+
 		return $response;
 	}
 	
@@ -385,6 +386,7 @@ class GChromecast
 	if ($this->appid != 'CC1AD845') {
 		$this->launch('CC1AD845');
 	}		
+	$this->connect(); // Auto-reconnects
 	if (preg_match('/\.mp3/', $url)) {
             $content_type = 'audio/mp3';
         } elseif (preg_match('/mp4/', $url)) {
