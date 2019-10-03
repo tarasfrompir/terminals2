@@ -125,6 +125,7 @@ class vlcweb_tts extends tts_addon
         } else {
             $this->success = FALSE;
         }
+        sleep($message['MESSAGE_DURATION']);
         return $this->success;
     }
     
