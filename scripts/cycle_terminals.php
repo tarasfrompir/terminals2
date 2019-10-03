@@ -84,7 +84,8 @@ while (1) {
         }
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
-        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+ 
+       // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['ID']) {
             try {
                 $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
@@ -111,13 +112,21 @@ while (1) {
             if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
             continue;
         }
-        // для остальных плееров просто пропускаем итерацию и при отсутствии сообщения 
+        // для всех плееров просто пропускаем итерацию при отсутствии сообщения с удалением его из очереди
         if (!$old_message['MESSAGE']) {
+            $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
             continue;
         }
-        
+		
+        // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла в течении минуты пропускаем
+        // для генерации сообщения минуты достаточно ?
+        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED'])+60 < time()) {
+            $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
+			continue;
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
-        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
+        } else if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
             continue;
         }
         // иначе запускаем его воспроизведение
