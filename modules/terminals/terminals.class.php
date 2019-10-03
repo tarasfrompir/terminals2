@@ -248,13 +248,15 @@ class terminals extends module
             try {
                 include_once DIR_MODULES . 'terminals/tts_addon.class.php';
                 $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-                if (file_exists($addon_file) AND $terminal['TTS_TYPE']=='majordroid_tts') {
+                if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
                     include_once($addon_file);
                     $tts = new $terminal['TTS_TYPE']($terminal);
                     if (method_exists($tts,'ask')) {
                         $tts->ask($details['message']);
                         if ($this->config['LOG_ENABLED']) DebMes("Sending Message - " . $details['message'] . "to : " . $terminal['NAME'], 'terminals');
-                    } 
+                    } else {
+						if ($this->config['LOG_ENABLED']) DebMes("Can not ask  Terminal - " . $terminal['NAME'] , 'terminals');
+					}
                 } else {
                     sleep (1);
                     if ($this->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminal['NAME'] , 'terminals');
