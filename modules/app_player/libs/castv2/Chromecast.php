@@ -310,7 +310,7 @@ class GChromecast
 	}
 	
 	public function Mute() {
-            $this->getMediaSession();
+            //$this->getMediaSession();
 		while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
@@ -321,7 +321,7 @@ class GChromecast
 	}
 	
 	public function UnMute() {
-          $this->getMediaSession();
+          //$this->getMediaSession();
 		while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
@@ -332,7 +332,7 @@ class GChromecast
 	}
 	
 	public function SetVolume($volume) {
-            $this->getMediaSession();
+            //$this->getMediaSession();
 		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
@@ -344,7 +344,7 @@ class GChromecast
 	
 	public function seek($secs) {
 		// Seek
-            $this->getMediaSession(); // Auto-reconnects
+        $this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
 		    $this->getCastMessage();
@@ -363,7 +363,7 @@ class GChromecast
 	public function pause() {
 		// Pause
 		$this->getMediaSession(); // Auto-reconnects
-		DebMes($this->state);
+		//DebMes($this->state);
 		if ($this->mediaid and $this->state != 'PAUSED') {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		} else if ($this->mediaid and $this->state == 'PAUSED') {
