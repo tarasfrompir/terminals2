@@ -14,8 +14,10 @@ class vlc extends app_player_addon {
 	function __construct($terminal) {
 		$this->title = 'VLC (VideoLAN)';
 		$this->description = 'Управление VLC через GUI интерфейс. ';
-		$this->description .= 'В настоящее время доступно только для Windows. ';
-		$this->description .= 'Поддерживает ограниченный набор команд. ';
+		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через VideoLAN Client (VLC). Управление VLC осуществляется через его GUI интерфейс.<br>';
+		$this->description .= 'В настоящее время доступно только для Windows. Поддерживает ограниченный набор команд по сравнению с "VLC через HTTP".<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Укажите "Имя пользователя" и "Пароль". Специальной настройки не требуется.';
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
