@@ -12,6 +12,7 @@ class dnla extends app_player_addon
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол DNLA.<br>';
         $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
 	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.';
+	$this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).';
         $this->terminal = $terminal;
         $this->reset_properties();
         
