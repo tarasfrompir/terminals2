@@ -14,7 +14,9 @@ class vlcweb_tts extends tts_addon
         $this->description = '<b>Описание:</b>&nbsp; Работает с VideoLAN Client (VLC). Управление VLC производится по протоколу HTTP (используется веб интерфейс).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
-        $this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках VLC (Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web) и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).';
+        $this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках VLC<br>';
+		$this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
+		$this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).';
         
         $this->terminal = $terminal;
         $this->setting  = json_decode($this->terminal['TTS_SETING'], true);
