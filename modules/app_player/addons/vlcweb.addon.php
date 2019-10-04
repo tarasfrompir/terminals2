@@ -13,10 +13,11 @@ class vlcweb extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'VLC через HTTP';
-		$this->description = 'Управление VLC через веб интерфейс. ';
-		$this->description .= 'Данный тип плеера имеет наиболее полную совместимость со всеми командами. ';
-		$this->description .= 'Не забудьте активировать HTTP интерфейс в настройках VLC ';
-		$this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web) ';
+		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через VideoLAN Client (VLC). Управление VLC производится по протоколу HTTP (используется веб интерфейс).<br>';
+		$this->description .= 'Данный тип плеера имеет наиболее полную совместимость со всеми командами управления по сравнению с типом "VLC (GUI)". ';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках VLC<br>';
+		$this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
 		$this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).';
 		
 		$this->terminal = $terminal;
