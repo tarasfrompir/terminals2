@@ -13,8 +13,10 @@ class foobar extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Foobar2000';
-		$this->description = 'Мощный медиаплеер, созданный одним из разработчиков WinAmp.';
-		
+		$this->description = '<b>Описание:</b>&nbsp; Мощный медиаплеер, созданный одним из разработчиков WinAmp.<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8888 (если по умолчанию, можно не указывать).';
+				
 		$this->terminal = $terminal;
 		$this->reset_properties();
 		
