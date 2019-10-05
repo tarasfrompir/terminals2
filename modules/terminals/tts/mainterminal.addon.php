@@ -5,7 +5,9 @@ class mainterminal extends tts_addon
     function __construct($terminal)
     {
         $this->title = "Основной терминал системы";
-		$this->description = '<b>Описание:</b>&nbsp; Работает на встроенной звуковой карте сервера, без каких либо настроек.';
+	$this->description = '<b>Описание:</b>&nbsp; Использует системный звуковой плеер, работает на встроенной звуковой карте сервера, без каких либо настроек.<br>';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp; ???.<br>';
+	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';    
         parent::__construct($terminal);
     }
 
