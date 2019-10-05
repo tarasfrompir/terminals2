@@ -12,6 +12,7 @@ class kodi extends app_player_addon {
 	function __construct($terminal) {
 		$this->title = 'Kodi (XBMC)';
 		$this->description = '<b>Описание:</b>&nbsp; Бесплатный кроссплатформенный медиаплеер и программное обеспечение для организации HTPC с открытым исходным кодом.<br>';
+		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp;Да.<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
         	$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать управление по HTTP в настройках KODI (Настройки -> Сервисные настройки -> Управление -> Разрешить удаленное управление по HTTP) и установить "порт", "имя пользователя" и "пароль".';
 		
