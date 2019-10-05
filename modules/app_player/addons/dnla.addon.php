@@ -9,8 +9,10 @@ class dnla extends app_player_addon
     function __construct($terminal)
     {
         $this->title       = 'Устройства с поддержкой протокола DLNA';
-        $this->description = 'Описание: Проигрывание видео - аудио ';
-        $this->description .= 'на всех устройства поддерживающих протокол DLNA. ';
+        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол DNLA.<br>';
+        $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
+	$this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).';
         $this->terminal = $terminal;
         $this->reset_properties();
         

@@ -12,7 +12,9 @@ class mpd extends app_player_addon {
 	// Constructor
 	function __construct($terminal) {
 		$this->title = 'Music Player Daemon (MPD)';
-		$this->description = 'Кроссплатформенный музыкальный проигрыватель, имеющий клиент-серверную архитектуру.';
+		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;?????.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 6600 (если по умолчанию, можно не указывать).';
 		
 		$this->terminal = $terminal;
 		$this->reset_properties();
