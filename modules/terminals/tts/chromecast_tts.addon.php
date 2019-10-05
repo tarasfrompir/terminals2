@@ -11,10 +11,10 @@ class chromecast_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = 'Google Chromecast';
-	$this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
-	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().<br>';
-	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
-	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
+        $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().<br>';
+	    $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
+	    $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
 	    
         //$this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
         $this->terminal = $terminal;
@@ -48,7 +48,6 @@ class chromecast_tts extends tts_addon
 
         sleep($message['TIME_MESSAGE']);
         $this->success = TRUE;
-        $this->message = 'Play files';
         return $this->success;
     }
 	
@@ -62,15 +61,12 @@ class chromecast_tts extends tts_addon
                 $level = round($level / 100, 1);
                 $cc->SetVolume($level);
                 $this->success = TRUE;
-                $this->message = 'OK';
-            }
+             }
             catch (Exception $e) {
                 $this->success = FALSE;
-                $this->message = $e->getMessage();
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'Level is missing!';
         }
         return $this->success;
     }
@@ -86,15 +82,12 @@ class chromecast_tts extends tts_addon
                 $cc->requestId = time();
                 $cc->play();
 				$this->success = TRUE;
-                $this->message = 'Ok!';
             }
             catch (Exception $e) {
                 $this->success = FALSE;
-                $this->message = $e->getMessage();
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'Input is missing!';
         }
         return $this->success;
     }
@@ -107,11 +100,9 @@ class chromecast_tts extends tts_addon
             $cc->requestId = time();
             $cc->stop();
             $this->success = TRUE;
-            $this->message = 'OK';
         }
         catch (Exception $e) {
             $this->success = FALSE;
-            $this->message = $e->getMessage();
         }
         return $this->success;
     }
@@ -139,7 +130,7 @@ class chromecast_tts extends tts_addon
          if ($result) {
             $this->data    = array(
                 'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
- 		'name' => (string) $name, //Current speed for playing media. float.
+                'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
                 'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
@@ -152,6 +143,21 @@ class chromecast_tts extends tts_addon
             );
         } 
         return $this->data;
+    }
+
+    // ping terminal
+    function ping()
+    {
+        // proverka na otvet
+        $cc = new GChromecast($this->terminal['HOST'], empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT']);
+        $cc->requestId = time();
+        $status = $cc->getStatus();
+        if (is_array($status)) {
+            $this->success = TRUE;
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
     }
 }
 

@@ -318,6 +318,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}	
+		return $this->getCastMessage();
 	}
 	
 	public function UnMute() {
@@ -329,6 +330,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}		
+		return $this->getCastMessage();
 	}
 	
 	public function SetVolume($volume) {
@@ -340,6 +342,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}
+		return $this->getCastMessage();
 	}
 	
 	public function seek($secs) {
@@ -347,7 +350,7 @@ class GChromecast
         $this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
-		    $this->getCastMessage();
+		    return $this->getCastMessage();
 		}
 	}
 	
@@ -356,7 +359,7 @@ class GChromecast
 		$this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-			$this->getCastMessage();
+			return $this->getCastMessage();
 		}
 	}
 	
@@ -369,7 +372,7 @@ class GChromecast
 		} else if ($this->mediaid and $this->state == 'PAUSED') {
 			$this->play();
 		}
-		$this->getCastMessage();
+		return $this->getCastMessage();
 	}
 	
 	public function play() {
@@ -378,7 +381,7 @@ class GChromecast
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		}
-		$this->getCastMessage();
+		return $this->getCastMessage();
 	}
 	
     public function load($url, $currentTime) {
@@ -424,6 +427,7 @@ class GChromecast
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
+	    return $this->getCastMessage();
 	}
 }
 ?>
