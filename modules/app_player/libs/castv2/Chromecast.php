@@ -245,7 +245,6 @@ class GChromecast
 			$this->transportid = $matches[1];
 			//DebMes ($this->transportid);
 		}
-
 		return $response;
 	}
 	
@@ -318,7 +317,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}	
-		return $this->getCastMessage();
+		return TRUE;
 	}
 	
 	public function UnMute() {
@@ -330,7 +329,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}		
-		return $this->getCastMessage();
+		return TRUE;
 	}
 	
 	public function SetVolume($volume) {
@@ -342,7 +341,7 @@ class GChromecast
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
 		}
-		return $this->getCastMessage();
+		return TRUE;
 	}
 	
 	public function seek($secs) {
@@ -350,7 +349,7 @@ class GChromecast
         $this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
-		    return $this->getCastMessage();
+		    return true;
 		}
 	}
 	
@@ -359,7 +358,7 @@ class GChromecast
 		$this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-			return $this->getCastMessage();
+			return true;
 		}
 	}
 	
@@ -372,7 +371,7 @@ class GChromecast
 		} else if ($this->mediaid and $this->state == 'PAUSED') {
 			$this->play();
 		}
-		return $this->getCastMessage();
+		return true;
 	}
 	
 	public function play() {
@@ -381,8 +380,8 @@ class GChromecast
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		}
-		return $this->getCastMessage();
-	}
+		return true;
+}
 	
     public function load($url, $currentTime) {
 	$this->getMediaSession(); // Auto-reconnects
@@ -427,7 +426,6 @@ class GChromecast
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
-	    return $this->getCastMessage();
 	}
 }
 ?>
