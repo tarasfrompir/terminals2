@@ -377,11 +377,12 @@ class GChromecast
 	public function play() {
 		$this->getMediaSession(); // Auto-reconnects
 		//DebMes($this->state);
+		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+
 		while ($this->state!='PLAYING' OR $count < 20) {
-			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-            usleep(100);
             $count++;
             $response = $this->getStatus(); // Auto-reconnects
+            usleep(100);
 		}
 		if ($this->state=='PLAYING') {
 			return true;
