@@ -5,8 +5,9 @@ class telegramm extends tts_addon {
     function __construct($terminal) {
         $this->title="Telegramm module";
         $this->description = '<b>Описание:</b>&nbsp;Работает с помощью &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2768&sid=89e1057b5d8345f7983111f006d41154">модуля Телеграм</a>. Без этого модуля ничего работать не будет.<br>';
-	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().<br>';
-	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
+	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
+
 	unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
