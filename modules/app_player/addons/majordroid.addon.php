@@ -10,7 +10,7 @@ class majordroid extends app_player_addon {
 	function __construct($terminal) {
 		$this->title = 'MajorDroid';
 		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на устройствах которые поддерживаают MajorDroid API.<br>';
-		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp;Да.<br>';
+		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; ??? нужно уточнять ???.<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).';
 		
