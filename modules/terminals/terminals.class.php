@@ -227,8 +227,8 @@ class terminals extends module
             $this->getConfig();
             if ($this->config['LOG_ENABLED']) DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
             // ждем файл сообщения
-            while (!file_exists($details['CACHED_FILENAME']) OR $count < 50 ) {
-                usleep(1000);
+            while (!file_exists($details['CACHED_FILENAME']) OR $count < 5 ) {
+                usleep(100000);
                 $count++;
             }
             // берем длинну сообщения
