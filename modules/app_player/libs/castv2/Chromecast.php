@@ -309,7 +309,7 @@ class GChromecast
 	}
 	
 	public function Mute() {
-        $this->getMediaSession();
+        $this->getStatus();
 		while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
@@ -321,7 +321,7 @@ class GChromecast
 	}
 	
 	public function UnMute() {
-        $this->getMediaSession();
+        $this->getStatus();
 		while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
@@ -333,7 +333,7 @@ class GChromecast
 	}
 	
 	public function SetVolume($volume) {
-        $this->getMediaSession();
+        $this->getStatus();
 		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
 			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
 		    $this->getCastMessage();
