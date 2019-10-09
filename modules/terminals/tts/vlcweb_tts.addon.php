@@ -116,7 +116,6 @@ class vlcweb_tts extends tts_addon
                 'input' => $message_link
             ))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
-                    sleep($message['MESSAGE_DURATION']);
                     $this->success = TRUE;
                 } else {
                     $this->success = FALSE;
@@ -127,6 +126,7 @@ class vlcweb_tts extends tts_addon
         } else {
             $this->success = FALSE;
         }
+        sleep($message['MESSAGE_DURATION']);
         return $this->success;
     }
     

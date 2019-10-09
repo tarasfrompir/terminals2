@@ -13,9 +13,9 @@ class chromecast_tts extends tts_addon
         $this->title       = 'Google Chromecast';
         $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
-        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).<br>';
-        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        
+    	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).<br>';
+	    $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
+	    
         //$this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
         $this->terminal = $terminal;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);  
@@ -43,55 +43,73 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         $cc->load($message_link, 0);
         $cc->requestId = time();
-        $cc->play();
-        sleep($message['MESSAGE_DURATION']);
-        $this->success = TRUE;
-    
+        $response = $cc->play();
+        if ($response) {
+	        sleep($message['MESSAGE_DURATION']);
+            $this->success = TRUE;
+		} else {
+            $this->success = FALSE;
+		}
         return $this->success;
     }
-    
+	
     // Set volume
     function set_volume($level)
     {
         if (strlen($level)) {
-            $cc = new GChromecast($this->terminal['HOST'], $this->port);
-            $cc->requestId = time();
-            $level = round($level / 100, 1);
-            $cc->SetVolume($level);
-            $this->success = TRUE;
+            try {
+                $cc = new GChromecast($this->terminal['HOST'], $this->port);
+                $cc->requestId = time();
+                $level = round($level / 100, 1);
+                $cc->SetVolume($level);
+                $this->success = TRUE;
+             }
+            catch (Exception $e) {
+                $this->success = FALSE;
+            }
         } else {
             $this->success = FALSE;
         }
         return $this->success;
     }
-    
+	
     // Say
     function play($input, $time=0) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        if (strlen($input)) {
-            $cc = new GChromecast($this->terminal['HOST'], $this->port);
-            $cc->requestId = time();
-            $cc->load($input, $time);
-            $cc->requestId = time();
-            $cc->play();
-            $this->success = TRUE;
+		if (strlen($input)) {
+            try {
+                $cc = new GChromecast($this->terminal['HOST'], $this->port);
+                $cc->requestId = time();
+                $cc->load($input, $time);
+                $cc->requestId = time();
+                $cc->play();
+				$this->success = TRUE;
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+            }
         } else {
             $this->success = FALSE;
         }
         return $this->success;
     }
-    
+	
     // Stop
     function stop()
     {
-        $cc = new GChromecast($this->terminal['HOST'], $this->port);
-        $cc->requestId = time();
-        $cc->stop();
-        $this->success = TRUE;
+        try {
+            $cc = new GChromecast($this->terminal['HOST'], $this->port);
+            $cc->requestId = time();
+            $cc->stop();
+            $this->success = TRUE;
+        }
+        catch (Exception $e) {
+            $this->success = FALSE;
+        }
         return $this->success;
     }
 
-    // Get player status
+	// Get player status
     function status()
     {
         // Defaults
