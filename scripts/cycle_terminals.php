@@ -55,6 +55,7 @@ while (1) {
         $number_message = $number_message + 1;
         if ($ter->config['LOG_ENABLED']) DebMes("Max nomber message - " . $number_message, 'terminals');
     } else {
+	    DebMes('sleep');
         sleep(1);
     }
     
@@ -87,7 +88,7 @@ while (1) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         }
         // berem pervoocherednoe soobsheniye 
-        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
+        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE = '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['ID'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
