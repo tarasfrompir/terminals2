@@ -16,7 +16,7 @@ $checked_time = 0;
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
-    sg($t['LINKED_OBJECT'] . '.busy', 0);
+    sg($t['LINKED_OBJECT'] . '.busy', '0');
 }
 // reset all message when reload cicle
 SQLExec("UPDATE shouts SET SOURCE = '' ");
@@ -67,9 +67,9 @@ while (1) {
         }
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         if (!$terminal['ID']) {
-		DebMes ("Cannot find terminal for this object - " . $terminals . " must be deleted.", 'terminals');
-		continue ;
-	}
+        DebMes ("Cannot find terminal for this object - " . $terminals . " must be deleted.", 'terminals');
+        continue ;
+    }
                 
         if (!$tts[$terminal['ID']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
@@ -89,28 +89,20 @@ while (1) {
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
-       // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+/*        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['ID'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
-            try {
-                if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
-                    if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
-                    $tts[$terminal['ID']]->set_volume($restored['volume']);
-                    usleep(100000);
-                }
-                // если есть файл для воспроизведения то тоже его восстанавливаем
-                if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
-                    $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
-                    usleep(100000);
-                    if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
-                }
-                sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-                    usleep(100000);
-                continue;
+            if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
+                if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
+                $tts[$terminal['ID']]->set_volume($restored['volume']);
             }
-            catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("Error with restore playaed - " . $terminal['NAME'], 'terminals');
+            // если есть файл для воспроизведения то тоже его восстанавливаем
+            if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
+                $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
+                if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
             }
-        }
+            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+            continue;
+        } */
         
        // для всех плееров просто пропускаем итерацию при отсутствии сообщения с удалением его из очереди
         if (!$old_message['ID']) {
@@ -129,7 +121,7 @@ while (1) {
         if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED'])+60 < time()) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
-			continue;
+            continue;
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем 
         } else if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
             continue;
@@ -140,7 +132,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+            sg($terminal['LINKED_OBJECT'] . '.busy', '1');
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
@@ -153,7 +145,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+            sg($terminal['LINKED_OBJECT'] . '.busy', '1');
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
