@@ -354,7 +354,7 @@ function pingTerminal($terminal, $details)
         include_once DIR_MODULES . 'terminals/tts_addon.class.php';
         include_once($addon_file);
         $ping_terminal = new $details['TTS_TYPE']($details);
-        sg($terminal['LINKED_OBJECT'].'.busy', '1');
+        sg($terminal['LINKED_OBJECT'].'.busy', 1);
         if (method_exists($ping_terminal,'ping')) {
             $out = $ping_terminal->ping();
             DebMes("Try to ping - " . $terminal .' with class function', 'terminals');
@@ -376,7 +376,7 @@ function pingTerminal($terminal, $details)
         DebMes("Terminal - " . $terminal .' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
-    sg($terminal['LINKED_OBJECT'].'.busy', '0');
+    sg($terminal['LINKED_OBJECT'].'.busy', 0);
 }
 // check terminal Safe
 function pingTerminalSafe($terminal, $details = '')
@@ -486,7 +486,7 @@ function send_message($terminalname, $message, $terminal)
     } catch(Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
     }
-    sg($terminal['LINKED_OBJECT'].'.busy', '0');  
+    sg($terminal['LINKED_OBJECT'].'.busy', 0);  
 }
 function send_messageSafe($message, $terminal)
 {
