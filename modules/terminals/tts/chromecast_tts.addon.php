@@ -82,8 +82,12 @@ class chromecast_tts extends tts_addon
                 $cc->requestId = time();
                 $cc->load($input, $time);
                 $cc->requestId = time();
-                $cc->play();
-				$this->success = TRUE;
+                $response = $cc->play();
+		if ($response) {
+                    $this->success = TRUE;
+	       	} else {
+                    $this->success = FALSE;
+	        }
             }
             catch (Exception $e) {
                 $this->success = FALSE;
