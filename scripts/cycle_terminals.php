@@ -103,7 +103,7 @@ while (1) {
             if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
 				if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
             	try {
-                    $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
+                    $tts[$terminal['ID']]->play($restored['file'], 0);
             	} catch(Exception $e) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
                 }
