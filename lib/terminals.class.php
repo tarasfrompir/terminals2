@@ -412,8 +412,8 @@ function send_message($terminalname, $message, $terminal)
         include_once($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
     } else {
-		return ;
-	}
+        return ;
+    }
 
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " class load"  , 'terminals');
 
@@ -422,7 +422,7 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " get info abaut media"  , 'terminals');
             $restore_data = $tts->status();
-            usleep(10000);
+            usleep(100000);
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
         }
@@ -436,7 +436,7 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'stop')) { 
 		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " woth stopped"  , 'terminals');
             $tts->stop();
-            usleep(10000);
+            usleep(100000);
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have not function stop"  , 'terminals');
         }
@@ -444,11 +444,11 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " set volume"  , 'terminals');
             $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
-            usleep(10000);
+            usleep(100000);
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function set volume"  , 'terminals');
         }
-		// запишем уровень громкости на терминале
+        // запишем уровень громкости на терминале
         $out['ID'] = $terminal['ID'];
         $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
         SQLUpdate('terminals', $out);
