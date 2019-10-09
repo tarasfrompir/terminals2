@@ -16,7 +16,7 @@ $checked_time = 0;
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
 foreach ($term as $t) {
-    sg($t['LINKED_OBJECT'] . '.busy', '0');
+    sg($t['LINKED_OBJECT'] . '.busy', 0);
 }
 // reset all message when reload cicle
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
@@ -133,7 +133,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.busy', '1');
+            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминалы воспроизводящие аудио
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
@@ -146,7 +146,7 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             //записываем что терминал занят
-            sg($terminal['LINKED_OBJECT'] . '.busy', '1');
+            sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             //передаем сообщение на терминал передающий только текстовое сообщение 
             send_messageSafe($old_message, $terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
