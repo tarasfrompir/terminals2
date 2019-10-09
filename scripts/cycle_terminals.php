@@ -89,20 +89,28 @@ while (1) {
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
-/*        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         if (!$old_message['ID'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
             if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
-                if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
-                $tts[$terminal['ID']]->set_volume($restored['volume']);
+                if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'] , 'terminals');
+				try {
+                    $tts[$terminal['ID']]->set_volume($restored['volume']);
+				} catch(Exception $e) {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
+                }
             }
             // если есть файл для воспроизведения то тоже его восстанавливаем
             if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
-                $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
-                if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
-            }
+				if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
+            	try {
+                    $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
+            	} catch(Exception $e) {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
+                }
+			}
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
             continue;
-        } */
+        } 
         
        // для всех плееров просто пропускаем итерацию при отсутствии сообщения с удалением его из очереди
         if (!$old_message['ID']) {
