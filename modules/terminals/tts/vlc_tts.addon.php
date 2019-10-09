@@ -44,6 +44,7 @@ class vlc_tts extends tts_addon {
 
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_play&param='.urlencode("'".$message['CACHED_FILENAME']."'"));
 			//DebMes( $this->address.'/rc/?command=vlc_play&param='.urlencode("'".$message['CACHED_FILENAME']."'"));
+		        sleep($message['MESSAGE_DURATION']);
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {
 					$this->success = TRUE;
