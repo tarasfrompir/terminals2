@@ -422,6 +422,7 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " get info abaut media"  , 'terminals');
             $restore_data = $tts->status();
+            usleep(10000);
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
         }
@@ -435,6 +436,7 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'stop')) { 
 		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " woth stopped"  , 'terminals');
             $tts->stop();
+            usleep(10000);
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have not function stop"  , 'terminals');
         }
@@ -442,7 +444,8 @@ function send_message($terminalname, $message, $terminal)
         if (method_exists($tts,'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " set volume"  , 'terminals');
             $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
-        } else {
+            usleep(10000);
+		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function set volume"  , 'terminals');
         }
 		// запишем уровень громкости на терминале
@@ -455,12 +458,14 @@ function send_message($terminalname, $message, $terminal)
     }
     // try send message to terminal
     try {
-		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-		if (method_exists($tts,'say_message')) {
-         	$out = $tts->say_message($message, $terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname , 'terminals');
-		} else if (method_exists($tts,'say_media_message')) {
-			$out = $tts->say_media_message($message, $terminal);
+	if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
+            if (method_exists($tts,'say_message')) {
+                $out = $tts->say_message($message, $terminal);
+                usleep(10000);
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname , 'terminals');
+	    } else if (method_exists($tts,'say_media_message')) {
+		$out = $tts->say_media_message($message, $terminal);
+            usleep(10000);			
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname , 'terminals');
         } else {
             sleep (1);
