@@ -19,7 +19,7 @@ foreach ($term as $t) {
     sg($t['LINKED_OBJECT'] . '.busy', 0);
 }
 // reset all message when reload cicle
-//SQLExec("UPDATE shouts SET SOURCE = '' ");
+SQLExec("UPDATE shouts SET SOURCE = '' ");
 // get number last message
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
