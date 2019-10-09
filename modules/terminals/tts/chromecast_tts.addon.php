@@ -44,12 +44,9 @@ class chromecast_tts extends tts_addon
         $cc->load($message_link, 0);
         $cc->requestId = time();
         $response = $cc->play();
-        if ($response) {
-			sleep($message['TIME_MESSAGE']);
-            $this->success = TRUE;
-		} else {
-            $this->success = FALSE;
-		}
+        sleep($message['TIME_MESSAGE']);
+        $this->success = TRUE;
+	
         return $this->success;
     }
 	
@@ -83,11 +80,7 @@ class chromecast_tts extends tts_addon
                 $cc->load($input, $time);
                 $cc->requestId = time();
                 $response = $cc->play();
-		if ($response) {
-                    $this->success = TRUE;
-	       	} else {
-                    $this->success = FALSE;
-	        }
+		$this->success = TRUE;
             }
             catch (Exception $e) {
                 $this->success = FALSE;
