@@ -90,23 +90,23 @@ while (1) {
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
-        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
-        if (!$old_message['ID'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
+         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+        if (!$old_message['MESSAGE'] AND $terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
             if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
                 if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'] , 'terminals');
 		        $tts[$terminal['ID']]->set_volume($restored['volume']);
             }
-        // если есть файл для воспроизведения то тоже его восстанавливаем
-        if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
-		    if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
+            // если есть файл для воспроизведения то тоже его восстанавливаем
+            if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
+		        if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
             	$tts[$terminal['ID']]->play($restored['file'], 0);
-            }
+         	}
             sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
             continue;
         } 
         
        // для всех плееров просто пропускаем итерацию при отсутствии сообщения с удалением его из очереди
-        if (!$old_message['ID']) {
+        if (!$old_message['MESSAGE']) {
             continue;
         }
         // если терминал оффлайн удаляем из работы эту запись и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
