@@ -95,14 +95,16 @@ while (1) {
                 if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
                     $tts[$terminal['ID']]->set_volume($restored['volume']);
+                    usleep(10000);
                 }
                 // если есть файл для воспроизведения то тоже его восстанавливаем
                 if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
                     $tts[$terminal['ID']]->play($restored['file'], $restored['time']);
+                    usleep(10000);
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
                 }
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-				usleep (200000);
+                    usleep(10000);
                 continue;
             }
             catch (Exception $e) {
