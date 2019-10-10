@@ -34,21 +34,31 @@ while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
         $ter->getConfig();
+        if (!$ter->config['TERMINALS_PING']) {
+            $ter->config['TERMINALS_PING'] = 30;
+        }
+        if (!$ter->config['TERMINALS_TIMEOUT']) {
+            $ter->config['TERMINALS_TIMEOUT'] = 10;
+        }
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
+
     //время жизни сообщений
-    if (time() - $clear_message > 60 * $terminals_time_out) {
+    if (time() - $clear_message > 60 * $ter->config['TERMINALS_TIMEOUT']) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $terminals_time_out . " MINUTE)");
-        // когда в настройках терминалов изменили таймаут для сообщений то получаем по новой
-        if (!$ter->config['TERMINALS_TIMEOUT']) {
-            $terminals_time_out = 10;
-        } else if ($ter->config['TERMINALS_TIMEOUT'] != $terminals_time_out) {
-            $terminals_time_out = $ter->config['TERMINALS_TIMEOUT'];
-            if ($ter->config['LOG_ENABLED']) DebMes("Change timeout for message to " . $terminals_time_out . " minutes", 'terminals');
-        }
     }
+
+    // CHEK next message for terminals ready
+    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
+    if ($message) {
+        $number_message = $number_message + 1;
+        if ($ter->config['LOG_ENABLED']) DebMes("Max nomber message - " . $number_message, 'terminals');
+    } else {
+        sleep(1);
+    }
+
     // CHEK next message for terminals ready
     $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
     if ($message) {
@@ -78,10 +88,8 @@ while (1) {
             if ($ter->config['LOG_ENABLED']) DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
             continue;
         }
+
         // если терминалы офлайн то пингуем их
-        if (!$ter->config['TERMINALS_PING']) {
-            $ter->config['TERMINALS_PING'] = 10;
-        }
         if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal" . $terminal['NAME'], 'terminals');
             pingTerminalSafe($terminal['NAME'], $terminal);
