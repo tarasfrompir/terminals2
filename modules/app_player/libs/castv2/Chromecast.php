@@ -309,48 +309,49 @@ class GChromecast
 	}
 	
 	public function Mute() {
-        $this->getMediaSession();
-		while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
-			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
-		    $this->getCastMessage();
-            usleep(100);
-            $count++;
-            $response = $this->getStatus(); // Auto-reconnects
-		}	
-		return TRUE;
+            $this->getMediaSession();
+             while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
+		$this->getCastMessage();
+                usleep(100);
+                $count++;
+                $response = $this->getStatus(); // Auto-reconnects
+	    }	
+	    return TRUE;
 	}
 	
 	public function UnMute() {
-        $this->getMediaSession();
-		while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
-			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
-		    $this->getCastMessage();
-            usleep(100);
-            $count++;
-            $response = $this->getStatus(); // Auto-reconnects
-		}		
-		return TRUE;
+            $this->getMediaSession();
+	    while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
+		$this->getCastMessage();
+                usleep(100);
+                $count++;
+                $response = $this->getStatus(); // Auto-reconnects
+	    }		
+	    return TRUE;
 	}
 	
 	public function SetVolume($volume) {
-        $this->getMediaSession();
-		while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
-			$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
-		    $this->getCastMessage();
-            usleep(100);
-            $count++;
-            $response = $this->getStatus(); // Auto-reconnects
-		}
-		return TRUE;
+            $this->getMediaSession();
+	    while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
+		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
+	        $this->getCastMessage();
+                usleep(100);
+                $count++;
+                $response = $this->getStatus(); // Auto-reconnects
+	    }
+	    return TRUE;
 	}
 	
 	public function seek($secs) {
-		// Seek
-        $this->getMediaSession(); // Auto-reconnects
-		if ($this->mediaid) {
-		    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
-		    return true;
-		}
+            // Seek
+            $this->getMediaSession(); // Auto-reconnects
+	    if ($this->mediaid) {
+	        $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
+	        $this->getCastMessage();
+	     }
+			return true;
 	}
 	
 	public function stop() {
@@ -358,8 +359,10 @@ class GChromecast
 		$this->getMediaSession(); // Auto-reconnects
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+		        $this->getCastMessage();
 			return true;
 		}
+			return true;
 	}
 	
 	public function pause() {
@@ -368,6 +371,7 @@ class GChromecast
 		//DebMes($this->state);
 		if ($this->mediaid and $this->state != 'PAUSED') {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+			$this->getCastMessage();
 		} else if ($this->mediaid and $this->state == 'PAUSED') {
 			$this->play();
 		}
@@ -375,14 +379,15 @@ class GChromecast
 	}
 	
 	public function play() {
-		$this->getMediaSession(); // Auto-reconnects
-		//DebMes($this->state);
-		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-
-		while ($this->state!='PLAYING' OR $count < 20) {
-            $count++;
-            $response = $this->getStatus(); // Auto-reconnects
-            usleep(100);
+	    $this->getMediaSession(); // Auto-reconnects
+	    //DebMes($this->state);
+	    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
+	    $this->getCastMessage();
+	    while ($this->state!='PLAYING' OR $count < 20) {
+                $count++;
+                $response = $this->getStatus(); // Auto-reconnects
+                usleep(100);
+		$this->getCastMessage();
 		}
 		if ($this->state=='PLAYING') {
 			return true;
