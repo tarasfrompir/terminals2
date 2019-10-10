@@ -33,22 +33,17 @@ class alicevox extends tts_addon
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
-                        $this->message = 'OK';
                     } else {
                         $this->success = FALSE;
-                        $this->message = 'Command execution error!';
                     }
                 } else {
                     $this->success = FALSE;
-                    $this->message = 'Input is missing!';
                 }
             } else {
                 $this->success = FALSE;
-                $this->message = 'Command execution error!';
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'Input is missing!';
         }
         return $this->success;
     }
