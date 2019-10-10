@@ -147,14 +147,14 @@ class GChromecast
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
 		}
-		//DebMes($response);
-		// get app id
-		if (preg_match("/appId/s", $response)) {
-			preg_match("/appId\"\:\"([^\"]*)/", $response, $matches);
-			$this->appid = $matches[1];
-			//DebMes ($this->appid);
-		}
-		return json_decode($response,TRUE);
+		$out = json_decode($response,TRUE);
+
+		$this->appid = $out['status']['applications'][0]['appId'];
+		$this->namespaces = $out['status']['applications'][0]['namespaces'];
+		$this->sessionId = $out['status']['applications'][0]['sessionId'];
+		$this->transportId = $out['status']['applications'][0]['transportId'];
+		$this->displayName = $out['status']['applications'][0]['displayName'];
+		return $out;
 	}
 	
 	public function getMediaSession() {
