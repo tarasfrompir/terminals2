@@ -100,7 +100,7 @@ while (1) {
         
         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         // и переходим на следующий свободный терминал
-        if (!$old_message['ID'] ) {
+        if (!$old_message['ID'] OR !$old_message['SOURCE'] ) {
             if ($terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
                 // если есть уровень звука то восстанавлием его
                 if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
@@ -120,7 +120,7 @@ while (1) {
 
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись 
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
-        if ($old_message['ID'] AND !$terminal['IS_ONLINE'] OR !$terminal['TTS_TYPE']) {
+        if (($old_message['ID'] AND !$terminal['IS_ONLINE']) OR !$terminal['TTS_TYPE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
@@ -134,7 +134,7 @@ while (1) {
         
         // если тип терминала передающий только текстовое сообщение  
         // запускаем его воспроизведение
-        if (method_exists($tts[$terminal['ID']], 'say_message')) {
+        if (method_exists($tts[$terminal['ID']], 'say_message') AND $old_message['SOURCE']) {
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
@@ -148,7 +148,7 @@ while (1) {
         
         // если тип терминала передающий медиа сообщение
         // иначе запускаем его воспроизведение
-        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND $old_message['CACHED_FILENAME']) {
+        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
             // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
