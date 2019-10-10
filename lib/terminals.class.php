@@ -425,12 +425,16 @@ function send_message($terminalname, $message, $terminal)
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
         }
+    } catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
+    }
         if (stripos($restore_data['file'], '/cms/cached/voice') === false AND $restore_data ) {
             if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
 			sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
         }
+	try {
         // остановим медиа
         if (method_exists($tts,'stop')) { 
 		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " woth stopped"  , 'terminals');
@@ -438,6 +442,10 @@ function send_message($terminalname, $message, $terminal)
 		} else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have not function stop"  , 'terminals');
         }
+    } catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
+    }
+	try {
         //установим громкость для сообщений
         if (method_exists($tts,'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " set volume"  , 'terminals');
@@ -445,14 +453,16 @@ function send_message($terminalname, $message, $terminal)
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function set volume"  , 'terminals');
         }
-		// запишем уровень громкости на терминале
-        $out['ID'] = $terminal['ID'];
-        $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
-        SQLUpdate('terminals', $out);
-
     } catch(Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
     }
+	// запишем уровень громкости на терминале
+	if ($restore_data['volume']) {
+        $out['ID'] = $terminal['ID'];
+        $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
+        SQLUpdate('terminals', $out);
+	}
+
     // try send message to terminal
     try {
 		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
