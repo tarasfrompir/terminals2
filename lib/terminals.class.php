@@ -1,152 +1,142 @@
 <?php
 // Get all terminals
-function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = 'SELECT * FROM `terminals` ORDER BY `'.DBSafe($order).'` '.DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getAllTerminals($limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = 'SELECT * FROM `terminals` ORDER BY `' . DBSafe($order) . '` ' . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get terminal by id
 function getTerminalByID($id) {
-	$sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = '.abs(intval($id));
-	$terminal = SQLSelectOne($sqlQuery);
-	return $terminal;
+    $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id));
+    $terminal = SQLSelectOne($sqlQuery);
+    return $terminal;
 }
 // Get terminal by name
-function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = '".DBSafe($name)."' OR `TITLE` = '".DBSafe($name)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getTerminalsByName($name, $limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = '" . DBSafe($name) . "' OR `TITLE` = '" . DBSafe($name) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get terminals by host or ip address
-function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
-	$localhost = array(
-		'localhost',
-		'127.0.0.1',
-		'ip6-localhost',
-		'ip6-loopback',
-		'ipv6-localhost',
-		'ipv6-loopback',
-		'::1',
-		'0:0:0:0:0:0:0:1',
-	);
-	if(in_array(strtolower($host), $localhost)) {
-		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '".implode("' OR `HOST` = '", $localhost)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	} else {
-		$sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '".DBSafe($host)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	}
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getTerminalsByHost($host, $limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $localhost = array('localhost', '127.0.0.1', 'ip6-localhost', 'ip6-loopback', 'ipv6-localhost', 'ipv6-loopback', '::1', '0:0:0:0:0:0:0:1',);
+    if (in_array(strtolower($host), $localhost)) {
+        $sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '" . implode("' OR `HOST` = '", $localhost) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    } else {
+        $sqlQuery = "SELECT * FROM `terminals` WHERE `HOST` = '" . DBSafe($host) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    }
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get terminals that can play
-function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getTerminalsCanPlay($limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get terminals by player type
-function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `PLAYER_TYPE` = '".DBSafe($player)."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getTerminalsByPlayer($player, $limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `PLAYER_TYPE` = '" . DBSafe($player) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get main terminal
 function getMainTerminal() {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = 'MAIN'";
-	$terminal = SQLSelectOne($sqlQuery);
-	return $terminal;
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = 'MAIN'";
+    $terminal = SQLSelectOne($sqlQuery);
+    return $terminal;
 }
 // Get online terminals
-function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `IS_ONLINE` = 1 ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getOnlineTerminals($limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `IS_ONLINE` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get MajorDroid terminals
-function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `MAJORDROID_API` = 1 ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if($limit >= 0) {
-		$sqlQuery .= ' LIMIT '.intval($limit);
-	}
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+function getMajorDroidTerminals($limit = - 1, $order = 'ID', $sort = 'ASC') {
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `MAJORDROID_API` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if ($limit >= 0) {
+        $sqlQuery.= ' LIMIT ' . intval($limit);
+    }
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
 // Get terminals by CANTTS
 function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
-	$sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '".DBSafe('1')."' ORDER BY `".DBSafe($order)."` ".DBSafe($sort);
-	if(!$terminals = SQLSelect($sqlQuery)) {
-		$terminals = array(NULL);
-	}
-	return $terminals;
+    $sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '" . DBSafe('1') . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+    if (!$terminals = SQLSelect($sqlQuery)) {
+        $terminals = array(NULL);
+    }
+    return $terminals;
 }
-// Get local ip 
+// Get local ip
 function getLocalIp() {
-	global $local_ip_address_cached;
-	if (isset($local_ip_address_cached)) {
-		$local_ip_address=$local_ip_address_cached;
-	} else {
-		$s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-		socket_connect($s, '8.8.8.8', 53);  // connecting to a UDP address doesn't send packets
-		socket_getsockname($s, $local_ip_address, $port);
-		@socket_shutdown($s, 2);
-		socket_close($s);
-		if (!$local_ip_address) {
-			$main_terminal=getTerminalsByName('MAIN')[0];
-			if ($main_terminal['HOST']) {
-				$local_ip_address=$main_terminal['HOST'];
-			}
-		}
-		if ($local_ip_address) {
-			$local_ip_address_cached=$local_ip_address;
-		}
-	}
-	return $local_ip_address;
+    global $local_ip_address_cached;
+    if (isset($local_ip_address_cached)) {
+        $local_ip_address = $local_ip_address_cached;
+    } else {
+        $s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        socket_connect($s, '8.8.8.8', 53); // connecting to a UDP address doesn't send packets
+        socket_getsockname($s, $local_ip_address, $port);
+        @socket_shutdown($s, 2);
+        socket_close($s);
+        if (!$local_ip_address) {
+            $main_terminal = getTerminalsByName('MAIN') [0];
+            if ($main_terminal['HOST']) {
+                $local_ip_address = $main_terminal['HOST'];
+            }
+        }
+        if ($local_ip_address) {
+            $local_ip_address_cached = $local_ip_address;
+        }
+    }
+    return $local_ip_address;
 }
 /**
  * This function change  position on the played media in player
  * @param mixed $host Host (default 'localhost') name or ip of terminal
  * @param mixed $time second (default 0) to positon from start time
  */
-function seekPlayerPosition($host = 'localhost', $time = 0)
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function seekPlayerPosition($host = 'localhost', $time = 0) {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
         return;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command = 'seek'; // Команда
@@ -171,15 +161,14 @@ function seekPlayerPosition($host = 'localhost', $time = 0)
  *          'loop'            => (boolean)$loop, // Loop mode. Boolean.
  *          'repeat'          => (boolean)$repeat, //Repeat mode. Boolean.
  */
-function getPlayerStatus($host = 'localhost')
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function getPlayerStatus($host = 'localhost') {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
         return;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command = 'pl_get'; // Команда
@@ -190,6 +179,7 @@ function getPlayerStatus($host = 'localhost')
     if ($player->json['success'] && is_array($player->json['data'])) {
         $terminal = array_merge($terminal, $player->json['data']);
         //DebMes($player->json['data']);
+        
     } else {
         // Если произошла ошибка, выводим ее описание
         return ($player->json['message']);
@@ -207,8 +197,7 @@ function getPlayerStatus($host = 'localhost')
         return ($player->json['message']);
     }
 }
-function getMediaDurationSeconds($file)
-{
+function getMediaDurationSeconds($file) {
     if (!defined('PATH_TO_FFMPEG')) {
         if (IsWindowsOS()) {
             define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
@@ -235,27 +224,26 @@ function getMediaDurationSeconds($file)
  * @param mixed $host Host (default 'localhost')
  * @return int
  */
-function playMedia($path, $host = 'localhost', $safe_play = FALSE)
-{
+function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
     if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
         eval(SETTINGS_HOOK_PLAYMEDIA);
     }
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
+        $terminal = getTerminalsCanPlay(1) [0];
     }
     if (!$terminal['ID']) {
         $terminal = getMainTerminal();
     }
     if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
+        $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
         return 0;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command = ($safe_play ? 'safe_play' : 'play'); // Команда
@@ -270,24 +258,23 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE)
  * @param mixed $host Host (default 'localhost')
  * @return int
  */
-function stopMedia($host = 'localhost')
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function stopMedia($host = 'localhost') {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
+        $terminal = getTerminalsCanPlay(1) [0];
     }
     if (!$terminal['ID']) {
         $terminal = getMainTerminal();
     }
     if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
+        $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
         return 0;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command = 'stop'; // Команда
@@ -301,15 +288,14 @@ function stopMedia($host = 'localhost')
  * @param mixed $host Host (default 'localhost') name or ip of terminal
  * @param mixed $level level of volume (default 0) to positon from start time
  */
-function setPlayerVolume($host = 'localhost', $level = 0)
-{
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function setPlayerVolume($host = 'localhost', $level = 0) {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal) {
         return;
     }
-    include_once(DIR_MODULES . 'app_player/app_player.class.php');
+    include_once (DIR_MODULES . 'app_player/app_player.class.php');
     $player = new app_player();
     $player->play_terminal = $terminal['NAME']; // Имя терминала
     $player->command = 'set_volume'; // Команда
@@ -319,48 +305,47 @@ function setPlayerVolume($host = 'localhost', $level = 0)
     $player->usual($out);
     return $player->json['message'];
 }
-function setTerminalMML($host = 'localhost', $mml=0) {
-    if (!$terminal = getTerminalsByName($host, 1)[0]) {
-        $terminal = getTerminalsByHost($host, 1)[0];
+function setTerminalMML($host = 'localhost', $mml = 0) {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
     }
     if (!$terminal['ID']) {
-        $terminal = getTerminalsCanPlay(1)[0];
+        $terminal = getTerminalsCanPlay(1) [0];
     }
     if (!$terminal['ID']) {
         $terminal = getMainTerminal();
     }
     if (!$terminal['ID']) {
-        $terminal = getAllTerminals(1)[0];
+        $terminal = getAllTerminals(1) [0];
     }
     if (!$terminal['ID']) {
         return 0;
     }
-	$terminal['MIN_MSG_LEVEL'] = $mml;
-	SQLUpdate('terminals', $terminal);
-	return true;
+    $terminal['MIN_MSG_LEVEL'] = $mml;
+    SQLUpdate('terminals', $terminal);
+    return true;
 }
-// check terminal 
-function pingTerminal($terminal, $details)
-{
+// check terminal
+function pingTerminal($terminal, $details) {
     if (!$terminal) {
         return;
     }
-    sg($terminal['LINKED_OBJECT'].'.busy', 1);
+    sg($terminal['LINKED_OBJECT'] . '.busy', 1);
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-	// пробуем найти встроенные функции пинга для этого вида терминала
-	$addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
+    // пробуем найти встроенные функции пинга для этого вида терминала
+    $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file)) {
         include_once DIR_MODULES . 'terminals/tts_addon.class.php';
-        include_once($addon_file);
-            $ping_terminal = new $details['TTS_TYPE']($details);
-            if (method_exists($ping_terminal,'ping')) {
-                $out = $ping_terminal->ping();
-                DebMes("Try to ping - " . $terminal .' with class function', 'terminals');
-            } else {
-        $out = ping($details['HOST']);
-        DebMes("Try to ping - " . $terminal .' with standart function', 'terminals'); 
+        include_once ($addon_file);
+        $ping_terminal = new $details['TTS_TYPE']($details);
+        if (method_exists($ping_terminal, 'ping')) {
+            $out = $ping_terminal->ping();
+            DebMes("Try to ping - " . $terminal . ' with class function', 'terminals');
+        } else {
+            $out = ping($details['HOST']);
+            DebMes("Try to ping - " . $terminal . ' with standart function', 'terminals');
         }
     }
     if ($out) {
@@ -368,148 +353,136 @@ function pingTerminal($terminal, $details)
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 1;
-        DebMes("Terminal - " . $terminal .' is online', 'terminals');
+        DebMes("Terminal - " . $terminal . ' is online', 'terminals');
     } else {
         sg($details['LINKED_OBJECT'] . '.alive', '0');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 0;
-        DebMes("Terminal - " . $terminal .' is offline', 'terminals');
+        DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
-    sg($terminal['LINKED_OBJECT'].'.busy', 0);
+    sg($terminal['LINKED_OBJECT'] . '.busy', 0);
 }
 // check terminal Safe
-function pingTerminalSafe($terminal, $details = '')
-{
+function pingTerminalSafe($terminal, $details = '') {
     if (!is_array($details)) {
         $details = array();
     }
-    $data = array(
-        'pingTerminal' => 1,
-        'terminal' => $terminal,
-		'params' => json_encode($details)
-    );
+    $data = array('pingTerminal' => 1, 'terminal' => $terminal, 'params' => json_encode($details));
     if (session_id()) {
-        $data[session_name()] = session_id();
+        $data[session_name() ] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
     if (is_array($params)) {
         foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
+            $url.= '&' . $k . '=' . urlencode($v);
         }
     }
     getURLBackground($url, 0);
 }
-function send_message($terminalname, $message, $terminal)
-{
-    include_once(DIR_MODULES . "terminals/terminals.class.php");
+function send_message($terminalname, $message, $terminal) {
+    include_once (DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
-
     include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
-        include_once($addon_file);
+        include_once ($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
     } else {
-		return ;
-	}
-
-    if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " class load"  , 'terminals');
-
-	// get terminal info
-	try {
-        if (method_exists($tts,'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " get info abaut media"  , 'terminals');
+        return;
+    }
+    if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
+    // get terminal info
+    try {
+        if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut media", 'terminals');
             $restore_data = $tts->status();
-		} else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have restored data or class have not function status"  , 'terminals');
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function status", 'terminals');
         }
-    } catch(Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
     }
-        if (stripos($restore_data['file'], '/cms/cached/voice') === false AND $restore_data ) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-			sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
-		} else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." dont get status. Maybe  system message ?"  , 'terminals');
-        }
-	try {
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+    if (stripos($restore_data['file'], '/cms/cached/voice') === false AND $restore_data) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($restore_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
+        sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($restore_data));
+    } else {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont get status. Maybe  system message ?", 'terminals');
+    }
+    try {
         // остановим медиа
-        if (method_exists($tts,'stop')) { 
-		    if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " woth stopped"  , 'terminals');
+        if (method_exists($tts, 'stop')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
             $tts->stop();
-		} else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." have not function stop"  , 'terminals');
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop", 'terminals');
         }
-    } catch(Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
     }
-	try {
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+    try {
         //установим громкость для сообщений
-        if (method_exists($tts,'set_volume')) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " set volume"  , 'terminals');
+        if (method_exists($tts, 'set_volume')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set volume", 'terminals');
             $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -". $terminalname ." class have not function set volume"  , 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set volume", 'terminals');
         }
-    } catch(Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal ". $terminal['NAME'] . " have wrong setting"  , 'terminals');
     }
-	// запишем уровень громкости на терминале
-	if ($restore_data['volume']) {
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+    // запишем уровень громкости на терминале
+    if ($restore_data['volume']) {
         $out['ID'] = $terminal['ID'];
         $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
         SQLUpdate('terminals', $out);
-	}
-
+    }
     // try send message to terminal
     try {
-		if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-		if (method_exists($tts,'say_message')) {
-         	$out = $tts->say_message($message, $terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname , 'terminals');
-		} else if (method_exists($tts,'say_media_message')) {
-			$out = $tts->say_media_message($message, $terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname , 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
+        if (method_exists($tts, 'say_message')) {
+            $out = $tts->say_message($message, $terminal);
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname, 'terminals');
+        } else if (method_exists($tts, 'say_media_message')) {
+            $out = $tts->say_media_message($message, $terminal);
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname, 'terminals');
         } else {
-            sleep (1);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname , 'terminals');
-		}
-		if (!$out) {
-				if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname , 'terminals');
-				$rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '".$message['ID']."'");
-				$rec['SOURCE'] = $rec['SOURCE'].$terminal['ID'] . '^';
-				SQLUpdate('shouts', $rec);
-				pingTerminalSafe($terminal['NAME'], $terminal);
-		} else {
-			if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname .' sucessfull', 'terminals');
-		}
-	} catch(Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname , 'terminals');
-	}
-	sg($terminal['LINKED_OBJECT'].'.busy', 0);	
+            sleep(1);
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname, 'terminals');
+        }
+        if (!$out) {
+            if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
+            $rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '" . $message['ID'] . "'");
+            $rec['SOURCE'] = $rec['SOURCE'] . $terminal['ID'] . '^';
+            SQLUpdate('shouts', $rec);
+            pingTerminalSafe($terminal['NAME'], $terminal);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname . ' sucessfull', 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname, 'terminals');
+    }
+    sg($terminal['LINKED_OBJECT'] . '.busy', 0);
 }
-function send_messageSafe($message, $terminal)
-{
-    $data = array(
-        'send_message' => 1,
-        'terminalname' => $terminal['NAME'],
-        'message' => json_encode($message),
-        'terminal' => json_encode($terminal)
-    );
+function send_messageSafe($message, $terminal) {
+    $data = array('send_message' => 1, 'terminalname' => $terminal['NAME'], 'message' => json_encode($message), 'terminal' => json_encode($terminal));
     if (session_id()) {
-        $data[session_name()] = session_id();
+        $data[session_name() ] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
     if (is_array($message)) {
         foreach ($message as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
+            $url.= '&' . $k . '=' . urlencode($v);
         }
     }
     if (is_array($terminal)) {
         foreach ($terminal as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
+            $url.= '&' . $k . '=' . urlencode($v);
         }
     }
     getURLBackground($url, 0);
