@@ -231,11 +231,21 @@ class terminals extends module
                 usleep(100000);
                 $count++;
             }
+
             // берем длинну сообщения
-            if (get_media_info($details['CACHED_FILENAME'])['duration'] < 2) {
+            $count = 0;
+            while ($count<3) {
+                $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
+                if ($duration_norm < $duration) {
+                    $duration_norm = $duration;
+                }
+                $count++;
+            }
+            DebMes('Duration message - '.$duration_norm, 'terminals');
+            if ($duration_norm < 2) {
                 $duration = 2;
             } else {
-                $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
+                $duration = $duration_norm;
             }
             if ($this->config['LOG_ENABLED']) DebMes("FINISH Processing $event:  - " . $details['CACHED_FILENAME'], 'terminals');
             $rec['MESSAGE_DURATION'] = $duration;
