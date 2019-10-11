@@ -154,22 +154,34 @@ class GChromecast
 		$this->sessionId = $out['status']['applications'][0]['sessionId'];
 		$this->transportId = $out['status']['applications'][0]['transportId'];
 		$this->displayName = $out['status']['applications'][0]['displayName'];
+		$this->requestId = $out['requestId'];
 		return $out;
 	}
 	
 	public function getMediaSession() {
 		$this->getStatus(); 
-		if ($this->appid ) {
-			$this->connect(); // Auto-reconnects
+		if (is_array($this->namespaces)) {
+			foreach ($this->namespaces as $namespaces){
+				if ("urn:x-cast:com.google.cast.media"== $namespaces['name']) {
+					$result = true;
+		            $this->connect(); // Auto-reconnects 
+				}
+			}
+			if (!$result ) {
+				$this->launch('CC1AD845');
+	            $this->connect(); // Auto-reconnects 
+			}
 		} else {
-			$this->launch('CC1AD845');
-			$this->connect(); // Auto-reconnects
+		    $this->launch('CC1AD845');
+            $this->connect(); // Auto-reconnects 
 		}
-        $zeit60 = time()+2;
+
 		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
-		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response) or time() > $zeit60) {
+		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response)) {
 			$response = $this->getCastMessage();
+			usleep (1000);
 		}
+
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$response,$m)) {
 			$this->mediaid = $m[1];
@@ -177,19 +189,15 @@ class GChromecast
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
-
 		// playaer state
 		if (preg_match("/playerState/s", $response)) {
 			preg_match("/playerState\"\:\"([^\"]*)/", $response, $matches);
 			$this->state = $matches[1];
 		}
-
 		// played url
 		if (preg_match("/contentId/s", $response)) {
 			preg_match("/contentId\"\:\"([^\"]*)/", $response, $matches);
 			$this->contentid = $matches[1];
-		} else {
-			$this->contentid = $this->appid;
 		}
 	    if ($response){
 		    $response = substr($response, strpos($response,'{"type'),50000);
@@ -309,37 +317,37 @@ class GChromecast
 	}
 	
 	public function Mute() {
-            $this->getMediaSession();
-             while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
-		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
-		$this->getCastMessage();
-                usleep(100);
-                $count++;
-                $response = $this->getStatus(); // Auto-reconnects
+        $this->getStatus();
+        while (($response['status']['volume']['muted'])== TRUE OR $count < 20) {
+		    $this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": true }, "requestId":'.$this->requestId.' }');
+		    $this->getCastMessage();
+            usleep(100);
+            $count++;
+            $response = $this->getStatus(); // Auto-reconnects
 	    }	
 	    return TRUE;
 	}
 	
 	public function UnMute() {
-            $this->getMediaSession();
+        $this->getStatus();
 	    while (($response['status']['volume']['muted'])== FALSE OR $count < 20) {
-		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
-		$this->getCastMessage();
-                usleep(100);
-                $count++;
-                $response = $this->getStatus(); // Auto-reconnects
+		    $this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "muted": false }, "requestId":'.$this->requestId.' }');
+		    $this->getCastMessage();
+            usleep(100);
+            $count++;
+            $response = $this->getStatus(); // Auto-reconnects
 	    }		
 	    return TRUE;
 	}
 	
 	public function SetVolume($volume) {
-            $this->getMediaSession();
+        $this->getStatus();
 	    while (round(($response['status']['volume']['level']),1)!= round($volume, 1) OR $count < 20) {
-		$this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
+		    $this->sendMessage("urn:x-cast:com.google.cast.receiver", '{"type":"SET_VOLUME", "volume": { "level": ' . $volume . ' }, "requestId":'.$this->requestId.' }');
 	        $this->getCastMessage();
-                usleep(100);
-                $count++;
-                $response = $this->getStatus(); // Auto-reconnects
+            usleep(100);
+            $count++;
+            $response = $this->getStatus(); // Auto-reconnects
 	    }
 	    return TRUE;
 	}
