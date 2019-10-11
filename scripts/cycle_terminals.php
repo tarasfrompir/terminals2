@@ -46,7 +46,7 @@ while (1) {
     //время жизни сообщений
     if (time() - $clear_message > 60 * $ter->config['TERMINALS_TIMEOUT']) {
         $clear_message = time();
-        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $terminals_time_out . " MINUTE)");
+        SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
     }
     // CHEK next message for terminals ready
     $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
