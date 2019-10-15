@@ -101,23 +101,23 @@ while (1) {
         
         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         // и переходим на следующий свободный терминал
-        //if (!$old_message['ID'] OR !$old_message['SOURCE'] ) {
-        //    if ($terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
-        //        // если есть уровень звука то восстанавлием его
-        //        if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
-        //            if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
-        //            $tts[$terminal['ID']]->set_volume($restored['volume']);
-        //        }
-        //        // если есть файл для воспроизведения то тоже его восстанавливаем
-        //        if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
-        //            //$tts[$terminal['ID']]->play($restored['file'], $restored['time']);
-        //            $tts[$terminal['ID']]->play($restored['file'], 0);
-        //            if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
-        //        }
-        //    sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-        //    continue;
-        //    }
-        //}  
+        if (!$old_message['ID'] OR !$old_message['SOURCE'] ) {
+            if ($terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
+                // если есть уровень звука то восстанавлием его
+                if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
+                    $tts[$terminal['ID']]->set_volume($restored['volume']);
+                }
+                // если есть файл для воспроизведения то тоже его восстанавливаем
+                if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
+                    //$tts[$terminal['ID']]->play($restored['file'], $restored['time']);
+                    $tts[$terminal['ID']]->play($restored['file'], 0);
+                    if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
+                }
+            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+            continue;
+            }
+        }  
 
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись 
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
