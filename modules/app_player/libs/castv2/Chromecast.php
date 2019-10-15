@@ -164,22 +164,26 @@ class GChromecast
 			foreach ($this->namespaces as $namespaces){
 				if ("urn:x-cast:com.google.cast.media"== $namespaces['name']) {
 					$result = true;
+					$this->cc_connect();
 		            $this->connect(); // Auto-reconnects 
 				}
 			}
 			if (!$result ) {
+				$this->cc_connect();
 				$this->launch('CC1AD845');
 	            $this->connect(); // Auto-reconnects 
 			}
 		} else {
+			$this->cc_connect();
 		    $this->launch('CC1AD845');
             $this->connect(); // Auto-reconnects 
 		}
-
+		$this->requestId++;
 		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
-		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response)) {
+		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response) OR $count < 10) {
 			$response = $this->getCastMessage();
 			usleep (1000);
+            $count++;
 		}
 
 		// Grab the mediaSessionId
