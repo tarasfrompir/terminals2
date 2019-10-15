@@ -164,8 +164,8 @@ class GChromecast
 			foreach ($this->namespaces as $namespaces){
 				if ("urn:x-cast:com.google.cast.media"== $namespaces['name']) {
 					$result = true;
-					//$this->cc_connect();
-		            $this->connect(); // Auto-reconnects 
+					$this->cc_connect();
+		                        $this->connect(); // Auto-reconnects 
 				}
 			}
 			if (!$result ) {
