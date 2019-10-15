@@ -93,6 +93,7 @@ while (1) {
             if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal" . $terminal['NAME'], 'terminals');
             sg($terminal['LINKED_OBJECT'] . '.busy', 1);
             pingTerminalSafe($terminal['NAME'], $terminal);
+            continue;
         }
         
         // berem pervoocherednoe soobsheniye 
