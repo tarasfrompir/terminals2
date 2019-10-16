@@ -124,12 +124,22 @@ while (1) {
 		
         // если есть сообщение НО не сгенерирован звук в течении 1 минуты
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']) AND !$old_message['CACHED_FILENAME'] AND  strtotime($old_message['ADDED'])+1*60 < time() AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
+        if ($old_message['CACHED_FILENAME'] AND  strtotime($old_message['ADDED'])+1*60 < time() AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
+			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
             continue;
         }
         
+		// если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутсвтует файл)
+        // удаляем сообщение из очереди для терминалов воспроизводящих звук
+        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
+			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
+            SQLUpdate('shouts', $old_message);
+            if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
+            continue;
+        }
+		
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
         if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
             continue;
