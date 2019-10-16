@@ -161,18 +161,17 @@ class GChromecast
 	public function getMediaSession() {
 		$this->getStatus(); 
 		if (is_array($this->namespaces)) {
-			foreach ($this->namespaces as $namespaces){
-				if ("urn:x-cast:com.google.cast.media"== $namespaces['name']) {
-					$result = true;
-					$this->cc_connect();
+		    foreach ($this->namespaces as $namespaces){
+			if ("urn:x-cast:com.google.cast.media"== $namespaces['name']) {
+			    $result = true;
 		            $this->connect(); // Auto-reconnects 
-				}
 			}
-			if (!$result ) {
-				$this->cc_connect();
-				$this->launch('CC1AD845');
-	            $this->connect(); // Auto-reconnects 
-			}
+		     }
+		     if (!$result ) {
+			$this->cc_connect();
+			$this->launch('CC1AD845');
+	                $this->connect(); // Auto-reconnects 
+		     }
 		} else {
 			$this->cc_connect();
 		    $this->launch('CC1AD845');
