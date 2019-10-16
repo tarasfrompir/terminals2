@@ -488,3 +488,63 @@ function send_messageSafe($message, $terminal) {
     getURLBackground($url, 0);
     return 1;
 }
+function restore_media($terminalname, $restore, $terminal) {
+    include_once (DIR_MODULES . "terminals/terminals.class.php");
+    $ter = new terminals();
+    $ter->getConfig();
+    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
+    $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
+    if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
+        include_once ($addon_file);
+        $tts = new $terminal['TTS_TYPE']($terminal);
+    } else {
+        return;
+    }
+    if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
+    // get terminal info
+    try {
+		// восстановим звук
+        if ($restore['volume'] AND method_exists($tts, 'set_volume')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore volume", 'terminals');
+            $tts->set_volume($restore['volume']);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function set volume", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+    try {
+        // восстановим медиа
+        if ($restore['file'] AND method_exists($tts, 'play')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore media", 'terminals');
+            $tts->play($restore['file'], 0);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+	sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+    sg($terminal['LINKED_OBJECT'] . '.busy', 0);
+}
+function restore_mediaSafe($restore, $terminal) {
+    $data = array('restore_media' => 1, 'terminalname' => $terminal['NAME'], 'restore' => json_encode($restore), 'terminal' => json_encode($terminal));
+    if (session_id()) {
+        $data[session_name() ] = session_id();
+    }
+    $url = BASE_URL . '/objects/?' . http_build_query($data);
+    if (is_array($restore)) {
+        foreach ($restore as $k => $v) {
+            $url.= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    if (is_array($terminal)) {
+        foreach ($terminal as $k => $v) {
+            $url.= '&' . $k . '=' . urlencode($v);
+        }
+    }
+    getURLBackground($url, 0);
+    return 1;
+}
