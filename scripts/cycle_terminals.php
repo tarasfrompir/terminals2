@@ -99,25 +99,15 @@ while (1) {
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
-/*         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         // и переходим на следующий свободный терминал
         if (!$old_message['ID'] OR !$old_message['SOURCE'] ) {
-            if ($terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
-                // если есть уровень звука то восстанавлием его
-                if ($restored['volume'] AND method_exists($tts[$terminal['ID']], 'set_volume')) {
-                    if ($ter->config['LOG_ENABLED']) DebMes("Restore volume on the terminal - " . $terminal['NAME'], 'terminals');
-                    $tts[$terminal['ID']]->set_volume($restored['volume']);
-                }
-                // если есть файл для воспроизведения то тоже его восстанавливаем
-                if ($restored['file'] AND method_exists($tts[$terminal['ID']], 'play')) {
-                    //$tts[$terminal['ID']]->play($restored['file'], $restored['time']);
-                    $tts[$terminal['ID']]->play($restored['file'], 0);
-                    if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
-                }
-                sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-                continue;
-            }
-        } else */ if (!$old_message['SOURCE']) {
+            if ($terminal['IS_ONLINE'] AND $restore = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
+                sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+				restore_mediaSafe($restore, $terminal);
+				continue;
+			}
+        } else if (!$old_message['SOURCE'] OR !$old_message['MESSAGE']) {
 		    // если нечего восстанавливать просто пропускаем итерацию - 
 			// иногда попадаются пустые записи ИД терминалов
             continue;
