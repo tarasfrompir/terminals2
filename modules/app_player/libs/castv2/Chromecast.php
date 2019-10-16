@@ -358,6 +358,7 @@ class GChromecast
 	public function seek($secs) {
             // Seek
             $this->getMediaSession(); // Auto-reconnects
+				$this->connect(); // Auto-reconnects
 	    if ($this->mediaid) {
 	        $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"SEEK", "mediaSessionId":' . $this->mediaid . ', "currentTime":' . $secs . ',"requestId":'.$this->requestId.'}');
 	        $this->getCastMessage();
@@ -368,6 +369,7 @@ class GChromecast
 	public function stop() {
 		// Stop
 		$this->getMediaSession(); // Auto-reconnects
+		$this->connect(); // Auto-reconnects
 		if ($this->mediaid) {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"STOP", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 		        $this->getCastMessage();
@@ -379,7 +381,7 @@ class GChromecast
 	public function pause() {
 		// Pause
 		$this->getMediaSession(); // Auto-reconnects
-		//DebMes($this->state);
+	    $this->connect(); // Auto-reconnects
 		if ($this->mediaid and $this->state != 'PAUSED') {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 			$this->getCastMessage();
@@ -391,7 +393,7 @@ class GChromecast
 	
 	public function play() {
 	    $this->getMediaSession(); // Auto-reconnects
-	    //DebMes($this->state);
+		$this->connect(); // Auto-reconnects
 	    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
 	    $this->getCastMessage();
 	    while ($this->state!='PLAYING' OR $count < 20) {
@@ -411,7 +413,7 @@ class GChromecast
 	$this->getMediaSession(); // Auto-reconnects
 	if ($this->appid != 'CC1AD845') {
 		$this->launch('CC1AD845');
-	}		
+	}
 	$this->connect(); // Auto-reconnects
 	if (preg_match('/\.mp3/', $url)) {
             $content_type = 'audio/mp3';
