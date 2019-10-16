@@ -99,7 +99,7 @@ while (1) {
         // berem pervoocherednoe soobsheniye 
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
-        // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
+/*         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
         // и переходим на следующий свободный терминал
         if (!$old_message['ID'] OR !$old_message['SOURCE'] ) {
             if ($terminal['IS_ONLINE'] AND $restored = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
@@ -117,7 +117,7 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
                 continue;
             }
-        } else if (!$old_message['SOURCE']) {
+        } else */ if (!$old_message['SOURCE']) {
 		    // если нечего восстанавливать просто пропускаем итерацию - 
 			// иногда попадаются пустые записи ИД терминалов
             continue;
