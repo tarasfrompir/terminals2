@@ -305,6 +305,9 @@ class terminals extends module
         $terminal['TTS_TYPE'] = 'mainterminal';
         SQLUpdate('terminals', $terminal);
 
+	// add autorestart cicle
+	setGlobal('cycle_terminalsAutoRestart','1');
+	    
         // remove old files
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
 
