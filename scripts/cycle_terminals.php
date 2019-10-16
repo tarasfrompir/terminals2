@@ -114,10 +114,14 @@ while (1) {
                     $tts[$terminal['ID']]->play($restored['file'], 0);
                     if ($ter->config['LOG_ENABLED']) DebMes("Restore media on the terminal - " . $terminal['NAME'], 'terminals');
                 }
-            sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-            continue;
+                sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+                continue;
             }
-        }  
+        } else if (!$old_message['SOURCE']) {
+		    // если нечего восстанавливать просто пропускаем итерацию - 
+			// иногда попадаются пустые записи ИД терминалов
+            continue;
+		}
 
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись 
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
@@ -125,6 +129,14 @@ while (1) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
+            continue;
+        }
+		
+        // если есть сообщение НО не сгенерирован звук в течении 1 минуты
+        // удаляем сообщение из очереди для терминалов воспроизводящих звук
+        if ($old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']) AND !$old_message['CACHED_FILENAME'] AND  strtotime($old_message['ADDED'])+1*60 < time() AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
+            SQLUpdate('shouts', $old_message);
+            if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
             continue;
         }
         
