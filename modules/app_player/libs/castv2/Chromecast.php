@@ -130,7 +130,6 @@ class GChromecast
 		// also fills in the transportId of any currently running app
 		$this->getCastMessage();
 		$this->cc_connect();
-		$this->testLive();
 		$c = new CastMessage();
 		$c->source_id = "sender-0";
 		$c->receiver_id = "receiver-0";
@@ -159,6 +158,7 @@ class GChromecast
 	}
 	
 	public function getMediaSession() {
+		$this->cc_connect();
 		$this->getStatus(); 
 		if (is_array($this->namespaces)) {
 		    foreach ($this->namespaces as $namespaces){
