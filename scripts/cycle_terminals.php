@@ -90,7 +90,7 @@ while (1) {
 
         // если терминал СВОБОДНЫЙ и офлайн то пингуем его
         if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
-            if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal" . $terminal['NAME'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal " . $terminal['NAME'], 'terminals');
             pingTerminalSafe($terminal['NAME'], $terminal);
             continue;
         }
