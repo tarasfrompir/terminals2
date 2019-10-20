@@ -230,10 +230,10 @@ class terminals extends module
             while (!file_exists($details['CACHED_FILENAME']) OR $count < 300 ) {
                 usleep(10000);
                 $count++;
-		if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/100 . " seconds. If >=3 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
             }
-
-            // берем длинну сообщения
+            if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/1000 . " seconds. If >=3 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
+            
+	    // берем длинну сообщения
             $count = 0;
             while ($count<3) {
                 $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
