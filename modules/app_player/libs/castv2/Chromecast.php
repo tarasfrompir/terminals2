@@ -411,7 +411,8 @@ class GChromecast
 	
     public function load($url, $currentTime) {
 	$this->getMediaSession(); // Auto-reconnects
-	if ($this->appid != 'CC1AD845') {
+	$this->cc_connect();
+        if ($this->appid != 'CC1AD845') {
 		$this->launch('CC1AD845');
 	}
 	$this->connect(); // Auto-reconnects
