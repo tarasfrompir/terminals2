@@ -231,7 +231,6 @@ class terminals extends module
                 usleep(100000);
                 $count++;
             }
-		DebMes('ff path -'.$details['CACHED_FILENAME']);
             if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/10 . " seconds. If >=3 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
             
 	    // берем длинну сообщения
