@@ -228,7 +228,7 @@ class terminals extends module
             if ($this->config['LOG_ENABLED']) DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
 
             // ждем файл сообщения
-            while (!is_readable($details['CACHED_FILENAME']) OR $count < 100 ) {
+            while (!file_exists($details['CACHED_FILENAME']) OR $count < 100 ) {
                 usleep(100000);
                 $count++;
             }
@@ -236,8 +236,9 @@ class terminals extends module
             
 	    // берем длинну сообщения
             $count = 0;
-            while ($duration_norm != $duration = get_media_info($details['CACHED_FILENAME'])['duration'] OR $count < 100) {
-                    if ($duration_norm < $duration) {
+            while ($count < 5) {
+                $duration = get_media_info($details['CACHED_FILENAME'])['duration']
+                if ($duration_norm < $duration) {
                     $duration_norm = $duration;
                 }
                 usleep(100000);
