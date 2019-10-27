@@ -226,20 +226,21 @@ class terminals extends module
         if ($event == 'SAY_CACHED_READY' ) {
             $this->getConfig();
             if ($this->config['LOG_ENABLED']) DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
+
             // ждем файл сообщения
-            while (!file_exists($details['CACHED_FILENAME']) OR $count < 300 ) {
-                usleep(10000);
+            while (!is_readable($details['CACHED_FILENAME']) OR $count < 100 ) {
+                usleep(100000);
                 $count++;
             }
-            if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/1000 . " seconds. If >=3 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
+            if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/10 . " seconds. If >=10 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
             
 	    // берем длинну сообщения
             $count = 0;
-            while ($count<3) {
-                $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
-                if ($duration_norm < $duration) {
+            while ($duration_norm != $duration = get_media_info($details['CACHED_FILENAME'])['duration'] OR $count < 100) {
+                    if ($duration_norm < $duration) {
                     $duration_norm = $duration;
                 }
+                usleep(100000);
                 $count++;
             }
             DebMes('Duration message - '.$duration_norm, 'terminals');
