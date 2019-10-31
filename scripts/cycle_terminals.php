@@ -48,19 +48,12 @@ while (1) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
     }
+
     // CHEK next message for terminals ready
     $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
     if ($message) {
         $number_message = $number_message + 1;
-        if ($ter->config['LOG_ENABLED']) DebMes("Max nomber message - " . $number_message, 'terminals');
-    } else {
-        sleep(1);
-    }
-    // CHEK next message for terminals ready
-    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
-    if ($message) {
-        $number_message = $number_message + 1;
-        if ($ter->config['LOG_ENABLED']) DebMes("Max nomber message - " . $number_message, 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Next message number - " . $number_message, 'terminals');
     } else {
         sleep(1);
     }
