@@ -227,11 +227,11 @@ class terminals extends module
             $this->getConfig();
             if ($this->config['LOG_ENABLED']) DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
             // ждем файл сообщения
-            while (!file_exists($details['CACHED_FILENAME']) OR $count < 10 ) {
-                usleep(100000);
+            while (!file_exists($details['CACHED_FILENAME']) OR $count < 1000 ) {
+                usleep(10000);
                 $count++;
             }
-            if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/10 . " seconds. If >=3 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
+            if ($this->config['LOG_ENABLED']) DebMes("Wait a file " . $count/100 . " seconds. If >=10 second then PROBLEM NOT GET RIGHT TIME MESSAGE", 'terminals');
             
 	    // берем длинну сообщения
             $count = 0;
