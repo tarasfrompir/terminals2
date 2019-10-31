@@ -47,6 +47,7 @@ while (1) {
     if (time() - $clear_message > 60 * $ter->config['TERMINALS_TIMEOUT']) {
         $clear_message = time();
         SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
+        DebMes ("Clear message - when can not to play. For timeouts - ".$ter->config['TERMINALS_TIMEOUT'], 'terminals');
     }
 
     // CHEK next message for terminals ready
