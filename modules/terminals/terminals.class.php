@@ -235,7 +235,7 @@ class terminals extends module
             
 	    // берем длинну сообщения
             $count = 0;
-            while ($count<10) {
+            while ($count<3) {
                 $duration = get_media_info($details['CACHED_FILENAME'])['duration'];
                 if ($duration_norm < $duration) {
                     $duration_norm = $duration;
