@@ -325,6 +325,10 @@ class app_player extends module {
 					if(strtolower($terminal['NAME'] == 'MAIN')) {
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
 						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
+					} else {
+						$rec['ID'] = $terminal['ID'];
+						$rec['TERMINAL_VOLUME_LEVEL'] = (int)$param;
+						SQLUpdate('terminals', $rec);
 					}
 				}
 				
