@@ -66,7 +66,6 @@
 				<div class="slide_panel">
 					<input type="range" name="volume_control" value="[#TERMINAL_VOLUME#]" title="[#TERMINAL_VOLUME#]" min="0" max="100" orient="vertical" data-highlight="true" />
 				</div>
-				</div>
 			</div>
 			[#if MODE="menu"#]</div><div class="line_container">[#endif#]
 			<div class="column button previous" title="<#LANG_APP_PLAYER_PREVIOUS#>">
@@ -91,7 +90,7 @@
 </div>
 <script language="javascript">
 	var [#APP_PLAYER_ID#]_volumeLevel = parseInt('%ThisComputer.volumeLevel%');
-	//var [#APP_PLAYER_ID#]_volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
+	var [#APP_PLAYER_ID#]_volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
 	$(function() {
 		// Volume
 		$.subscribe('wsData', function(_, response) {
@@ -104,9 +103,9 @@
 							case 'thiscomputer.volumelevel':
 								[#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
 								break;
-							//case 'thiscomputer.volumemedialevel':
-							//	[#APP_PLAYER_ID#]_volumeMediaLevel = parseInt(obj[i]['VALUE']);
-							//	break;
+							case 'thiscomputer.volumemedialevel':
+								[#APP_PLAYER_ID#]_volumeMediaLevel = parseInt(obj[i]['VALUE']);
+								break;
 						}
 					}
 				}
