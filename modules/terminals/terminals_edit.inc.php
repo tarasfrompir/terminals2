@@ -78,7 +78,7 @@ if ($this->mode == 'update') {
         $rec['MIN_MSG_LEVEL'] = 0;
     }
     // автодополнение обьекта 
-    if ($rec['LINKED_OBJECT'] == '') {
+    if ($rec['LINKED_OBJECT'] != $rec['NAME']) {
         addClassObject('Terminals', $rec['NAME']);
         $rec['LINKED_OBJECT'] = $rec['NAME'];
     }
