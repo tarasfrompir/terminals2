@@ -357,6 +357,7 @@ class app_player extends module {
 			if(in_array($terminals[$i]['NAME'], $session_terminals)) {
 				$terminals[$i]['SELECTED'] = 1;
 				$out['TERMINAL_TITLE'] = $terminals[$i]['TITLE'];
+                                $out['TERMINAL_VOLUME'] = $terminals[$i]['TERMINAL_VOLUME_LEVEL'];
 			}
 		}
 		$out['TERMINALS_TOTAL'] = count($terminals);
