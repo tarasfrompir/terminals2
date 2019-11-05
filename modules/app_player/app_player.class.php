@@ -322,7 +322,7 @@ class app_player extends module {
 				
 				// Set media volume level
 				if($command == 'set_volume' && strlen($param)) {
-					if(strtolower($terminal['HOST']) == 'localhost' || $terminal['HOST'] == '127.0.0.1') {
+					if(strtolower($terminal['NAME'] == 'MAIN')) {
 						setGlobal('ThisComputer.volumeMediaLevel', (int)$param);
 						callMethod('ThisComputer.VolumeMediaLevelChanged', array('VALUE' => (int)$param, 'HOST' => $terminal['HOST']));
 					}
