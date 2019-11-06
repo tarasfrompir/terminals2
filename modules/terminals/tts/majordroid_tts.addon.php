@@ -30,7 +30,12 @@ class majordroid_tts extends tts_addon {
     {
         return $this->sendMajorDroidCommand('volume:'.$volume);
     }
-
+	
+    function stop() 
+    {
+        return $this->sendMajorDroidCommand('pause');
+    }
+	
     function sendMajorDroidCommand($cmd) {
         if ($this->terminal['HOST']) {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
