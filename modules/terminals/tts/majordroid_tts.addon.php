@@ -26,7 +26,7 @@ class majordroid_tts extends tts_addon {
         return $this->sendMajorDroidCommand('ask:'.$phrase);
     }
 	
-    function set_volume($level=0) 
+    function set_volume($volume=0) 
     {
         return $this->sendMajorDroidCommand('volume:'.$volume);
     }
