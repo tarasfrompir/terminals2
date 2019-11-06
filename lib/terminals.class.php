@@ -305,6 +305,22 @@ function setPlayerVolume($host = 'localhost', $level = 0) {
     $player->usual($out);
     return $player->json['message'];
 }
+/**
+ * This function change volume for message on the terminal
+ * @param mixed $host Host (default 'localhost') name or ip of terminal
+ * @param mixed $level level of volume (default 0) to positon from start time
+ */
+function setMessageVolume($host = 'localhost', $level = 0) {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
+    }
+    if (!$terminal) {
+        return;
+    }
+	$terminal['MESSAGE_VOLUME_LEVEL'] = $level;
+    SQLUpdate('terminals', $terminal);
+    return true;
+}
 function setTerminalMML($host = 'localhost', $mml = 0) {
     if (!$terminal = getTerminalsByName($host, 1) [0]) {
         $terminal = getTerminalsByHost($host, 1) [0];
