@@ -310,6 +310,7 @@ class terminals extends module
         SQLUpdate('terminals', $terminal);
 
 	// add autorestart cicle
+        setGlobal('cycle_terminalsControl','start');
 	setGlobal('cycle_terminalsAutoRestart','1');
 	    
         // remove old files
