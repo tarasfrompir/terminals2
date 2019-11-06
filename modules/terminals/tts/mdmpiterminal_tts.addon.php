@@ -1,6 +1,6 @@
 <?php
 
-class majordroid_tts extends tts_addon
+class mdmpiterminal extends tts_addon
 {
     
     function __construct($terminal)
