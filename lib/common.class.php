@@ -112,7 +112,7 @@ function sayTo($ph, $level = 0, $destination = '')
         return 0;
     }
     // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts");
+    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // add message to chat
@@ -197,7 +197,7 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
     // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts");
+    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     
     // replace enter simbol
     $ph = str_replace(array(
