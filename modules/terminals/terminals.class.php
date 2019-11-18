@@ -338,7 +338,7 @@ class terminals extends module
             if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='vlcweb') {
                 $terminal['TTS_TYPE']='vlcweb_tts';
             }		
-            $terminal['CAN_TTS'] = '1';
+            $terminal['CANTTS'] = '1';
             $terminal['USE_SYSTEM_MML'] = '1';
             SQLUpdate('terminals', $terminal);
         }        
