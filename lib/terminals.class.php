@@ -83,16 +83,16 @@ function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     return $terminals;
 }
 // Get MajorDroid terminals
-function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
-    $sqlQuery = "SELECT * FROM `terminals` WHERE `MAJORDROID_API` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
-    if ($limit >= 0) {
-        $sqlQuery.= ' LIMIT ' . intval($limit);
-    }
-    if (!$terminals = SQLSelect($sqlQuery)) {
-        $terminals = array(NULL);
-    }
-    return $terminals;
-}
+//function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
+//    $sqlQuery = "SELECT * FROM `terminals` WHERE `MAJORDROID_API` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
+//    if ($limit >= 0) {
+//        $sqlQuery.= ' LIMIT ' . intval($limit);
+//    }
+//    if (!$terminals = SQLSelect($sqlQuery)) {
+//        $terminals = array(NULL);
+//    }
+//    return $terminals;
+//}
 // Get terminals by CANTTS
 function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '" . DBSafe('1') . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
