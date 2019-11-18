@@ -307,6 +307,8 @@ class terminals extends module
 	    // update main terminal
         $terminal = getMainTerminal();
         $terminal['TTS_TYPE'] = 'mainterminal';
+        $terminal['CANTTS'] = '1';
+        $terminal['USE_SYSTEM_MML'] = '1';
         SQLUpdate('terminals', $terminal);
 
 	    // add autorestart cicle
@@ -324,24 +326,24 @@ class terminals extends module
             SQLUpdate('terminals', $terminal);
         }
         //редактируем терминалы под новые настройки
-        $terminals = SQLSelect("SELECT * FROM terminals");
-        foreach ($terminals as $terminal) {
-            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='dnla') {
-                $terminal['TTS_TYPE']='dnla_tts';
-            }
-            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='chromecast') {
-                $terminal['TTS_TYPE']='chromecast_tts';
-            }
-            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='majordroid') {
-                $terminal['TTS_TYPE']='majordroid_tts';
-            }			
-            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='vlcweb') {
-                $terminal['TTS_TYPE']='vlcweb_tts';
-            }		
-            $terminal['CANTTS'] = '1';
-            $terminal['USE_SYSTEM_MML'] = '1';
-            SQLUpdate('terminals', $terminal);
-        }        
+        //$terminals = SQLSelect("SELECT * FROM terminals");
+        //foreach ($terminals as $terminal) {
+        //    if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='dnla') {
+        //        $terminal['TTS_TYPE']='dnla_tts';
+        //    }
+        //    if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='chromecast') {
+        //        $terminal['TTS_TYPE']='chromecast_tts';
+        //    }
+        //    if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='majordroid') {
+        //        $terminal['TTS_TYPE']='majordroid_tts';
+        //    }			
+        //    if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='vlcweb') {
+        //        $terminal['TTS_TYPE']='vlcweb_tts';
+        //    }		
+        //    $terminal['CANTTS'] = '1';
+        //    $terminal['USE_SYSTEM_MML'] = '1';
+        //    SQLUpdate('terminals', $terminal);
+        //}        
         unsubscribeFromEvent($this->name, 'SAY');
         unsubscribeFromEvent($this->name, 'SAYTO');
         unsubscribeFromEvent($this->name, 'ASK');
