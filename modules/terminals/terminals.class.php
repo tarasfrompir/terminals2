@@ -304,14 +304,14 @@ class terminals extends module
         addClassProperty('Terminals', 'playerdata');
         addClassProperty('Terminals', 'username');
 	    
-	// update main terminal
+	    // update main terminal
         $terminal = getMainTerminal();
         $terminal['TTS_TYPE'] = 'mainterminal';
         SQLUpdate('terminals', $terminal);
 
-	// add autorestart cicle
+	    // add autorestart cicle
         setGlobal('cycle_terminalsControl','start');
-	setGlobal('cycle_terminalsAutoRestart','1');
+        setGlobal('cycle_terminalsAutoRestart','1');
 	    
         // remove old files
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
@@ -326,9 +326,20 @@ class terminals extends module
         //редактируем терминалы под новые настройки
         $terminals = SQLSelect("SELECT * FROM terminals");
         foreach ($terminals as $terminal) {
-            if ($terminal['TTS_TYPE']=='majordroid') {
-                $terminal['TTS_TYPE']='majordroid_tts';
+            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='dnla') {
+                $terminal['TTS_TYPE']='dnla_tts';
             }
+            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='chromecast') {
+                $terminal['TTS_TYPE']='chromecast_tts';
+            }
+            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='majordroid') {
+                $terminal['TTS_TYPE']='majordroid_tts';
+            }			
+            if (!$terminal['TTS_TYPE'] AND $terminal['PLAYER_TYPE']=='vlcweb') {
+                $terminal['TTS_TYPE']='vlcweb_tts';
+            }		
+            $terminal['CAN_TTS'] = '1';
+            $terminal['USE_SYSTEM_MML'] = '1';
             SQLUpdate('terminals', $terminal);
         }        
         unsubscribeFromEvent($this->name, 'SAY');
