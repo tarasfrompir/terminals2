@@ -26,7 +26,7 @@ class sounddevice_tts extends tts_addon
                         define("PATH_TO_FFMPEG", 'ffmpeg');
                     }
                 }
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_u8 -ar 22050 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
+                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -ar 44100 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
             }
             if (file_exists($message['CACHED_FILENAME'])) {
                 if (IsWindowsOS()) {
