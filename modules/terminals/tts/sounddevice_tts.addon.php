@@ -26,9 +26,9 @@ class sounddevice_tts extends tts_addon
                         define("PATH_TO_FFMPEG", 'ffmpeg');
                     }
                 }
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
+                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             }
-            if (file_exists($message['CACHED_FILENAME'])) {
+            if (file_exists($filename)) {
                 if (IsWindowsOS()) {
                     safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->setting['TTS_SOUND_DEVICE']);
                 }
