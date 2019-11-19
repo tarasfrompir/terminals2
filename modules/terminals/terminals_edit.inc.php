@@ -26,7 +26,8 @@ if (gg($rec['LINKED_OBJECT'] .'.username')) {
 // seting for terminals tts
 $out['TTS'] = json_decode($rec['TTS_SETING'], true);
 if (!$out['TTS']) {
-    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
+	// тут берутся настройки для ТТС терминалов
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'));
 }
 
 if ($this->mode == 'update') {
@@ -62,8 +63,8 @@ if ($this->mode == 'update') {
     $rec['CANTTS'] = gr('cantts', 'int');    
     $rec['TTS_TYPE'] = gr('tts_type');
 
-    // write seting for tts terminals
-    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'));
+    // write seting for tts terminals тут сохраняются настройки для ТТС терминалов
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'));
     $rec['TTS_SETING'] = json_encode($out['TTS']);
 
     // write info for terminal user and location
