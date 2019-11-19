@@ -25,10 +25,22 @@ class alicevox extends tts_addon
     public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if ($message['CACHED_FILENAME']) {
+			$fileinfo = pathinfo($message['CACHED_FILENAME']);
+			$filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
+			if (!file_exists($filename)) {
+				if (!defined('PATH_TO_FFMPEG')) {
+					if (IsWindowsOS()) {
+						define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+					} else {
+						define("PATH_TO_FFMPEG", 'ffmpeg');
+					}
+				}
+				shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_u8 -ar 22050 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
+			}
             if (file_exists($message['CACHED_FILENAME'])) {
                 if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
                     $message['CACHED_FILENAME'] = 'http://' . getLocalIp() . $m[0];
-                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$message['CACHED_FILENAME']."\"]},\"id\":1}";
+                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$filename."\"]},\"id\":1}";
                     $result = json_decode(getURL($url, 0), true);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
