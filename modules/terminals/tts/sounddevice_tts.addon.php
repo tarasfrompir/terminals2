@@ -27,10 +27,8 @@ class sounddevice_tts extends tts_addon
                     }
                 }
                 shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_u8 -ar 22050 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
-                DebMes($filename);
             }
             if (file_exists($message['CACHED_FILENAME'])) {
-                DebMes($this->setting['TTS_SOUND_DEVICE']);
                 if (IsWindowsOS()) {
                     shell_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->setting['TTS_SOUND_DEVICE']);
                 }
