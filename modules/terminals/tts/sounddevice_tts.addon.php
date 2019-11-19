@@ -14,19 +14,19 @@ class sounddevice_tts extends tts_addon
     public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if($message['CACHED_FILENAME']) {
-			$fileinfo = pathinfo($message['CACHED_FILENAME']);
-			$filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
-			if (!file_exists($filename)) {
-				if (!defined('PATH_TO_FFMPEG')) {
-					if (IsWindowsOS()) {
-						define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-					} else {
-						define("PATH_TO_FFMPEG", 'ffmpeg');
-					}
+		$fileinfo = pathinfo($message['CACHED_FILENAME']);
+		$filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
+		if (!file_exists($filename)) {
+			if (!defined('PATH_TO_FFMPEG')) {
+				if (IsWindowsOS()) {
+					define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+				} else {
+					define("PATH_TO_FFMPEG", 'ffmpeg');
 				}
-				shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_u8 -ar 22050 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
-				DebMes($filename);
 			}
+			shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_u8 -ar 22050 " . $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav');
+			DebMes($filename);
+	         }
             if(file_exists($message['CACHED_FILENAME'])) {
                 if (IsWindowsOS()){
                     safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename. ' '.$terminal['TTS_SOUND_DEVICE']);
