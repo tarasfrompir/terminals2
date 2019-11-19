@@ -29,7 +29,7 @@ class sounddevice_tts extends tts_addon
 			}
             if(file_exists($message['CACHED_FILENAME'])) {
                 if (IsWindowsOS()){
-                    safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename. ' 3');
+                    safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename. ' '.$terminal['TTS_SOUND_DEVICE']);
                 } 
                 sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
