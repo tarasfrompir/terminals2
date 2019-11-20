@@ -1,6 +1,8 @@
 ﻿import pyaudio
 import wave
 import sys
+import subprocess
+
 
 p = pyaudio.PyAudio()
 
@@ -8,12 +10,30 @@ p = pyaudio.PyAudio()
 # аргумент -play nameoffile devicenumber проиграет файл(имя) на устройстве номер(1) 
 
 if (sys.argv[1] == '-devicelist'):
+	# get device list
+	popen = subprocess.Popen('setvol device', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	devlist = ''
+	write = ''
+	info = p.get_host_api_info_by_index(0)
+	numdevices = info.get('deviceCount')
+	for line in popen.stdout.readlines():
+		tmp = (line).decode('866').strip()
+		if (tmp == 'Audio:'):
+			write = 1
+		if (tmp == 'Recording:'):
+			break
+		if (write == 1 and tmp != 'Audio:'):
+			devlist = devlist + tmp + "\n"
+	retval = popen.wait()
+
 	info = p.get_host_api_info_by_index(0)
 	numdevices = info.get('deviceCount')
 	for i in range(0, numdevices):
-		if (p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels')) > 0:
-			out = i, p.get_device_info_by_host_api_device_index(0, i).get('name')
-			print (str(out).encode('latin1').decode('cp1251'))
+		if (p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels')) > 0 :
+			out = str(p.get_device_info_by_host_api_device_index(0, i).get('name')).encode('latin1').decode('cp1251')
+			for lines in devlist.split("\n"):
+				if (lines.find(out) != -1):
+					print (i,lines)
 
 elif (sys.argv[1] == '-play' and sys.argv[2] != "" and sys.argv[3] != ""):
 
