@@ -14,6 +14,7 @@ if (sys.argv[1] == '-devicelist'):
 	popen = subprocess.Popen('setvol device', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	devlist = ''
 	write = ''
+	out = ''
 	info = p.get_host_api_info_by_index(0)
 	numdevices = info.get('deviceCount')
 	for line in popen.stdout.readlines():
@@ -30,10 +31,11 @@ if (sys.argv[1] == '-devicelist'):
 	numdevices = info.get('deviceCount')
 	for i in range(0, numdevices):
 		if (p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels')) > 0 :
-			out = str(p.get_device_info_by_host_api_device_index(0, i).get('name')).encode('latin1').decode('cp1251')
+			temp = str(p.get_device_info_by_host_api_device_index(0, i).get('name')).encode('latin1').decode('cp1251')
 			for lines in devlist.split("\n"):
-				if (lines.find(out) != -1):
-					print (i,lines)
+				if (lines.find(temp) != -1):
+					out = out + str(i) + "^" + lines + ','
+	print (out)
 
 elif (sys.argv[1] == '-play' and sys.argv[2] != "" and sys.argv[3] != ""):
 
