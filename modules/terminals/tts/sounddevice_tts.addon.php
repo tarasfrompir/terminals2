@@ -31,6 +31,8 @@ class sounddevice_tts extends tts_addon
             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
                     safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->setting['TTS_SOUND_DEVICE']);
+                } else {
+                    // linux
                 }
                 sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
