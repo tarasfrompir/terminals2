@@ -9,6 +9,10 @@ class sounddevice_tts extends tts_addon
         $this->description .= '<b>Работает:</b>&nbsp; только на Виндовс;.<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+		$this->devicenumber = substr($this->setting['TTS_SOUND_DEVICE'], 0, strpos($this->setting['TTS_SOUND_DEVICE'], '^'));
+		$this->devicename = substr($this->setting['TTS_SOUND_DEVICE'], strpos($this->setting['TTS_SOUND_DEVICE'], '^')+1);
+		DebMes ($this->devicenumber);
+		DebMes ($this->devicename);
         parent::__construct($terminal);
     }
     
@@ -30,7 +34,7 @@ class sounddevice_tts extends tts_addon
             }
             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
-                    safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->setting['TTS_SOUND_DEVICE']);
+                    safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->devicenumber);
                 } else {
                     // linux
                 }
