@@ -230,6 +230,9 @@
                 $(document).ready(function() {
                     tts_type_select('[#TTS_TYPE#]');
                 });
+                $(document).ready(function() {
+                    tts_sound_device('[#TTS_SOUND_DEVICE#]');
+                });
             </script>
         </div>
     </div>
@@ -259,13 +262,24 @@
         <label class="col-lg-4 control-label" for="inputTitle">Адрес управления ДЛНА устройства TTS:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_control_address" value="[#TTS_CONTROL_ADDRESS#]"></div>
     </div>
-	
-    <div id='tts_sound_device' class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">Номер аудиоустройства TTS:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_sound_device" value="[#TTS_SOUND_DEVICE#]"></div>
-    </div>
-	
-    [#end TTS#]
+
+    <div class="form-group">
+        <label class="col-lg-4 control-label" for="tts_type">Номер аудиоустройства TTS:</label>
+        <div class="col-lg-5">
+            <select id="tts_sound_device" name="tts_sound_device"  class="form-control"  onchange="return tts_sound_device($(this).val());"> 
+                <option value="">Выберите аудиоустройство для TTS</option>
+				[#if TTS_SOUND_DEVICE !="" #] <option value="[#TTS_SOUND_DEVICE#]" selected[#endif#] >[#TTS_SOUND_DEVICE#]</option>  [#endif TTS_SOUND_DEVICE#]
+
+	[#end TTS#]
+
+                [#begin TTS_SOUND_DEVICES#]
+                    <option value="[#NAME#]"[#if NAME="<#NAME#>"#] selected[#endif#]>[#NAME#]</option>
+                [#end TTS_SOUND_DEVICES#]
+            </select>
+		</div>
+	</div>
+
+
 </div>
 
 
