@@ -268,18 +268,15 @@
         <div class="col-lg-5">
             <select id="tts_sound_device" name="tts_sound_device"  class="form-control"  onchange="return tts_sound_device($(this).val());"> 
                 <option value="">Выберите аудиоустройство для TTS</option>
-				[#if TTS_SOUND_DEVICE !="" #] <option value="[#TTS_SOUND_DEVICE#]" selected[#endif#] >[#TTS_SOUND_DEVICE#]</option>  [#endif TTS_SOUND_DEVICE#]
+                [#if TTS_SOUND_DEVICE !="" #] <option value="[#TTS_SOUND_DEVICE#]" selected[#endif#] >[#TTS_SOUND_DEVICE#]</option>  [#endif TTS_SOUND_DEVICE#]
 
-	[#end TTS#]
-
-                [#begin TTS_SOUND_DEVICES#]
+[#end TTS#]
+[#begin TTS_SOUND_DEVICES#]
                     <option value="[#NAME#]"[#if NAME="<#NAME#>"#] selected[#endif#]>[#NAME#]</option>
-                [#end TTS_SOUND_DEVICES#]
+[#end TTS_SOUND_DEVICES#]
             </select>
-		</div>
 	</div>
-
-
+    </div>
 </div>
 
 
