@@ -31,7 +31,7 @@ if (!$out['TTS']) {
 }
 if (!gr('tts_sound_device')) {
 	if (IsWindowsOS()) {
-		$dev_list = exec(DOOC_ROOT.'/htdocs/rc/smallplayer -devicelist 2>&1');
+		$dev_list = exec(DOC_ROOT.'/htdocs/rc/smallplayer -devicelist 2>&1');
 		$dev_list = iconv('CP1251', 'utf-8', $dev_list);
 		$out['TTS_SOUND_DEVICE'] = explode(',', $dev_list);
 		DebMes($out['TTS_SOUND_DEVICE']);
