@@ -2,7 +2,7 @@
 import wave
 import sys
 import subprocess
-
+# -*- coding: utf-8 -*-
 
 p = pyaudio.PyAudio()
 
@@ -11,7 +11,7 @@ p = pyaudio.PyAudio()
 
 if (sys.argv[1] == '-devicelist'):
 	# get device list
-	popen = subprocess.Popen('setvol device', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	popen = subprocess.Popen(["setvol", "device"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	devlist = ''
 	write = ''
 	out = ''
@@ -19,6 +19,7 @@ if (sys.argv[1] == '-devicelist'):
 	numdevices = info.get('deviceCount')
 	for line in popen.stdout.readlines():
 		tmp = (line).decode('866').strip()
+
 		if (tmp == 'Audio:'):
 			write = 1
 		if (tmp == 'Recording:'):
@@ -35,7 +36,8 @@ if (sys.argv[1] == '-devicelist'):
 			for lines in devlist.split("\n"):
 				if (lines.find(temp) != -1):
 					out = out + str(i) + "^" + lines + ','
-	print (out)
+	print (str(out).replace("b'", "").replace(",'", ","))
+
 
 elif (sys.argv[1] == '-play' and sys.argv[2] != "" and sys.argv[3] != ""):
 
