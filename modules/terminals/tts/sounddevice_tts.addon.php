@@ -54,12 +54,14 @@ class sounddevice_tts extends tts_addon
     function set_volume($level)
     {
         if (IsWindowsOS()) {
-            safe_exec(DOC_ROOT . '/rc/setvol.exe  ' . $level . ' device ' . $this->devicename);	
+			exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $out ); 
         } else {
-             // linux
+            // linux
         }
-
-        return TRUE;
+        if ($out) {
+			return TRUE;
+		}
+	    return FALSE;
     }
 	
 	// Get player status
@@ -71,23 +73,32 @@ class sounddevice_tts extends tts_addon
         $time     = 0;
         $name     = 'unknow';
         $state    = 'unknown';
+	$file     = '';
         $volume   = 0;
+        $muted    = FALSE;
         $random   = FALSE;
         $loop     = FALSE;
         $repeat   = FALSE;
         
+	// get volume
+	if (IsWindowsOS()) {
+	    exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum ); 
+	    $volume = str_replace("Master volume level =", "", $volum[0]);
+        } else {
+            // linux
+        }
         $this->data    = array(
-                'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
-                'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($status['status']['volume']['level']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
+                'file' => (string) $file, //Current link for media in device. String.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => intval($volume), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (int) $muted, // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
+                'repeat' => (string) $repeat //Repeat mode. Boolean.
             );
         return $this->data;
     }
