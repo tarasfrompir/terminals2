@@ -57,9 +57,7 @@ class mdmpiterminal extends tts_addon
         $loop     = FALSE;
         $repeat   = FALSE;
         
-        //DebMes($result);
-        if ($result) {
-            $this->data = array(
+        $this->data = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'name' => (string) $name, //Current speed for playing media. float.
                 'file' => (string) $file, //Current link for media in device. String.
@@ -72,7 +70,6 @@ class mdmpiterminal extends tts_addon
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
                 'repeat' => (string) $repeat //Repeat mode. Boolean.
             );
-        }
         return $this->data;
     }
     
