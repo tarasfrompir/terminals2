@@ -29,14 +29,21 @@ if (!$out['TTS']) {
 	// тут берутся настройки для ТТС терминалов
     $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'));
 }
-if (!gr('tts_sound_device')) {
-	if (IsWindowsOS()) {
-		$dev_list = exec(DOC_ROOT.'/rc/smallplayer -devicelist 2>&1');
-		$dev_list = iconv('CP1251', 'utf-8', $dev_list);
-		$devices = explode(',', $dev_list);
-		DebMes(serialize($devices));
+if (IsWindowsOS()) {
+	$dev_list = exec(DOC_ROOT.'/rc/smallplayer -devicelist 2>&1');
+	$dev_list = iconv('CP1251', 'utf-8', $dev_list);
+	$devices = explode(',', $dev_list);
+	DebMes(serialize($devices));
+	$out['TTS_SOUND_DEVICES'] = array();
+	foreach ($devices as $dev) {
+		if ($dev) {
+			$out['TTS_SOUND_DEVICES'][] = array('NAME' => $dev, );
+		}
 	}
 }
+
+
+
 
 if ($this->mode == 'update') {
     $ok = 1;
