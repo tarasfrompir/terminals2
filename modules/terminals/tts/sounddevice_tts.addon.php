@@ -54,7 +54,9 @@ class sounddevice_tts extends tts_addon
     function set_volume($level)
     {
         if (IsWindowsOS()) {
-			exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $out ); 
+            exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $volum ); 
+            $volume = str_replace("Master volume level =", "", $volum[0]);
+            //DebMes($volume);
         } else {
             // linux
         }
@@ -73,17 +75,18 @@ class sounddevice_tts extends tts_addon
         $time     = 0;
         $name     = 'unknow';
         $state    = 'unknown';
-	$file     = '';
+        $file     = '';
         $volume   = 0;
         $muted    = FALSE;
         $random   = FALSE;
         $loop     = FALSE;
         $repeat   = FALSE;
         
-	// get volume
-	if (IsWindowsOS()) {
-	    exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum ); 
-	    $volume = str_replace("Master volume level =", "", $volum[0]);
+       // get volume
+       if (IsWindowsOS()) {
+            exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum ); 
+            $volume = str_replace("Master volume level =", "", $volum[0]);
+            //DebMes($volume);
         } else {
             // linux
         }
