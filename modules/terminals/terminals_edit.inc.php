@@ -33,7 +33,6 @@ if (IsWindowsOS()) {
 	$dev_list = exec(DOC_ROOT.'/rc/smallplayer -devicelist 2>&1');
 	$dev_list = iconv('CP1251', 'utf-8', $dev_list);
 	$devices = explode(',', $dev_list);
-	DebMes(serialize($devices));
 	$out['TTS_SOUND_DEVICES'] = array();
 	foreach ($devices as $dev) {
 		if ($dev) {
