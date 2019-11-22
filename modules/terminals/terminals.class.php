@@ -308,7 +308,6 @@ class terminals extends module
         $terminal = getMainTerminal();
         $terminal['TTS_TYPE'] = 'mainterminal';
         $terminal['CANTTS'] = '1';
-        $terminal['USE_SYSTEM_MML'] = '1';
         SQLUpdate('terminals', $terminal);
 
 	    // add autorestart cicle
