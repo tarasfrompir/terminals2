@@ -68,10 +68,8 @@ class alicevox extends tts_addon
         $result = json_decode(getURL($url, 0), true);
         if ($result['error']) {
             $this->success = FALSE;
-            $this->message = 'Command execution error!';
         } else {
             $this->success = TRUE;
-            $this->message = 'Volume changed';
         }
         return $this->success;
     }
