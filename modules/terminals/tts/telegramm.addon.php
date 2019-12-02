@@ -19,20 +19,18 @@ class telegramm extends tts_addon {
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
-			// если пользователь привязан к телеграмму
-			if ($user = gg($terminal['LINKED_OBJECT'] . '.username')) {
-				$MEMBER_ID = SQLSelectOne("SELECT ID FROM users WHERE USERNAME = '" . $user . "'");
-				DebMes($MEMBER_ID);
-				$users  = SQLSelect("SELECT * FROM tlg_user WHERE MEMBER_ID = '" . $MEMBER_ID['ID'] . "'");
-				if (!$users) {
-					$users   = SQLSelect("SELECT * FROM tlg_user ");
-				}
-			} else {
-				$users   = SQLSelect("SELECT * FROM tlg_user ");
-			}
-				DebMes($users);
+            // если пользователь привязан к телеграмму
+            if ($user = gg($terminal['LINKED_OBJECT'] . '.username')) {
+                $MEMBER_ID = SQLSelectOne("SELECT ID FROM users WHERE USERNAME = '" . $user . "'");
+                $users  = SQLSelect("SELECT * FROM tlg_user WHERE MEMBER_ID = '" . $MEMBER_ID['ID'] . "'");
+                if (!$users) {
+                        $users   = SQLSelect("SELECT * FROM tlg_user ");
+		}
+            } else {
+                 // усли пользователя нет то отправляем на всех без исключения
+                 $users   = SQLSelect("SELECT * FROM tlg_user ");
+            }
             $c_users = count($users);
-			DebMes($c_users);
             if ($message['MESSAGE'] AND $c_users) {
                 for ($j = 0; $j < $c_users; $j++) {
                     $user_id = $users[$j]['USER_ID'];
