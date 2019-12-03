@@ -111,7 +111,7 @@ while (1) {
         if (($old_message['ID'] AND !$terminal['IS_ONLINE']) OR !$terminal['TTS_TYPE']) {
             $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
-            if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
+            //if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
             continue;
         }
 		
