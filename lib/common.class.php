@@ -216,8 +216,10 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     $rec['MEMBER_ID']  = $member_id;
     $rec['SOURCE']     = $source;
     $rec['IMPORTANCE'] = $level;
+    $rec['EVENT'] = 'SAY';
+    $rec['ID']    = SQLInsert('shouts', $rec);
     
-    
+    // если это не комманда из чата - то запускаем на все модуля подписанные на процесс COMMAND
     if ($member_id) {
         $processed = processSubscriptionsSafe('COMMAND', array(
             'level' => $level,
@@ -242,6 +244,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         }
     }
     
+	// добавляем список терминалов на которые надо говорить - если это не комманда из чата
     $terminals = array();
     $terminals = getTerminalsByCANTTS();
     
@@ -267,8 +270,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             }
         } 
     }
-    $rec['EVENT'] = 'SAY';
-    $rec['ID']    = SQLInsert('shouts', $rec);
+
+    $rec['ID']    = SQLUpdate('shouts', $rec);
     
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
     
