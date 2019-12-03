@@ -271,7 +271,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         } 
     }
 
-    $rec['ID']    = SQLUpdate('shouts', $rec);
+    SQLUpdate('shouts', $rec);
     
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
     
