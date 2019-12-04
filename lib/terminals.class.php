@@ -569,6 +569,7 @@ function restore_mediaSafe($restore, $terminal) {
  * Возвращает число прописью
  */
 function num2str($num) {
+	if (!$num) return;
     $nul='ноль';
     $ten=array(
         array('','один','два','три','четыре','пять','шесть','семь', 'восемь','девять'),
@@ -604,15 +605,15 @@ function num2str($num) {
                 else $out[]= $i2>0 ? $a20[$i3] : $ten[$gender][$i3]; # 10-19 | 1-9
 			}
             // units without rub & kop
-            if ($uk>1) $out[]= morphings($v,$unit[$uk][0],$unit[$uk][1],$unit[$uk][2]);
+            if ($uk>1) $out[]= num2straddon($v,$unit[$uk][0],$unit[$uk][1],$unit[$uk][2]);
         } //foreach
     }
     else $out[] = $nul;
 	if ($kop!=0) {
-	    $out[] = morphings(intval($rub), $unit[1][1],$unit[1][2],$unit[1][2]); // rub
-            $out[] = $ten[1][$kop].' '.morphings($kop,$unit[0][0],$unit[0][1],$unit[0][1]); // kop
+	    $out[] = num2straddon(intval($rub), $unit[1][1],$unit[1][2],$unit[1][2]); // целые
+            $out[] = $ten[1][$kop].' '.num2straddon($kop,$unit[0][0],$unit[0][1],$unit[0][1]); // десятые
 	} else {
-	    $out[] = morphings(intval($rub), $unit[1][0],$unit[1][0],$unit[1][0]); // rub
+	    $out[] = num2straddon(intval($rub), $unit[1][0],$unit[1][0],$unit[1][0]); // целые
 	}
     return trim(preg_replace('/ {2,}/', ' ', join(' ',$out)));
 }
@@ -620,7 +621,7 @@ function num2str($num) {
 /**
  * Склоняем словоформу
  */
-function morphings($n, $f1, $f2, $f5) {
+function num2straddon($n, $f1, $f2, $f5) {
     $n = abs(intval($n)) % 100;
     if ($n>10 && $n<20) return $f5;
     $n = $n % 10;
