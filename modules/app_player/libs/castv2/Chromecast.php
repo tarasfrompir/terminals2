@@ -168,12 +168,10 @@ class GChromecast
 			}
 		     }
 		     if (!$result ) {
-			$this->cc_connect();
-			$this->launch('CC1AD845');
-	                $this->connect(); // Auto-reconnects 
+                $this->launch('CC1AD845');
+	            $this->connect(); // Auto-reconnects 
 		     }
 		} else {
-			$this->cc_connect();
 		    $this->launch('CC1AD845');
             $this->connect(); // Auto-reconnects 
 		}
@@ -382,11 +380,12 @@ class GChromecast
 		// Pause
 		$this->getMediaSession(); // Auto-reconnects
 	    $this->connect(); // Auto-reconnects
+			$this->getCastMessage();
 		if ($this->mediaid and $this->state != 'PAUSED') {
 			$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PAUSE", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-			$this->getCastMessage();
 		} else if ($this->mediaid and $this->state == 'PAUSED') {
 			$this->play();
+
 		}
 		return true;
 	}
@@ -394,13 +393,12 @@ class GChromecast
 	public function play() {
 	    $this->getMediaSession(); // Auto-reconnects
 		$this->connect(); // Auto-reconnects
+		$this->getCastMessage();
 	    $this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"PLAY", "mediaSessionId":' . $this->mediaid . ', "requestId":'.$this->requestId.'}');
-	    $this->getCastMessage();
 	    while ($this->state!='PLAYING' OR $count < 20) {
                 $count++;
                 $response = $this->getStatus(); // Auto-reconnects
                 usleep(100);
-		$this->getCastMessage();
 		}
 		if ($this->state=='PLAYING') {
 			return true;
@@ -440,6 +438,7 @@ class GChromecast
         if (!$content_type) {
             $content_type = 'audio/mpeg';
         }
+		$this->getCastMessage();
 		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
 		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
 		$r = "";
