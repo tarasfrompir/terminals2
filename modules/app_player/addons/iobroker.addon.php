@@ -65,7 +65,8 @@ class iobroker extends app_player_addon {
 		}
 		return $this->success;
 	}
-	    // Get player status
+	
+    // Get player status
     function status()
     {
         $this->reset_properties();
