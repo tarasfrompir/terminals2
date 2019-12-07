@@ -64,7 +64,42 @@ class iobroker extends app_player_addon {
 			getURLBackground($this->address . "/api/set.json?volume=" . urlencode($level),0);
 		}
 		return $this->success;
-	}	
+	}
+	    // Get player status
+    function status()
+    {
+        $this->reset_properties();
+        // Defaults
+        $track_id = -1;
+        $length   = 0;
+        $time     = 0;
+        $state    = 'unknown';
+        $volume   = 0;
+        $muted    = FALSE;
+        $random   = FALSE;
+        $loop     = FALSE;
+        $repeat   = FALSE;
+        
+        $result = json_decode(getURL($this->address . "/api/get.json",0), true); 
+        //DebMes($result);
+        if ($result) {
+            $this->reset_properties();
+            $this->success = TRUE;
+            $this->message = 'OK';
+            $this->data    = array(
+                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int)  $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => intval($result['volume']['music-max']/$result['volume']['music']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (boolean)  $muted, // Muted mode. Boolean.
+                'random' => (boolean) $random, // Random mode. Boolean. 
+                'loop' => (boolean) $loop, // Loop mode. Boolean.
+                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
+            );
+        }
+        return $this->success;
+    }
 }
 
 ?>
