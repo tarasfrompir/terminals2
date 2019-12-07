@@ -58,9 +58,7 @@ class iobroker extends app_player_addon {
 	function set_volume($level) {
 		$this->reset_properties();
                 $data =  json_decode(getURL($this->address . "/api/get.json",0), true); 
-		DebMes($data);
 		$music_max = $data['volume']['music-max'];
-		DebMes($music_max);
 		if(strlen($level)) {
 			$level = round((int)$level * $music_max / 100);
 			getURLBackground($this->address . "/api/set.json?volume=" . urlencode($level),0);
