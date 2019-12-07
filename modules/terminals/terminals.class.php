@@ -408,7 +408,8 @@ class terminals extends module
  terminals: LATEST_ACTIVITY datetime
  terminals: USE_SYSTEM_MML int(1) NOT NULL DEFAULT '1'
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
- terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100'
+ terminals: MAX_VOLUME int(3) NOT NULL DEFAULT '' 
 EOD;
         parent::dbInstall($data);
 
