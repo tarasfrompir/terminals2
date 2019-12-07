@@ -182,7 +182,14 @@
                             $('#tts_password').show();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
-                } else if (type == 'googlehomenotifier') {
+                } else if (type == 'iobroker_tts') {
+                            $('#tts_volume').hide();
+                            $('#tts_port').show();
+                            $('#tts_name').hide();
+                            $('#tts_password').hide();
+                            $('#tts_control_address').hide();
+                            $('#tts_sound_device').hide();
+                }else if (type == 'googlehomenotifier') {
                             $('#tts_volume').hide();
                             $('#tts_port').show();
                             $('#tts_name').hide();
@@ -376,7 +383,13 @@
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                       	} else {
+                        } else if (type == 'iobroker') {
+                            $('#device_control_address').hide();
+                            $('#player_name').hide();
+                            $('#player_password').hide();
+                            $('#player_port').show();
+                            $('#player_volume').show();
+                        } else {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
