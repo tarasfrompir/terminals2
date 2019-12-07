@@ -41,13 +41,13 @@ class iobroker extends app_player_addon {
 		$this->reset_properties();
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
-					$url = $this->address . "/api/set.json?link=" . urlencode($input);
-					getURLBackground($url,0);
+			$url = $this->address . "/api/set.json?link=" . urlencode($input);
+			getURLBackground($url,0);
 		} 
 		return $this->success;
 	}
 	
-		function stop() {
+	function stop() {
 		$this->reset_properties();
 		$url = $this->address . "/api/set.json?link=" . BASE_URL . "/stop.mp3";
 		getURLBackground($url,0); 
@@ -57,13 +57,11 @@ class iobroker extends app_player_addon {
 	// Set volume
 	function set_volume($level) {
 		$this->reset_properties();
-		$out = getURL($this->address . "api/get.json",0);
-                $data =  json_decode($out, true); 
+                $data =  json_decode(getURL($this->address . "api/get.json",0), true); 
 		$music_max = $data['volume']['music-max'];
 		if(strlen($level)) {
 			$level = round((int)$level * $music_max / 100);
-					$url = $this->address . "/api/set.json?volume=" . urlencode($level);
-					getURLBackground($url,0);
+			getURLBackground($this->address . "/api/set.json?volume=" . urlencode($level),0);
 		}
 		return $this->success;
 	}	
