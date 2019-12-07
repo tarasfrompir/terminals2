@@ -329,84 +329,72 @@
                             $('#player_password').hide();
                             $('#player_port').hide();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'chromecast') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'foobar') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'ghn') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').show();
                             $('#player_volume').hide();
-                            $('#max_volume').hide();
                         } else if (type == 'majordroid') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'mpd') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'kodi') {
                             $('#device_control_address').hide();
                             $('#player_name').show();
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'lms') {
                             $('#device_control_address').hide();
                             $('#player_name').show();
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'vlc') {
                             $('#device_control_address').hide();
                             $('#player_name').show();
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'vlcweb') {
                             $('#device_control_address').hide();
                             $('#player_name').show();
                             $('#player_password').show();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            $('#max_volume').hide();
                         } else if (type == 'iobroker') {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').show();
                             $('#player_volume').show();
-                            ('#max_volume').show();
                         } else {
                             $('#device_control_address').hide();
                             $('#player_name').hide();
                             $('#player_password').hide();
                             $('#player_port').hide();
                             $('#player_volume').hide();
-                            $('#max_volume').hide();
                         }
                     return true;
                 }
@@ -422,10 +410,6 @@
             <input type="range" name="terminal_volume_level" id="terminal_volume_level" value="[#TERMINAL_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput="terminal_volume_level_cypher.value = terminal_volume_level.value">
             <output name="terminal_volume_level_cypher" id="terminal_volume_level_cypher"><#TERMINAL_VOLUME_LEVEL#></output>
         </div>
-    </div>
-    <div id='max_volume' class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">Максимальный уровень громкости (Default:15):</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="max_volume" value="[#MAX_VOLUME#]"></div>
     </div>
     <div id='player_port' class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PLAYER_PORT#>:</label>
