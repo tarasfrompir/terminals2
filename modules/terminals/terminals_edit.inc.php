@@ -71,6 +71,7 @@ if ($this->mode == 'update') {
     $rec['LINKED_OBJECT'] = gr('linked_object');
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
+    $rec['MAX_VOLUME'] = gr('max_volume');
     $rec['USE_SYSTEM_MML'] = gr('systemMML');
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
