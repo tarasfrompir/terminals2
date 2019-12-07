@@ -26,6 +26,7 @@ class iobroker_tts extends tts_addon {
 	getURLBackground($this->address . "/api/set.json?ringtone=content%3A%2F%2Fmedia%2Finternal%2Faudio%2Fmedia%2F36",0);
 	usleep(500000);
 	getURLBackground($this->address . "/api/set.json?ringtone=false",0);
+	sleep(1);
 	$url = $this->address . "/api/set.json?tts=" . urlencode($message['MESSAGE']);
 	getURLBackground($url,0);
     	usleep(500000);
