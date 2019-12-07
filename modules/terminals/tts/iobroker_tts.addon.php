@@ -17,7 +17,6 @@ class iobroker_tts extends tts_addon {
         $this->port = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
 	$this->curl = curl_init();
 	$this->address = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
-	parent::__construct($terminal);
     }
 
     // Say
