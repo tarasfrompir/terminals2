@@ -65,7 +65,6 @@ class iobroker_tts extends tts_addon {
     // Get player status
     function status()
     {
-        $this->reset_properties();
         // Defaults
         $track_id = -1;
         $length   = 0;
@@ -78,11 +77,7 @@ class iobroker_tts extends tts_addon {
         $repeat   = FALSE;
         
         $result = json_decode(getURL($this->address . "/api/get.json",0), true); 
-        //DebMes($result);
         if ($result) {
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
             $this->data    = array(
                 'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
@@ -92,7 +87,7 @@ class iobroker_tts extends tts_addon {
                 'muted' => (boolean)  $muted, // Muted mode. Boolean.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
+                'repeat' => (string) $repeat //Repeat mode. Boolean.
             );
         }
         return $this->data;
