@@ -36,9 +36,8 @@ class iobroker_tts extends tts_addon
         if ($this->turnOnDisplay) {
             // включаем дисплей
             getURLBackground($this->address . "/api/set.json?toWake=false",0);
-		    usleep(500000);
+            usleep(100000);
             getURLBackground($this->address . "/api/set.json?toWake=true", 0);
-            usleep(500000);
         }
         return true;
     }
