@@ -21,12 +21,12 @@ class iobroker_tts extends tts_addon
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        getURLBackground($this->address . "/api/set.json?play=true", 0);
+        getURL($this->address . "/api/set.json?play=true", 0);
         sleep(1);
-        getURLBackground($this->address . "/api/set.json?ringtone=false", 0);
+        getURL($this->address . "/api/set.json?ringtone=false", 0);
         usleep(500000);
         $url = $this->address . "/api/set.json?tts=" . urlencode($message['MESSAGE']);
-        getURLBackground($url, 0);
+        getURL($url, 0);
         sleep($message['MESSAGE_DURATION']);
         return true;
     }
@@ -35,9 +35,7 @@ class iobroker_tts extends tts_addon
     {
         if ($this->turnOnDisplay) {
             // включаем дисплей
-            getURLBackground($this->address . "/api/set.json?toWake=false",0);
-            usleep(500000);
-            getURLBackground($this->address . "/api/set.json?toWake=true", 0);
+            getURL($this->address . "/api/set.json?toWake=true", 0);
         }
         return true;
     }
@@ -45,7 +43,7 @@ class iobroker_tts extends tts_addon
     {
         if ($this->turnOnDisplay) {
             // выключаем дисплей
-            getURLBackground($this->address . "/api/set.json?toWake=false", 0);
+            getURL($this->address . "/api/set.json?toWake=false", 0);
             usleep(500000);
         }
         return true;
@@ -56,7 +54,7 @@ class iobroker_tts extends tts_addon
         if ($this->turnOnDisplay) {
             // установим яркость дисплея
             $url = $this->address . "/api/set.json?brightness=" . $this->brightnes;
-            getURLBackground($url, 0);
+            getURL($url, 0);
             usleep(500000);
         }
         return true;
