@@ -39,10 +39,18 @@ class iobroker_tts extends tts_addon
 			$status = $data['display']['state'];
             if($status != '1'){
 			getURL($this->address . "/api/set.json?toWake=true", 0);
+			$data =  json_decode(getURL($this->address . "/api/get.json",0), true); 
+			$status = $data['display']['state'];
+			if($status != '1'){
+				getURL($this->address . "/api/set.json?toWake=false", 0);
+				usleep(500000);
+				getURL($this->address . "/api/set.json?toWake=true", 0);
+			}
 			}
         }
         return true;
     }
+	
     function turn_off_display($terminal)
     {
         if ($this->turnOnDisplay) {
