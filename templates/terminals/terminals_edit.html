@@ -100,7 +100,14 @@
          $('#MMLDetails').show();
      }
  }
-
+ 	function DisplayTurnOn() {
+        if ($('#tts_display_turnonf').is(':checked')) {
+           $('#tts_display_brightness_level').show();
+        } else {
+           $('#tts_display_brightness_level').hide();
+        }
+     }
+	 
 </script>
 
 <div class="form-group">
@@ -124,7 +131,7 @@
         <label class="col-lg-4 control-label" for="min_msg_level">Использовать СИСТЕМНЫЙ уровень важности сообщений:</label>
         <div class="col-lg-5"><input type="checkbox" value="1" onClick='MMLChanged();' id='systemMML' name="systemMML" [#if USE_SYSTEM_MML="1"#] checked[#endif#]></div>
     </div>
-    <div id="MMLDetails" [#if USE_SYSTEM_MML="1"#] style="display:none"[#endif#] class="form-group ">
+    <div id="MMLDetails" [#if USE_SYSTEM_MML="1"#] style="display:none" [#endif#] class="form-group ">
         <label class="col-lg-4 control-label" for="min_msg_level"><#LANG_MIN_MSG_LEVEL#> для терминала:</label>
         <div class="col-lg-5"><input type="text"  class="form-control" id="min_msg_level"  name="min_msg_level" value="[#MIN_MSG_LEVEL#]"></div>
     </div>
@@ -154,6 +161,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'majordroid_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
@@ -161,6 +169,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'alicevox') {
                             $('#tts_volume').hide();
                             $('#tts_port').show();
@@ -168,6 +177,7 @@
                             $('#tts_password').show();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                } else if (type == 'vlc_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').hide();
@@ -175,6 +185,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                } else if (type == 'vlcweb_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
@@ -182,6 +193,7 @@
                             $('#tts_password').show();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'iobroker_tts') {
                             $('#tts_volume').hide();
                             $('#tts_port').show();
@@ -189,6 +201,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').show();							
                 }else if (type == 'googlehomenotifier') {
                             $('#tts_volume').hide();
                             $('#tts_port').show();
@@ -196,6 +209,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'chromecast_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
@@ -203,6 +217,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'lms_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
@@ -210,6 +225,7 @@
                             $('#tts_password').show();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'dnla_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').hide();
@@ -217,6 +233,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').show();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                 } else if (type == 'sounddevice_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').hide();
@@ -224,6 +241,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').show();
+                            $('#tts_display_turnon').hide();							
                 } else {
                             $('#tts_port').hide();
                             $('#tts_volume').hide();
@@ -231,6 +249,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();							
                         }
                     return true;
                 }
@@ -240,11 +259,12 @@
                 $(document).ready(function() {
                     tts_sound_device('[#TTS_SOUND_DEVICE#]');
                 });
+
             </script>
         </div>
     </div>
     <div id='tts_volume'class="form-group ">
-        <label class="col-lg-4 control-label" for="tts_type">Уровень громкости сообщений:</label>
+        <label class="col-lg-4 control-label" for="tts_volume">Уровень громкости сообщений:</label>
         <div class="col-lg-5">
             <input type="range" name="message_volume_level" id="message_volume_level" value="[#MESSAGE_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput="message_volume_level_cypher.value = message_volume_level.value">
             <output name="message_volume_level_cypher" id="message_volume_level_cypher"><#MESSAGE_VOLUME_LEVEL#></output>
@@ -252,6 +272,19 @@
     </div>
 
     [#begin TTS#]
+	<div id='tts_display_turnon' class="form-group ">
+        <label class="col-lg-4 control-label" for="tts_display_turnon">Включать екран на терминале перед воспроизведением сообщения:</label>
+        <div class="col-lg-5"><input type="checkbox" value="1" id='tts_display_turnonf' name="tts_display_turnonf" [#if TTS_USE_DISPLAY="1"#] checked[#endif#] onClick='DisplayTurnOn();'></div>
+    </div>
+
+	<div id='tts_display_brightness_level' [#if TTS_USE_DISPLAY=""#] style="display:none" [#endif TTS_USE_DISPLAY#]  class="form-group ">
+        <label class="col-lg-4 control-label" for="tts_display_brightness">Яркость дисплея при воспроизведении сообщения:</label>
+        <div class="col-lg-5">
+            <input type="range" name="tts_display_brightness_level" id="tts_display_brightness_level" value="[#TTS_BRIGHTNESS_DISPLAY#]" min="0" max="100" style="width:90%; height: 20px;" oninput="tts_display_brightness_cypher.value = tts_display_brightness_level.value">
+            <output name="tts_display_brightness_cypher" id="tts_display_brightness_cypher"><#TTS_BRIGHTNESS_DISPLAY#></output>
+        </div>
+    </div>
+
 	<div id='tts_port' class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">Порт доступа TTS:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_port" value="[#TTS_PORT#]"></div>
