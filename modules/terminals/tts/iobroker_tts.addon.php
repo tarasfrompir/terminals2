@@ -85,7 +85,7 @@ class iobroker_tts extends tts_addon
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($result['volume']['music-max'] / $result['volume']['music'] * 100), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => intval($result['volume']['music'] * 100 / $result['volume']['music-max']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => (boolean) $muted, // Muted mode. Boolean.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
