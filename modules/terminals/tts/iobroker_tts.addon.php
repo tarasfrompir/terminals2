@@ -92,8 +92,8 @@ class iobroker_tts extends tts_addon
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
                 'repeat' => (string) $repeat, //Repeat mode. Boolean.
-                'brightness'= intval($result['display']['brightness']),
-                'display_state'= (boolean)($result['display']['state']),
+                'brightness'=> intval($result['display']['brightness']),
+                'display_state'=> (boolean)($result['display']['state']),
                 
             );
         }
