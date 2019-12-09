@@ -20,6 +20,8 @@ class chromecast_tts extends tts_addon
         $this->port     = empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT'];
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
+        register_shutdown_function("catchTimeoutTerminals");
+        //set_time_limit(2);
     }
     
     // Say
@@ -43,6 +45,7 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         $response      = $cc->play();
         if ($response) {
+            //set_time_limit(2+$message['MESSAGE_DURATION']);
             sleep($message['MESSAGE_DURATION']);
             $this->success = TRUE;
         } else {
