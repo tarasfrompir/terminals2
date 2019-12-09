@@ -17,6 +17,8 @@ class iobroker_tts extends tts_addon {
         $this->port = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
 	$this->curl = curl_init();
 	$this->address = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
+        $this->turnOnDisplay = $this->setting['TTS_USE_DISPLAY'];
+	$this->brightnes = $this->setting['TTS_BRIGHTNESS_DISPLAY'];
     }
 
     // Say
@@ -30,6 +32,28 @@ class iobroker_tts extends tts_addon {
 	getURLBackground($url,0);
     	sleep($message['MESSAGE_DURATION']);
     }
+	
+    function turn_on_display($terminal) 
+    {
+	if ($this->turnOnDisplay) {
+	    // включаем дисплей
+	}
+    }
+
+    function turn_off_display($terminal) 
+    {
+	if ($this->turnOnDisplay) {
+	    // выключаем дисплей
+	}  
+    }
+	
+    function set_brightness_display($terminal) 
+    {
+    	if ($this->turnOnDisplay) {
+             // установим яркость дисплея
+	}
+    }
+	
 }
 
 ?>
