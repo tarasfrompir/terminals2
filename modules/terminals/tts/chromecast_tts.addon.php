@@ -125,7 +125,7 @@ class chromecast_tts extends tts_addon
         $brightness    = '';
         $display_state = false;
         
-        $cc            = new GChromecast($this->terminal['HOST'], empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT']);
+        $cc            = new GChromecast($this->terminal['HOST'], $this->port);
         $cc->requestId = time();
         $status        = $cc->getStatus();
         $cc->requestId = time();
@@ -155,7 +155,7 @@ class chromecast_tts extends tts_addon
     function ping()
     {
         // proverka na otvet
-        $cc            = new GChromecast($this->terminal['HOST'], empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT']);
+        $cc            = new GChromecast($this->terminal['HOST'], $this->port);
         $cc->requestId = time();
         $status        = $cc->getStatus();
         if (is_array($status)) {
