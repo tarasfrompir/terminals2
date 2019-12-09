@@ -14,7 +14,7 @@ class iobroker_tts extends tts_addon {
         $this->port = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
 	$this->curl = curl_init();
 	$this->address = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
-    $this->turnOnDisplay = $this->setting['TTS_USE_DISPLAY'];
+        $this->turnOnDisplay = $this->setting['TTS_USE_DISPLAY'];
 	$this->brightnes = $this->setting['TTS_BRIGHTNESS_DISPLAY'];
     }
     // Say
@@ -45,9 +45,8 @@ class iobroker_tts extends tts_addon {
     {
 	if ($this->turnOnDisplay) {
 	    // выключаем дисплей
-		getURLBackground($this->address . "/api/set.json?toWake=false",0);
-		usleep(100000);
-		debMes($this->address . "/api/set.json?toWake=false");
+	    getURLBackground($this->address . "/api/set.json?toWake=false",0);
+	    usleep(100000);
 	}  
         return true;
     }
@@ -56,10 +55,9 @@ class iobroker_tts extends tts_addon {
     {
     	if ($this->turnOnDisplay) {
              // установим яркость дисплея
-			$url = $this->address . "/api/set.json?brightness=" . $this->brightnes;
-			getURLBackground($url,0);
-			debMes($url);
-			usleep(500000);
+	     $url = $this->address . "/api/set.json?brightness=" . $this->brightnes;
+	     getURLBackground($url,0);
+	     usleep(500000);
 	}
         return true;
     }
