@@ -1486,3 +1486,7 @@ function get_remote_filesize($url)
     }
     return $clen; // return size in bytes
 }
+
+function catchTimeoutTerminals() {
+    DebMes ("Получен таймаут на выполнение скрипта!", 'terminals');
+}
