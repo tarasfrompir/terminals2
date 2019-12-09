@@ -270,7 +270,7 @@
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_control_address" value="[#TTS_CONTROL_ADDRESS#]"></div>
     </div>
 
-    <div class="form-group">
+    <div id="tts_sound_device" class="form-group">
         <label class="col-lg-4 control-label" for="tts_type">Номер аудиоустройства TTS:</label>
         <div class="col-lg-5">
             <select id="tts_sound_device" name="tts_sound_device"  class="form-control"  onchange="return tts_sound_device($(this).val());"> 
