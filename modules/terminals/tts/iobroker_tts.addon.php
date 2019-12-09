@@ -28,7 +28,7 @@ class iobroker_tts extends tts_addon {
 	usleep(500000);
 	$url = $this->address . "/api/set.json?tts=" . urlencode($message['MESSAGE']);
 	getURLBackground($url,0);
-    	usleep(500000);
+    	sleep($message['MESSAGE_DURATION']);
     }
 }
 
