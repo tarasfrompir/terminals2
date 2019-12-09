@@ -35,7 +35,11 @@ class iobroker_tts extends tts_addon
     {
         if ($this->turnOnDisplay) {
             // включаем дисплей
-            getURL($this->address . "/api/set.json?toWake=true", 0);
+			$data =  json_decode(getURL($this->address . "/api/get.json",0), true); 
+			$status = $data['display']['state'];
+            if($status != '1'){
+			getURL($this->address . "/api/set.json?toWake=true", 0);
+			}
         }
         return true;
     }
@@ -46,7 +50,7 @@ class iobroker_tts extends tts_addon
             //getURL($this->address . "/api/set.json?toWake=false", 0);
             //usleep(500000);
             $url = $this->address . "/api/set.json?toWake=false";
-            setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);",30);
+            setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);",20);
         }
         return true;
     }
@@ -61,6 +65,30 @@ class iobroker_tts extends tts_addon
         }
         return true;
     }
+	
+	function set_volume($level) {
+		if($level != '0'){
+                $data =  json_decode(getURL($this->address . "/api/get.json",0), true); 
+				$music_max = $data['volume']['music-max'];
+		if(strlen($level)) {
+			$level = round((int)$level * $music_max / 100);
+			getURL($this->address . "/api/set.json?volume=" . urlencode($level),0);
+			
+			$data =  json_decode(getURL($this->address . "/api/get.json",0), true); 
+		    $volume = $data['volume']['music'];
+			
+			if($level == $volume){
+				$this->success = TRUE;
+			} else {
+				$this->success = FALSE;
+			}
+		} else {
+            $this->success = FALSE;
+        }
+		usleep(500000);
+		return $this->success;
+		}
+	}
     
     // Get player status
     function status()
