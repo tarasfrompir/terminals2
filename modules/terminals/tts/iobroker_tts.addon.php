@@ -75,6 +75,8 @@ class iobroker_tts extends tts_addon
         $repeat   = FALSE;
         $name     = 'unknow';
         $file     = '';
+        $brightness= '';
+        $display_state = false;
         
         $result = json_decode(getURL($this->address . "/api/get.json", 0), true);
         if ($result) {
@@ -89,7 +91,10 @@ class iobroker_tts extends tts_addon
                 'muted' => (boolean) $muted, // Muted mode. Boolean.
                 'random' => (boolean) $random, // Random mode. Boolean. 
                 'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $repeat //Repeat mode. Boolean.
+                'repeat' => (string) $repeat, //Repeat mode. Boolean.
+                'brightness'= intval($result['display']['brightness']),
+                'display_state'= (boolean)($result['display']['state']),
+                
             );
         }
         return $this->data;
