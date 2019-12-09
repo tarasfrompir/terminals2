@@ -15,6 +15,11 @@ class iobroker extends app_player_addon {
 		$this->title = 'ioBroker.paw';
 		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через отправку ссылки на андроид с помощью ioBroker.paw. Из управления работает только громкость.<br>';
 		$this->description .= 'Воспроизведение видео на терминале этого типа поддерживается.<br>';
+		$this->description .= 'Управление треками реальзовано через запуск команды в Tasker:<br>';
+		$this->description .= 'Создать на вкладке TASKS, 3 задачи: Play, Pause, Prev. Учитавая регистр!<br>';
+		$this->description .= 'В задачах добавить соответствующие команды. Выберите из списка действий «Медиа»->»Упр. медиа плеером» и далее выбираем вариант необходимо события.<br>';
+		$this->description .= 'Поставить галочку на против строки "Use Notification if Availble.<br>';
+		$this->description .= 'В настройках таскера на вкладке разное поставить галочку "Разрешить внешний доступ".<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках ioBroker.paw и включть работу сервиса кнопкой: Connection<br>';
 		$this->description .= '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>';
 		
@@ -63,6 +68,24 @@ class iobroker extends app_player_addon {
 			$level = round((int)$level * $music_max / 100);
 			getURLBackground($this->address . "/api/set.json?volume=" . urlencode($level),0);
 		}
+		return $this->success;
+	}
+	
+	function pause() {
+		$this->reset_properties();
+		getURLBackground($this->address . "/api/set.json?tasker=Pause",0); 
+		return $this->success;
+	}
+	
+	function next() {
+		$this->reset_properties();
+		getURLBackground($this->address . "/api/set.json?tasker=Next",0); 
+		return $this->success;
+	}
+	
+	function previous() {
+		$this->reset_properties();
+		getURLBackground($this->address . "/api/set.json?tasker=Prev",0); 
 		return $this->success;
 	}
 	
