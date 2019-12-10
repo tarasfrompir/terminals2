@@ -320,8 +320,8 @@ class terminals extends module
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
         foreach ($terminals as $terminal) {
-            addClassObject('Terminals', $terminal['NAME']);
-            $terminal['LINKED_OBJECT'] = $terminal['NAME'];
+            addClassObject('Terminals', 'terminal_'.$terminal['NAME']);
+            $terminal['LINKED_OBJECT'] = 'terminal_'.$terminal['NAME'];
             SQLUpdate('terminals', $terminal);
         }
         //редактируем терминалы под новые настройки
