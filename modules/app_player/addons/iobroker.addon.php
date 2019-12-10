@@ -47,7 +47,7 @@ class iobroker extends app_player_addon {
 		if(strlen($input)) {
 			$input = preg_replace('/\\\\$/is', '', $input);
 			$url = $this->address . "/api/set.json?link=" . urlencode($input);
-			getURLBackground($url,0);
+			getURL($url,0);
 		} 
 		return $this->success;
 	}
@@ -55,7 +55,7 @@ class iobroker extends app_player_addon {
 	function stop() {
 		$this->reset_properties();
 		$url = $this->address . "/api/set.json?link=" . BASE_URL . "/stop.mp3";
-		getURLBackground($url,0); 
+		getURL($url,0); 
 		return $this->success;
 	}
 	
@@ -66,26 +66,26 @@ class iobroker extends app_player_addon {
 		$music_max = $data['volume']['music-max'];
 		if(strlen($level)) {
 			$level = round((int)$level * $music_max / 100);
-			getURLBackground($this->address . "/api/set.json?volume=" . urlencode($level),0);
+			getURL($this->address . "/api/set.json?volume=" . urlencode($level),0);
 		}
 		return $this->success;
 	}
 	
 	function pause() {
 		$this->reset_properties();
-		getURLBackground($this->address . "/api/set.json?tasker=Pause",0); 
+		getURL($this->address . "/api/set.json?tasker=Pause",0); 
 		return $this->success;
 	}
 	
 	function next() {
 		$this->reset_properties();
-		getURLBackground($this->address . "/api/set.json?tasker=Next",0); 
+		getURL($this->address . "/api/set.json?tasker=Next",0); 
 		return $this->success;
 	}
 	
 	function previous() {
 		$this->reset_properties();
-		getURLBackground($this->address . "/api/set.json?tasker=Prev",0); 
+		getURL($this->address . "/api/set.json?tasker=Prev",0); 
 		return $this->success;
 	}
 	
