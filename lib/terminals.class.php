@@ -414,7 +414,7 @@ function send_message($terminalname, $message, $terminal) {
  
     // берем настройки ТТС терминала со всей информацией
 	$tts_setting = json_decode($terminal['TTS_SETING'], true);
-	
+    DebMes($tts_setting);
     // берем информацию о состоянии терминала громкость, воспроизводимое  и т.д.
     try {
         if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
