@@ -580,20 +580,33 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-	//выключим екран после всех сообщений
+    //установим яркость екрана назад и при том что экран был включен, после всех сообщений
     try {
-        if (method_exists($tts, 'turn_off_display')) {
+        if ($restore['display_state']=='On' AND method_exists($tts, 'turn_off_display')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
+            $tts->set_brightness_display($terminal, $restore['brightness']);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display or dont need set brightness (display off)", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+
+    //выключим екран после всех сообщений если экран был выключен
+    try {
+        if ($restore['display_state']=='Off' AND method_exists($tts, 'turn_off_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_off_display", 'terminals');
             $tts->turn_off_display($terminal);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_off_display", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_off_display or dont need turn off display", 'terminals');
         }
     }
     catch(Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-	sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
+    sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
     sg($terminal['LINKED_OBJECT'] . '.busy', 0);
 }
 function restore_mediaSafe($restore, $terminal) {
