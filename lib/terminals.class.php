@@ -600,7 +600,7 @@ function restore_media($terminalname, $restore, $terminal) {
     try {
         if ($restore['display_state']=='Off' AND method_exists($tts, 'turn_off_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_off_display", 'terminals');
-            $tts->turn_off_display($terminal);
+            $tts->turn_off_display($terminal, 25);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_off_display or dont need turn off display", 'terminals');
         }
