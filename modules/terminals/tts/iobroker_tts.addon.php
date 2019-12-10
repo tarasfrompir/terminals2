@@ -42,7 +42,7 @@ class iobroker_tts extends tts_addon
         //getURL($this->address . "/api/set.json?toWake=false", 0);
         usleep(500000);
         $url = $this->address . "/api/set.json?toWake=false";
-        setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);",30);
+        setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);", 25);
         return true;
     }
     
