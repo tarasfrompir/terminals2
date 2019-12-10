@@ -587,7 +587,7 @@ function restore_media($terminalname, $restore, $terminal) {
     try {
         if ($restore['display_state']=='On' AND method_exists($tts, 'turn_off_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
-            $tts->set_brightness_display($terminal, $restore['brightness']);
+            $tts->set_brightness_display($terminal, $restore['brightness'], 20);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display or dont need set brightness (display off)", 'terminals');
         }
