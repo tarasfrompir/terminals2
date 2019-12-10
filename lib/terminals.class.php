@@ -585,7 +585,7 @@ function restore_media($terminalname, $restore, $terminal) {
 	
     //установим яркость екрана назад и при том что экран был включен, после всех сообщений
     try {
-        if (method_exists($tts, 'turn_off_display') AND $restore['brightness']) {
+        if (method_exists($tts, 'set_brightness_display') AND $restore['brightness']) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
             $tts->set_brightness_display($terminal, $restore['brightness'], 20);
         } else {
