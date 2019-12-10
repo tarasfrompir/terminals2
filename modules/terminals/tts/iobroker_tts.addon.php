@@ -31,10 +31,8 @@ class iobroker_tts extends tts_addon
     
     function turn_on_display($terminal)
     {
-        if ($this->turnOnDisplay) {
-            // включаем дисплей
-            getURL($this->address . "/api/set.json?toWake=true", 0);
-        }
+        // включаем дисплей
+        getURL($this->address . "/api/set.json?toWake=true", 0);
         return true;
     }
     function turn_off_display($terminal)
@@ -51,7 +49,7 @@ class iobroker_tts extends tts_addon
         // установим яркость дисплея
         $url = $this->address . "/api/set.json?brightness=" . $brightness;
         //getURL($url, 0);
-		setTimeout($this->terminal['NAME'] . '_set_brightness',"getURL('$url', 0);",20);
+        setTimeout($this->terminal['NAME'] . '_set_brightness',"getURL('$url', 0);",20);
         return true;
     }
     
