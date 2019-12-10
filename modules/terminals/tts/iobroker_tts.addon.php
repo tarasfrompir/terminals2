@@ -15,8 +15,6 @@ class iobroker_tts extends tts_addon
         $this->port          = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
         $this->curl          = curl_init();
         $this->address       = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
-        $this->turnOnDisplay = $this->setting['TTS_USE_DISPLAY'];
-        $this->brightnes     = $this->setting['TTS_BRIGHTNESS_DISPLAY'];
     }
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
@@ -41,24 +39,20 @@ class iobroker_tts extends tts_addon
     }
     function turn_off_display($terminal)
     {
-        if ($this->turnOnDisplay) {
-            // выключаем дисплей
-            //getURL($this->address . "/api/set.json?toWake=false", 0);
-            //usleep(500000);
-            $url = $this->address . "/api/set.json?toWake=false";
-            setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);",30);
-        }
+        // выключаем дисплей
+        //getURL($this->address . "/api/set.json?toWake=false", 0);
+        //usleep(500000);
+        $url = $this->address . "/api/set.json?toWake=false";
+        setTimeout($this->terminal['NAME'] . '_off_display',"getURL('$url', 0);",30);
         return true;
     }
     
-    function set_brightness_display($terminal)
+    function set_brightness_display($terminal, $brightness)
     {
-        if ($this->turnOnDisplay) {
-            // установим яркость дисплея
-            $url = $this->address . "/api/set.json?brightness=" . $this->brightnes;
-            getURL($url, 0);
-            usleep(500000);
-        }
+        // установим яркость дисплея
+        $url = $this->address . "/api/set.json?brightness=" . $brightness;
+        getURL($url, 0);
+        usleep(500000);
         return true;
     }
     
