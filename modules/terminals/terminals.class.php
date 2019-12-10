@@ -318,7 +318,7 @@ class terminals extends module
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
 
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
-        $terminals = SQLSelect("SELECT * FROM terminals WHERE LINKED_OBJECT=''");
+        $terminals = SQLSelect("SELECT * FROM terminals ");
         foreach ($terminals as $terminal) {
             addClassObject('Terminals', 'terminal_'.$terminal['NAME']);
             $terminal['LINKED_OBJECT'] = 'terminal_'.$terminal['NAME'];
