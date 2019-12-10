@@ -29,11 +29,15 @@ class iobroker_tts extends tts_addon
         return true;
     }
     
-    function turn_on_display($terminal)
+    function turn_on_display($terminal, $time=0)
     {
         // включаем дисплей
-        getURL($this->address . "/api/set.json?toWake=true", 0);
-        usleep(500000);
+        $url = $this->address . "/api/set.json?toWake=true";
+        if ($time>0) {
+            setTimeout($this->terminal['NAME'] . '_on_display',"getURL('$url', 0);", $time);
+        } else {
+            getURL($url, 0);
+        }
         return true;
     }
     function turn_off_display($terminal, $time=0)
