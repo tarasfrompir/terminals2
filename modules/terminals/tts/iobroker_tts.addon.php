@@ -46,7 +46,7 @@ class iobroker_tts extends tts_addon
         return true;
     }
     
-    function set_brightness_display($terminal, $brightness, $time)
+    function set_brightness_display($terminal, $brightness, $time=0)
     {
         // установим яркость дисплея
         $url = $this->address . "/api/set.json?brightness=" . $brightness;
