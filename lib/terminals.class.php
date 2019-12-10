@@ -464,7 +464,7 @@ function send_message($terminalname, $message, $terminal) {
     try {
         if ($tts_setting['TTS_USE_DISPLAY'] AND method_exists($tts, 'set_brightness_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
-            $tts->set_brightness_display($terminal,$tts_setting['TTS_BRIGHTNESS_DISPLAY');
+		    $tts->set_brightness_display($terminal,$tts_setting['TTS_BRIGHTNESS_DISPLAY']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display", 'terminals');
         }
