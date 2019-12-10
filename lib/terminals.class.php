@@ -413,8 +413,8 @@ function send_message($terminalname, $message, $terminal) {
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
  
     // берем настройки ТТС терминала со всей информацией
-	$tts_setting = json_decode($terminal['TTS_SETING'], true);
-    DebMes($tts_setting);
+    $tts_setting = json_decode($terminal['TTS_SETING'], true);
+
     // берем информацию о состоянии терминала громкость, воспроизводимое  и т.д.
     try {
         if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
