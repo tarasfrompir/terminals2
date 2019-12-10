@@ -411,7 +411,10 @@ function send_message($terminalname, $message, $terminal) {
         return;
     }
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
-
+ 
+    // берем настройки ТТС терминала со всей информацией
+	$tts_setting = json_decode($terminal['TTS_SETING'], true);
+	
     // берем информацию о состоянии терминала громкость, воспроизводимое  и т.д.
     try {
         if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
@@ -444,9 +447,9 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    //включим екран перед подачей сообщений
+    //включим екран перед подачей сообщений если необходимо
     try {
-        if (method_exists($tts, 'turn_on_display')) {
+        if ($tts_setting['TTS_USE_DISPLAY'] AND method_exists($tts, 'turn_on_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_on_display", 'terminals');
             $tts->turn_on_display($terminal);
         } else {
@@ -457,11 +460,11 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    //установим яркость екрана перед подачей сообщений
+    //установим яркость екрана перед подачей сообщений если необходимо
     try {
-        if (method_exists($tts, 'set_brightness_display')) {
+        if ($tts_setting['TTS_USE_DISPLAY'] AND method_exists($tts, 'set_brightness_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
-            $tts->set_brightness_display($terminal);
+            $tts->set_brightness_display($terminal,$tts_setting['TTS_BRIGHTNESS_DISPLAY');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display", 'terminals');
         }
