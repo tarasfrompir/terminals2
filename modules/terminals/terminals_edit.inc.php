@@ -93,9 +93,9 @@ if ($this->mode == 'update') {
         $rec['MIN_MSG_LEVEL'] = 0;
     }
     // автодополнение обьекта 
-    if ($rec['LINKED_OBJECT'] != $rec['NAME']) {
-        addClassObject('Terminals', $rec['NAME']);
-        $rec['LINKED_OBJECT'] = $rec['NAME'];
+    if ($rec['LINKED_OBJECT'] != 'terminal_'.$rec['NAME']) {
+        addClassObject('Terminals', 'terminal_'.$rec['NAME']);
+        $rec['LINKED_OBJECT'] = 'terminal_'.$rec['NAME'];
     }
     $rec['HOST'] = gr('host');
 
