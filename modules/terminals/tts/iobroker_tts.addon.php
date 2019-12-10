@@ -83,12 +83,12 @@ class iobroker_tts extends tts_addon
         $result = json_decode(getURL($this->address . "/api/get.json", 0), true);
         if ($result) {
             if ($result['display']['state']) {
-                $display_state = 'On' 
+                $display_state = 'On';
             } else if (!$result['display']['state']) {
                 $display_state = 'Off' ;
             }
-            $volume = (intval)$result['volume']['music'] * 100 / $result['volume']['music-max'];
-            $brightness = (intval)$result['display']['brightness'];
+            $volume = intval($result['volume']['music'] * 100 / $result['volume']['music-max']);
+            $brightness = intval($result['display']['brightness']);
         }
          $this->data = array(
                 'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
