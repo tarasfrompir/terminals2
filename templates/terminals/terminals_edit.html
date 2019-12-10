@@ -272,20 +272,21 @@
     </div>
 
     [#begin TTS#]
-	<div id='tts_display_turnon' class="form-group ">
+    <div id='tts_display_turnon' class="form-group ">
         <label class="col-lg-4 control-label" for="tts_display_turnon">Включать экран на терминале перед воспроизведением сообщения:</label>
-        <div class="col-lg-5"><input type="checkbox" value="1" id='tts_display_turnonf' name="tts_display_turnonf" [#if TTS_USE_DISPLAY="1"#] checked[#endif#] onClick='DisplayTurnOn();'></div>
+        <div class="col-lg-5" style="width:30px;" >
+	    <input type="checkbox" value="1" id='tts_display_turnonf' name="tts_display_turnonf" [#if TTS_USE_DISPLAY="1"#] checked[#endif#] onClick='DisplayTurnOn();'>
+	</div>
+    	<div id='tts_display_brightness_level' [#if TTS_USE_DISPLAY=""#] style="display:none" [#endif TTS_USE_DISPLAY#]  class="form-group ">
+	    <label class="col-lg-4 control-label" style="text-align: center;" for="tts_display_brightness">Яркость дисплея при воспроизведении сообщения:</label>
+	    <div class="col-lg-5">
+		<input type="range" name="tts_display_brightness_level" id="tts_display_brightness_level" value="[#TTS_BRIGHTNESS_DISPLAY#]" min="0" max="100" style="width:350px; height: 20px;" oninput="tts_display_brightness_cypher.value = tts_display_brightness_level.value">
+		<output name="tts_display_brightness_cypher" id="tts_display_brightness_cypher"><#TTS_BRIGHTNESS_DISPLAY#></output>
+	    </div>
+	</div>
     </div>
 
-	<div id='tts_display_brightness_level' [#if TTS_USE_DISPLAY=""#] style="display:none" [#endif TTS_USE_DISPLAY#]  class="form-group ">
-        <label class="col-lg-4 control-label" for="tts_display_brightness">Яркость дисплея при воспроизведении сообщения:</label>
-        <div class="col-lg-5">
-            <input type="range" name="tts_display_brightness_level" id="tts_display_brightness_level" value="[#TTS_BRIGHTNESS_DISPLAY#]" min="0" max="100" style="width:90%; height: 20px;" oninput="tts_display_brightness_cypher.value = tts_display_brightness_level.value">
-            <output name="tts_display_brightness_cypher" id="tts_display_brightness_cypher"><#TTS_BRIGHTNESS_DISPLAY#></output>
-        </div>
-    </div>
-
-	<div id='tts_port' class="form-group ">
+    <div id='tts_port' class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle">Порт доступа TTS:</label>
         <div class="col-lg-5"><input type="text"  class="form-control"  name="tts_port" value="[#TTS_PORT#]"></div>
     </div>
