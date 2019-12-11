@@ -8,9 +8,9 @@ class sounddevice_tts extends tts_addon
         $this->title    = "Звуковые карты";
         $this->description .= '<b>Работает:</b>&nbsp; только на Виндовс;.<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+        $this->setting      = json_decode($this->terminal['TTS_SETING'], true);
         $this->devicenumber = substr($this->setting['TTS_SOUND_DEVICE'], 0, strpos($this->setting['TTS_SOUND_DEVICE'], '^'));
-        $this->devicename = substr($this->setting['TTS_SOUND_DEVICE'], strpos($this->setting['TTS_SOUND_DEVICE'], '^')+1);
+        $this->devicename   = substr($this->setting['TTS_SOUND_DEVICE'], strpos($this->setting['TTS_SOUND_DEVICE'], '^') + 1);
         parent::__construct($terminal);
     }
     
@@ -49,24 +49,25 @@ class sounddevice_tts extends tts_addon
         }
         return $this->success;
     }
-	
-	 // Set volume
+    
+    // Set volume
     function set_volume($level)
     {
         if (IsWindowsOS()) {
-            exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $volum ); 
+            exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $volum);
             $volume = str_replace("Master volume level =", "", $volum[0]);
             //DebMes($volume);
         } else {
             // linux
         }
-        if ($out) {
-			return TRUE;
-		}
-	    return FALSE;
+        if ($volume) {
+            return TRUE;
+        } else {
+            return FALSE;
+	}
     }
-	
-	// Get player status
+    
+    // Get player status
     function status()
     {
         // Defaults
@@ -82,27 +83,27 @@ class sounddevice_tts extends tts_addon
         $loop     = FALSE;
         $repeat   = FALSE;
         
-       // get volume
-       if (IsWindowsOS()) {
-            exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum ); 
+        // get volume
+        if (IsWindowsOS()) {
+            exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum);
             $volume = str_replace("Master volume level =", "", $volum[0]);
             //DebMes($volume);
         } else {
             // linux
         }
-        $this->data    = array(
-                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $file, //Current link for media in device. String.
-                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($volume), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => (int) $muted, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (boolean) $random, // Random mode. Boolean. 
-                'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $repeat //Repeat mode. Boolean.
-            );
+        $this->data = array(
+            'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $file, //Current link for media in device. String.
+            'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => intval($volume), // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $muted, // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (boolean) $random, // Random mode. Boolean. 
+            'loop' => (boolean) $loop, // Loop mode. Boolean.
+            'repeat' => (string) $repeat //Repeat mode. Boolean.
+        );
         return $this->data;
     }
 }
