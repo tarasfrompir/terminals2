@@ -10,6 +10,16 @@ function getTerminalsByLocation($location = '') {
 	return $terminals;
 }
 
+// Get terminals by location
+function getTerminalsByUser($user = '') {
+	$pvalues = SQLSelect( "SELECT * FROM `pvalues` WHERE VALUE = '".$user."' AND PROPERTY_NAME LIKE 'terminal_%.username' ");	
+    foreach ($pvalues as $k => $p) {
+        $terminal = SQLSelectOne( "SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".username", "", $p['PROPERTY_NAME']) . "'");
+        $terminals[] = $terminal;
+    }
+	return $terminals;
+}
+
 // Get all terminals
 function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = 'SELECT * FROM `terminals` ORDER BY `' . DBSafe($order) . '` ' . DBSafe($sort);
