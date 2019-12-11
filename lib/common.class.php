@@ -10,9 +10,9 @@ function sayToLocation($ph, $level = 0, $destination = '')
     $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
-	// get room ID
-	$location_id = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
-	// add message to chat
+    // get room ID
+    $location_id = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
+    // add message to chat
     $rec               = array();
     $rec['MESSAGE']    = $ph;
     $rec['ADDED']      = date('Y-m-d H:i:s');
@@ -25,8 +25,7 @@ function sayToLocation($ph, $level = 0, $destination = '')
         return;
 	}
     foreach ($terminals as $terminal) {
-		// если пустая инфа о терминале пропускаем
-        DebMes($terminal['NAME']);
+	// если пустая инфа о терминале пропускаем
         if (!$terminal) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
