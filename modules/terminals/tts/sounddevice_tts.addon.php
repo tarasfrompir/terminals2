@@ -32,7 +32,7 @@ class sounddevice_tts extends tts_addon
             }
             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
-                    safe_exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->devicenumber);
+                    exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->devicenumber);
                 } else {
                     // linux
                 }
