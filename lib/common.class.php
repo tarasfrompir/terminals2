@@ -1,5 +1,64 @@
 <?php
 
+// say to all terminal where location = $destination 
+function sayToLocation($ph, $level = 0, $destination = '')
+{
+    if (!$destination) {
+        return 0;
+    }
+    // array of text terminals
+    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+	// get room ID
+	$location_id = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
+	// add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = $location_id['ID'];
+    $rec['MEMBER_ID']  = 0;
+    $rec['IMPORTANCE'] = $level;
+    
+    $terminals = array();
+    if (!$destination OR !$terminals = getTerminalsByLocation($destination)) {
+        return;
+	}
+    foreach ($terminals as $terminal) {
+		// если пустая инфа о терминале пропускаем
+        DebMes($terminal['NAME']);
+        if (!$terminal) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if (!$terminal['USE_SYSTEM_MML']) {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
+                    $needgenerateaudio = true;
+                }
+            }
+        } else  {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
+                    $needgenerateaudio = true;
+                }
+            }
+        } 
+    }
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    if ($needgenerateaudio) {
+        DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+        processSubscriptionsSafe('SAYTO', $rec); //, 
+    }
+    
+    return 1;
+}
+
 function getSystemSerial($force_update = 0) {
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
