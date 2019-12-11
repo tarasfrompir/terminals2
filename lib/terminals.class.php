@@ -28,6 +28,7 @@ function getTerminalByID($id) {
     $terminal = SQLSelectOne($sqlQuery);
     return $terminal;
 }
+
 // Get terminal by name
 function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = '" . DBSafe($name) . "' OR `TITLE` = '" . DBSafe($name) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
@@ -39,6 +40,7 @@ function getTerminalsByName($name, $limit = -1, $order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
+
 // Get terminals by host or ip address
 function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
     $localhost = array('localhost', '127.0.0.1', 'ip6-localhost', 'ip6-loopback', 'ipv6-localhost', 'ipv6-loopback', '::1', '0:0:0:0:0:0:0:1',);
@@ -55,6 +57,7 @@ function getTerminalsByHost($host, $limit = -1, $order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
+
 // Get terminals that can play
 function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `CANPLAY` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
@@ -66,6 +69,7 @@ function getTerminalsCanPlay($limit = -1, $order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
+
 // Get terminals by player type
 function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `PLAYER_TYPE` = '" . DBSafe($player) . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
@@ -77,12 +81,14 @@ function getTerminalsByPlayer($player, $limit = -1, $order = 'ID', $sort = 'ASC'
     }
     return $terminals;
 }
+
 // Get main terminal
 function getMainTerminal() {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `NAME` = 'MAIN'";
     $terminal = SQLSelectOne($sqlQuery);
     return $terminal;
 }
+
 // Get online terminals
 function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `IS_ONLINE` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
@@ -94,17 +100,7 @@ function getOnlineTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
-// Get MajorDroid terminals
-//function getMajorDroidTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
-//    $sqlQuery = "SELECT * FROM `terminals` WHERE `MAJORDROID_API` = 1 ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
-//    if ($limit >= 0) {
-//        $sqlQuery.= ' LIMIT ' . intval($limit);
-//    }
-//    if (!$terminals = SQLSelect($sqlQuery)) {
-//        $terminals = array(NULL);
-//    }
-//    return $terminals;
-//}
+
 // Get terminals by CANTTS
 function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
     $sqlQuery = "SELECT * FROM `terminals` WHERE `CANTTS` = '" . DBSafe('1') . "' ORDER BY `" . DBSafe($order) . "` " . DBSafe($sort);
@@ -113,6 +109,7 @@ function getTerminalsByCANTTS($order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
+
 // Get local ip
 function getLocalIp() {
     global $local_ip_address_cached;
@@ -136,6 +133,7 @@ function getLocalIp() {
     }
     return $local_ip_address;
 }
+
 /**
  * This function change  position on the played media in player
  * @param mixed $host Host (default 'localhost') name or ip of terminal
@@ -158,6 +156,7 @@ function seekPlayerPosition($host = 'localhost', $time = 0) {
     $player->usual($out);
     return $player->json['message'];
 }
+
 /**
  * Summary of player status
  * @param mixed $host Host (default 'localhost') name or ip of terminal
@@ -209,6 +208,7 @@ function getPlayerStatus($host = 'localhost') {
         return ($player->json['message']);
     }
 }
+
 function getMediaDurationSeconds($file) {
     if (!defined('PATH_TO_FFMPEG')) {
         if (IsWindowsOS()) {
@@ -230,6 +230,7 @@ function getMediaDurationSeconds($file) {
     $seconds = $duration[3];
     return $seconds + ($minutes * 60) + ($hours * 60 * 60);
 }
+
 /**
  * Summary of playMedia
  * @param mixed $path Path
@@ -265,6 +266,7 @@ function playMedia($path, $host = 'localhost', $safe_play = FALSE) {
     $player->usual($out);
     return $player->json['message'];
 }
+
 /**
  * Summary of stopMedia
  * @param mixed $host Host (default 'localhost')
@@ -295,6 +297,7 @@ function stopMedia($host = 'localhost') {
     $player->usual($out);
     return $player->json['message'];
 }
+
 /**
  * This function change volume on the terminal
  * @param mixed $host Host (default 'localhost') name or ip of terminal
@@ -317,6 +320,7 @@ function setPlayerVolume($host = 'localhost', $level = 0) {
     $player->usual($out);
     return $player->json['message'];
 }
+
 /**
  * This function change volume for message on the terminal
  * @param mixed $host Host (default 'localhost') name or ip of terminal
@@ -333,6 +337,7 @@ function setMessageVolume($host = 'localhost', $level = 0) {
     SQLUpdate('terminals', $terminal);
     return true;
 }
+
 function setTerminalMML($host = 'localhost', $mml = 0) {
     if (!$terminal = getTerminalsByName($host, 1) [0]) {
         $terminal = getTerminalsByHost($host, 1) [0];
@@ -353,6 +358,7 @@ function setTerminalMML($host = 'localhost', $mml = 0) {
     SQLUpdate('terminals', $terminal);
     return true;
 }
+
 // check terminal
 function pingTerminal($terminal, $details) {
     if (!$terminal) {
@@ -391,6 +397,7 @@ function pingTerminal($terminal, $details) {
     SQLUpdate('terminals', $rec);
     //sg($details['LINKED_OBJECT'] . '.busy', 0);
 }
+
 // check terminal Safe
 function pingTerminalSafe($terminal, $details = '') {
     if (!is_array($details)) {
@@ -408,6 +415,7 @@ function pingTerminalSafe($terminal, $details = '') {
     }
     getURLBackground($url, 0);
 }
+
 function send_message($terminalname, $message, $terminal) {
     include_once (DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
