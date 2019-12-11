@@ -27,7 +27,6 @@ function sayToUser($ph, $level = 0, $user = '')
 	
     foreach ($terminals as $terminal) {
 	// если пустая инфа о терминале пропускаем
-	DebMes($terminal);
         if (!$terminal) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
