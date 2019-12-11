@@ -1,4 +1,15 @@
 <?php
+
+// Get terminals by location
+function getTerminalsByLocation($location = '') {
+	$pvalues = SQLSelect( "SELECT * FROM `pvalues` WHERE VALUE = '".$location."' AND PROPERTY_NAME LIKE 'terminal_%.linkedRoom' ");	
+    foreach ($pvalues as $k => $p) {
+        $terminal = SQLSelectOne( "SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".linkedRoom", "", $p['PROPERTY_NAME']) . "'");
+        $terminals[] = $terminal;
+    }
+	return $terminals;
+}
+
 // Get all terminals
 function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     $sqlQuery = 'SELECT * FROM `terminals` ORDER BY `' . DBSafe($order) . '` ' . DBSafe($sort);
@@ -10,6 +21,7 @@ function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
     }
     return $terminals;
 }
+
 // Get terminal by id
 function getTerminalByID($id) {
     $sqlQuery = 'SELECT * FROM `terminals` WHERE `ID` = ' . abs(intval($id));
