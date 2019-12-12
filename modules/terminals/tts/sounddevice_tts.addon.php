@@ -72,37 +72,46 @@ class sounddevice_tts extends tts_addon
     {
         // Defaults
         $track_id = -1;
-        $length   = 0;
-        $time     = 0;
-        $name     = 'unknow';
+        $length   = '';
+        $time     = '';
         $state    = 'unknown';
-        $file     = '';
-        $volume   = 0;
+        $volume   = '';
         $muted    = FALSE;
         $random   = FALSE;
         $loop     = FALSE;
         $repeat   = FALSE;
-        
+        $name     = 'unknow';
+        $file     = '';
+        $brightness = '';
+        $display_state = 'unknown';
+
+	    
+	    
         // get volume
         if (IsWindowsOS()) {
             exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum);
-            $volume = str_replace("Master volume level =", "", $volum[0]);
-            //DebMes($volume);
+            $result = str_replace("Master volume level =", "", $volum[0]);
+
         } else {
             // linux
         }
+        if (result) {
+            $volume = intval($result);
+	}
         $this->data = array(
-            'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-            'name' => (string) $name, //Current speed for playing media. float.
-            'file' => (string) $file, //Current link for media in device. String.
-            'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
-            'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
-            'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-            'volume' => intval($volume), // Volume level in percent. Integer. Some players may have values greater than 100.
-            'muted' => (int) $muted, // Volume level in percent. Integer. Some players may have values greater than 100.
-            'random' => (boolean) $random, // Random mode. Boolean. 
-            'loop' => (boolean) $loop, // Loop mode. Boolean.
-            'repeat' => (string) $repeat //Repeat mode. Boolean.
+                'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'name' => $name, //Current speed for playing media. float.
+                'file' => $file, //Current link for media in device. String.
+                'length' => $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => $muted, // Muted mode. Boolean.
+                'random' => $random, // Random mode. Boolean. 
+                'loop' => $loop, // Loop mode. Boolean.
+                'repeat' => $repeat, //Repeat mode. Boolean.
+                'brightness'=> $brightness, // brightness display in %
+                'display_state'=> $display_state, // unknow , On, Off  - display  state
         );
         return $this->data;
     }
