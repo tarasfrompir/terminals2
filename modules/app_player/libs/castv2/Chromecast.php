@@ -366,7 +366,6 @@ class GChromecast
 			$this->getCastMessage();
 		} else if ($this->state == 'PAUSED') {
 			$this->play();
-			$this->getCastMessage();
 		}
 		return true;
 	}
