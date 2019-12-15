@@ -158,7 +158,7 @@ class chromecast extends app_player_addon
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
                 $cc->requestId = time();
-                $level         = round($level / 100, 1);
+                $level         = $level / 100;
                 $cc->SetVolume($level);
                 $this->success = TRUE;
                 $this->message = 'OK';
