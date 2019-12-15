@@ -61,7 +61,7 @@ class chromecast_tts extends tts_addon
             try {
                 $cc            = new GChromecast($this->terminal['HOST'], $this->port);
                 $cc->requestId = time();
-                $level         = round($level / 100, 1);
+                $level         = $level / 100;
                 $cc->SetVolume($level);
                 $this->success = TRUE;
             }
