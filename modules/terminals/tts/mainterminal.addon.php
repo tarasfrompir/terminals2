@@ -24,18 +24,16 @@ class mainterminal extends tts_addon
                 }
                 sleep ($message['MESSAGE_DURATION']+1);
                 $this->success = TRUE;
-                $this->message = 'OK';
             } else {
                 $this->success = FALSE;
-                $this->message = 'Command execution error!';
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'Input is missing!';
         }
         return $this->success;
     }
-	  // Get player status
+
+    // Get player status
     function status()
     {
         // Defaults
