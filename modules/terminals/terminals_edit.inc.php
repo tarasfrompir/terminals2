@@ -72,9 +72,9 @@ if ($this->mode == 'update') {
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
     if (gr('systemMML')) {
-        rec['USE_SYSTEM_MML'] = gr('systemMML');
+        $rec['USE_SYSTEM_MML'] = gr('systemMML');
     } else {
-	rec['USE_SYSTEM_MML'] = 0;   
+	$rec['USE_SYSTEM_MML'] = 0;   
     }
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
