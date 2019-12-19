@@ -71,7 +71,11 @@ if ($this->mode == 'update') {
     $rec['LINKED_OBJECT'] = gr('linked_object');
     $rec['MESSAGE_VOLUME_LEVEL'] = gr('message_volume_level');
     $rec['TERMINAL_VOLUME_LEVEL'] = gr('terminal_volume_level');
-    $rec['USE_SYSTEM_MML'] = gr('systemMML');
+    if (gr('systemMML')) {
+        rec['USE_SYSTEM_MML'] = gr('systemMML');
+    } else {
+	rec['USE_SYSTEM_MML'] = 0;   
+    }
     $rec['PLAYER_CONTROL_ADDRESS'] = gr('player_control_address');
 
     $rec['CANTTS'] = gr('cantts', 'int');    
