@@ -32,16 +32,14 @@ class sounddevice_tts extends tts_addon
             }
             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
-                    exec(DOC_ROOT . '/rc/smallplayer.exe -play ' . $filename . ' ' . $this->devicenumber);
+                    exec(DOC_ROOT . '/rc/smallplay.exe -play ' . $filename . ' ' . $this->devicenumber );
                 } else {
                     // linux
                 }
                 sleep($message['MESSAGE_DURATION']+1);
                 $this->success = TRUE;
-                $this->message = 'OK';
             } else {
                 $this->success = FALSE;
-                $this->message = 'Command execution error!';
             }
         } else {
             $this->success = FALSE;
@@ -54,13 +52,11 @@ class sounddevice_tts extends tts_addon
     function set_volume($level)
     {
         if (IsWindowsOS()) {
-            exec(DOC_ROOT . '/rc/setvol.exe report ' . $level . ' device ' . $this->devicename, $volum);
-            $volume = str_replace("Master volume level =", "", $volum[0]);
-            //DebMes($volume);
+            exec(DOC_ROOT . '/rc/smallplay.exe -setvolume ' . $level/100 . ' ' . $this->devicename, $volum);
         } else {
             // linux
         }
-        if ($volume) {
+        if ($volum) {
             return TRUE;
         } else {
             return FALSE;
@@ -89,15 +85,13 @@ class sounddevice_tts extends tts_addon
 	    
         // get volume
         if (IsWindowsOS()) {
-            exec(DOC_ROOT . '/rc/setvol.exe report device ' . $this->devicename, $volum);
-            $result = str_replace("Master volume level =", "", $volum[0]);
-
+            exec(DOC_ROOT . '/rc/smallplay.exe -getvolume ' . $this->devicename . ' 2>&1', $volum);
         } else {
             // linux
         }
-        if (result) {
-            $volume = intval($result);
-	}
+        if ($volum) {
+            $volume = intval($volum[0]*100);
+	    }
         $this->data = array(
                 'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
                 'name' => $name, //Current speed for playing media. float.
