@@ -30,7 +30,7 @@ if (!$out['TTS']) {
     $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),);
 }
 if (IsWindowsOS()) {
-	$dev_list = exec(DOC_ROOT.'/rc/smallplayer -devicelist 2>&1');
+	$dev_list = exec(DOC_ROOT.'/rc/smallplay -devicelist 2>&1');
 	$dev_list = iconv('CP1251', 'utf-8', $dev_list);
 	$devices = explode(',', $dev_list);
 	$out['TTS_SOUND_DEVICES'] = array();
