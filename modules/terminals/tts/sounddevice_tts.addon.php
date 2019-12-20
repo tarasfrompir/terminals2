@@ -36,7 +36,7 @@ class sounddevice_tts extends tts_addon
                 } else {
                     // linux
                 }
-                sleep($message['MESSAGE_DURATION']+1);
+                sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
