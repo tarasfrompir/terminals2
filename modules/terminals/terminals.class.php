@@ -409,6 +409,10 @@ class terminals extends module
  terminals: USE_SYSTEM_MML int(1) NOT NULL DEFAULT '1'
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ terminals: INDEX LATEST_REQUEST (LATEST_REQUEST)
+ terminals: INDEX LATEST_REQUEST_TIME (LATEST_REQUEST_TIME)
+ terminals: INDEX ID (ID)
+ terminals: INDEX HOST (HOST)
 EOD;
         parent::dbInstall($data);
 
