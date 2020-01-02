@@ -29,7 +29,6 @@ class AirPlay {
 		$headers['User-Agent'] = 'MediaControl/1.0';
 		$headers['X-Apple-Transition'] = $transition;
 		$http->SetUri('/photo');
-		echo (var_dump($headers));
 		$http->Post(file_get_contents($file));
 	}
 	function sendvideo($url, $position=0, $transition = AirPlay::NONE) {
