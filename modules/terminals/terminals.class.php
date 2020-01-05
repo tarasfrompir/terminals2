@@ -303,8 +303,9 @@ class terminals extends module
         addClassProperty('Terminals', 'busy');
         addClassProperty('Terminals', 'playerdata');
         addClassProperty('Terminals', 'username');
-	    
-	    // update main terminal
+        addClassProperty('Terminals', 'UPNP_CONTROL_ADDRESS');
+   
+        // update main terminal
         $terminal = getMainTerminal();
         $terminal['TTS_TYPE'] = 'mainterminal';
         $terminal['CANTTS'] = '1';
