@@ -116,6 +116,7 @@ if ($this->mode == 'update') {
             sg($rec['LINKED_OBJECT'] .'.busy', 0);
             sg($rec['LINKED_OBJECT'] .'.name', $rec['NAME']);
             sg($rec['LINKED_OBJECT'] .'.username', $out['USER_NAME']);
+            sg($rec['LINKED_OBJECT'] .'.UPNP_CONTROL_ADDRESS',gr('tts_control_address'));
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
