@@ -18,29 +18,29 @@ class airplay_tts extends tts_addon
     // Say
     function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        $outlink = $message['CACHED_FILENAME'];
-        // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
-                return false;
-            } else {
-                $message_link = 'http://' . $server_ip . $m[0];
+        if ($message['CACHED_FILENAME']) {
+            $fileinfo = pathinfo($message['CACHED_FILENAME']);
+            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.avi';
+            if (!file_exists($filename)) {
+                if (!defined('PATH_TO_FFMPEG')) {
+                    if (IsWindowsOS()) {
+                        define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                    } else {
+                        define("PATH_TO_FFMPEG", 'ffmpeg');
+                    }
+                }
+                shell_exec(PATH_TO_FFMPEG . " -loop 1 -y -i " .DOC_ROOT. "/img/logo.png -i " . $message['CACHED_FILENAME'] . " -shortest -acodec copy -vcodec mjpeg " . $filename);
             }
-        }
-        //DebMes("Url to file " . $message_link);
-        // конец блока получения ссылки на файл 
-
-        $remote = new AirPlay($this->terminal['HOST'], $this->port);
-        $response = $remote->sendvideo($message_link);
-        if ($response) {
-            $this->success = TRUE;
-        } else {
-            $this->success = FALSE;
-        }
-        sleep($message['MESSAGE_DURATION']);
-        return $this->success;
+			$remote = new AirPlay($this->terminal['HOST'], $this->port);
+			$response = $remote->sendvideo($filename);
+			if ($response) {
+				$this->success = TRUE;
+			} else {
+				$this->success = FALSE;
+			}
+			sleep($message['MESSAGE_DURATION']);
+			return $this->success;
+		}
     }
 }
 ?>
