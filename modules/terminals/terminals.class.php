@@ -141,6 +141,11 @@ class terminals extends module
 		} else {
 			$out['TERMINALS_PING'] = 27;
 		}
+        if ($this->config['TERMINALS_CASH_CLEAR']) {
+			$out['TERMINALS_CASH_CLEAR'] = $this->config['TERMINALS_CASH_CLEAR'];
+		} else {
+			$out['TERMINALS_CASH_CLEAR'] = 7;
+		}
         if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
             $out['SET_DATASOURCE'] = 1;
         }
@@ -278,13 +283,38 @@ class terminals extends module
             } catch(Exception $e) {
                 if ($this->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
             }
-        } else  if ($event == 'HOURLY') {
-            // check terminals
-            //$terminals = SQLSelect("SELECT * FROM terminals WHERE IS_ONLINE=0 AND HOST!=''");
-            //foreach ($terminals as $terminal) {
-            //    pingTerminalSafe($terminal['NAME'], $terminal);
-            //}
-            //SQLExec('UPDATE terminals SET IS_ONLINE=0 WHERE LATEST_ACTIVITY < (NOW() - INTERVAL 150 MINUTE)');
+        } else if ($event == 'DAILY') {
+            $this->getConfig();
+			// проверяем, что $dir - каталог
+			if (is_dir($dir)) {
+				// открываем каталог
+				if ($dh = opendir(DOC_ROOT."/cms/cached/voice/")) {
+				// читаем и выводим все элементы
+				// от первого до последнего
+					while (($file = readdir($dh)) !== false) {
+						// текущее время
+						$time_sec=time();
+						// время изменения файла
+						$time_file=fileatime(DOC_ROOT."/cms/cached/voice/" . $file);
+						// тепрь узнаем сколько прошло времени (в секундах)
+						$time=$time_sec-$time_file;
+						$unlink =DOC_ROOT . "/cms/cached/voice/" . $file;
+						if (is_file($unlink)){
+							if ($time>$this->config['TERMINALS_CASH_CLEAR']*60*60*24){
+								if (unlink($unlink)){
+									echo 'Файл удален';
+								} else {
+									echo 'Ошибка при удалении файла';
+								}
+							}
+
+						}
+					}
+					// закрываем каталог
+					closedir($dh);
+				}
+			}
+
         }
     }
 
@@ -351,7 +381,7 @@ class terminals extends module
         
         subscribeToEvent($this->name, 'SAY_CACHED_READY', 0);
         subscribeToEvent($this->name, 'ASK', 0);
-        subscribeToEvent($this->name, 'HOURLY');
+        subscribeToEvent($this->name, 'DAILY');
         parent::install($parent_name);
 
     }
@@ -371,7 +401,7 @@ class terminals extends module
         unsubscribeFromEvent($this->name, 'ASK');
         unsubscribeFromEvent($this->name, 'SAYREPLY');
         unsubscribeFromEvent($this->name, 'SAY_CACHED_READY');
-        unsubscribeFromEvent($this->name, 'HOURLY');
+        unsubscribeFromEvent($this->name, 'DAILY');
         parent::uninstall();
     }
 
