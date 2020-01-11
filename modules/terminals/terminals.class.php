@@ -168,7 +168,7 @@ class terminals extends module
             $this->config['TERMINALS_TIMEOUT'] = trim($terminals_timeout);
             global $terminals_ping;           
             $this->config['TERMINALS_PING'] = trim($terminals_ping);
-            global $terminals_ping;           
+            global $terminals_cash_clear;           
             $this->config['TERMINALS_CASH_CLEAR'] = trim($terminals_cash_clear);
             $this->saveConfig();
             
