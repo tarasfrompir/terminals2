@@ -50,6 +50,7 @@ class airplay_tts extends tts_addon
 			$this->success = FALSE;
 		}
 		sleep($message['MESSAGE_DURATION']);
+                $remote->stop();
 		return $this->success;
 	}
 }
