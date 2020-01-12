@@ -392,6 +392,7 @@ class Kodi{
 		//curl_setopt($this->_curlHdl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		curl_setopt($this->_curlHdl, CURLINFO_HEADER_OUT, true);
 		curl_setopt($this->_curlHdl, CURLOPT_POST, true);
+		curl_setopt($this->_curlHdl, CURLOPT_CONNECTTIMEOUT, 3);
 		curl_setopt($this->_curlHdl, CURLOPT_POSTFIELDS, $payload);
 		curl_setopt($this->_curlHdl, CURLOPT_HTTPHEADER, array(
 													'Content-Type: application/json',
