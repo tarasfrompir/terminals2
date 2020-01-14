@@ -13,9 +13,9 @@ class chromegate_tts extends tts_addon {
     {
         if ($terminal['TITLE']) {
             if ($message['MESSAGE']) {
-				postToWebSocketQueue($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'destination' => $terminal['TITLE'] ), 'PostEvent');
+	        postToWebSocketQueue($message['EVENT'], array('level' => $message['IMPORTANCE'], 'message' => $message['MESSAGE'], 'destination' => $terminal['TITLE'] ), 'PostEvent');
                 usleep(100000);
-	            $this->success = TRUE;
+	        $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
@@ -27,11 +27,10 @@ class chromegate_tts extends tts_addon {
 
     function ask($phrase, $level=0) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-		DebMes($phrase);
         if ($phrase) {
-			postToWebSocketQueue('ASK', array('level' => $level, 'prompt' => $phrase, 'target' => ''), 'PostEvent');
+            postToWebSocketQueue('ASK', array('level' => $level, 'prompt' => $phrase, 'target' => ''), 'PostEvent');
             sleep(1);
-	        $this->success = TRUE;
+	    $this->success = TRUE;
         } else {
             $this->success = FALSE;
         }
