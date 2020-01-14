@@ -273,7 +273,7 @@ class terminals extends module
                     include_once($addon_file);
                     $tts = new $terminal['TTS_TYPE']($terminal);
                     if (method_exists($tts,'ask')) {
-                        $tts->ask($details['message']);
+                        $tts->ask($details['message'], 9999);
                         if ($this->config['LOG_ENABLED']) DebMes("Sending Message - " . $details['message'] . "to : " . $terminal['NAME'], 'terminals');
                     } else {
 						if ($this->config['LOG_ENABLED']) DebMes("Can not ask  Terminal - " . $terminal['NAME'] , 'terminals');
