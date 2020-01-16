@@ -288,7 +288,7 @@ class terminals extends module
         } else if ($event == 'DAILY') {
             $this->getConfig();
 			// проверяем, что $dir - каталог
-			if (is_dir($dir)) {
+			if (is_dir(DOC_ROOT."/cms/cached/voice/")) {
 				// открываем каталог
 				if ($dh = opendir(DOC_ROOT."/cms/cached/voice/")) {
 				// читаем и выводим все элементы
