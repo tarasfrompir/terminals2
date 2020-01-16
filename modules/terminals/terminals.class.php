@@ -286,7 +286,7 @@ class terminals extends module
                 if ($this->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
             }
         } else if ($event == 'DAILY') {
-            //$this->getConfig();
+            $this->getConfig();
 			// проверяем, что каталог
 			if (is_dir(DOC_ROOT."/cms/cached/voice/")) {
 				// открываем каталог
@@ -300,7 +300,6 @@ class terminals extends module
 						$time_file=fileatime(DOC_ROOT."/cms/cached/voice/" . $file);
 						// тепрь узнаем сколько прошло времени (в секундах)
 						$time=$time_sec-$time_file;
-						DebMes($time, $file);
 						$unlink =DOC_ROOT . "/cms/cached/voice/" . $file;
 						if (is_file($unlink)){
 							if ($time>$this->config['TERMINALS_CASH_CLEAR']*60*60*24){
