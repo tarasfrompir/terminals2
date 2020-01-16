@@ -72,7 +72,6 @@
     [#begin USER#]<option value="[#USERNAME#]"[#if USERNAME="<#USER_NAME#>"#] selected[#endif#]>[#USERNAME#]
    [#end USER#]
   </select>
-  <p style="display: block; font-size: 80%;" >Данную настройку производить только тогда, когда терминалом пользуется ОДИН пользователь(личный телефон и т.д.).</p>
   </div>
 </div>
 
@@ -111,10 +110,10 @@
 </script>
 
 <div class="form-group">
-    <div class="col-lg-offset-2 col-lg-5 ">
+    <div class="col-lg-offset-3 ">
         <div class="checkbox">
             <label>
-            <input type="checkbox" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
+            <input type="checkbox" align="center" value="1" id='cantts' name="cantts" onClick='canTTSChanged();' [#if CANTTS="1"#] checked[#endif#]> <#LANG_CAN_TTS#>
             </label>
         </div>
     </div>
@@ -123,8 +122,8 @@
 
 <div id="ttsDetails"[#if CANTTS!="1"#] style="display:none"[#endif#]>
     <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-            <label align="center" for="min_msg_level">Раздел настроек связанный с системными сообщениями на этот терминал</label>
+        <div class="col-lg-offset-2">
+            <label align="center" for="min_msg_level"><font color="red" >Раздел настроек связанный с системными сообщениями на этот терминал</font></label>
         </div>
     </div>
     <div class="form-group ">
@@ -332,10 +331,10 @@
 
 
 <div class="form-group">
-    <div class="col-lg-offset-2 col-lg-5 ">
+    <div class="col-lg-offset-3 ">
         <div class="checkbox">
             <label>
-                 <input type="checkbox" value="1" id='canplay' onClick='canPlayChanged();' name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
+                 <input type="checkbox" align="center" value="1" id='canplay' onClick='canPlayChanged();' name="canplay" [#if CANPLAY="1"#] checked[#endif#]> <#LANG_CAN_PLAY_MEDIA#>
             </label>
         </div>
     </div>
@@ -343,8 +342,8 @@
 
 <div id='playerDetails'[#if CANPLAY!="1"#] style="display:none"[#endif#]>
     <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-5 ">
-            <label align="center" for="min_msg_level">Раздел настроек связанный с воспроизведением медиа на этот терминал</label>
+        <div class="col-lg-offset-2 ">
+            <label align="center" color="red" for="min_msg_level"><font color="red" >Раздел настроек связанный с воспроизведением медиа на этот терминал</font></label>
         </div>
     </div>
     <div class="form-group ">
