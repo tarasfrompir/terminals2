@@ -44,7 +44,7 @@ class telegramm extends tts_addon
                     $result = getURL($url, 0);
                     //getURLBackground($url, 0);
                     if ($result) {
-                        //usleep(100000);
+                        sleep(1);
                         $this->success = TRUE;
                     } else {
                         $this->success = FALSE;
