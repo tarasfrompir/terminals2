@@ -14,8 +14,8 @@ class telegramm extends tts_addon
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
         unsubscribeFromEvent('telegram', 'SAYREPLY');
-        set_time_limit(5);
-        register_shutdown_function("catchTimeoutTerminals");
+        //set_time_limit(5);
+        //register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Say
