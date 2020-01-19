@@ -92,3 +92,32 @@ else :
 	print ("неправильный аргумент")	
 	print ("# аргумент -devicelist - список выходных устройств")
 	print ("# аргумент -play nameoffile devicenumber проиграет файл(имя) на устройстве номер(1)")
+
+
+
+
+
+
+
+
+
+
+if ($details['source']) {
+	$terminal = getTerminalByID(str_replace("terminal", "", $details['source']));
+	$location = gg($terminal['LINKED_OBJECT'].'.linkedRoom');
+	$rec = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'");
+	$location_id = $rec['ID'];
+} else {
+	$location_id = '%';
+}
+
+
+
+
+
+
+
+
+
+
+$devices = SQLSelect("SELECT ID, TITLE, ALT_TITLES, TYPE, LINKED_OBJECT FROM devices WHERE location_ID = '" . $location_id . "'");
