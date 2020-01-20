@@ -234,6 +234,7 @@ shouts - Shoutbox
 */
   // modify base
   SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
+  SQLExec("ALTER TABLE `shouts` CHANGE `MESSAGE` `MESSAGE` longtext NOT NULL DEFAULT ''");
 	 
 		
   $data = <<<EOD
