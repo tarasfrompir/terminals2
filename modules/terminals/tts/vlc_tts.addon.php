@@ -47,18 +47,14 @@ class vlc_tts extends tts_addon {
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {
 					$this->success = TRUE;
-					$this->message = 'OK';
 				} else {
 					$this->success = FALSE;
-					$this->message = $result;
 				}
 			} else {
 				$this->success = FALSE;
-				$this->message = 'RC interface not available!';
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Input is missing!';
 		}
 		return $this->success;
 	}
@@ -77,18 +73,14 @@ class vlc_tts extends tts_addon {
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {
 					$this->success = TRUE;
-					$this->message = 'OK';
 				} else {
 					$this->success = FALSE;
-					$this->message = $result;
 				}
 			} else {
 				$this->success = FALSE;
-				$this->message = 'RC interface not available!';
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'Input is missing!';
 		}
 		return $this->success;
 	}
@@ -99,14 +91,11 @@ class vlc_tts extends tts_addon {
 		if($result = curl_exec($this->curl)) {
 			if($result == 'OK') {
 				$this->success = TRUE;
-				$this->message = 'OK';
 			} else {
 				$this->success = FALSE;
-				$this->message = $result;
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'RC interface not available!';
 		}
 		return $this->success;
 	}
@@ -118,14 +107,11 @@ class vlc_tts extends tts_addon {
 		if($result = curl_exec($this->curl)) {
 			if($result == 'OK') {
 				$json['success'] = TRUE;
-				$json['message'] = 'OK';
 			} else {
 				$json['success'] = FALSE;
-				$json['message'] = $result;
 			}
 		} else {
 			$this->success = FALSE;
-			$this->message = 'RC interface not available!';
 		}
 		return $this->success;
 	}
