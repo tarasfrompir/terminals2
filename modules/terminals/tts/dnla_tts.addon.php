@@ -63,7 +63,7 @@ class dnla_tts extends tts_addon
         // конец блока получения ссылки на файл 
         $remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
         $response = $remote->play($message_link);
-        if ($response) {
+        if (stristr($response, 'PlayResponse')) {
             $this->success = TRUE;
         } else {
             $this->success = FALSE;
