@@ -24,20 +24,16 @@ foreach ($term as $t) {
 $number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
 $number_message = $number_message['ID'] + 1;
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
-if ($ter->config['TERMINALS_TIMEOUT']) {
-    $terminals_time_out = $ter->config['TERMINALS_TIMEOUT'];
-} else {
-    $terminals_time_out = 10;
-}
-if ($ter->config['LOG_ENABLED']) DebMes("Get timeout for message - " . $terminals_time_out . " minutes", 'terminals');
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
         $ter->getConfig();
         if (!$ter->config['TERMINALS_PING']) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping terminals is null minutes, set default 30 minutes", 'terminals');
             $ter->config['TERMINALS_PING'] = 30;
         }
         if (!$ter->config['TERMINALS_TIMEOUT']) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
             $ter->config['TERMINALS_TIMEOUT'] = 10;
         }
         $checked_time = time();
