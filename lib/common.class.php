@@ -918,6 +918,7 @@ function runScriptSafe($id, $params = '')
     return $result;
 }
 
+
 /**
  * Summary of callScript
  * @param mixed $id ID
