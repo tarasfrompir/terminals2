@@ -43,12 +43,14 @@ class airplay_tts extends tts_addon
             }
         }
         $remote   = new AirPlay($this->terminal['HOST'], $this->port);
-        $response = $remote->sendvideo($message_link);
-        if ($response) {
-            $this->success = TRUE;
-        } else {
-            $this->success = FALSE;
-        }
+        //$response = $remote->sendvideo($message_link);
+        $remote->sendvideo($message_link);
+        //if ($response) {
+        //    $this->success = TRUE;
+        //} else {
+        //    $this->success = FALSE;
+        //}
+        $this->success = TRUE;
         sleep($message['MESSAGE_DURATION']);
         $remote->stop();
         return $this->success;
