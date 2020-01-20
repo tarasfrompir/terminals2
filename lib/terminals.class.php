@@ -542,6 +542,8 @@ function send_message($terminalname, $message, $terminal) {
             $rec['SOURCE'] = $rec['SOURCE'] . $terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
             pingTerminalSafe($terminal['NAME'], $terminal);
+            // задержка для медленных систем
+            sleep(1);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname . ' sucessfull', 'terminals');
         }
