@@ -234,12 +234,13 @@ shouts - Shoutbox
 */
   // modify base
   SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
+	 
 		
   $data = <<<EOD
  shouts: ID int(3) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
- shouts: MESSAGE varchar(255) NOT NULL DEFAULT ''
+ shouts: MESSAGE longtext NOT NULL DEFAULT ''
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
