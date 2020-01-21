@@ -232,16 +232,12 @@ function usual(&$out) {
 /*
 shouts - Shoutbox
 */
-  // modify base
-  SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
-  SQLExec("ALTER TABLE `shouts` CHANGE `MESSAGE` `MESSAGE` longtext NOT NULL DEFAULT ''");
-	 
-		
+	
   $data = <<<EOD
  shouts: ID int(3) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
- shouts: MESSAGE longtext NOT NULL DEFAULT ''
+ shouts: MESSAGE varchar(1024) NOT NULL DEFAULT ''
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
@@ -250,6 +246,10 @@ shouts - Shoutbox
  shouts: MESSAGE_DURATION int(10) NOT NULL DEFAULT '0'
 EOD;
   parent::dbInstall($data);
+
+  // modify base
+  SQLExec("ALTER TABLE `shouts` CHANGE `ID` `ID` int(3) unsigned NOT NULL auto_increment");
+  SQLExec("ALTER TABLE `shouts` CHANGE `MESSAGE` `MESSAGE` varchar(1024) NOT NULL DEFAULT ''");
  }
 // --------------------------------------------------------------------
 }
