@@ -40,15 +40,24 @@ class telegramm extends tts_addon
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $url    = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
-                    $result = getURL($url, 0);
+					// old variant
+                    //$url    = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
+                    //$result = getURL($url, 0);
+					//DebMes($result);
                     //getURLBackground($url, 0);
-                    if ($result) {
-                        sleep(1);
-                        $this->success = TRUE;
-                    } else {
-                        $this->success = FALSE;
-                    }
+					
+					
+					// new variant 
+					$result = $telegram_module->sendMessageToUser($user_id ,$message['MESSAGE']);
+                   
+					// unremark wait change in module
+					//if ($result) {
+                    //    sleep(1);
+                    //    $this->success = TRUE;
+                    //} else {
+                    //    $this->success = FALSE;
+                    //}
+					$this->success = TRUE;
                 }
             } else {
                 $this->success = FALSE;
