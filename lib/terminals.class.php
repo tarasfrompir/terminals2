@@ -560,18 +560,9 @@ function send_messageSafe($message, $terminal) {
     if (session_id()) {
         $data[session_name() ] = session_id();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($message)) {
-        foreach ($message as $k => $v) {
-            $url.= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    if (is_array($terminal)) {
-        foreach ($terminal as $k => $v) {
-            $url.= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    getURLBackground($url, 0);
+    $url = BASE_URL . '/objects/?' ;
+	$postString = http_build_query($data, '', '&');
+    postURLBackground($url, $data);
     return 1;
 }
 
@@ -662,4 +653,24 @@ function restore_mediaSafe($restore, $terminal) {
     }
     getURLBackground($url, 0);
     return 1;
+}
+
+function postURLBackground($url, $query = array()) {
+$myCurl = curl_init();
+curl_setopt_array($myCurl, array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $query,
+    CURLOPT_USERAGENT => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0',
+    CURLOPT_CONNECTTIMEOUT => 10,
+    CURLOPT_MAXREDIRS => 2,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_NOSIGNAL => true,
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYHOST => 2,
+    CURLOPT_TIMEOUT_MS => 50,
+));
+$response = curl_exec($myCurl);
+curl_close($myCurl);
 }
