@@ -389,7 +389,7 @@ addClassMethod('Terminals', 'MessageError', '
 // $params["NAME"]; - Имя Терминала
 // $params["MESSAGE"]; - сообщение
 // $params["ERROR"]; - тип ошибки
-// $params["IMPORTANCE"]; - важность сообщния
+// $params["IMPORTANCE"]; - важность сообщения
 // $params["ORIGINAL_OBJECT_TITLE"]; - привязанный обьект
 // $this->username; - Привязанный Пользователь
 // $this->linkedRoom; - привязанное помещение
