@@ -564,7 +564,7 @@ function send_messageSafe($message, $terminal) {
     $url = BASE_URL . '/objects/?' ;
     //$postString = http_build_query($data, '', '&');
     //postURLBackground($url, $postString, 0);
-    postURLBackground($url, $data, 0);
+    postURLBackground($url, $data);
     return 1;
 }
 
@@ -660,7 +660,7 @@ function restore_mediaSafe($restore, $terminal) {
 function postURLBackground($url, $query = array(), $cache = 0, $username = '', $password = '')
 {
     //DebMes("URL: ".$url,'debug1');
-    postURL($url, $query = array(), $cache, $username, $password, true);
+    postURL($url, $query , $cache, $username, $password, true);
 }
 
 /**
@@ -688,9 +688,9 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             //DebMes('Geturl started for '.$url. ' Source: ' .debug_backtrace()[1]['function'], 'geturl');
             startMeasure('curl_prepare');
             $ch = curl_init();
-			@curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+            @curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
