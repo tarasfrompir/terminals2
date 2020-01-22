@@ -555,6 +555,7 @@ function send_message($terminalname, $message, $terminal) {
     // установим флаг того что терминал освободился
     sg($terminal['LINKED_OBJECT'] . '.busy', 0);
 }
+
 function send_messageSafe($message, $terminal) {
     $data = array('send_message' => 1, 'terminalname' => $terminal['NAME'], 'message' => json_encode($message), 'terminal' => json_encode($terminal));
     if (session_id()) {
@@ -562,8 +563,8 @@ function send_messageSafe($message, $terminal) {
     }
     $url = BASE_URL . '/objects/?' ;
     //$postString = http_build_query($data, '', '&');
-    //postURL($url, $postString);
-    postURL($url, $data);
+    //postURLBackground($url, $postString, 0);
+    postURLBackground($url, $data, 0);
     return 1;
 }
 
