@@ -48,9 +48,9 @@ while (1) {
     //время жизни сообщений
     if (time() - $clear_message > 60 * $ter->config['TERMINALS_TIMEOUT']) {
         $clear_message = time();
-            $result = SQLSelect("SELECT COUNT(ID) FROM shouts WHERE ADDED > (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
-            if ($result[0]['COUNT(ID)']>0) {
-                SQLExec("UPDATE shouts SET SOURCE = '' WHERE ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
+        $result = SQLSelect("SELECT COUNT(ID) FROM shouts WHERE SOURCE != '' AND ADDED > (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
+        if ($result[0]['COUNT(ID)']>0) {
+            SQLExec("UPDATE shouts SET SOURCE = '' WHERE SOURCE != '' AND ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
             if ($ter->config['LOG_ENABLED']) DebMes ("Clear message - when can not to play. For timeouts - ".$ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
     }
