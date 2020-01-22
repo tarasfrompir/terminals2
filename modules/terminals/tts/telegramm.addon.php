@@ -42,24 +42,12 @@ class telegramm extends tts_addon
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-					// old variant
-                    //$url    = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($message['MESSAGE']);
-                    //$result = getURL($url, 0);
-					//DebMes($result);
-                    //getURLBackground($url, 0);
-					
-					
-					// new variant 
-					$result = $telegram_module->sendMessageToUser($user_id ,$message['MESSAGE']);
-                   
-					// unremark wait change in module
-					//if ($result) {
-                    //    sleep(1);
-                    //    $this->success = TRUE;
-                    //} else {
-                    //    $this->success = FALSE;
-                    //}
-					$this->success = TRUE;
+                    $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
+                    if ($result['ok'] = true) {
+                        $this->success = TRUE;
+                    } else {
+                        $this->success = FALSE;
+                    }
                 }
             } else {
                 $this->success = FALSE;
@@ -81,10 +69,9 @@ class telegramm extends tts_addon
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $url    = BASE_URL . "/ajax/telegram.html?sendMessage=1&user=" . $user_id . "&text=" . urlencode($phrase);
-                    $result = getURL($url, 0);
-                    //getURLBackground($url, 0);
-                    if ($result) {
+                    // new variant 
+                    $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
+                    if ($result['ok'] = true) {
                         $this->success = TRUE;
                     } else {
                         $this->success = FALSE;
