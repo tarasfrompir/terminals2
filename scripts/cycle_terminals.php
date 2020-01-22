@@ -66,10 +66,10 @@ while (1) {
     
     $out_terminals = getObjectsByProperty('busy', '==', '0');
     foreach ($out_terminals as $terminals) {
-        // если пустой обьект пропускаем
+        // если нету свободных терминалов пропускаем
         if (!$terminals) {
             if ($ter->config['LOG_ENABLED']) DebMes("No free terminal " . $terminals, 'terminals');
-            continue;
+            break ;
         }
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         
@@ -94,7 +94,7 @@ while (1) {
             continue;
         }
         
-        // berem pervoocherednoe soobsheniye 
+        // берем первоочередное сообщение  
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
         
         // если отсутствует сообщение и есть инфа для восстановления то восстанавливаем воспроизводимое
@@ -120,9 +120,9 @@ while (1) {
             continue;
         }
 		
-        // если есть сообщение НО не сгенерирован звук в течении 1 минуты
+        // если есть сообщение НО не сгенерирован звук (остутсвует в информации о сообщении запись) в течении 2 минут 
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND  strtotime($old_message['ADDED'])+1*60 < time() AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
+        if ($old_message['CACHED_FILENAME'] AND  strtotime($old_message['ADDED'])+2*60 < time() AND method_exists($tts[$terminal['ID']], 'say_media_message')) {
 			$old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
             SQLUpdate('shouts', $old_message);
             if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
