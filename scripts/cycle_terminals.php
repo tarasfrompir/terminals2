@@ -27,9 +27,15 @@ DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
+        // проверка на установленность терминалов2
+        if (!function_exists('catchTimeoutTerminals')) {
+            DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
+            setGlobal('cycle_terminalsAutoRestart', '0');
+            setGlobal('cycle_terminalsControl', 'stop');
+        }
         $ter->getConfig();
         if (!$ter->config['TERMINALS_PING']) {
-			if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping terminals is null minutes, set default 30 minutes", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping terminals is null minutes, set default 30 minutes", 'terminals');
             $ter->config['TERMINALS_PING'] = 30;
         }
         if (!$ter->config['TERMINALS_TIMEOUT']) {
