@@ -561,7 +561,8 @@ function send_messageSafe($message, $terminal) {
         $data[session_name() ] = session_id();
     }
     $url = BASE_URL . '/objects/?' ;
-	$postString = http_build_query($data, '', '&');
+    //$postString = http_build_query($data, '', '&');
+    //postURL($url, $postString);
     postURL($url, $data);
     return 1;
 }
