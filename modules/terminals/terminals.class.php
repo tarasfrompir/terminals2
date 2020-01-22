@@ -384,6 +384,16 @@ class terminals extends module
         subscribeToEvent($this->name, 'SAY_CACHED_READY', 0);
         subscribeToEvent($this->name, 'ASK', 0);
         subscribeToEvent($this->name, 'DAILY');
+// автодобавления метода который вызывается циклом при ошибках терминала..  
+addClassMethod('Terminals', 'MessageError', '
+// $params["NAME"]; - Имя Терминала
+// $params["MESSAGE"]; - сообщение
+// $params["ERROR"]; - тип ошибки
+// $params["IMPORTANCE"]; - важность сообщния
+// $params["ORIGINAL_OBJECT_TITLE"]; - привязанный обьект
+// $this->username; - Привязанный Пользователь
+// $this->linkedRoom; - привязанное помещение
+');
         parent::install($parent_name);
 
     }
