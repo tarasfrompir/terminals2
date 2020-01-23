@@ -1669,7 +1669,3 @@ function num2straddon($n, $f1, $f2, $f5) {
     if ($n==1) return $f1;
     return $f5;
 }
-
-function catchTimeoutTerminals() {
-    DebMes ("Получен таймаут на выполнение скрипта!", 'terminals');
-}
