@@ -17,7 +17,7 @@ class alicevox extends tts_addon
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
-        parent::__construct($terminal);
+        register_shutdown_function("catchTimeoutTerminals");
     }
     
     
