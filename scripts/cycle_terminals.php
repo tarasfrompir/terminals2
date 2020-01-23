@@ -204,7 +204,11 @@ while (1) {
     }
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+        if ($ter->config['LOG_ENABLED'])
+                DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
         exit;
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
+if ($ter->config['LOG_ENABLED'])
+                DebMes("Цикл неожиданно завершился по неизвестной причине", 'terminals');
