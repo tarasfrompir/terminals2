@@ -801,7 +801,7 @@ function catchTimeoutTerminals() {
     # Getting last error
     $error = error_get_last();
     # Checking if last error is a fatal error
-    if(($error[‘type’] === E_ERROR) || ($error[‘type’] === E_USER_ERROR))
+    if(($error['type'] === E_ERROR) || ($error['type'] === E_USER_ERROR))
     {
         DebMes ("Получен таймаут на выполнение скрипта! Ошибка - " . serialize($error), 'terminals');
     }		
