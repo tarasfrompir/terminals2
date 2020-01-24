@@ -98,6 +98,8 @@ while (1) {
             try {
                 if ($ter->config['LOG_ENABLED'])
                     DebMes("PingSafe terminal " . $terminal['NAME'], 'terminals');
+				//установим флаг занятости терминала 
+				sg($terminal['LINKED_OBJECT'] . '.busy', 1);
                 pingTerminalSafe($terminal['NAME'], $terminal);
                 continue;
             }
