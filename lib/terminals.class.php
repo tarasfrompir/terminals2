@@ -537,7 +537,7 @@ function send_message($terminalname, $message, $terminal) {
         }
         if (!$out) {
             if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
-            $rec = SQLSelectOne("SELECT SOURCE FROM shouts WHERE ID = '" . $message['ID'] . "'");
+            $rec = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $message['ID'] . "'");
             $rec['SOURCE'] = $rec['SOURCE'] . $terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
             pingTerminalSafe($terminal['NAME'], $terminal);
