@@ -374,7 +374,6 @@ function pingTerminal($terminal, $details) {
     if (!$terminal) {
         return;
     }
-    //sg($details['LINKED_OBJECT'] . '.busy', 1);
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
@@ -405,7 +404,7 @@ function pingTerminal($terminal, $details) {
         DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
-    //sg($details['LINKED_OBJECT'] . '.busy', 0);
+    sg($details['LINKED_OBJECT'] . '.busy', 0);
 }
 
 // check terminal Safe
@@ -518,9 +517,9 @@ function send_message($terminalname, $message, $terminal) {
 
     // запишем уровень громкости на терминале
     if ($restore_data['volume']) {
-        $out['ID'] = $terminal['ID'];
-        $out['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
-        SQLUpdate('terminals', $out);
+        $volume['ID'] = $terminal['ID'];
+        $volume['TERMINAL_VOLUME_LEVEL'] = $restore_data['volume'];
+        SQLUpdate('terminals', $volume);
     }
 
     // попробуем отправить сообщение на терминал
@@ -542,8 +541,6 @@ function send_message($terminalname, $message, $terminal) {
             $rec['SOURCE'] = $rec['SOURCE'] . $terminal['ID'] . '^';
             SQLUpdate('shouts', $rec);
             pingTerminalSafe($terminal['NAME'], $terminal);
-            // задержка для медленных систем
-            sleep(1);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname . ' sucessfull', 'terminals');
         }
@@ -552,8 +549,8 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname, 'terminals');
     }
 	
-    // установим флаг того что терминал освободился
-    sg($terminal['LINKED_OBJECT'] . '.busy', 0);
+    // установим флаг того что терминал освободился если сообщенеи доставлено иначе пингование терминала освободит его
+    if ($out) sg($terminal['LINKED_OBJECT'] . '.busy', 0);
 }
 
 function send_messageSafe($message, $terminal) {
