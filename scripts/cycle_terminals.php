@@ -72,11 +72,20 @@ while (1) {
     foreach ($out_terminals as $terminals) {
         // если нету свободных терминалов пропускаем
         if (!$terminals) {
-            if ($ter->config['LOG_ENABLED'])
-                DebMes("No free terminal " . $terminals, 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("No free terminal " . $terminals, 'terminals');
             break;
         }
+
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
+        
+        // если в терминале отсутствует привязанный обьект то выведем ошибку 
+        if (!$terminal['LINKED_OBJECT']) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Cannot find link object for this terminal - " . str_ireplace("terminal_", "", $terminals) . ". Please re-save this terminal for proper operation.", 'terminals');
+            $params               = array();
+            $params["ERROR"]      = 'Терминал ' . str_ireplace("terminal_", "", $terminals) .' не имеет привязанного обьекта. Для дальнейшей работы терминала необходимо пересохранить его в модуле Терминалы';
+            callMethodSafe($terminals . '.MessageError', $params);
+            continue;
+        }
         
         // если пустой терминал пропускаем
         if (!$terminal['ID']) {
