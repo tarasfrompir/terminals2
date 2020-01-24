@@ -233,7 +233,7 @@ function usual(&$out) {
 shouts - Shoutbox
 */
 
- SQLExec("ALTER TABLE `shouts` DROP INDEX MESSAGE");
+ //SQLExec("ALTER TABLE `shouts` DROP INDEX MESSAGE");
   $data = <<<EOD
  shouts: ID int(3) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
