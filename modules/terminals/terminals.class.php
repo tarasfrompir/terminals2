@@ -349,6 +349,7 @@ class terminals extends module
 	    
         // remove old files
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
+        @unlink(DIR_MODULES . 'terminals/tts/mediaplayer.addon.php');
 
         //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
         $terminals = SQLSelect("SELECT * FROM terminals ");
