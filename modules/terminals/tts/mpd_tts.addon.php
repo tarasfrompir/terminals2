@@ -100,6 +100,16 @@ class mpd_tts extends tts_addon {
 		}
 		return $this->success;
 	}
+    // ping terminal
+    function ping()
+    {
+        if ($this->mpd_connect()) {
+            $this->success = TRUE;
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
 
 }
 
