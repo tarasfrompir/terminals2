@@ -96,7 +96,7 @@ class telegramm extends tts_addon
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             include(DIR_MODULES . 'telegram/telegram.class.php');
             $telegram_module = new telegram();
-            $result = json_encode($telegram_module->getMe());
+            $result = $telegram_module->getMe();
             if (is_array($result) AND $result["ok"] = true) {
                 $this->success = TRUE;
             } else {
