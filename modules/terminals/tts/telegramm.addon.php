@@ -42,7 +42,7 @@ class telegramm extends tts_addon
                     if ($user_id === '0') {
                         $user_id = $users[$j]['NAME'];
                     }
-                    $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
+                    $result = $telegram_module->sendMessageToUser($user_id, $message['MESSAGE']);
                     if (is_array($result) AND $result["ok"] = true) {
                         $this->success = TRUE;
                     } else {
@@ -73,7 +73,7 @@ class telegramm extends tts_addon
                         $user_id = $users[$j]['NAME'];
                     }
                     // new variant 
-                    $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
+                    $result = $telegram_module->sendMessageToUser($user_id, $message['MESSAGE']);
                     if (is_array($result) AND $result["ok"] = true) {
                         $this->success = TRUE;
                     } else {
