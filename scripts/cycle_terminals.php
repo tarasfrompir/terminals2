@@ -78,14 +78,13 @@ while (1) {
 
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         
-        // если терминал не воспроизводит сообщения то пропускаем его в этой итерации
-        if (!$terminal['CANTTS']) { 
-            continue;
-        }
-		
         // если пустой терминал пропускаем
         if (!$terminal['ID']) { 
             DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
+            continue;
+        }
+        // если терминал не воспроизводит сообщения то пропускаем его в этой итерации
+        if (!$terminal['CANTTS']) { 
             continue;
         }
 		
