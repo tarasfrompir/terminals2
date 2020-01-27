@@ -78,17 +78,21 @@ while (1) {
 
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         
-        // если в терминале отсутствует привязанный обьект то выведем ошибку 
-        if (!$terminal['LINKED_OBJECT']) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Cannot find link object for this terminal - " . str_ireplace("terminal_", "", $terminals) . ". Please re-save this terminal for proper operation.", 'terminals');
+        // если в терминале отсутствует привязанный обьект или терминал отключен от воспроизведения то выведем ошибку 
+        if (!$terminal['LINKED_OBJECT'] OR !$terminal['TTS_TYPE']) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Cannot find link object or cannot play message for this terminal - " . str_ireplace("terminal_", "", $terminals) . ". Please re-save this terminal for proper operation.", 'terminals');
             $params               = array();
-            $params["ERROR"]      = 'Терминал ' . str_ireplace("terminal_", "", $terminals) .' не имеет привязанного обьекта. Для дальнейшей работы терминала необходимо пересохранить его в модуле Терминалы';
+            if (!$terminal['LINKED_OBJECT']) {
+                $params["ERROR"]      = 'Терминал ' . str_ireplace("terminal_", "", $terminals) .' не имеет привязанного обьекта. Для дальнейшей работы терминала необходимо пересохранить его в модуле Терминалы';
+            } else if (!$terminal['LINKED_OBJECT']) {
+                $params["ERROR"]      = 'Терминал ' . str_ireplace("terminal_", "", $terminals) .' отключен для воспроизведения сообщения (непонятно почему попал в список). Для дальнейшей работы терминала необходимо пересохранить его в модуле Терминалы';
+            }
             callMethodSafe($terminals . '.MessageError', $params);
             continue;
         }
         
         // если пустой терминал пропускаем
-        if (!$terminal['ID']) {
+        if (!$terminal['ID']) { 
             DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
             continue;
         }
@@ -97,24 +101,21 @@ while (1) {
         if (!$tts[$terminal['ID']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
             $tts[$terminal['ID']] = new $terminal['TTS_TYPE']($terminal);
-            if ($ter->config['LOG_ENABLED'])
-                DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
             continue;
         }
         
         // если терминал СВОБОДНЫЙ и офлайн то пингуем его
         if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("PingSafe terminal " . $terminal['NAME'], 'terminals');
-				//установим флаг занятости терминала 
-				sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+                if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal " . $terminal['NAME'], 'terminals');
+                //установим флаг занятости терминала 
+                sg($terminal['LINKED_OBJECT'] . '.busy', 1);
                 pingTerminalSafe($terminal['NAME'], $terminal);
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
         
@@ -131,8 +132,7 @@ while (1) {
                     continue;
                 }
                 catch (Exception $e) {
-                    if ($ter->config['LOG_ENABLED'])
-                        DebMes("ОШИБКА!!! Восстановление медиаконтента на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+                    if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Восстановление медиаконтента на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
                 }
             }
         } else if (!$old_message['SOURCE'] OR !$old_message['MESSAGE']) {
@@ -143,12 +143,11 @@ while (1) {
         
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись 
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
-        if (($old_message['ID'] AND !$terminal['IS_ONLINE']) OR !$terminal['TTS_TYPE']) {
+        if ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("Disable message - " . $terminal['NAME'], 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Disable message - " . $terminal['NAME'], 'terminals');
                 $params               = array();
                 $params['NAME']       = $terminal['NAME'];
                 $params["MESSAGE"]    = $old_message['MESSAGE'];
@@ -158,8 +157,7 @@ while (1) {
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Терминал ушел в офлайн. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Терминал ушел в офлайн. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
         
@@ -169,8 +167,7 @@ while (1) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
                 $params               = array();
                 $params['NAME']       = $terminal['NAME'];
                 $params["MESSAGE"]    = $old_message['MESSAGE'];
@@ -180,8 +177,7 @@ while (1) {
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Не сгенерирован звук модулем генератора речи для голосового терминала в течении 2 минут. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Не сгенерирован звук модулем генератора речи для голосового терминала в течении 2 минут. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
         
@@ -191,8 +187,7 @@ while (1) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
                 $params               = array();
                 $params['NAME']       = $terminal['NAME'];
                 $params["MESSAGE"]    = $old_message['MESSAGE'];
@@ -202,8 +197,7 @@ while (1) {
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Отсутствует сгенерированный файл аудио сообщения. Для голосового терминала. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Отсутствует сгенерированный файл аудио сообщения. Для голосового терминала. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
         
@@ -223,13 +217,11 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.busy', 1);
                 //передаем сообщение на терминал передающий только текстовое сообщение 
                 send_messageSafe($old_message, $terminal);
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Передача текстового сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача текстового сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
             }
         }
         
@@ -244,24 +236,20 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.busy', 1);
                 //передаем сообщение на терминалы воспроизводящие аудио
                 send_messageSafe($old_message, $terminal);
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
                 continue;
             }
             catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED'])
-                    DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
             }
         }
         
     }
     
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
-        if ($ter->config['LOG_ENABLED'])
-            DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
         exit;
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
-if ($ter->config['LOG_ENABLED'])
-    DebMes("Цикл неожиданно завершился по неизвестной причине", 'terminals');
+if ($ter->config['LOG_ENABLED']) DebMes("Цикл неожиданно завершился по неизвестной причине", 'terminals');
