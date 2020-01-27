@@ -43,7 +43,7 @@ class telegramm extends tts_addon
                         $user_id = $users[$j]['NAME'];
                     }
                     $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
-                    if ($result['ok'] = true) {
+                    if (is_array($result) AND $result["ok"] = true) {
                         $this->success = TRUE;
                     } else {
                         $this->success = FALSE;
@@ -61,6 +61,8 @@ class telegramm extends tts_addon
     function ask($phrase, $level = 0) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
+            include(DIR_MODULES . 'telegram/telegram.class.php');
+            $telegram_module = new telegram();
             $users   = SQLSelect("SELECT * FROM tlg_user ");
             $c_users = count($users);
             if ($phrase AND $c_users) {
@@ -71,12 +73,30 @@ class telegramm extends tts_addon
                     }
                     // new variant 
                     $result = json_encode($telegram_module->sendMessageToUser($user_id, $message['MESSAGE']));
-                    if ($result['ok'] = true) {
+                    if (is_array($result) AND $result["ok"] = true) {
                         $this->success = TRUE;
                     } else {
                         $this->success = FALSE;
                     }
                 }
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+
+    // ping terminal
+    function ping()
+    {
+        if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
+            include(DIR_MODULES . 'telegram/telegram.class.php');
+            $telegram_module = new telegram();
+            $result = json_encode($telegram_module->getMe());
+            if (is_array($result) AND $result["ok"] = true) {
+                $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
