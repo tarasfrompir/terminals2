@@ -55,6 +55,7 @@ class telegramm extends tts_addon
         } else {
             $this->success = FALSE;
         }
+        sleep(1);
         return $this->success;
     }
     
@@ -85,6 +86,7 @@ class telegramm extends tts_addon
         } else {
             $this->success = FALSE;
         }
+        sleep(1);
         return $this->success;
     }
 
