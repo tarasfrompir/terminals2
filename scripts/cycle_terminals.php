@@ -78,6 +78,17 @@ while (1) {
 
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
         
+        // если терминал не воспроизводит сообщения то пропускаем его в этой итерации
+        if (!$terminal['CANTTS']) { 
+            continue;
+        }
+		
+        // если пустой терминал пропускаем
+        if (!$terminal['ID']) { 
+            DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
+            continue;
+        }
+		
         // если в терминале отсутствует привязанный обьект или терминал отключен от воспроизведения то выведем ошибку 
         if (!$terminal['LINKED_OBJECT'] OR !$terminal['TTS_TYPE']) {
             if ($ter->config['LOG_ENABLED']) DebMes("Cannot find link object or cannot play message for this terminal - " . str_ireplace("terminal_", "", $terminals) . ". Please re-save this terminal for proper operation.", 'terminals');
@@ -90,13 +101,7 @@ while (1) {
             callMethodSafe($terminals . '.MessageError', $params);
             continue;
         }
-        
-        // если пустой терминал пропускаем
-        if (!$terminal['ID']) { 
-            DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
-            continue;
-        }
-        
+       
         // обьявляем новый обьект которого нет в массиве $tts                
         if (!$tts[$terminal['ID']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
