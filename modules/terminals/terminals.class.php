@@ -453,6 +453,7 @@ addClassMethod('Terminals', 'MessageError', '
  terminals: USE_SYSTEM_MML int(1) NOT NULL DEFAULT '1'
  terminals: MESSAGE_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
+ terminals: LOCATION_ID int(5) NOT NULL DEFAULT '' 
 EOD;
         parent::dbInstall($data);
 
