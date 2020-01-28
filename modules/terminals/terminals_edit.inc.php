@@ -26,9 +26,17 @@ if (gg($rec['LINKED_OBJECT'] .'.username')) {
 // seting for terminals tts
 $out['TTS'] = json_decode($rec['TTS_SETING'], true);
 if (!$out['TTS']) {
-	// тут берутся настройки для ТТС терминалов
-    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),);
+    // тут берутся настройки для ТТС терминалов
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 
+		'TTS_USERNAME'=>gr('tts_username'), 
+		'TTS_PASSWORD'=>gr('tts_password'), 
+		'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 
+		'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 
+		'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 
+		'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),
+		       );
 }
+
 if (IsWindowsOS()) {
 	$dev_list = exec(DOC_ROOT.'/rc/smallplay -devicelist 2>&1');
 	$dev_list = iconv('CP1251', 'utf-8', $dev_list);
@@ -82,7 +90,14 @@ if ($this->mode == 'update') {
     $rec['TTS_TYPE'] = gr('tts_type');
 
     // write seting for tts terminals тут сохраняются настройки для ТТС терминалов
-    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 'TTS_USERNAME'=>gr('tts_username'), 'TTS_PASSWORD'=>gr('tts_password'), 'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),);
+    $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 
+			'TTS_USERNAME'=>gr('tts_username'), 
+			'TTS_PASSWORD'=>gr('tts_password'), 
+			'TTS_CONTROL_ADDRESS'=>gr('tts_control_address'), 
+			'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 
+			'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 
+			'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),
+		       );
     $rec['TTS_SETING'] = json_encode($out['TTS']);
 
     // write info for terminal user and location
