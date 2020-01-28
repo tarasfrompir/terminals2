@@ -356,6 +356,10 @@ class terminals extends module
         foreach ($terminals as $terminal) {
             addClassObject('Terminals', 'terminal_'.$terminal['NAME']);
             $terminal['LINKED_OBJECT'] = 'terminal_'.$terminal['NAME'];
+            $location = gg('terminal_' . $terminal['NAME'] . '.linkedRoom');
+            if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'")) {
+                $terminal['LOCATION_ID'] = $location_id['ID'];
+            }
             SQLUpdate('terminals', $terminal);
         }
         //редактируем терминалы под новые настройки
