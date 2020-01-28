@@ -88,7 +88,7 @@ if ($this->mode == 'update') {
     // write info for terminal user and location
     $out['LOCATION_TITLE'] = gr('location');
 	
-    if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = " . $out['LOCATION_TITLE'])) {
+    if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $out['LOCATION_TITLE'] . "'")) {
         $rec['LOCATION_ID'] = $location_id['ID'];
     }
 
