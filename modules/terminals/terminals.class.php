@@ -351,17 +351,7 @@ class terminals extends module
         @unlink(DIR_MODULES . 'terminals/tts/majordroid.addon.php');
         @unlink(DIR_MODULES . 'terminals/tts/mediaplayer.addon.php');
 
-        //добавляем связанній обьект для всех терминалов необходимо для передачи сообщений
-        $terminals = SQLSelect("SELECT * FROM terminals ");
-        foreach ($terminals as $terminal) {
-            addClassObject('Terminals', 'terminal_'.$terminal['NAME']);
-            $terminal['LINKED_OBJECT'] = 'terminal_'.$terminal['NAME'];
-            $location = gg('terminal_' . $terminal['NAME'] . '.linkedRoom');
-            if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'")) {
-                $terminal['LOCATION_ID'] = $location_id['ID'];
-            }
-            SQLUpdate('terminals', $terminal);
-        }
+
         //редактируем терминалы под новые настройки
         //$terminals = SQLSelect("SELECT * FROM terminals");
         //foreach ($terminals as $terminal) {
@@ -459,6 +449,19 @@ addClassMethod('Terminals', 'MessageError', '
  terminals: TERMINAL_VOLUME_LEVEL int(3) NOT NULL DEFAULT '100' 
  terminals: LOCATION_ID int(5) NOT NULL DEFAULT '0' 
 EOD;
+	    
+    //добавляем связанный обьект для всех терминалов необходимо для передачи сообщений
+    $terminals = SQLSelect("SELECT * FROM terminals ");
+    foreach ($terminals as $terminal) {
+        addClassObject('Terminals', 'terminal_'.$terminal['NAME']);
+        $terminal['LINKED_OBJECT'] = 'terminal_'.$terminal['NAME'];
+        $location = gg('terminal_' . $terminal['NAME'] . '.linkedRoom');
+        if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . $location . "'")) {
+            $terminal['LOCATION_ID'] = $location_id['ID'];
+        }
+        SQLUpdate('terminals', $terminal);
+    }
+	    
         parent::dbInstall($data);
 
     }
