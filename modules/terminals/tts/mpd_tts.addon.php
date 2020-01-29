@@ -39,12 +39,9 @@ class mpd_tts extends tts_addon {
         if (!is_null($this->mpd->connected)) {
             $this->mpd->PLClear();
             $this->mpd->PLAdd($message_link);
-            if ($this->mpd->Play()) {
-                sleep($message['MESSAGE_DURATION']);
-                $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
+            $this->mpd->Play();
+            sleep($message['MESSAGE_DURATION']);
+            $this->success = TRUE;
         } else {
             $this->success = FALSE;
         }
@@ -59,12 +56,9 @@ class mpd_tts extends tts_addon {
             if (!is_null($this->mpd->connected)) {
                 $this->mpd->PLClear();
                 $this->mpd->PLAdd($input);
-                if ($this->mpd->Play()) {
-                    
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
+                $this->mpd->SeekTo($time);
+                $this->mpd->Play();
+                $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
@@ -78,11 +72,8 @@ class mpd_tts extends tts_addon {
     function stop() {
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
         if (!is_null($this->mpd->connected)) {
-            if ($this->mpd->Stop()) {
-                $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
+            $this->mpd->Stop();
+            $this->success = TRUE;
         } else {
             $this->success = FALSE;
         }
@@ -95,11 +86,8 @@ class mpd_tts extends tts_addon {
         if (strlen($level)) {
             $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
             if (!is_null($this->mpd->connected)) {
-                if ($this->mpd->SetVolume((int) $level)) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
+                $this->mpd->SetVolume((int) $level);
+                $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
