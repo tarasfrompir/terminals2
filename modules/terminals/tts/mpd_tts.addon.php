@@ -18,7 +18,7 @@ class mpd_tts extends tts_addon {
         $this->port        = empty($this->setting['TTS_PORT']) ? 6600 : $this->setting['TTS_PORT'];
         $this->password    = $this->setting['TTS_PASSWORD'];
         // MPD
-        include(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
+        include_once (DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         
     }
     
@@ -36,7 +36,7 @@ class mpd_tts extends tts_addon {
             }
         }
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
-        if ($this->mpd->connected) {
+        if (!is_null($this->mpd->connected)) {
             $this->mpd->PLClear();
             $this->mpd->PLAdd($message_link);
             if ($this->mpd->Play()) {
@@ -56,7 +56,7 @@ class mpd_tts extends tts_addon {
     function play($input, $time = 0) {
         if (strlen($input)) {
             $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
-            if ($this->mpd->connected) {
+            if (!is_null($this->mpd->connected)) {
                 $this->mpd->PLClear();
                 $this->mpd->PLAdd($input);
                 if ($this->mpd->Play()) {
@@ -77,7 +77,7 @@ class mpd_tts extends tts_addon {
     // Stop
     function stop() {
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
-        if ($this->mpd->connected) {
+        if (!is_null($this->mpd->connected)) {
             if ($this->mpd->Stop()) {
                 $this->success = TRUE;
             } else {
@@ -94,7 +94,7 @@ class mpd_tts extends tts_addon {
     function set_volume($level) {
         if (strlen($level)) {
             $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
-            if ($this->mpd->connected) {
+            if (!is_null($this->mpd->connected)) {
                 if ($this->mpd->SetVolume((int) $level)) {
                     $this->success = TRUE;
                 } else {
@@ -113,11 +113,12 @@ class mpd_tts extends tts_addon {
     // ping terminal
     function ping() {
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
-        if ($this->mpd->connected) {
+        if (!is_null($this->mpd->connected)) {
             $this->success = TRUE;
         } else {
             $this->success = FALSE;
         }
+        $this->mpd->Disconnect();
         return $this->success;
     }
     
