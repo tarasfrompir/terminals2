@@ -10,22 +10,20 @@ class mpd_tts extends tts_addon {
     private $mpd;
     
     // Constructor
-    function __construct($terminal)
-    {
+    function __construct($terminal) {
         $this->title       = 'Music Player Daemon (MPD)';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
         $this->terminal    = $terminal;
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
         $this->port        = empty($this->setting['TTS_PORT']) ? 6600 : $this->setting['TTS_PORT'];
         $this->password    = $this->setting['TTS_PASSWORD'];
-        DebMes($this->terminal['HOST'] . $this->port . $this->password);
         // MPD
         include_once(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         
     }
     
     // Say
-    function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка {
+    function say_media_message($message, $terminal) {
         $outlink = $message['CACHED_FILENAME'];
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
