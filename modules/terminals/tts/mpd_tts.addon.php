@@ -78,8 +78,6 @@ class mpd_tts extends tts_addon {
     function stop() {
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
         if ($this->mpd->connected) {
-            $this->mpd->PLClear();
-            $this->mpd->PLAdd($input);
             if ($this->mpd->Stop()) {
                 $this->success = TRUE;
             } else {
@@ -97,9 +95,7 @@ class mpd_tts extends tts_addon {
         if (strlen($level)) {
             $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
             if ($this->mpd->connected) {
-                $this->mpd->PLClear();
-                $this->mpd->PLAdd($input);
-                if (SetVolume((int) $level)) {
+                if ($this->mpd->SetVolume((int) $level)) {
                     $this->success = TRUE;
                 } else {
                     $this->success = FALSE;
@@ -113,6 +109,7 @@ class mpd_tts extends tts_addon {
         }
         return $this->success;
     }
+    
     // ping terminal
     function ping() {
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
