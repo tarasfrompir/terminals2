@@ -450,6 +450,11 @@ addClassMethod('Terminals', 'MessageError', '
  terminals: LOCATION_ID int(5) NOT NULL DEFAULT '0' 
 EOD;
 	    
+
+	    
+        parent::dbInstall($data);
+
+	    
     //добавляем связанный обьект для всех терминалов необходимо для передачи сообщений
     $terminals = SQLSelect("SELECT * FROM terminals ");
     foreach ($terminals as $terminal) {
@@ -462,8 +467,7 @@ EOD;
         SQLUpdate('terminals', $terminal);
     }
 	    
-        parent::dbInstall($data);
-
+	    
     }
 // --------------------------------------------------------------------
 }
