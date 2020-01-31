@@ -43,7 +43,6 @@ class mpd_tts extends tts_addon {
             if ($this->mpd->Play()) {
                 DebMes('play');
                 sleep($message['MESSAGE_DURATION']);
-                $this->mpd->Stop();
                 $this->success = TRUE;                
             } else {
                 $this->success = FALSE;
