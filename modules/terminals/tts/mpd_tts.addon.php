@@ -38,9 +38,9 @@ class mpd_tts extends tts_addon {
             //DebMes($this->mpd->Stop());
             //DebMes($this->mpd->GetStatus());
             //DebMes($this->mpd->Play());
+            $this->mpd->RepeatOff();
             $this->mpd->PLClear();
             $this->mpd->PLAdd($message_link);
-            $this->mpd->RepeatOff();
             if ($this->mpd->Play()) {
                 sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;                
