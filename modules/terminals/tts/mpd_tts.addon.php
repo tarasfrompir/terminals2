@@ -40,8 +40,8 @@ class mpd_tts extends tts_addon {
             //DebMes($this->mpd->Play());
             $this->mpd->PLClear();
             $this->mpd->PLAdd($message_link);
+            $this->mpd->RepeatOff();
             if ($this->mpd->Play()) {
-                DebMes('play');
                 sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;                
             } else {
@@ -129,7 +129,7 @@ class mpd_tts extends tts_addon {
     }
     
     // Get player status
-    function status() {
+    function statuss() {
         // Defaults
         $playlistid    = -1;
         $track_id      = -1;
