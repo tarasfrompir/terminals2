@@ -9,8 +9,8 @@ class mpd_player {
 	function __construct($srv,$port,$pwd = NULL, $debug= FALSE ) {
 		$this->host = $srv;
 		$this->port = $port;
-        $this->password = $pwd;
-        $this->debugging = $debug;
+        	$this->password = $pwd;
+        	$this->debugging = $debug;
 
 		$this->mpd_sock = fsockopen($this->host,$this->port,$errNo,$errStr,3);
 		if (!$this->mpd_sock) {
@@ -198,6 +198,15 @@ class mpd_player {
 		return $rpt;
 	}
 
+	function RandomOff() {
+		$rpt = $this->SendCommand("random",0);
+		return $rpt;
+	}
+	
+	function RandomOn() {
+		$rpt = $this->SendCommand("random",1);
+		return $rpt;
+	}
     
 }
 
