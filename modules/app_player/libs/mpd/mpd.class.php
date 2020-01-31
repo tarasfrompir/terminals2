@@ -4,60 +4,6 @@
  * MPD command reference at http://www.musicpd.org/doc/protocol/index.html
  */
 
-// Create common command definitions for MPD to use
-define("MPD_CMD_STATUS",      "status");
-define("MPD_CMD_STATISTICS",  "stats");
-define("MPD_CMD_VOLUME",      "volume");
-define("MPD_CMD_SETVOL",      "setvol");
-define("MPD_CMD_PLAY",        "play");
-define("MPD_CMD_STOP",        "stop");
-define("MPD_CMD_PAUSE",       "pause");
-define("MPD_CMD_NEXT",        "next");
-define("MPD_CMD_PREV",        "previous");
-define("MPD_CMD_PLLIST",      "playlistinfo");
-define("MPD_CMD_PLADD",       "add");
-define("MPD_CMD_PLREMOVE",    "delete");
-define("MPD_CMD_PLCLEAR",     "clear");
-define("MPD_CMD_PLSHUFFLE",   "shuffle");
-define("MPD_CMD_PLLOAD",      "load");
-define("MPD_CMD_PLSAVE",      "save");
-define("MPD_CMD_KILL",        "kill");
-define("MPD_CMD_REFRESH",     "update");
-define("MPD_CMD_REPEAT",      "repeat");
-define("MPD_CMD_LSDIR",       "lsinfo");
-define("MPD_CMD_SEARCH",      "search");
-define("MPD_CMD_START_BULK",  "command_list_begin");
-define("MPD_CMD_END_BULK",    "command_list_end");
-define("MPD_CMD_FIND",        "find");
-define("MPD_CMD_RANDOM",      "random");
-define("MPD_CMD_SEEK",        "seek");
-define("MPD_CMD_PLSWAPTRACK", "swap");
-define("MPD_CMD_PLMOVETRACK", "move");
-define("MPD_CMD_PASSWORD",    "password");
-define("MPD_CMD_TABLE",       "list");
-define("MPD_CMD_PLMOVE",      "move" );
-
-// Predefined MPD Response messages
-define("MPD_RESPONSE_ERR", "ACK");
-define("MPD_RESPONSE_OK",  "OK");
-
-// MPD State Constants
-define("MPD_STATE_PLAYING", "play");
-define("MPD_STATE_STOPPED", "stop");
-define("MPD_STATE_PAUSED",  "pause");
-
-// MPD Searching Constants
-define("MPD_SEARCH_ARTIST", "artist");
-define("MPD_SEARCH_TITLE",  "title");
-define("MPD_SEARCH_ALBUM",  "album");
-define("MPD_SEARCH_ANY",  	"any");
-define("MPD_SEARCH_FILENAME","filename"); 
-
-// MPD Cache Tables
-define("MPD_TBL_ARTIST","artist");
-define("MPD_TBL_ALBUM","album");
-
-
 class mpd_player {
 
 	function __construct($srv,$port,$pwd = NULL, $debug= FALSE ) {
@@ -240,7 +186,19 @@ class mpd_player {
 	function Ping() {
 		$rpt = $this->SendCommand("ping");
 		return $rpt;
-	}	
+	}
+	
+	function RepeatOff() {
+		$rpt = $this->SendCommand("repeat",0);
+		return $rpt;
+	}
+	
+	function RepeatOn() {
+		$rpt = $this->SendCommand("repeat",1);
+		return $rpt;
+	}
+
+    
 }
 
 ?>
