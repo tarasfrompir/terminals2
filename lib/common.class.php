@@ -402,7 +402,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         include_once (DIR_MODULES . "yadevices/yadevices.class.php");
         $yadevice = new yadevices();
 	//$yadevice->processSubscription('SAY', array('level' => $level, 'message' => $ph, ));
-        $stations = SQLSelect("SELECT ID FROM yastations WHERE TTS=1 AND MIN_LEVEL<=".(int)$level);
+        $stations = SQLSelect("SELECT ID FROM yastations WHERE TTS=1");
         foreach($stations as $station) {
             $yadevice->sendCommandToStation($station['ID'],'повтори за мной '. $ph);
         }
