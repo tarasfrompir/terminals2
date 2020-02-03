@@ -12,9 +12,13 @@ class mpd_player {
         	$this->password = $pwd;
         	$this->debugging = $debug;
 
+		if (!$this->host) {
+		        $this->connected = FALSE;
+		}
+		
 		$this->mpd_sock = fsockopen($this->host,$this->port,$errNo,$errStr,3);
 		if (!$this->mpd_sock) {
-            $this->connected = FALSE;
+		        $this->connected = FALSE;
 		} else {
 			$counter=0;
 			while(!feof($this->mpd_sock)) {
