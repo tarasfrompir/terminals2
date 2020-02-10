@@ -150,6 +150,7 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
+        // получаем плейлист - возможно он не сохранен поэтому получаем его полностью
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
@@ -179,7 +180,6 @@ class mpd_tts extends tts_addon {
             );
         }
         $this->mpd->Disconnect();
-        DebMes($result);
         return $this->data;
     }
     
