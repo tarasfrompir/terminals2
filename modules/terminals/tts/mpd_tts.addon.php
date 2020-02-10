@@ -131,7 +131,7 @@ class mpd_tts extends tts_addon {
     }
     
     // Get player status
-    function statuss() {
+    function status() {
         // Defaults
         $playlistid    = -1;
         $track_id      = -1;
@@ -163,6 +163,7 @@ class mpd_tts extends tts_addon {
                 'muted' => intval($result['muted']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $result['random'], // Random mode. Boolean. 
                 'loop' => (boolean) $result['loop'], // Loop mode. Boolean.
+                'crossfade' => (boolean) $result['xfade'], // crossfade
                 'repeat' => (boolean) $result['repeat'], //Repeat mode. Boolean.
                 'brightness' => $brightness,
                 'display_state' => (boolean) ($display_state)
