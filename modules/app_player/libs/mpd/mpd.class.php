@@ -205,11 +205,22 @@ class mpd_player {
 		$rpt = $this->SendCommand("crossfade",$in);
 		return $rpt;
 	}
-        function GetPlaylistinfo() {
+    function GetPlaylistinfo() {
 		$rpt = $this->SendCommand("playlistinfo");
+		$statusArray = array();
+		$statusLine = strtok($rpt,"\n");
+		$i = 0;	
+		while ( $statusLine ) {
+			list ( $element, $value ) = explode(": ",$statusLine);
+			$statusArray[$i][$element] = $value;
+			$statusLine = strtok("\n");
+			if ($element == 'file: ') {
+    			$i++;
+			}
+		}
 		return $rpt;
-	}
-    
+	}	
+	
 }
 
 ?>
