@@ -197,7 +197,7 @@ class mpd_player {
 		return $rpt;
 	}
 	
-	function SetRandomOff($in) {
+	function SetRandom($in) {
 		$rpt = $this->SendCommand("random",$in);
 		return $rpt;
 	}
