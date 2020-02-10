@@ -192,23 +192,13 @@ class mpd_player {
 		return $rpt;
 	}
 	
-	function RepeatOff() {
-		$rpt = $this->SendCommand("repeat",0);
+	function SetRepeat($in) {
+		$rpt = $this->SendCommand("repeat",$in);
 		return $rpt;
 	}
 	
-	function RepeatOn() {
-		$rpt = $this->SendCommand("repeat",1);
-		return $rpt;
-	}
-
-	function RandomOff() {
-		$rpt = $this->SendCommand("random",0);
-		return $rpt;
-	}
-	
-	function RandomOn() {
-		$rpt = $this->SendCommand("random",1);
+	function SetRandomOff($in) {
+		$rpt = $this->SendCommand("random",$in);
 		return $rpt;
 	}
     
