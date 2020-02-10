@@ -150,14 +150,23 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
+        if ($this->mpd->connected) {
+            $playlist_content = $this->mpd->GetPlaylistinfo ();
+        }
+     
         if ($result) {
             $this->data = array(
-                'playlist_id' => $result['playlist'], // numder or name playlist 
-                'track_id' => (int) $result['songid'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $result['file'], //Current link for media in device. String.
-                'length' => intval($result['duration']), //Track length in seconds. Integer. If unknown = 0. 
-                'time' => intval($result['time']), //Current playback progress (in seconds). If unknown = 0. 
+                'playlist_id' => $result['playlist'], // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+                'track_id' => (int) $result['songid'], //текущий номер трека
+                'name' => (string) $name, //текущее имя трека 
+                'file' => (string) $result['file'], //ссылка на текущий файл .
+                'length' => intval($result['duration']), //длинна плейлиста (песни). 
+                'time' => intval($result['time']), //текущая позиции по времени трека 
                 'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
                 'volume' => intval($status['volume']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => intval($result['muted']), // Volume level in percent. Integer. Some players may have values greater than 100.
@@ -165,8 +174,8 @@ class mpd_tts extends tts_addon {
                 'loop' => (boolean) $result['loop'], // Loop mode. Boolean.
                 'crossfade' => (boolean) $result['xfade'], // crossfade
                 'repeat' => (boolean) $result['repeat'], //Repeat mode. Boolean.
-                'brightness' => $brightness,
-                'display_state' => (boolean) ($display_state)
+                'brightness' => $brightness, // яркость екрана
+                'display_state' => (boolean) ($display_state) // состояние екрана включен (выключен)
             );
         }
         $this->mpd->Disconnect();
