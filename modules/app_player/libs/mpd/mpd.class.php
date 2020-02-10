@@ -218,7 +218,7 @@ class mpd_player {
     			$i++;
 			}
 		}
-		return $rpt;
+		return $statusArray;
 	}	
 	
 }
