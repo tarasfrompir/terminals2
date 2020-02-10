@@ -205,6 +205,10 @@ class mpd_player {
 		$rpt = $this->SendCommand("crossfade",$in);
 		return $rpt;
 	}
+        function GetPlaylistinfo() {
+		$rpt = $this->SendCommand("playlistinfo");
+		return $rpt;
+	}
     
 }
 
