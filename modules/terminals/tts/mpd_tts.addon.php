@@ -154,11 +154,11 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
-     
+        //DebMes(json_encode($playlist_content));
         if ($result) {
             $this->data = array(
                 'playlist_id' => $result['playlist'], // номер или имя плейлиста 
-                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
                                                          // обязательно $playlist_content[$i]['pos'] - номер трека
                                                          // обязательно $playlist_content[$i]['file'] - адрес трека
                                                          // возможно $playlist_content[$i]['Artist'] - артист
