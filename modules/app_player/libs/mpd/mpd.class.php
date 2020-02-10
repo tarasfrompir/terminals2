@@ -214,7 +214,7 @@ class mpd_player {
 			list ( $element, $value ) = explode(": ",$statusLine);
 			$statusArray[$i][$element] = $value;
 			$statusLine = strtok("\n");
-			if ($element == 'file: ') {
+			if ($element == 'file') {
     			$i++;
 			}
 		}
