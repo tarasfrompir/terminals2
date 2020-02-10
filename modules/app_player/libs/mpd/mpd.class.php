@@ -201,6 +201,10 @@ class mpd_player {
 		$rpt = $this->SendCommand("random",$in);
 		return $rpt;
 	}
+	function Setcrossfade($in) {
+		$rpt = $this->SendCommand("crossfade",$in);
+		return $rpt;
+	}
     
 }
 
