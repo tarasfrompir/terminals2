@@ -34,7 +34,7 @@ class mpd_tts extends tts_addon {
                 }
             }
             //DebMes($this->mpd->SetVolume(50));
-            DebMes($this->mpd->GetStatus());
+            //DebMes($this->mpd->GetStatus());
             //DebMes($this->mpd->Stop());
             //DebMes($this->mpd->GetStatus());
             //DebMes($this->mpd->Play());
