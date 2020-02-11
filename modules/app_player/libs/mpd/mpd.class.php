@@ -151,8 +151,8 @@ class mpd_player {
 	}
 
 
-	function Play($time=0) {
-		$rpt = $this->SendCommand("play", $time);
+	function Play() {
+		$rpt = $this->SendCommand("play");
 		return $rpt;
 	}
 	
@@ -186,7 +186,14 @@ class mpd_player {
 		$rpt = $this->SendCommand("add", $url);
 		return $rpt;
 	}	
-	
+	function PLAddFileWithPosition($url, $position=0) {
+		$rpt = $this->SendCommand("addid", $url, $position);
+		return $rpt;
+	}
+	function PLSeek($position=0, $time=0) {
+		$rpt = $this->SendCommand("seek", $position, $time);
+		return $rpt;
+	}
 	function Ping() {
 		$rpt = $this->SendCommand("ping");
 		return $rpt;
@@ -227,11 +234,6 @@ class mpd_player {
 		}
 		return $statusArray;
 	}	
-		function PLAddFileWithPosition($url, $position=0) {
-		$rpt = $this->SendCommand("addid", $url, $position);
-		return $rpt;
-	}	
-	
 }
 
 ?>
