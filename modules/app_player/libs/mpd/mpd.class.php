@@ -238,14 +238,14 @@ class mpd_player
             $i           = 0;
             while ($statusLine) {
                 list($element, $value) = explode(": ", $statusLine);
+                if ($element == 'file') {
+                    $i++;
+                }
                 if ($element == 'OK') {
                     break;
                 }
                 $statusArray[$i][$element] = $value;
                 $statusLine                = strtok("\n");
-                if ($element == 'file') {
-                    $i++;
-                }
             }
         }
         return $statusArray;
