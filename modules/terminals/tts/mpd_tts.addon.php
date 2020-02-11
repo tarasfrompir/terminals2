@@ -206,6 +206,7 @@ class mpd_tts extends tts_addon {
         $track_id      = -1;
         $length        = 0;
         $time          = 0;
+        $file          = '';
         $name          = 'unknow';
         $state         = 'unknown';
         $volume        = 0;
@@ -234,17 +235,17 @@ class mpd_tts extends tts_addon {
                                                          // возможно $playlist_content[$i]['Title'] - название трека
                 'track_id' => (int) $result['songid'], //текущий номер трека
                 'name' => (string) $name, //текущее имя трека 
-                'file' => (string) $result['file'], //ссылка на текущий файл .
+                'file' => (string) $file, //ссылка на текущий файл .
                 'length' => intval($result['duration']), //длинна плейлиста (песни). 
                 'time' => intval($result['time']), //текущая позиции по времени трека 
                 'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($status['volume']), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => intval($result['volume']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => intval($result['muted']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $result['random'], // Random mode. Boolean. 
                 'loop' => (boolean) $result['loop'], // Loop mode. Boolean.
                 'crossfade' => (boolean) $result['xfade'], // crossfade
                 'repeat' => (boolean) $result['repeat'], //Repeat mode. Boolean.
-                'brightness' => $brightness, // яркость екрана
+                'brightness' => (int) $brightness, // яркость екрана
                 'display_state' => (boolean) ($display_state) // состояние екрана включен (выключен)
             );
         }
