@@ -84,7 +84,7 @@ class mpd_tts extends tts_addon {
                 $this->mpd->PLClear();
                 // add files to playlist
                 foreach ($playlist_content as $song) {
-                    $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos'])
+                    $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos']);
                 }
                 // change played file
                 $this->mpd->PLSeek($track_id, $time);
