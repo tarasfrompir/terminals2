@@ -35,14 +35,15 @@ class mpd_tts extends tts_addon {
             }
             //DebMes($this->mpd->SetVolume(50));
             //DebMes($this->mpd->GetStatus());
-            //DebMes($this->mpd->Stop());
+            //DebMes($this->mpd->GetPlaylistinfo());
             //DebMes($this->mpd->GetStatus());
             //DebMes($this->mpd->Play());
+            //DebMes($this->mpd->PLAddFileWithPosition("http://192.168.10.2/cms/cached/voice/rh_5a2a0f5318db1977551535722412f8d2.wav", 0));
             $this->mpd->SetRepeat(0);
             $this->mpd->SetRandom(0);
             $this->mpd->SetCrossfade(0);
             $this->mpd->PLClear();
-            $this->mpd->PLAdd($message_link);
+            $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
                 sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;                
@@ -146,7 +147,7 @@ class mpd_tts extends tts_addon {
         $brightness    = '';
         $display_state = false;
 
-
+        DebMes('status');
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
@@ -154,7 +155,7 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
-        //DebMes(json_encode($playlist_content));
+        DebMes(json_encode($playlist_content));
         if ($result) {
             $this->data = array(
                 'playlist_id' => $result['playlist'], // номер или имя плейлиста 
