@@ -76,10 +76,71 @@ class mpd_tts extends tts_addon {
         return $this->success;
     }
     
+    // Set Repeat
+    function set_repeat($repeat) {
+        if ($this->mpd->connected) {
+            try {
+                if ($this->mpd->SetRepeat($repeat)) {
+                    $this->success = TRUE;
+                } else {
+                    $this->success = FALSE;
+                }
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+
+    // Set random
+    function set_random($random) {
+        if ($this->mpd->connected) {
+            try {
+                if ($this->mpd->SetRandom($random)) {
+                    $this->success = TRUE;
+                } else {
+                    $this->success = FALSE;
+                }
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+    
+    // Set crossfade
+    function set_crossfade($crossfade) {
+        if ($this->mpd->connected) {
+            try {
+                if ($this->mpd->SetCrossfade($crossfade)) {
+                    $this->success = TRUE;
+                } else {
+                    $this->success = FALSE;
+                }
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+    
     // restore playlist
     function restore_playlist($playlist_id, $playlist_content = array(), $track_id=0, $time = 0) {
         if ($this->mpd->connected) {
             try {
+                DebMes($playlist_id);
+                DebMes($playlist_content);
+                DebMes($track_id);
+                DebMes($time);
                 // create new playlist
                 $this->mpd->PLClear();
                 // add files to playlist
@@ -154,6 +215,7 @@ class mpd_tts extends tts_addon {
         $brightness    = '';
         $display_state = false;
 
+        //DebMes('status');
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
@@ -161,6 +223,7 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
+        //DebMes(json_encode($playlist_content));
         if ($result) {
             $this->data = array(
                 'playlist_id' => $result['playlist'], // номер или имя плейлиста 
