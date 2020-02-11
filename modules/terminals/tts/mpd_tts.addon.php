@@ -137,10 +137,10 @@ class mpd_tts extends tts_addon {
     function restore_playlist($playlist_id, $playlist_content = array(), $track_id=0, $time = 0) {
         if ($this->mpd->connected) {
             try {
-                DebMes($playlist_id);
-                DebMes($playlist_content);
-                DebMes($track_id);
-                DebMes($time);
+                //DebMes($playlist_id);
+                //DebMes($playlist_content);
+                //DebMes($track_id);
+                //DebMes($time);
                 // create new playlist
                 $this->mpd->PLClear();
                 // add files to playlist
