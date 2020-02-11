@@ -631,6 +631,19 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
+	// восстановим muted
+    try {
+        if ($restore['muted'] AND method_exists($tts, 'set_muted')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore muted mode", 'terminals');
+            $tts->set_muted($restore['muted']);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set muted mode or class have not function repeat", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+	
 	// восстановим loop
     try {
         if ($restore['random'] AND method_exists($tts, 'set_loop')) {
