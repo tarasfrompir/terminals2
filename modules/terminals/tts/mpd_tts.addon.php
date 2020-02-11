@@ -58,7 +58,7 @@ class mpd_tts extends tts_addon {
     }
 
     // Set volume
-    function set_volume($level) {
+    function set_volume($level=0) {
         if ($this->mpd->connected) {
             try {
                 if ($this->mpd->SetVolume($level)) {
@@ -77,7 +77,7 @@ class mpd_tts extends tts_addon {
     }
     
     // Set Repeat
-    function set_repeat($repeat) {
+    function set_repeat($repeat=0) {
         if ($this->mpd->connected) {
             try {
                 if ($this->mpd->SetRepeat($repeat)) {
@@ -96,7 +96,7 @@ class mpd_tts extends tts_addon {
     }
 
     // Set random
-    function set_random($random) {
+    function set_random($random=0) {
         if ($this->mpd->connected) {
             try {
                 if ($this->mpd->SetRandom($random)) {
@@ -115,7 +115,7 @@ class mpd_tts extends tts_addon {
     }
     
     // Set crossfade
-    function set_crossfade($crossfade) {
+    function set_crossfade($crossfade=0) {
         if ($this->mpd->connected) {
             try {
                 if ($this->mpd->SetCrossfade($crossfade)) {
@@ -134,7 +134,7 @@ class mpd_tts extends tts_addon {
     }
     
     // restore playlist
-    function restore_playlist($playlist_id, $playlist_content = array(), $track_id=0, $time = 0) {
+    function restore_playlist($playlist_id=0, $playlist_content = array(), $track_id=0, $time=0) {
         if ($this->mpd->connected) {
             try {
                 //DebMes($playlist_id);
