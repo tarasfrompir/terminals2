@@ -579,20 +579,20 @@ function restore_media($terminalname, $restore, $terminal) {
     }
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
 
-	// восстановим звук
+    // восстановим звук
     try {
         if ($restore['volume'] AND method_exists($tts, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore volume", 'terminals');
             $tts->set_volume($restore['volume']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore volume or class have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
-	// восстановим repeat
+    // восстановим repeat
     try {
         if ($restore['repeat'] AND method_exists($tts, 'set_repeat')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore repeat mode", 'terminals');
@@ -605,7 +605,7 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-	// восстановим random
+    // восстановим random
     try {
         if ($restore['random'] AND method_exists($tts, 'set_random')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore random mode", 'terminals');
@@ -618,7 +618,7 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-	// восстановим crossfade
+    // восстановим crossfade
     try {
         if ($restore['crossfade'] AND method_exists($tts, 'set_crossfade')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore crossfade mode", 'terminals');
@@ -631,7 +631,7 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
-	// восстановим muted
+    // восстановим muted
     try {
         if ($restore['muted'] AND method_exists($tts, 'set_muted')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore muted mode", 'terminals');
@@ -644,7 +644,7 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-	// восстановим loop
+    // восстановим loop
     try {
         if ($restore['random'] AND method_exists($tts, 'set_loop')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore loop mode", 'terminals');
