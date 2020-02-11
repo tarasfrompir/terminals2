@@ -579,7 +579,7 @@ function restore_media($terminalname, $restore, $terminal) {
     }
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
 
-    // восстановим звук
+	// восстановим звук
     try {
         if ($restore['volume'] AND method_exists($tts, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore volume", 'terminals');
