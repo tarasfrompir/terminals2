@@ -76,13 +76,20 @@ class mpd_tts extends tts_addon {
         return $this->success;
     }
     
-    // Play
-    function play($input, $time = 0) {
+    // restore playlist
+    function restore_playlist($playlist_id, $playlist_content = array(), $track_id=0, $time = 0) {
         if ($this->mpd->connected) {
             try {
+                // create new playlist
                 $this->mpd->PLClear();
-                $this->mpd->PLAdd($message_link);
-                if ($this->mpd->$this->mpd->Play($input, $time)) {
+                // add files to playlist
+                foreach ($playlist_content as $song) {
+                    $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos'])
+                }
+                // change played file
+                $this->mpd->PLSeek($position=0, $track_id);
+                // play seeked file
+                if ($this->mpd->Play()) {
                     $this->success = TRUE;
                 } else {
                     $this->success = FALSE;
