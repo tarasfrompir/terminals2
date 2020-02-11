@@ -154,7 +154,6 @@ class mpd_tts extends tts_addon {
         $brightness    = '';
         $display_state = false;
 
-        DebMes('status');
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
@@ -162,7 +161,6 @@ class mpd_tts extends tts_addon {
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
-        DebMes(json_encode($playlist_content));
         if ($result) {
             $this->data = array(
                 'playlist_id' => $result['playlist'], // номер или имя плейлиста 
