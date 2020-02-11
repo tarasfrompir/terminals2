@@ -579,7 +579,7 @@ function restore_media($terminalname, $restore, $terminal) {
     }
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
 
-	// восстановим звук
+    // восстановим звук
     try {
         if ($restore['volume'] AND method_exists($tts, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore volume", 'terminals');
@@ -592,7 +592,7 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    // восстановим медиа	
+    // восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист
     try {
         if ($restore['file'] AND method_exists($tts, 'play')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore media", 'terminals');
@@ -605,6 +605,19 @@ function restore_media($terminalname, $restore, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
+    // восстановим медиа для устройств ПОДДЕРЖИВАЮЩИХ плейлист	
+    try {
+        if ($restore['playlist_id'] AND method_exists($tts, 'restore_playlist')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore playlist media", 'terminals');
+            $tts->restore_playlist($restore['playlist_id'], json_decode($restore['playlist_content'], TRUE), $restore['track_id'], $restore['time']);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+    
     //установим яркость екрана назад и при том что экран был включен, после всех сообщений
     try {
         if (method_exists($tts, 'set_brightness_display') AND $restore['brightness']) {
@@ -776,26 +789,6 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
 
     return $result;
 }
-
-/* function oldpostURLBackground($url, $query = array()) {
-$myCurl = curl_init();
-curl_setopt_array($myCurl, array(
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $query,
-    CURLOPT_USERAGENT => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0',
-    CURLOPT_CONNECTTIMEOUT => 10,
-    CURLOPT_MAXREDIRS => 2,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_NOSIGNAL => true,
-    CURLOPT_SSL_VERIFYPEER => false,
-    CURLOPT_SSL_VERIFYHOST => 2,
-    CURLOPT_TIMEOUT_MS => 50,
-));
-$response = curl_exec($myCurl);
-curl_close($myCurl);
-} */
 
 function catchTimeoutTerminals() {
     # Getting last error
