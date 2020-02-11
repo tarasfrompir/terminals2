@@ -87,7 +87,7 @@ class mpd_tts extends tts_addon {
                     $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos'])
                 }
                 // change played file
-                $this->mpd->PLSeek($position=0, $track_id);
+                $this->mpd->PLSeek($track_id, $time);
                 // play seeked file
                 if ($this->mpd->Play()) {
                     $this->success = TRUE;
