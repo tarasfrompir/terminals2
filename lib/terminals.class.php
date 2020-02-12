@@ -10,6 +10,12 @@ function getTerminalsByLocation($location = '') {
 	return $terminals;
 }
 
+// Get terminals by locationid
+function getTerminalsByLocationId($locationid = 0) {
+	$terminals = SQLSelect( "SELECT * FROM `terminals` WHERE LOCATION_ID = '" . $locationid . "'");
+	return $terminals;
+}
+
 // Get terminals by location
 function getTerminalsByUser($user = '') {
 	$pvalues = SQLSelect( "SELECT * FROM `pvalues` WHERE VALUE = '".$user."' AND PROPERTY_NAME LIKE 'terminal_%.username' ");	
