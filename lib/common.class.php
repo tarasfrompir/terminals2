@@ -78,7 +78,7 @@ function sayToLocation($ph, $level = 0, $destination = '')
     $rec['ROOM_ID']    = $location['ID'];
     $rec['MEMBER_ID']  = 0;
     $rec['IMPORTANCE'] = $level;
-    DebMes($location);
+   
     if (!$location OR !$terminals = getTerminalsByLocationId($location['ID'])) {
         return;
 	}
