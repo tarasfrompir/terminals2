@@ -4,12 +4,10 @@
 Addon MPD for tts
 */
 
-class mpd_tts extends tts_addon
-{
-    
+class mpd_tts extends tts_addon {
+
     // Constructor
-    function __construct($terminal)
-    {
+    function __construct($terminal) {
         $this->title       = 'Music Player Daemon (MPD)';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
         $this->terminal    = $terminal;
@@ -18,14 +16,13 @@ class mpd_tts extends tts_addon
         $this->password    = $this->setting['TTS_PASSWORD'];
         if (!$this->terminal['HOST']) return false;
         // MPD
-        include(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
-        $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
+        include (DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
+        $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);   
         $this->mpd->Disconnect();
     }
     
     // Say
-    function say_media_message($message, $terminal)
-    {
+    function say_media_message($message, $terminal) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             $outlink = $message['CACHED_FILENAME'];
@@ -39,12 +36,6 @@ class mpd_tts extends tts_addon
                     $message_link = 'http://' . $server_ip . $m[0];
                 }
             }
-            //DebMes($this->mpd->SetVolume(50));
-            //DebMes($this->mpd->GetStatus());
-            //DebMes($this->mpd->GetPlaylistinfo());
-            //DebMes($this->mpd->GetStatus());
-            //DebMes($this->mpd->Play());
-            //DebMes($this->mpd->PLAddFileWithPosition("http://192.168.10.2/cms/cached/voice/rh_5a2a0f5318db1977551535722412f8d2.wav", 0));
             $this->mpd->SetRepeat(0);
             $this->mpd->SetRandom(0);
             $this->mpd->SetCrossfade(0);
@@ -52,7 +43,7 @@ class mpd_tts extends tts_addon
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
                 sleep($message['MESSAGE_DURATION']);
-                $this->success = TRUE;
+                $this->success = TRUE;                
             } else {
                 $this->success = FALSE;
             }
@@ -62,10 +53,9 @@ class mpd_tts extends tts_addon
         if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
         return $this->success;
     }
-    
+
     // Set volume
-    function set_volume($level = 0)
-    {
+    function set_volume($level=0) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
@@ -86,8 +76,7 @@ class mpd_tts extends tts_addon
     }
     
     // Set Repeat
-    function set_repeat($repeat = 0)
-    {
+    function set_repeat($repeat=0) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
@@ -106,10 +95,9 @@ class mpd_tts extends tts_addon
         if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
         return $this->success;
     }
-    
+
     // Set random
-    function set_random($random = 0)
-    {
+    function set_random($random=0) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
@@ -130,8 +118,7 @@ class mpd_tts extends tts_addon
     }
     
     // Set crossfade
-    function set_crossfade($crossfade = 0)
-    {
+    function set_crossfade($crossfade=0) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
@@ -152,15 +139,10 @@ class mpd_tts extends tts_addon
     }
     
     // restore playlist
-    function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0)
-    {
+    function restore_playlist($playlist_id=0, $playlist_content = array(), $track_id=0, $time=0) {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
-                //DebMes($playlist_id);
-                //DebMes($playlist_content);
-                //DebMes($track_id);
-                //DebMes($time);
                 // create new playlist
                 $this->mpd->PLClear();
                 // add files to playlist
@@ -185,10 +167,9 @@ class mpd_tts extends tts_addon
         if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
         return $this->success;
     }
-    
+
     // Stop
-    function stop()
-    {
+    function stop() {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             try {
@@ -209,12 +190,11 @@ class mpd_tts extends tts_addon
     }
     
     // ping terminal
-    function ping()
-    {
+    function ping() {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         if ($this->mpd->connected) {
             if ($this->mpd->Ping()) {
-                $this->success = TRUE;
+            $this->success = TRUE;    
             } else {
                 $this->success = FALSE;
             }
@@ -226,8 +206,7 @@ class mpd_tts extends tts_addon
     }
     
     // Get player status
-    function status()
-    {
+    function status() {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         // Defaults
         $playlistid    = -1;
@@ -243,26 +222,24 @@ class mpd_tts extends tts_addon
         $repeat        = FALSE;
         $brightness    = '';
         $display_state = false;
-        
+
         //DebMes('status');
         if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
         // получаем плейлист - возможно он не сохранен поэтому получаем его полностью
         if ($this->mpd->connected) {
-            $playlist_content = $this->mpd->GetPlaylistinfo();
+            $playlist_content = $this->mpd->GetPlaylistinfo ();
         }
-        //DebMes(json_encode($playlist_content));
         if ($result) {
             $this->data = array(
                 'playlist_id' => $result['playlist'], // номер или имя плейлиста 
-                'playlist_content' => json_encode($playlist_content), 
-                // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
-                // обязательно $playlist_content[$i]['pos'] - номер трека
-                // обязательно $playlist_content[$i]['file'] - адрес трека
-                // возможно $playlist_content[$i]['Artist'] - артист
-                // возможно $playlist_content[$i]['Title'] - название трека
-                'track_id' => (int) $result['songid'], //текущий номер трека
+                'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+                'track_id' => (int) $result['song'], //текущий номер трека
                 'name' => (string) $name, //текущее имя трека 
                 'file' => (string) $file, //ссылка на текущий файл .
                 'length' => intval($result['duration']), //длинна плейлиста (песни). 
