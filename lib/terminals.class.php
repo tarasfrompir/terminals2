@@ -717,18 +717,10 @@ function restore_mediaSafe($restore, $terminal) {
     if (session_id()) {
         $data[session_name() ] = session_id();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($restore)) {
-        foreach ($restore as $k => $v) {
-            $url.= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    if (is_array($terminal)) {
-        foreach ($terminal as $k => $v) {
-            $url.= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    getURLBackground($url, 0);
+    $url = BASE_URL . '/objects/?' ;
+    //$postString = http_build_query($data, '', '&');
+    //postURLBackground($url, $postString, 0);
+    postURLBackground($url, $data);
     return 1;
 }
 
