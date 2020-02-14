@@ -72,8 +72,8 @@ while (1) {
     foreach ($out_terminals as $terminals) {
         // если нету свободных терминалов пропускаем
         if (!$terminals) {
-            if ($ter->config['LOG_ENABLED']) DebMes("No free terminal " . $terminals, 'terminals');
-            break;
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal is busy. See properties TerminalState in object " . $terminals, 'terminals');
+            continue;
         }
 
         $terminal = SQLSelectOne("SELECT * FROM terminals WHERE LINKED_OBJECT = '" . $terminals . "'");
