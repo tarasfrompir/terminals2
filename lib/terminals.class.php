@@ -410,7 +410,7 @@ function pingTerminal($terminal, $details) {
         DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
-    sg($details['LINKED_OBJECT'] . '.busy', 0);
+    sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
 
 // check terminal Safe
@@ -556,7 +556,7 @@ function send_message($terminalname, $message, $terminal) {
     }
 	
     // установим флаг того что терминал освободился если сообщенеи доставлено иначе пингование терминала освободит его
-    if ($out) sg($terminal['LINKED_OBJECT'] . '.busy', 0);
+    if ($out) sg($terminal['LINKED_OBJECT'] . '.TerminalState', 0);
 }
 
 function send_messageSafe($message, $terminal) {
