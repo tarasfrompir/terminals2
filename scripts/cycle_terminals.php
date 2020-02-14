@@ -218,7 +218,7 @@ while (1) {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
                 //записываем что терминал занят
-                sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                 //передаем сообщение на терминал передающий только текстовое сообщение 
                 send_messageSafe($old_message, $terminal);
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
