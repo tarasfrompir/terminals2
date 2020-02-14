@@ -114,7 +114,7 @@ while (1) {
             try {
                 if ($ter->config['LOG_ENABLED']) DebMes("PingSafe terminal " . $terminal['NAME'], 'terminals');
                 //установим флаг занятости терминала 
-                sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                 pingTerminalSafe($terminal['NAME'], $terminal);
                 continue;
             }
@@ -131,7 +131,7 @@ while (1) {
         if (!$old_message['ID'] OR !$old_message['SOURCE']) {
             if ($terminal['IS_ONLINE'] AND $restore = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true)) {
                 try {
-                    sg($terminal['LINKED_OBJECT'] . '.busy', 1);
+                    sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                     restore_mediaSafe($restore, $terminal);
                     continue;
                 }
