@@ -716,7 +716,7 @@ function restore_media($terminalname, $restore, $terminal) {
     }
 	
     sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
-    sg($terminal['LINKED_OBJECT'] . '.busy', 0);
+    sg($terminal['LINKED_OBJECT'] . '.TerminalState', 0);
 }
 function restore_mediaSafe($restore, $terminal) {
     $data = array('restore_media' => 1, 'terminalname' => $terminal['NAME'], 'restore' => json_encode($restore), 'terminal' => json_encode($terminal));
