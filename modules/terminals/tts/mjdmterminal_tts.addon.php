@@ -53,7 +53,7 @@ class mjdmterminal extends tts_addon
     {
         // Defaults
         $playlistid    = -1;
-		$playlist_content = '';
+        $playlist_content = '';
         $track_id      = -1;
         $length        = 0;
         $time          = 0;
