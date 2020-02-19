@@ -10,7 +10,12 @@
 </b>
 </p>
 
+<script language="javascript">
 
+ function thedingdong(){
+ var filename = document.getElementById('dingdong-file').files[0].name;
+ document.getElementById('dingdong-path').value = filename;
+}
 
 <div class="collapse" id='api_settings'>
     <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
@@ -51,6 +56,13 @@
                 <div class="col-lg-6">
 	    			<p style="display: block; font-size: 80%;" >Время последнего обращения к кеш-файлу - рекомендовано 7 суток. Все файлы к которым не обращались больше этого времени удаляются</p>
                 </div>
+	        </div>
+	        <div class="form-group">
+		        <label class="col-lg-4 control-label">Выбрать файл - Динг-Донг:</label>
+		        <div class="col-lg-4">
+			        <input class="form-control" type="file" name="dingdong_file" id="dingdong-file" accept="audio/*" onchange="thedingdong();" class="input">
+					<input style="display: none" type="text" name="dingdong_path" id="dingdong-path" value="<#TERMINALS_DINGDONG#>">
+			    </div>
 	        </div>
             <div class="form-actions">
                 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
