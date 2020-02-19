@@ -90,7 +90,7 @@ class sounddevice_tts extends tts_addon
             // linux
         }
         if ($volum) {
-            $volume = intval($volum[0]*100);
+            $volume = intval($volume[0]*100);
 	    }
         $this->data = array(
                 'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
