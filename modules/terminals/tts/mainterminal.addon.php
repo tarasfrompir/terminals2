@@ -33,40 +33,40 @@ class mainterminal extends tts_addon
         return $this->success;
     }
 
-    // Get player status
-    function status()
+	// Get terminal status
+    function terminal_status()
     {
         // Defaults
-        $track_id = -1;
-        $length   = '';
-        $time     = '';
-        $state    = 'unknown';
-        $volume   = '';
-        $muted    = FALSE;
-        $random   = FALSE;
-        $loop     = FALSE;
-        $repeat   = FALSE;
-        $name     = 'unknow';
-        $file     = '';
-        $brightness = '';
-        $display_state = 'unknown';
-        
-        $this->data = array(
-                'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => $name, //Current speed for playing media. float.
-                'file' => $file, //Current link for media in device. String.
-                'length' => $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => $muted, // Muted mode. Boolean.
-                'random' => $random, // Random mode. Boolean. 
-                'loop' => $loop, // Loop mode. Boolean.
-                'repeat' => $repeat, //Repeat mode. Boolean.
-                'brightness'=> $brightness, // brightness display in %
-                'display_state'=> $display_state, // unknow , On, Off  - display  state
-                
+        $listening_keyphrase = -1;
+		$volume_media        = -1;
+        $volume_ring         = -1;
+        $volume_alarm        = -1;
+        $volume_notification = -1;
+        $brightness_auto     = -1;
+        $recognition         = -1;
+        $fullscreen          = -1;
+        $brightness          = -1;
+        $display_state       = -1;
+        $battery             = -1;
+	
+        $out_data = array(
+                'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
+				'volume_media' => (int)$volume_media, // громкость медиа на терминале (-1 - не поддерживается терминалом)
+                'volume_ring' => (int)$volume_ring, // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
+                'volume_alarm' => (int)$volume_alarm, // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
+                'volume_notification' => (int)$volume_notification, // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
+                'brightness_auto' => (int) $brightness_auto, // автояркость включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
+                'recognition' => (int) $recognition, // распознавание на терминале включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
+                'fullscreen' => (int) $recognition, // полноекранный режим на терминале включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
+				'brightness' => (int) $brightness, // яркость екрана (-1 - не поддерживается терминалом)
+				'battery' => (int) $battery, // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
+                'display_state'=> (int) $display_state, // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
             );
-        return $this->data;
+		
+		// удаляем из массива пустые данные
+		foreach ($out_data as $key => $value) {
+			if ($value == '-1') unset($out_data[$key]); ;
+		}
+        return $out_data;
     }
 }
