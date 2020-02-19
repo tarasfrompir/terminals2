@@ -450,7 +450,7 @@ function send_message($terminalname, $message, $terminal) {
     // берем настройки ТТС терминала со всей информацией
     $tts_setting = json_decode($terminal['TTS_SETING'], true);
 
-       // берем информацию о состоянии терминала яркость дисплея, состояние дисплея, заряд батареи, громкость для сообщений и т.д
+    // берем информацию о состоянии терминала яркость дисплея, состояние дисплея, заряд батареи, громкость для сообщений и т.д
     try {
         if (method_exists($tts, 'terminal_status') AND !gg($terminal['LINKED_OBJECT'] . '.terminaldata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut terminal", 'terminals');
