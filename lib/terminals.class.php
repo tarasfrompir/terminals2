@@ -450,7 +450,25 @@ function send_message($terminalname, $message, $terminal) {
     // берем настройки ТТС терминала со всей информацией
     $tts_setting = json_decode($terminal['TTS_SETING'], true);
 
-    // берем информацию о состоянии терминала громкость, воспроизводимое  и т.д.
+       // берем информацию о состоянии терминала яркость дисплея, состояние дисплея, заряд батареи, громкость для сообщений и т.д
+    try {
+        if (method_exists($tts, 'terminal_status') AND !gg($terminal['LINKED_OBJECT'] . '.terminaldata')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut terminal", 'terminals');
+            $terminaldata = $tts->terminal_status();
+			if ( $terminaldata ) { 
+			    sg($terminal['LINKED_OBJECT'] . '.terminaldata', json_encode($terminaldata));
+    	        if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($terminaldata, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
+			}
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function terminal_status", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+
+
+    // берем информацию о состоянии плеера громкость, воспроизводимое  и т.д.
     try {
         if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut media", 'terminals');
