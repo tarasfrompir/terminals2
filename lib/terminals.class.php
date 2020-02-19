@@ -504,7 +504,7 @@ function send_message($terminalname, $message, $terminal) {
     try {
         if ($tts_setting['TTS_USE_DISPLAY'] AND method_exists($tts, 'turn_on_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_on_display", 'terminals');
-            $tts->turn_on_display($terminal);
+            $tts->turn_on_display();
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_on_display", 'terminals');
         }
@@ -517,7 +517,7 @@ function send_message($terminalname, $message, $terminal) {
     try {
         if ($tts_setting['TTS_USE_DISPLAY'] AND method_exists($tts, 'set_brightness_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
-		    $tts->set_brightness_display($terminal,$tts_setting['TTS_BRIGHTNESS_DISPLAY']);
+		    $tts->set_brightness_display($tts_setting['TTS_BRIGHTNESS_DISPLAY']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display", 'terminals');
         }
@@ -759,7 +759,7 @@ function restore_terminal_state($terminalname, $terminal) {
     try {
         if (method_exists($tts, 'set_brightness_display') AND $terminaldata['brightness']) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
-            $tts->set_brightness_display($terminal, $terminaldata['brightness'], 20);
+            $tts->set_brightness_display( $terminaldata['brightness'], 20);
 			unset ($terminaldata['brightness']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display or dont need set brightness (display off)", 'terminals');
@@ -773,7 +773,7 @@ function restore_terminal_state($terminalname, $terminal) {
     try {
         if ($terminaldata['display_state']=='0' AND method_exists($tts, 'turn_off_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_off_display", 'terminals');
-            $tts->turn_off_display($terminal, 25);
+            $tts->turn_off_display(25);
 			unset ($terminaldata['display_state']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_off_display or dont need turn off display", 'terminals');
