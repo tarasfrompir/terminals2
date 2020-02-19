@@ -141,7 +141,6 @@ class terminals extends module
 		} else {
 			$out['TERMINALS_DINGDONG'] = 'dingdong.mp3';
 		}
-		DebMes($out['TERMINALS_DINGDONG']);
         if ($this->config['TERMINALS_PING']) {
 			$out['TERMINALS_PING'] = $this->config['TERMINALS_PING'];
 		} else {
