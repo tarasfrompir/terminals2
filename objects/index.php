@@ -175,8 +175,8 @@ if ($object != '') {
     pingTerminal(gr('terminal'), json_decode(gr('params'),true));
 } elseif (gr('send_message')) {
     send_message( gr('terminalname'), json_decode(gr('message'), true), json_decode(gr('terminal'), true));
-} elseif (gr('restore_media')) {
-    restore_media( gr('terminalname'), json_decode(gr('restore'), true), json_decode(gr('terminal'), true));
+} elseif (gr('restore_terminal_state')) {
+    restore_terminal_state( gr('terminalname'), json_decode(gr('terminal'), true));
 } elseif (gr('processSubscriptions')) {
    processSubscriptions(gr('event'), json_decode(gr('params'),true));
 } elseif (gr('processSubscriptionsOutput')) {
