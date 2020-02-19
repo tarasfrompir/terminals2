@@ -31,7 +31,7 @@ class iobroker_tts extends tts_addon
         return true;
     }
     
-    function turn_on_display($terminal, $time=0)
+    function turn_on_display($time=0)
     {
         // включаем дисплей
         $url = $this->address . "/api/set.json?toWake=true";
