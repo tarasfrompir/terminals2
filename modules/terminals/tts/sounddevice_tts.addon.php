@@ -135,7 +135,7 @@ class sounddevice_tts extends tts_addon
             // linux
         }
         if ($volume) {
-            $volume_media = intval($volum[0]*100);
+            $volume_media = intval($volume[0]*100);
 	    }
 	
         $out_data = array(
