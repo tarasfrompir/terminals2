@@ -333,10 +333,17 @@ class terminals extends module
     {
         // add class and properties
         addClass('Terminals', 'SDevices');
+	    // name of terminal
         addClassProperty('Terminals', 'name');
+	    // state o terminal busy or not bausy
         addClassProperty('Terminals', 'TerminalState');
+	    // playerstate file, playlist, volume etc...
         addClassProperty('Terminals', 'playerdata');
+	    // terminal state brigtnes, screen, battary etc..
+        addClassProperty('Terminals', 'terminaldata');
+	    // linked username
         addClassProperty('Terminals', 'username');
+	    // controll adress for upnp device
         addClassProperty('Terminals', 'UPNP_CONTROL_ADDRESS');
    
         // update main terminal
