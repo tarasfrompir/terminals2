@@ -66,6 +66,7 @@ class mjdmterminal extends tts_addon
         $repeat        = FALSE;
         $brightness    = '';
         $display_state = false;
+        $battery = false;
         $result   = json_decode($this->sendMjdmCommand('status'));
         
        if ($result) {
@@ -82,13 +83,14 @@ class mjdmterminal extends tts_addon
                 'length' => intval($result['duration']), //длинна плейлиста (песни). 
                 'time' => intval($result['time']), //текущая позиции по времени трека 
                 'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($result['volume']), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => (int)rtrim($result['volume_media'],'%'), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => intval($result['muted']), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (boolean) $result['random'], // Random mode. Boolean. 
                 'loop' => (boolean) $result['loop'], // Loop mode. Boolean.
                 'crossfade' => (boolean) $result['xfade'], // crossfade
                 'repeat' => (boolean) $result['repeat'], //Repeat mode. Boolean.
-                'brightness' => (int) $result['brightness'], // яркость екрана
+                'brightness' => (int) rtrim($result['brightness'],'%'), // яркость екрана
+		'battery' => (int) rtrim($result['battery'],'%'), // заряд терминала екрана
                 'display_state' => (boolean) ($display_state) // состояние екрана включен (выключен)
             );
         }
