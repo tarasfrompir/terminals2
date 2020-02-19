@@ -242,7 +242,7 @@
                             $('#tts_password').hide();
                             $('#tts_control_address').show();
                             $('#tts_sound_device').hide();
-                            $('#tts_display_turnon').hide();							
+                            $('#tts_display_turnon').hide();	
                 } else if (type == 'sounddevice_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').hide();
@@ -251,7 +251,15 @@
                             $('#tts_control_address').hide();
                             $('#tts_sound_device').show();
                             $('#tts_display_turnon').hide();			
-                } else if (type == 'mpd_tts') {
+                } else if (type == 'mjdmterminal_tts') {
+                            $('#tts_volume').show();
+                            $('#tts_port').show();
+                            $('#tts_name').hide();
+                            $('#tts_password').hide();
+                            $('#tts_control_address').hide();
+                            $('#tts_sound_device').hide();
+                            $('#tts_display_turnon').hide();	
+	        } else if (type == 'mpd_tts') {
                             $('#tts_volume').show();
                             $('#tts_port').show();
                             $('#tts_name').hide();
