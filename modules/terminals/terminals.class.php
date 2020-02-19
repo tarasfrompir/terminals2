@@ -126,7 +126,7 @@ class terminals extends module
      *
      * @access public
      */
-    function admin(&$out)
+        function admin(&$out)
     {
         $this->getConfig();
 		$out['LOG_ENABLED'] = $this->config['LOG_ENABLED'];
@@ -136,6 +136,12 @@ class terminals extends module
 		} else {
 			$out['TERMINALS_TIMEOUT'] = 10;
 		}
+        if ($this->config['TERMINALS_DINGDONG']) {
+			$out['TERMINALS_DINGDONG'] = $this->config['TERMINALS_DINGDONG'];
+		} else {
+			$out['TERMINALS_DINGDONG'] = 'dingdong.mp3';
+		}
+		DebMes($out['TERMINALS_DINGDONG']);
         if ($this->config['TERMINALS_PING']) {
 			$out['TERMINALS_PING'] = $this->config['TERMINALS_PING'];
 		} else {
@@ -162,14 +168,11 @@ class terminals extends module
             }
         }
         if ($this->view_mode == 'update_settings') {
-            global $log_enabled;
-            $this->config['LOG_ENABLED'] = $log_enabled;
-            global $terminals_timeout;           
-            $this->config['TERMINALS_TIMEOUT'] = trim($terminals_timeout);
-            global $terminals_ping;           
-            $this->config['TERMINALS_PING'] = trim($terminals_ping);
-            global $terminals_cash_clear;           
-            $this->config['TERMINALS_CASH_CLEAR'] = trim($terminals_cash_clear);
+            $this->config['LOG_ENABLED'] = gr('log_enabled');      
+            $this->config['TERMINALS_DINGDONG'] = gr('dingdong_path');      
+            $this->config['TERMINALS_TIMEOUT'] = trim(gr('terminals_timeout'));
+            $this->config['TERMINALS_PING'] = trim(gr('terminals_ping'));
+            $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
             $this->saveConfig();
             
             $this->redirect("?ok=1");
