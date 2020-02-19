@@ -41,7 +41,7 @@ class mjdmterminal extends tts_addon
         return $this->sendMjdmCommand('stop');
     }
 	
-    function set_brightness_display($terminal, $brightness, $time=0)
+    function set_brightness_display($brightness, $time=0)
     {
         // установим яркость дисплея
         return $this->sendMjdmCommand('brightness:' . $brightness);
