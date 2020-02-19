@@ -1,6 +1,6 @@
 <?php
 
-class mjdmterminal extends tts_addon
+class mjdmterminal_tts extends tts_addon
 {
     
     function __construct($terminal)
