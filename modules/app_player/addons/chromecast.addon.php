@@ -12,14 +12,15 @@ class chromecast extends app_player_addon
     {
         $this->title       = 'Google Chromecast';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
-	$this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
-	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
+        $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
+        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
         $this->terminal = $terminal;
-        $this->port = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
+        $this->port     = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
         
-	if (!$this->terminal['HOST']) return false;
-	    
-        $this->reset_properties();        
+        if (!$this->terminal['HOST'])
+            return false;
+        
+        $this->reset_properties();
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
@@ -29,53 +30,54 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         // Defaults
-	$playlist_id = -1;
-	$playlist_content = array();
-        $track_id = -1;
-	$name     = -1;
-	$file     = -1;
-        $length   = -1;
-        $time     = -1;
-        $state    = -1;
-        $volume   = -1;
-	$muted    = -1;
-        $random   = -1;
-        $loop     = -1;
-        $repeat   = -1;
-        $crossfade= -1;
-	$speed = -1;
+        $playlist_id      = -1;
+        $playlist_content = array();
+        $track_id         = -1;
+        $name             = -1;
+        $file             = -1;
+        $length           = -1;
+        $time             = -1;
+        $state            = -1;
+        $volume           = -1;
+        $muted            = -1;
+        $random           = -1;
+        $loop             = -1;
+        $repeat           = -1;
+        $crossfade        = -1;
+        $speed            = -1;
         
         $this->cc->requestId = time();
-        $status = $this->cc->getStatus();
+        $status              = $this->cc->getStatus();
         $this->cc->requestId = time();
-        $result = $this->cc->getMediaSession();
+        $result              = $this->cc->getMediaSession();
         
-		$this->data    = array(
-			    'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
-                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
-                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
-                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
-                                                         // возможно $playlist_content[$i]['Artist'] - артист
-                                                         // возможно $playlist_content[$i]['Title'] - название трека
-                'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-				'name' => (string) $name, //Current speed for playing media. float.
-				'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
-                'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => (int)($status['status']['volume']['level']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (int) $random, // Random mode. Boolean. 
-                'loop' => (int) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $result['status'][0]['repeatMode'], //Repeat mode. Boolean.
-                'crossfade' => (int) $crossfade, // crossfade
-                'speed' => (int) $speed, // crossfade
-            );
-		// удаляем из массива пустые данные
-		foreach ($this->data as $key => $value) {
-			if ($value == '-1' or !$value) unset($this->data[$key]);
-		}
-		$this->success = TRUE;
+        $this->data = array(
+            'playlist_id' => (int) $playlist_id, // номер или имя плейлиста 
+            'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+            // обязательно $playlist_content[$i]['pos'] - номер трека
+            // обязательно $playlist_content[$i]['file'] - адрес трека
+            // возможно $playlist_content[$i]['Artist'] - артист
+            // возможно $playlist_content[$i]['Title'] - название трека
+            'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
+            'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => (int) ($status['status']['volume']['level'] * 100), // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (int) $random, // Random mode. Boolean. 
+            'loop' => (int) $loop, // Loop mode. Boolean.
+            'repeat' => (string) $result['status'][0]['repeatMode'], //Repeat mode. Boolean.
+            'crossfade' => (int) $crossfade, // crossfade
+            'speed' => (int) $speed // crossfade
+        );
+        // удаляем из массива пустые данные
+        foreach ($this->data as $key => $value) {
+            if ($value == '-1' or !$value)
+                unset($this->data[$key]);
+        }
+        $this->success = TRUE;
         $this->message = 'OK';
         return $this->success;
     }
@@ -85,7 +87,7 @@ class chromecast extends app_player_addon
     function play($input) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();
-		if (strlen($input)) {
+        if (strlen($input)) {
             try {
                 $this->cc->requestId = time();
                 $this->cc->load($input, 0);
@@ -145,7 +147,7 @@ class chromecast extends app_player_addon
         if (strlen($level)) {
             try {
                 $this->cc->requestId = time();
-                $level = $level / 100;
+                $level               = $level / 100;
                 $this->cc->SetVolume($level);
                 $this->success = TRUE;
                 $this->message = 'OK';
@@ -162,10 +164,10 @@ class chromecast extends app_player_addon
     }
     
     // Restore player data from terminals
-    function restore_media($input, $position=0)
+    function restore_media($input, $position = 0)
     {
         $this->reset_properties();
-        $this->cc->load($input);
+        $this->cc->load($input, 0);
         $this->cc->seek($position);
         $response = $this->cc->play();
         if ($response) {
