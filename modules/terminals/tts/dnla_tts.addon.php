@@ -183,7 +183,7 @@ class dnla_tts extends tts_addon
         //  для получения уровня громкости
         $response     = $this->remotevolume->GetVolume();
         $doc->loadXML($response);
-        if ($response) $volume_media = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        $volume_media = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
 		
         $out_data = array(
                 'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
