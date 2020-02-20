@@ -445,8 +445,8 @@ function send_message($terminalname, $message, $terminal) {
     } else {
         return;
     }
-	// подключаем класс плеера
-	include_once DIR_MODULES . 'app_player/app_player.class.php';
+    // подключаем класс плеера
+    include_once DIR_MODULES . 'app_player/addons.php';
     $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
         include_once ($addon_file);
@@ -613,8 +613,9 @@ function restore_terminal_state($terminalname, $terminal) {
     } else {
         return;
     }
-	// подключаем класс плеера
-	include_once DIR_MODULES . 'app_player/app_player.class.php';
+
+    // подключаем класс плеера
+    include_once DIR_MODULES . 'app_player/addons.php';
     $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
         include_once ($addon_file);
