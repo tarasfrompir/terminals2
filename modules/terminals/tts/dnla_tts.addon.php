@@ -163,6 +163,20 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
     
+    // Stop
+    function stop()
+    {
+        $this->reset_properties();
+        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $response = $remote->stop();
+        if ($response) {
+            $this->success = TRUE;
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+	
     // ping terminal
     function ping()
     {
