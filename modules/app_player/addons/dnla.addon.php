@@ -17,6 +17,7 @@ class dnla extends app_player_addon
         $this->terminal = $terminal;
         $this->reset_properties();
         
+		if (!$this->terminal['HOST']) return false;
         // proverka na otvet
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
@@ -41,7 +42,9 @@ class dnla extends app_player_addon
         }
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
-        
+        $this->remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
+		$this->remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+     
     }
     
     
@@ -69,29 +72,26 @@ class dnla extends app_player_addon
         // создаем хмл документ
         $doc          = new \DOMDocument();
         //  для получения уровня громкости
-        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response     = $remotevolume->GetVolume();
+        $response     = $this->remotevolume->GetVolume();
         $doc->loadXML($response);
         $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
         // Для получения состояния плеера
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->getState();
+        $response = $this->remote->getState();
         $doc->loadXML($response);
         $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
         if ($state == 'TRANSITIONING') {
             $state = 'playing';
         }
-	if ($state == 'no_media_present') {
+		if ($state == 'no_media_present') {
             $state = 'unknown';
         }
-
         //Debmes ('current_speed '.$current_speed);
         // получаем местоположение трека 
-		$response = $remote->getPosition();
+		$response = $this->remote->getPosition();
         $doc->loadXML($response);
         $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $length   = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
-        $time     = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
+        $length   = $this->remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
+        $time     = $this->remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
         $file = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
 
 		$this->data = array(
@@ -128,20 +128,16 @@ class dnla extends app_player_addon
     // Get media volume level
     function get_volume()
     {
-        if ($this->status()) {
-            $volume        = $this->data['volume'];
-            $this->success = TRUE;
-            $this->message = 'Volume get';
-            $this->data    = $volume;
-        } else if (strtolower($this->terminal['HOST']) == 'localhost' || $this->terminal['HOST'] == '127.0.0.1') {
-            $this->reset_properties(array(
-                'success' => TRUE,
-                'message' => 'OK'
-            ));
-            $this->data    = (int) getGlobal('ThisComputer.volumeMediaLevel');
-            $this->success = TRUE;
-            $this->message = 'Volume get';
-        }
+        $this->reset_properties();
+        // создаем хмл документ
+        $doc          = new \DOMDocument();
+        //  для получения уровня громкости
+        $response     = $this->remotevolume->GetVolume();
+        $doc->loadXML($response);
+        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+        $this->success = TRUE;
+        $this->message = 'Volume get';
+        $this->data    = $volume;
         return $this->success;
     }
 
@@ -149,8 +145,7 @@ class dnla extends app_player_addon
     function pause()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->pause();
+        $response = $this->remote->pause();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Pause enabled';
@@ -165,8 +160,7 @@ class dnla extends app_player_addon
     function next()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->next();
+        $response = $this->remote->next();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Next file changed';
@@ -181,8 +175,7 @@ class dnla extends app_player_addon
     function previous()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->previous();
+        $response = $this->remote->previous();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Previous file changed';
@@ -197,8 +190,7 @@ class dnla extends app_player_addon
     function set_volume($level)
     {
         $this->reset_properties();
-        $remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response     = $remotevolume->SetVolume($level);
+        $response     = $this->remotevolume->SetVolume($level);
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Volume changed';
@@ -213,8 +205,7 @@ class dnla extends app_player_addon
     function stop()
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->stop();
+        $response = $this->remote->stop();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Stop play';
@@ -229,12 +220,27 @@ class dnla extends app_player_addon
     function play($input)
     {
         $this->reset_properties();
-        $remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         // для радио 101 ру
         if (stripos($input, '?userid=0&setst')) {
             $input = stristr($input, '&setst', True) . '.mp4';
         }
-        $response = $remote->play($input);
+        $response = $this->remote->play($input);
+        if ($response) {
+            $this->success = TRUE;
+            $this->message = 'Play files';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Command execution error!';
+        }
+        return $this->success;
+    }
+	
+	// Restore player data fromm terminals
+    function restore_media($input, $position=0)
+    {
+        $this->reset_properties();
+        $response = $this->remote->seek($position);
+        $response = $this->remote->play($input);
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Play files';
@@ -249,9 +255,8 @@ class dnla extends app_player_addon
     function seek($position)
     {
         $this->reset_properties();
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->seek($position);
-        if ($remote) {
+        $response = $this->remote->seek($position);
+        if ($this->remote) {
             $this->success = TRUE;
             $this->message = 'Position changed';
         } else {
@@ -299,7 +304,7 @@ class dnla extends app_player_addon
                         $out = str_ireplace('location:', '', $response);
                     }
                     if (stripos($row, 'AVTransport')) {
-						$out = $response;
+                        $out = $response;
                         break;
                     }
                 }
