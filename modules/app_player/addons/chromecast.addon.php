@@ -16,7 +16,9 @@ class chromecast extends app_player_addon
 	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
         $this->terminal = $terminal;
         $this->port = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
-
+        
+	if (!$this->terminal['HOST']) return false;
+	    
         $this->reset_properties();        
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
