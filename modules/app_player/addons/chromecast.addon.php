@@ -12,10 +12,8 @@ class chromecast extends app_player_addon
     {
         $this->title       = 'Google Chromecast';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
-	$this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
-	$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер). Если же тип ТТС и тип плеера для терминала различны, то плейлист плеера при ТТС не потеряется при любых обстоятельствах).<br>';
-	$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
-	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
+		$this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).';
         $this->terminal = $terminal;
         $this->terminal['PLAYER_PORT'] = (empty($this->terminal['PLAYER_PORT']) ? 8009 : $this->terminal['PLAYER_PORT']);
 
@@ -28,14 +26,20 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         // Defaults
+		$playlist_id = -1;
+		$playlist_content = array();
         $track_id = -1;
-        $length   = 0;
-        $time     = 0;
-        $state    = 'unknown';
-        $volume   = 0;
-        $random   = FALSE;
-        $loop     = FALSE;
-        $repeat   = FALSE;
+		$name     = -1;
+		$file     = -1;
+        $length   = -1;
+        $time     = -1;
+        $state    = -1;
+        $volume   = -1;
+		$muted    = -1;
+        $random   = -1;
+        $loop     = -1;
+        $repeat   = -1;
+        $crossfade= -1;
         
         $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
         $cc->requestId = time();
@@ -48,49 +52,35 @@ class chromecast extends app_player_addon
             $this->success = TRUE;
             $this->message = 'OK';
             $this->data    = array(
+			    'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
                 'track_id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+				'name' => (string) $name, //Current speed for playing media. float.
+				'file' => (string) $result['status'][0]['media']['contentId'], //Current link for media in device. String.
                 'length' => (int) $result['status'][0]['media']['duration'], //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $result['status'][0]['currentTime'], //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($result['status'][0]['playerState']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($status['status']['volume']['level']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
+                'volume' => (int)($status['status']['volume']['level']*100), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => (int) $result['status'][0]['volume']['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (boolean) $random, // Random mode. Boolean. 
-                'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (string) $result['status'][0]['repeatMode'] //Repeat mode. Boolean.
+                'random' => (int) $random, // Random mode. Boolean. 
+                'loop' => (int) $loop, // Loop mode. Boolean.
+                'repeat' => (string) $result['status'][0]['repeatMode'], //Repeat mode. Boolean.
+                'crossfade' => (int) $crossfade, // crossfade
             );
         }
+		// удаляем из массива пустые данные
+		foreach ($this->data as $key => $value) {
+			if ($value == '-1' or !$value) unset($this->data[$key]);
+		}
         return $this->success;
     }
     
     
-    // Playlist: Get
-    function pl_get()
-    {
-        $this->success = FALSE;
-        $this->message = 'Command execution error!';
-        $track_id      = -1;
-        $name          = 'unknow';
-        $curren_url    = '';
-        
-        $cc            = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
-        $cc->requestId = time();
-        $result        = $cc->getMediaSession();
-        
-        if ($result) {
-            // Results
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
-            $this->data    = array(
-                'id' => (int) $result['status'][0]['media']['tracks'][0]['trackId'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $result['status'][0]['media']['contentId'] //Current link for media in device. String.
-            );
-        }
-        return $this->success;
-    }
-
-    // Say
+    // Play
     function play($input) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->reset_properties();

@@ -23,11 +23,16 @@ class airplay extends app_player_addon
     {
         $this->reset_properties();
         // Defaults
+		$playlist_id = -1;
+		$playlist_content = array();
         $track_id = -1;
+		$name     = -1;
+		$file     = -1;
         $length   = -1;
         $time     = -1;
         $state    = -1;
         $volume   = -1;
+		$muted    = -1;
         $random   = -1;
         $loop     = -1;
         $repeat   = -1;
@@ -36,10 +41,19 @@ class airplay extends app_player_addon
         $this->success = TRUE;
         $this->message = 'OK';
         $this->data    = array(
-                'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+                'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+				'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+			    'name' => (string) $name, //Current speed for playing media. float.
+				'file' => (string) $file, //Current link for media in device. String.
                 'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
                 'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
                 'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => (int) $random, // Volume level in percent. Integer. Some players may have values greater than 100.
                 'random' => (int) $random, // Random mode. Boolean. 
                 'loop' => (int) $loop, // Loop mode. Boolean.
@@ -49,7 +63,7 @@ class airplay extends app_player_addon
         }
 		// удаляем из массива пустые данные
 		foreach ($this->data as $key => $value) {
-			if ($value == '-1') unset($this->data[$key]); ;
+			if ($value == '-1' or !$value) unset($this->data[$key]);
 		}
         return $this->success;
     }
