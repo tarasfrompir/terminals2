@@ -4,7 +4,7 @@
 	Addon Foobar2000 for app_player
 */
 
-class foobar_media extends app_player_addon {
+class foobar extends app_player_addon {
 	
 	// Private properties
 	private $curl;
