@@ -480,7 +480,8 @@ function send_message($terminalname, $message, $terminal) {
     try {
         if (method_exists($player, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut media", 'terminals');
-            $playerdata_data = $player->status();
+            $player->status();
+            $playerdata_data = $player->data;
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function status", 'terminals');
         }
