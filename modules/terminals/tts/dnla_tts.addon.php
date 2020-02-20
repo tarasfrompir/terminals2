@@ -177,7 +177,14 @@ class dnla_tts extends tts_addon
         $brightness          = -1;
         $display_state       = -1;
         $battery             = -1;
-	
+	    
+	// создаем хмл документ
+        $doc          = new \DOMDocument();
+        //  для получения уровня громкости
+        $response     = $this->remotevolume->GetVolume();
+        $doc->loadXML($response);
+        if ($response) $volume_media = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
+		
         $out_data = array(
                 'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
                 'volume_media' => (int)$volume_media, // громкость медиа на терминале (-1 - не поддерживается терминалом)
