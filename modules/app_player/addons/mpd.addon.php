@@ -46,47 +46,59 @@ class mpd extends app_player_addon {
 		return $this->success;
 	}
 	
-	// Get player status
-	function status() {
-		if($this->mpd_connect()) {
-			$this->mpd->RefreshInfo();
-			$this->reset_properties();
-			if(!is_null($status = $this->mpd->GetStatus())) {
-				$this->success = TRUE;
-				$this->message = 'OK';
-				switch($status['state']) {
-					case 'stop': $status['state'] = 'stopped'; break;
-					case 'play': $status['state'] = 'playing'; break;
-					case 'pause': $status['state'] = 'paused'; break;
-					default: $status['state'] = 'unknown';
-				}
-				$this->data = array(
-					'track_id'		=> (int)$this->mpd->current_track_id,
-					'length'		=> (int)$this->mpd->current_track_length,
-					'time'			=> (int)$this->mpd->current_track_position,
-					'state'			=> (string)$status['state'],
-					'volume'		=> (int)$status['volume'],
-					'random'		=> ($status['random'] == '1'?TRUE:FALSE),
-					'loop'			=> ((($status['single'] == '0') && ($status['repeat'] == '1'))?TRUE:FALSE),
-					'repeat'		=> ((($status['single'] == '1') && ($status['repeat'] == '1'))?TRUE:FALSE),
-				);
-			} else {
-				$this->success = FALSE;
-				if(is_null($this->mpd->errStr)) {
-					$this->message = 'Error getting player status!';
-				} else {
-					$this->message = $this->mpd->errStr;
-				}
-			}
-			$this->mpd->Disconnect();
+	
+	    // Get player status
+    function status()
+    {
+        $this->reset_properties();
+        // Defaults
+		$playlist_id = -1;
+		$playlist_content = array();
+        $track_id = -1;
+		$name     = -1;
+		$file     = -1;
+        $length   = -1;
+        $time     = -1;
+        $state    = -1;
+        $volume   = -1;
+		$muted    = -1;
+        $random   = -1;
+        $loop     = -1;
+        $repeat   = -1;
+        $crossfade= -1;
+		$speed = -1;
+		
+        $this->data = array(
+                'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
+                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
+                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
+                                                         // возможно $playlist_content[$i]['Artist'] - артист
+                                                         // возможно $playlist_content[$i]['Title'] - название трека
+				'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+			    'name' => (string) $name, //Current speed for playing media. float.
+				'file' => (string) $file, //Current link for media in device. String.
+                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'muted' => (int) $random, // Volume level in percent. Integer. Some players may have values greater than 100.
+                'random' => (int) $random, // Random mode. Boolean. 
+                'loop' => (int) $loop, // Loop mode. Boolean.
+                'repeat' => (int) $repeat, //Repeat mode. Boolean.
+                'crossfade' => (int) $crossfade, // crossfade
+                'speed' => (int) $speed, // crossfade
+            );
+        }
+		// удаляем из массива пустые данные
+		foreach ($this->data as $key => $value) {
+			if ($value == '-1' or !$value) unset($this->data[$key]);
 		}
-		if ($this->success) {
-			return $this->data;
-		} else {
-			return $this->success;
-		}
-
-	}
+				        
+        $this->success = TRUE;
+        $this->message = 'OK';
+        return $this->success;
+    }
 	
 	// Play
 	function play($input) {
@@ -397,7 +409,49 @@ class mpd extends app_player_addon {
 		}
 		return $this->success;
 	}
+	
+	// Get player status
+	function statusold() {
+		if($this->mpd_connect()) {
+			$this->mpd->RefreshInfo();
+			$this->reset_properties();
+			if(!is_null($status = $this->mpd->GetStatus())) {
+				$this->success = TRUE;
+				$this->message = 'OK';
+				switch($status['state']) {
+					case 'stop': $status['state'] = 'stopped'; break;
+					case 'play': $status['state'] = 'playing'; break;
+					case 'pause': $status['state'] = 'paused'; break;
+					default: $status['state'] = 'unknown';
+				}
+				$this->data = array(
+					'track_id'		=> (int)$this->mpd->current_track_id,
+					'length'		=> (int)$this->mpd->current_track_length,
+					'time'			=> (int)$this->mpd->current_track_position,
+					'state'			=> (string)$status['state'],
+					'volume'		=> (int)$status['volume'],
+					'random'		=> ($status['random'] == '1'?TRUE:FALSE),
+					'loop'			=> ((($status['single'] == '0') && ($status['repeat'] == '1'))?TRUE:FALSE),
+					'repeat'		=> ((($status['single'] == '1') && ($status['repeat'] == '1'))?TRUE:FALSE),
+				);
+			} else {
+				$this->success = FALSE;
+				if(is_null($this->mpd->errStr)) {
+					$this->message = 'Error getting player status!';
+				} else {
+					$this->message = $this->mpd->errStr;
+				}
+			}
+			$this->mpd->Disconnect();
+		}
+		if ($this->success) {
+			return $this->data;
+		} else {
+			return $this->success;
+		}
 
+	}
+	
 }
 
 ?>
