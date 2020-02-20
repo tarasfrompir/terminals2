@@ -11,14 +11,15 @@ class dnla extends app_player_addon
         $this->title       = 'Устройства с поддержкой протокола DLNA';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол DNLA.<br>';
         $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
-		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер). Если же тип ТТС и тип плеера для терминала различны, то плейлист плеера при ТТС не потеряется при любых обстоятельствах).<br>';
-		$this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
-		$this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).';
+        $this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер). Если же тип ТТС и тип плеера для терминала различны, то плейлист плеера при ТТС не потеряется при любых обстоятельствах).<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping.<br>';
+        $this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).';
         $this->terminal = $terminal;
         $this->reset_properties();
         
-		if (!$this->terminal['HOST']) return false;
-        // proverka na otvet
+        if (!$this->terminal['HOST']) return false;
+        
+	    // proverka na otvet
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->terminal['PLAYER_CONTROL_ADDRESS']);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -43,7 +44,7 @@ class dnla extends app_player_addon
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         $this->remote = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-		$this->remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
+        $this->remotevolume = new MediaRendererVolume($this->terminal['PLAYER_CONTROL_ADDRESS']);
      
     }
     
@@ -235,12 +236,13 @@ class dnla extends app_player_addon
         return $this->success;
     }
 	
-	// Restore player data fromm terminals
+	// Restore player data from terminals
     function restore_media($input, $position=0)
     {
         $this->reset_properties();
-        $response = $this->remote->seek($position);
-        $response = $this->remote->play($input);
+        $this->remote->load($input);
+        $this->remote->seek($position);
+        $response = $this->remote->play();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Play files';
@@ -256,7 +258,7 @@ class dnla extends app_player_addon
     {
         $this->reset_properties();
         $response = $this->remote->seek($position);
-        if ($this->remote) {
+        if ($response) {
             $this->success = TRUE;
             $this->message = 'Position changed';
         } else {
