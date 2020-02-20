@@ -81,6 +81,10 @@ class dnla extends app_player_addon
         if ($state == 'TRANSITIONING') {
             $state = 'playing';
         }
+	if ($state == 'no_media_present') {
+            $state = 'unknown';
+        }
+	    no_media_present
         //Debmes ('current_speed '.$current_speed);
         // получаем местоположение трека 
 		$response = $remote->getPosition();
