@@ -134,7 +134,6 @@ class dnla_tts extends tts_addon
     // Stop
     function stop()
     {
-        $this->reset_properties();
         $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
         $response = $remote->stop();
         if ($response) {
