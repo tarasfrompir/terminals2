@@ -765,7 +765,6 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист на плеере
     try {
-		DebMes(serialize($playerdata));
         if ($playerdata['file'] AND method_exists($player, 'restore_media')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore media", 'terminals');
             $player->restore_media($playerdata['file'], $playerdata['time']);
