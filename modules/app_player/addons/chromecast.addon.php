@@ -4,7 +4,7 @@
 Addon Chromecast for app_player
 */
 
-class chromecast_media extends app_player_addon
+class chromecast extends app_player_addon
 {
     
     // Constructor
