@@ -126,22 +126,6 @@ class dnla extends app_player_addon
         return $this->success;
     }
    
-    // Get media volume level
-    function get_volume()
-    {
-        $this->reset_properties();
-        // создаем хмл документ
-        $doc          = new \DOMDocument();
-        //  для получения уровня громкости
-        $response     = $this->remotevolume->GetVolume();
-        $doc->loadXML($response);
-        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-        $this->success = TRUE;
-        $this->message = 'Volume get';
-        $this->data    = $volume;
-        return $this->success;
-    }
-
     // Pause
     function pause()
     {
