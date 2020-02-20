@@ -4,7 +4,7 @@
 Addon dnla for app_player
 */
 
-class dnla extends app_player_addon
+class dnla_media extends app_player_addon
 {
     function __construct($terminal)
     {
@@ -111,7 +111,6 @@ class dnla extends app_player_addon
                 'crossfade' => (int) $crossfade, // crossfade
                 'speed' => (int) $speed, // crossfade
             );
-        }
 		// удаляем из массива пустые данные
 		foreach ($this->data as $key => $value) {
 			if ($value == '-1' or !$value) unset($this->data[$key]);
