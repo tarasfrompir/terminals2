@@ -10,6 +10,7 @@ class airplay_tts extends tts_addon
         $this->title       = "Airplay";
         $this->description = '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
         $this->terminal    = $terminal;
+	if (!$this->terminal['HOST']) return false;
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
         $this->port        = empty($this->setting['TTS_PORT']) ? 7000 : $this->setting['TTS_PORT'];
         include_once(DIR_MODULES . 'app_player/libs/Airplay/airplay.php');
