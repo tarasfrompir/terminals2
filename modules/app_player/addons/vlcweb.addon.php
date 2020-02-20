@@ -23,6 +23,8 @@ class vlcweb extends app_player_addon {
 		$this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).';
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
