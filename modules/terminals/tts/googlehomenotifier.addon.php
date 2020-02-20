@@ -4,6 +4,7 @@ class googlehomenotifier extends tts_addon {
 
     function __construct($terminal) {
         $this->terminal = $terminal;
+	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         $this->title="GoogleHomeNotifier";
@@ -11,7 +12,8 @@ class googlehomenotifier extends tts_addon {
         $this->description .= '<b>Проверка доступности:</b>&nbsp; ??? нужно разбираться ???.<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8091 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        
+        if (!$this->terminal['HOST'])
+            return false;        
         parent::__construct($terminal);
     }
 
