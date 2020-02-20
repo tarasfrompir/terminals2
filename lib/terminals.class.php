@@ -816,12 +816,7 @@ function restore_terminal_state($terminalname, $terminal) {
     }
 
     // очищаем состояние терминала
-    if (!$terminaldata) {
-		sg($terminal['LINKED_OBJECT'] . '.terminaldata', '');	
-	} else {
-		sg($terminal['LINKED_OBJECT'] . '.terminaldata', $terminaldata);	
-	}
-	
+    sg($terminal['LINKED_OBJECT'] . '.terminaldata', '');	
     sg($terminal['LINKED_OBJECT'] . '.playerdata', '');
     sg($terminal['LINKED_OBJECT'] . '.TerminalState', 0);
 }
