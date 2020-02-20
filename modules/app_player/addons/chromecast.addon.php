@@ -40,18 +40,15 @@ class chromecast extends app_player_addon
         $loop     = -1;
         $repeat   = -1;
         $crossfade= -1;
+		$speed = -1;
         
         $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
         $cc->requestId = time();
         $status = $cc->getStatus();
         $cc->requestId = time();
         $result = $cc->getMediaSession();
-        //DebMes($result);
-        if ($result) {
-            $this->reset_properties();
-            $this->success = TRUE;
-            $this->message = 'OK';
-            $this->data    = array(
+        
+		$this->data    = array(
 			    'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
                 'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
                                                          // обязательно $playlist_content[$i]['pos'] - номер трека
@@ -70,12 +67,15 @@ class chromecast extends app_player_addon
                 'loop' => (int) $loop, // Loop mode. Boolean.
                 'repeat' => (string) $result['status'][0]['repeatMode'], //Repeat mode. Boolean.
                 'crossfade' => (int) $crossfade, // crossfade
+                'speed' => (int) $speed, // crossfade
             );
         }
 		// удаляем из массива пустые данные
 		foreach ($this->data as $key => $value) {
 			if ($value == '-1' or !$value) unset($this->data[$key]);
 		}
+		$this->success = TRUE;
+        $this->message = 'OK';
         return $this->success;
     }
     
