@@ -19,6 +19,8 @@ class kodi extends app_player_addon {
 		
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
