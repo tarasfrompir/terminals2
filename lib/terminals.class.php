@@ -435,16 +435,24 @@ function send_message($terminalname, $message, $terminal) {
     include_once (DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
+ 
+ 	// подключаем класс терминала
     include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-
-    // проверим существует ли такой аддон для терминала
     if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
         include_once ($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
     } else {
         return;
     }
+	// подключаем класс плеера
+	include_once DIR_MODULES . 'app_player/app_player.class.php';
+    $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
+    if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
+        include_once ($addon_file);
+        $player = new $terminal['PLAYER_TYPE']($terminal);
+    } 
+	
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
  
     // берем настройки ТТС терминала со всей информацией
@@ -470,9 +478,9 @@ function send_message($terminalname, $message, $terminal) {
 
     // берем информацию о состоянии плеера громкость, воспроизводимое  и т.д.
     try {
-        if (method_exists($tts, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
+        if (method_exists($player, 'status') AND !gg($terminal['LINKED_OBJECT'] . '.playerdata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut media", 'terminals');
-            $playerdata_data = $tts->status();
+            $playerdata_data = $player->status();
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function status", 'terminals');
         }
@@ -480,6 +488,16 @@ function send_message($terminalname, $message, $terminal) {
     catch(Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
+	
+	
+    // запишем уровень громкости на терминале
+    if ($playerdata_data['volume']) {
+        $volume['ID'] = $terminal['ID'];
+        $volume['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
+        unset ($playerdata_data['volume']);
+        SQLUpdate('terminals', $volume);
+    }
+	// проверим -не системное ли это сообщение
     if (stripos($playerdata_data['file'], '/cms/cached/voice') === false AND $playerdata_data) {
         if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($playerdata_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
@@ -539,13 +557,6 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    // запишем уровень громкости на терминале
-    if ($playerdata_data['volume']) {
-        $volume['ID'] = $terminal['ID'];
-        $volume['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
-        SQLUpdate('terminals', $volume);
-    }
-
     // попробуем отправить сообщение на терминал
     try {
         if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
@@ -593,6 +604,7 @@ function restore_terminal_state($terminalname, $terminal) {
     include_once (DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
+	// подключаем класс терминала
     include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
@@ -601,13 +613,20 @@ function restore_terminal_state($terminalname, $terminal) {
     } else {
         return;
     }
-
+	// подключаем класс плеера
+	include_once DIR_MODULES . 'app_player/app_player.class.php';
+    $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
+    if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
+        include_once ($addon_file);
+        $player = new $terminal['PLAYER_TYPE']($terminal);
+    } 
+	
 	$playerdata = json_decode(gg($terminal['LINKED_OBJECT'] . '.playerdata'), true);
 	$terminaldata = json_decode(gg($terminal['LINKED_OBJECT'] . '.terminaldata'), true);
 	
     if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " class load", 'terminals');
 
-    // восстановим звук для медиа 
+    // восстановим звук для медиа на терминале
     try {
         if ($terminaldata['volume_media'] AND method_exists($tts, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore volume", 'terminals');
@@ -621,7 +640,7 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
-    // восстановим звук для звонка 
+    // восстановим звук для звонка на терминале
     try {
         if ($terminaldata['volume_ring'] AND method_exists($tts, 'set_volume_ring')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore ring volume", 'terminals');
@@ -635,7 +654,7 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-    // восстановим звук для аларма 
+    // восстановим звук для аларма на терминале
     try {
         if ($terminaldata['volume_alarm'] AND method_exists($tts, 'set_volume_alarm')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore alarm volume", 'terminals');
@@ -649,7 +668,7 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-    // восстановим звук для сообщений 
+    // восстановим звук для сообщений на терминале
     try {
         if ($terminaldata['volume_notification'] AND method_exists($tts, 'set_volume_notification')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore notification volume", 'terminals');
@@ -664,11 +683,11 @@ function restore_terminal_state($terminalname, $terminal) {
     }
 
 
-    // восстановим repeat
+    // восстановим repeat на плеере
     try {
-        if ($playerdata['repeat'] AND method_exists($tts, 'set_repeat')) {
+        if ($playerdata['repeat'] AND method_exists($player, 'set_repeat')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore repeat mode", 'terminals');
-            $tts->set_repeat($playerdata['repeat']);
+            $player->set_repeat($playerdata['repeat']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set repeat mode or class have not function repeat", 'terminals');
         }
@@ -677,11 +696,11 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    // восстановим random
+    // восстановим random на плеере
     try {
-        if ($playerdata['random'] AND method_exists($tts, 'set_random')) {
+        if ($playerdata['random'] AND method_exists($player, 'set_random')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore random mode", 'terminals');
-            $tts->set_random($playerdata['random']);
+            $player->set_random($playerdata['random']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set random mode or class have not function repeat", 'terminals');
         }
@@ -690,11 +709,11 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    // восстановим crossfade
+    // восстановим crossfade на плеере
     try {
-        if ($playerdata['crossfade'] AND method_exists($tts, 'set_crossfade')) {
+        if ($playerdata['crossfade'] AND method_exists($player, 'set_crossfade')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore crossfade mode", 'terminals');
-            $tts->set_crossfade($playerdata['crossfade']);
+            $player->set_crossfade($playerdata['crossfade']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set crossfade mode or class have not function repeat", 'terminals');
         }
@@ -703,11 +722,11 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
-    // восстановим muted
+    // восстановим muted на плеере
     try {
-        if ($playerdata['muted'] AND method_exists($tts, 'set_muted')) {
+        if ($playerdata['muted'] AND method_exists($player, 'set_muted')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore muted mode", 'terminals');
-            $tts->set_muted($playerdata['muted']);
+            $player->set_muted($playerdata['muted']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set muted mode or class have not function repeat", 'terminals');
         }
@@ -716,11 +735,24 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-    // восстановим loop
+    // восстановим loop на плеере
     try {
-        if ($playerdata['random'] AND method_exists($tts, 'set_loop')) {
+        if ($playerdata['random'] AND method_exists($player, 'set_loop')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore loop mode", 'terminals');
-            $tts->set_loop($playerdata['loop']);
+            $player->set_loop($playerdata['loop']);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode or class have not function repeat", 'terminals');
+        }
+    }
+    catch(Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+	
+    // восстановим speed на плеере
+    try {
+        if ($playerdata['random'] AND method_exists($player, 'set_speed')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore loop mode", 'terminals');
+            $player->set_speed($playerdata['speed']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode or class have not function repeat", 'terminals');
         }
@@ -729,11 +761,11 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    // восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист
+    // восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист на плеере
     try {
-        if ($playerdata['file'] AND method_exists($tts, 'play')) {
+        if ($playerdata['file'] AND method_exists($player, 'play')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore media", 'terminals');
-            $tts->play($playerdata['file'], 0);
+            $player->play($playerdata['file'], 0);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore", 'terminals');
         }
@@ -742,11 +774,11 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 	
-    // восстановим медиа для устройств ПОДДЕРЖИВАЮЩИХ плейлист	
+    // восстановим медиа для устройств ПОДДЕРЖИВАЮЩИХ плейлист	на плеере
     try {
-        if ($playerdata['playlist_id'] AND method_exists($tts, 'restore_playlist')) {
+        if ($playerdata['playlist_id'] AND method_exists($player, 'restore_playlist')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore playlist media", 'terminals');
-            $tts->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time']);
+            $player->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore", 'terminals');
         }
@@ -755,7 +787,7 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
     
-    //установим яркость екрана назад и при том что экран был включен, после всех сообщений
+    //установим яркость екрана назад и при том что экран был включен, после всех сообщений на терминале
     try {
         if (method_exists($tts, 'set_brightness_display') AND $terminaldata['brightness']) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
@@ -769,7 +801,7 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
-    //выключим екран после всех сообщений если экран был выключен
+    //выключим екран после всех сообщений если экран был выключен на терминале
     try {
         if ($terminaldata['display_state']=='0' AND method_exists($tts, 'turn_off_display')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_off_display", 'terminals');
