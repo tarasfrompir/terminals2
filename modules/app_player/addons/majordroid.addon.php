@@ -15,6 +15,8 @@ class majordroid extends app_player_addon {
 		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).';
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Network
