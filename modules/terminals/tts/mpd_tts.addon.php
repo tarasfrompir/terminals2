@@ -75,99 +75,6 @@ class mpd_tts extends tts_addon {
         return $this->success;
     }
     
-    // Set Repeat
-    function set_repeat($repeat=0) {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
-        if ($this->mpd->connected) {
-            try {
-                if ($this->mpd->SetRepeat($repeat)) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
-        return $this->success;
-    }
-
-    // Set random
-    function set_random($random=0) {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
-        if ($this->mpd->connected) {
-            try {
-                if ($this->mpd->SetRandom($random)) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
-        return $this->success;
-    }
-    
-    // Set crossfade
-    function set_crossfade($crossfade=0) {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
-        if ($this->mpd->connected) {
-            try {
-                if ($this->mpd->SetCrossfade($crossfade)) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
-        return $this->success;
-    }
-    
-    // restore playlist
-    function restore_playlist($playlist_id=0, $playlist_content = array(), $track_id=0, $time=0) {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
-        if ($this->mpd->connected) {
-            try {
-                // create new playlist
-                $this->mpd->PLClear();
-                // add files to playlist
-                foreach ($playlist_content as $song) {
-                    $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos']);
-                }
-                // change played file
-                $this->mpd->PLSeek($track_id, $time);
-                // play seeked file
-                if ($this->mpd->Play()) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
-        return $this->success;
-    }
-
     // Stop
     function stop() {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
@@ -205,67 +112,13 @@ class mpd_tts extends tts_addon {
         return $this->success;
     }
     
-    // Get player status
-    function status() {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
-        // Defaults
-        $playlistid    = -1;
-        $track_id      = -1;
-        $length        = 0;
-        $time          = 0;
-        $file          = '';
-        $name          = 'unknow';
-        $state         = 'unknown';
-        $volume        = 0;
-        $random        = FALSE;
-        $loop          = FALSE;
-        $repeat        = FALSE;
-        $brightness    = '';
-        $display_state = false;
-
-        //DebMes('status');
-        if ($this->mpd->connected) {
-            $result = $this->mpd->GetStatus();
-        }
-        // получаем плейлист - возможно он не сохранен поэтому получаем его полностью
-        if ($this->mpd->connected) {
-            $playlist_content = $this->mpd->GetPlaylistinfo ();
-        }
-        if ($result) {
-            $this->data = array(
-                'playlist_id' => $result['playlist'], // номер или имя плейлиста 
-                'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
-                                                         // обязательно $playlist_content[$i]['pos'] - номер трека
-                                                         // обязательно $playlist_content[$i]['file'] - адрес трека
-                                                         // возможно $playlist_content[$i]['Artist'] - артист
-                                                         // возможно $playlist_content[$i]['Title'] - название трека
-                'track_id' => (int) $result['song'], //текущий номер трека
-                'name' => (string) $name, //текущее имя трека 
-                'file' => (string) $file, //ссылка на текущий файл .
-                'length' => intval($result['duration']), //длинна плейлиста (песни). 
-                'time' => intval($result['time']), //текущая позиции по времени трека 
-                'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => intval($result['volume']), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => intval($result['muted']), // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (boolean) $result['random'], // Random mode. Boolean. 
-                'loop' => (boolean) $result['loop'], // Loop mode. Boolean.
-                'crossfade' => (boolean) $result['xfade'], // crossfade
-                'repeat' => (boolean) $result['repeat'], //Repeat mode. Boolean.
-                'brightness' => (int) $brightness, // яркость екрана
-                'display_state' => (boolean) ($display_state) // состояние екрана включен (выключен)
-            );
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected) $this->mpd->Disconnect();
-        return $this->data;
-    }
-	
-		// Get terminal status
+   	// Get terminal status
     function terminal_status()
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected) $this->mpd->Connect();
         // Defaults
         $listening_keyphrase = -1;
-		$volume_media        = -1;
+        $volume_media        = -1;
         $volume_ring         = -1;
         $volume_alarm        = -1;
         $volume_notification = -1;
@@ -275,22 +128,23 @@ class mpd_tts extends tts_addon {
         $brightness          = -1;
         $display_state       = -1;
         $battery             = -1;
-	    // get status
-		if ($this->mpd->connected) {
+	
+        // get status
+        if ($this->mpd->connected) {
             $result = $this->mpd->GetStatus();
         }
 		
         $out_data = array(
                 'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
-				'volume_media' => (int)$result['volume'], // громкость медиа на терминале (-1 - не поддерживается терминалом)
+                'volume_media' => (int)$result['volume'], // громкость медиа на терминале (-1 - не поддерживается терминалом)
                 'volume_ring' => (int)$volume_ring, // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
                 'volume_alarm' => (int)$volume_alarm, // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
                 'volume_notification' => (int)$volume_notification, // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
                 'brightness_auto' => (int) $brightness_auto, // автояркость включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
                 'recognition' => (int) $recognition, // распознавание на терминале включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
                 'fullscreen' => (int) $recognition, // полноекранный режим на терминале включена или выключена 1 или 0 (-1 - не поддерживается терминалом)
-				'brightness' => (int) $brightness, // яркость екрана (-1 - не поддерживается терминалом)
-				'battery' => (int) $battery, // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
+                'brightness' => (int) $brightness, // яркость екрана (-1 - не поддерживается терминалом)
+                'battery' => (int) $battery, // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
                 'display_state'=> (int) $display_state, // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
             );
 		
