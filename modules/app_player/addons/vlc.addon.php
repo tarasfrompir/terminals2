@@ -287,7 +287,7 @@ class vlc extends app_player_addon {
                 'crossfade' => (int) $crossfade, // crossfade
                 'speed' => (int) $speed, // crossfade
             );
-        }
+
 		// удаляем из массива пустые данные
 		foreach ($this->data as $key => $value) {
 			if ($value == '-1' or !$value) unset($this->data[$key]);
