@@ -4,7 +4,7 @@
 Addon dnla for app_player
 */
 
-class dnla_media extends app_player_addon
+class dnla extends app_player_addon
 {
     function __construct($terminal)
     {
