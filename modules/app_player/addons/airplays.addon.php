@@ -4,7 +4,7 @@
 Addon airplay for app_player
 */
 
-class airplay_media extends app_player_addon
+class airplays extends app_player_addon
 {
     
     // Constructor
