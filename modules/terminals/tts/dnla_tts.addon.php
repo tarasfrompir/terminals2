@@ -14,7 +14,8 @@ class dnla_tts extends tts_addon
         $this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         $this->terminal = $terminal;
-	
+		
+		if (!$this->terminal['HOST']) return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
         // proverka na otvet
@@ -40,6 +41,8 @@ class dnla_tts extends tts_addon
         }
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
+        $this->remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
+		$this->remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
         register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
         
@@ -59,11 +62,7 @@ class dnla_tts extends tts_addon
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
-
-        //DebMes("Url to file " . $message_link);
-        // конец блока получения ссылки на файл 
-        $remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
-        $response = $remote->play($message_link);
+        $response = $this->remote->play($message_link);
         if (stristr($response, 'PlayResponse')) {
             $this->success = TRUE;
         } else {
@@ -73,69 +72,10 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
 
-    // Get player status
-    function status()
-    {
-        // Defaults
-        $track_id      = -1;
-        $length        = 0;
-        $time          = 0;
-        $state         = 'unknown';
-        $volume        = 0;
-        $random        = FALSE;
-        $loop          = FALSE;
-        $repeat        = FALSE;
-        $current_speed = 1;
-        $curren_url    = '';
-        
-        // создаем хмл документ
-        $doc = new \DOMDocument();
-        // Для получения состояния плеера
-        $remote   = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
-        $response = $remote->getState();
-        $doc->loadXML($response);
-        $state = $doc->getElementsByTagName('CurrentTransportState')->item(0)->nodeValue;
-        if ($state == 'TRANSITIONING') {
-            $state = 'playing';
-        }
-        //Debmes ($response);
-        $response = $remote->getPosition();
-        $doc->loadXML($response);
-        $track_id = $doc->getElementsByTagName('Track')->item(0)->nodeValue;
-        $name = 'Played url on the device';
-        $curren_url = $doc->getElementsByTagName('TrackURI')->item(0)->nodeValue;
-        $length = $remote->parse_to_second($doc->getElementsByTagName('TrackDuration')->item(0)->nodeValue);
-        $time = $remote->parse_to_second($doc->getElementsByTagName('RelTime')->item(0)->nodeValue);
-        //  для получения уровня громкости
-        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
-        $response = $remotevolume->GetVolume();
-        $doc->loadXML($response);
-        $volume   = $doc->getElementsByTagName('CurrentVolume')->item(0)->nodeValue;
-        // Results
-        if ($response) {
-            $this->data    = array(
-                'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => (string) $name, //Current speed for playing media. float.
-                'file' => (string) $curren_url, //Current link for media in device. String.
-                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => (int) $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (boolean) $random, // Random mode. Boolean. 
-                'loop' => (boolean) $loop, // Loop mode. Boolean.
-                'repeat' => (boolean) $repeat //Repeat mode. Boolean.
-            );
-        } else {
-			$this->data = false;
-		}
-        return $this->data;
-    }
-	
-    // Stop
+     // Stop
     function stop()
     {
-        $remote   = new MediaRenderer($this->terminal['PLAYER_CONTROL_ADDRESS']);
-        $response = $remote->stop();
+        $response = $this->remote->stop();
         if ($response) {
             $this->success = TRUE;
         } else {
@@ -148,14 +88,11 @@ class dnla_tts extends tts_addon
     // Set volume
     function set_volume($level)
     {
-        $remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
-        $response = $remotevolume->SetVolume($level);
+        $response = $this->remotevolume->SetVolume($level);
         if ($response) {
             $this->success = TRUE;
-            $this->message = 'Volume changed';
         } else {
             $this->success = FALSE;
-            $this->message = 'Command execution error!';
         }
         return $this->success;
     }
