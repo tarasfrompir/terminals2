@@ -22,6 +22,8 @@ class vlc extends app_player_addon {
 		$this->description .= '<b>Настройка:</b>&nbsp; Укажите "Имя пользователя" и "Пароль". Специальной настройки не требуется.';
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
