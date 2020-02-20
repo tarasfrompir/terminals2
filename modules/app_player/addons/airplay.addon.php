@@ -31,7 +31,7 @@ class airplay extends app_player_addon
         $random   = -1;
         $loop     = -1;
         $repeat   = -1;
-        $crossfade= -1, // crossfade
+        $crossfade= -1;
 		        
         $this->success = TRUE;
         $this->message = 'OK';
