@@ -468,7 +468,7 @@ function send_message($terminalname, $message, $terminal) {
     	        if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($terminaldata, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
 			}
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function terminal_status", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class TTS have not function terminal_status", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -483,7 +483,7 @@ function send_message($terminalname, $message, $terminal) {
             $player->status();
             $playerdata_data = $player->data;
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class have not function status", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have restored data or class MEDIA have not function status", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -525,7 +525,7 @@ function send_message($terminalname, $message, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_on_display", 'terminals');
             $tts->turn_on_display();
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function turn_on_display", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function turn_on_display", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -538,7 +538,7 @@ function send_message($terminalname, $message, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
 		    $tts->set_brightness_display($tts_setting['TTS_BRIGHTNESS_DISPLAY']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set_brightness_display", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set_brightness_display", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -551,7 +551,7 @@ function send_message($terminalname, $message, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set volume", 'terminals');
             $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -635,7 +635,7 @@ function restore_terminal_state($terminalname, $terminal) {
             $tts->set_volume($terminaldata['volume_media']);
 			unset ($terminaldata['volume_media']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore volume or class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore volume TTS or class have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -649,7 +649,7 @@ function restore_terminal_state($terminalname, $terminal) {
             $tts->set_volume_ring($terminaldata['volume_ring']);
 			unset ($terminaldata['volume_ring']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore ring volume or class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore ring volume TTS or class have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -663,7 +663,7 @@ function restore_terminal_state($terminalname, $terminal) {
             $tts->set_volume_alarm($terminaldata['volume_alarm']);
 			unset ($terminaldata['volume_alarm']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore alarm volume or class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore alarm volume TTS or class have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -677,7 +677,7 @@ function restore_terminal_state($terminalname, $terminal) {
             $tts->set_volume_notification($terminaldata['volume_notification']);
 			unset ($terminaldata['volume_notification']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore notification volume or class have not function set volume", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore notification volume TTS or class have not function set volume", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -691,7 +691,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore repeat mode", 'terminals');
             $player->set_repeat($playerdata['repeat']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set repeat mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set repeat mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -704,7 +704,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore random mode", 'terminals');
             $player->set_random($playerdata['random']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set random mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set random mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -717,7 +717,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore crossfade mode", 'terminals');
             $player->set_crossfade($playerdata['crossfade']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set crossfade mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set crossfade mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -730,7 +730,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore muted mode", 'terminals');
             $player->set_muted($playerdata['muted']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set muted mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set muted mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -743,7 +743,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore loop mode", 'terminals');
             $player->set_loop($playerdata['loop']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -756,7 +756,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore loop mode", 'terminals');
             $player->set_speed($playerdata['speed']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode or class have not function repeat", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode MEDIA or class have not function repeat", 'terminals');
         }
     }
     catch(Exception $e) {
@@ -769,7 +769,7 @@ function restore_terminal_state($terminalname, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " restore media", 'terminals');
             $player->restore_media($playerdata['file'], $playerdata['time']);
         } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore ON MEDIA ", 'terminals');
         }
     }
     catch(Exception $e) {
