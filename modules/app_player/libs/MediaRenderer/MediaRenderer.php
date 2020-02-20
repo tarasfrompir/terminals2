@@ -129,8 +129,6 @@ class MediaRenderer
     
     public function play($url = "")
     {
-        $this->instanceOnly('Stop');
-
         if ($url === "") {
             return $this->sendRequestToDevice('Play', $args = array('InstanceID' => 0,'Speed' => 1));
         }
