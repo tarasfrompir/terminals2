@@ -19,6 +19,8 @@ class lms extends app_player_addon {
 		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес плеера.';
 		
 		$this->terminal = $terminal;
+        if (!$this->terminal['HOST'])
+            return false;
 		$this->reset_properties();
 		
 		// Curl
