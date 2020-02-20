@@ -4,7 +4,7 @@
 	Addon Google Home Notifier for app_player
 */
 
-class ghn extends app_player_addon {
+class ghn_media extends app_player_addon {
 
 	// Private properties
 	private $address;
@@ -98,7 +98,6 @@ class ghn extends app_player_addon {
                 'crossfade' => (int) $crossfade, // crossfade
                 'speed' => (int) $speed, // crossfade
             );
-        }
 		// удаляем из массива пустые данные
 		foreach ($this->data as $key => $value) {
 			if ($value == '-1' or !$value) unset($this->data[$key]);
