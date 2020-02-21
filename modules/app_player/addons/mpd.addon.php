@@ -6,30 +6,23 @@
 
 class mpd extends app_player_addon {
 
-	// Private properties
-	private $mpd;
-
 	// Constructor
-	function __construct($terminal) {
-		$this->title = 'Music Player Daemon (MPD)';
-		$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
-		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Нет (если ТТС такого же типа, что и плеер). Если же тип ТТС и тип плеера для терминала различны, то плейлист плеера при ТТС не потеряется при любых обстоятельствах).<br>';
-		$this->description .= '<b>Проверка доступности:</b>&nbsp;?????.<br>';
-		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 6600 (если по умолчанию, можно не указывать).';
+function __construct($terminal) {
+	$this->reset_properties();
+	$this->title = 'Music Player Daemon (MPD)';
+	$this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
+	$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Нет (если ТТС такого же типа, что и плеер). Если же тип ТТС и тип плеера для терминала различны, то плейлист плеера при ТТС не потеряется при любых обстоятельствах).<br>';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp;?????.<br>';
+	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 6600 (если по умолчанию, можно не указывать).';
+	
+	$this->terminal = $terminal;
+	if (!$this->terminal['HOST'])
+	    return false;
+
+	// Network
+	$this->port = (empty($this->terminal['PLAYER_PORT'])?6600:$this->terminal['PLAYER_PORT']);
+	$this->password = (empty($this->terminal['PLAYER_PASSWORD'])?NULL:$this->terminal['PLAYER_PASSWORD']);
 		
-		$this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
-		$this->reset_properties();
-		
-		// Network
-		$this->port = (empty($this->terminal['PLAYER_PORT'])?6600:$this->terminal['PLAYER_PORT']);
-		$this->password = (empty($this->terminal['PLAYER_PASSWORD'])?NULL:$this->terminal['PLAYER_PASSWORD']);
-		
-        $this->title       = 'Music Player Daemon (MPD)';
-        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
-        $this->terminal    = $terminal;
-        if (!$this->terminal['HOST']) return false;
         // MPD
         include (DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);   
