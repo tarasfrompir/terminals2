@@ -16,7 +16,7 @@ class mpd_tts extends tts_addon {
         $this->password    = $this->setting['TTS_PASSWORD'];
         if (!$this->terminal['HOST']) return false;
         // MPD
-        include (DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
+        include_once(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);   
         $this->mpd->Disconnect();
     }
