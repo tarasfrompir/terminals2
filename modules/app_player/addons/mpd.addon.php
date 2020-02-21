@@ -26,7 +26,7 @@ class mpd extends app_player_addon
         $this->password = (empty($this->terminal['PLAYER_PASSWORD']) ? NULL : $this->terminal['PLAYER_PASSWORD']);
         
         // MPD
-        include(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
+        include_once(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
         $this->mpd->Disconnect();
     }
