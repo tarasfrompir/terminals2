@@ -8,14 +8,14 @@ class dnla_tts extends tts_addon
 {
     function __construct($terminal)
     {
+        parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	    
         $this->title       = 'Устройства с поддержкой протокола DLNA';
         $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол DNLA.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        $this->terminal = $terminal;
-		
-		if (!$this->terminal['HOST']) return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
         // proverka na otvet
@@ -42,9 +42,8 @@ class dnla_tts extends tts_addon
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         $this->remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
-		$this->remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
+        $this->remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
         
     }
  
