@@ -6,18 +6,19 @@ class alicevox extends tts_addon
 {
     function __construct($terminal)
     {
-        parent::__construct($terminal);
-        if (!$this->terminal['HOST']) return false;
-	    
-        // содержит в себе все настройки терминала кроме айпи адреса
-        $this->setting = json_decode($this->terminal['TTS_SETING'], true);
-        
         $this->title   = "Alicevox";
         $this->description = '<b>Описание:</b>&nbsp; Работает на медиацентрах KODI с установленным плагином &nbsp;<a href="https://github.com/SergMicar/script.alicevox.master">Alicevox</a>.<br>Ссылка на &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2893">тему форума</a>.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать управление по HTTP в настройках KODI (Настройки -> Сервисные настройки -> Управление -> Разрешить удаленное управление по HTTP) и установить "порт", "имя пользователя" и "пароль".<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        
+
+	            parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	    
+        // содержит в себе все настройки терминала кроме айпи адреса
+        $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+
+	    
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
         register_shutdown_function("catchTimeoutTerminals");
     }
