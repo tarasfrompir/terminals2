@@ -10,12 +10,12 @@ class chromecast_tts extends tts_addon
     // Constructor
     function __construct($terminal)
     {
-        $this->title       = 'Google Chromecast';
+        parent::__construct($terminal);
+	$this->title       = 'Google Chromecast';
         $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         $this->setting  = json_decode($this->terminal['TTS_SETING'], true);
@@ -23,7 +23,6 @@ class chromecast_tts extends tts_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
     }
     
     // Say
