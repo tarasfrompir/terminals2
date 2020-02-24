@@ -14,7 +14,8 @@ class vlc_tts extends tts_addon
         $this->description = 'Управление VLC через GUI интерфейс. ';
         $this->description .= 'В настоящее время доступно только для Windows. ';
         $this->description .= 'Поддерживает ограниченный набор команд. ';
-        parent::__construct($terminal);
+
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         
