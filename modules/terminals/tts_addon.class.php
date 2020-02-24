@@ -9,23 +9,23 @@ class tts_addon {
         $this->terminal = $terminal;
     }
 
-    public function ask($phrase, $level=0) {
+    public function ask($phrase, $level) {
         return $this->say($phrase);
     }
 
-    public function set_volume_notification($volume=0) {
+    public function set_volume_notification($volume) {
         return false;
     }
 
-    public function set_volume_alarm($volume=0) {
+    public function set_volume_alarm($volume) {
         return false;
     }
 	
-    public function set_volume_ring($volume=0) {
+    public function set_volume_ring($volume) {
         return false;
     }
 
-    public function set_volume($volume=0) {
+    public function set_volume($volume) {
         return false;
     }
 
@@ -34,27 +34,27 @@ class tts_addon {
         return false;
     }
 
-    function say_media_message($message, $terminal=array())
+    function say_media_message($message, $terminal)
     {
         return false;
     }
 
-    function say_message($message, $terminal=array())
+    function say_message($message, $terminal)
     {
         return false;
     }
 
-    function set_brightness_display($brightness=0)
+    function set_brightness_display($brightness)
     {
         return false;
     }
 
-    function turn_on_display($time=0)
+    function turn_on_display($time)
     {
         return false;
     }
 
-    function turn_off_display($time=0)
+    function turn_off_display($time)
     {
         return false;
     }
