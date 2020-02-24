@@ -5,7 +5,9 @@ class mdmpiterminal extends tts_addon
     
     function __construct($terminal)
     {
-        $this->terminal    = $terminal;
+        parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	    
         $this->title       = "MDMPiTerminal";
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
         $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MDMPiTerminal.<br>';
@@ -15,7 +17,6 @@ class mdmpiterminal extends tts_addon
         
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
     }
     
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
