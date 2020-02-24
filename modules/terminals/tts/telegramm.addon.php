@@ -11,7 +11,7 @@ class telegramm extends tts_addon
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         
-        parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         
