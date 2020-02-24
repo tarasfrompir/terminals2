@@ -9,7 +9,7 @@ class tts_addon {
         $this->terminal = $terminal;
     }
 
-    public function ask($phrase, $level) {
+/*     public function ask($phrase, $level) {
         return $this->say($phrase);
     }
 
@@ -98,5 +98,5 @@ class tts_addon {
             if ($value == '-1') unset($out_data[$key]); ;
         }
         return $out_data;
-    }
+    } */
 }
