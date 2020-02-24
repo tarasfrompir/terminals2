@@ -17,12 +17,9 @@ class vlcweb_tts extends tts_addon
 	$this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
 	$this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).<br>';
 	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        
         parent::__construct($terminal);
         if (!$this->terminal['HOST']) return false;
-	
 	$this->setting  = json_decode($this->terminal['TTS_SETING'], true);
-        
         // Curl
         $this->curl    = curl_init();
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT']);
@@ -35,7 +32,7 @@ class vlcweb_tts extends tts_addon
     }
     
     // Destructor
-    function destroy()
+    private function destroy()
     {
         curl_close($this->curl);
     }
@@ -133,30 +130,7 @@ class vlcweb_tts extends tts_addon
         return $this->success;
     }
     
-    // Play
-    function play($input)
-    {
-        if (strlen($input)) {
-            $input = preg_replace('/\\\\$/is', '', $input);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'in_play',
-                'input' => $input
-            ))) {
-                if ($this->vlcweb_parse_xml($this->data)) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = FALSE;
-                }
-            } else {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-    
-    // Stop
+     // Stop
     function stop()
     {
         if ($this->vlcweb_request('status.xml', array(
