@@ -69,54 +69,7 @@ class iobroker_tts extends tts_addon
         return true;
     }
     
-    // Get player status
-    function status()
-    {
-        // Defaults
-        $track_id = -1;
-        $length   = '';
-        $time     = '';
-        $state    = 'unknown';
-        $volume   = '';
-        $muted    = FALSE;
-        $random   = FALSE;
-        $loop     = FALSE;
-        $repeat   = FALSE;
-        $name     = 'unknow';
-        $file     = '';
-        $brightness = '';
-        $display_state = 'unknown';
-        
-        $result = json_decode(getURL($this->address . "/api/get.json", 0), true);
-        if ($result) {
-            if ($result['display']['state']) {
-                $display_state = 'On';
-            } else if (!$result['display']['state']) {
-                $display_state = 'Off' ;
-            }
-            $volume = intval($result['volume']['music'] * 100 / $result['volume']['music-max']);
-            $brightness = intval($result['display']['brightness']);
-        }
-         $this->data = array(
-                'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => $name, //Current speed for playing media. float.
-                'file' => $file, //Current link for media in device. String.
-                'length' => $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => $muted, // Muted mode. Boolean.
-                'random' => $random, // Random mode. Boolean. 
-                'loop' => $loop, // Loop mode. Boolean.
-                'repeat' => $repeat, //Repeat mode. Boolean.
-                'brightness'=> $brightness, // brightness display in %
-                'display_state'=> $display_state, // unknow , On, Off  - display  state
-                
-            );
-        return $this->data;
-    }
-	
-	// Get terminal status
+    // Get terminal status
     function terminal_status()
     {
         // Defaults
