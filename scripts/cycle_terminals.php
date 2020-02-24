@@ -204,12 +204,7 @@ while (1) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Ввыполнение метода MessageError с ошибкой 'Отсутствует сгенерированный файл аудио сообщения. Для голосового терминала. Сообщение удалено' на  терминале - " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
-        
-        // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
-        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
-            continue;
-        }
-        
+
         // если тип терминала передающий только текстовое сообщение  
         // запускаем его воспроизведение
         if (method_exists($tts[$terminal['ID']], 'say_message') AND $old_message['SOURCE']) {
@@ -227,6 +222,11 @@ while (1) {
             catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача текстового сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
             }
+        }
+	    
+        // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
+        if (method_exists($tts[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
+            continue;
         }
         
         // если тип терминала передающий медиа сообщение
