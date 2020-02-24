@@ -9,6 +9,7 @@ class mainterminal extends tts_addon
 	$this->description .= '<b>Проверка доступности:</b>&nbsp; ip_ping.<br>';
 	$this->description .= '<b>Настройка:</b>&nbsp; Пользователи OS Linux могут указать предпочитаемый плеер, см. /path/to/majordomo/config.php, опция Define(\'AUDIO_PLAYER\',\'player_name\');.<br>';
 	$this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';    
+        register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
     }
 
