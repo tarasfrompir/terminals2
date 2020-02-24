@@ -7,8 +7,8 @@ class alicevox extends tts_addon
     function __construct($terminal)
     {
         parent::__construct($terminal);
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
+	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
