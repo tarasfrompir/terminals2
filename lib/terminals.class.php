@@ -437,18 +437,18 @@ function send_message($terminalname, $message, $terminal) {
     $ter->getConfig();
  
  	// подключаем класс терминала
-    include_once DIR_MODULES . 'terminals/tts_addon.class.php';
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
+        include_once DIR_MODULES . 'terminals/tts_addon.class.php';
         include_once ($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
     } else {
         return;
     }
     // подключаем класс плеера
-    include_once DIR_MODULES . 'app_player/addons.php';
     $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
     if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
+        include_once DIR_MODULES . 'app_player/addons.php';
         include_once ($addon_file);
         $player = new $terminal['PLAYER_TYPE']($terminal);
     } 
