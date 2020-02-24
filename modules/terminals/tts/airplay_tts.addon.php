@@ -9,7 +9,7 @@ class airplay_tts extends tts_addon
     {
         $this->title       = "Airplay";
         $this->description = '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
-        parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
 	    
 	    $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
