@@ -8,7 +8,7 @@ class sounddevice_tts extends tts_addon
         $this->description .= '<b>Работает:</b>&nbsp; только на Виндовс;.<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         
-        parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         $this->setting      = json_decode($this->terminal['TTS_SETING'], true);
