@@ -5,15 +5,15 @@ class mjdmterminal_tts extends tts_addon
     
     function __construct($terminal)
     {
-        parent::__construct($terminal);
-        if (!$this->terminal['HOST']) return false;
-	    
         $this->title       = "MJDM Terminal";
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
         $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MJDM Terminal.<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
-        
+ 
+	            parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	    
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
         register_shutdown_function("catchTimeoutTerminals");
     }
