@@ -7,13 +7,14 @@ class iobroker_tts extends tts_addon
     
     function __construct($terminal)
     {
-        parent::__construct($terminal);
-        if (!$this->terminal['HOST']) return false;
         $this->title       = "ioBroker.paw";
         $this->description = '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
         $this->description .= '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>';
-        $this->terminal      = $terminal;
-        $this->setting       = json_decode($this->terminal['TTS_SETING'], true);
+
+	parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	
+	$this->setting       = json_decode($this->terminal['TTS_SETING'], true);
         $this->port          = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
         $this->curl          = curl_init();
         $this->address       = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
