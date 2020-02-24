@@ -4,13 +4,13 @@ class sounddevice_tts extends tts_addon
 {
     function __construct($terminal)
     {
-        parent::__construct($terminal);
-        if (!$this->terminal['HOST']) return false;
-	    
         $this->title    = "Звуковые карты";
         $this->description .= '<b>Работает:</b>&nbsp; только на Виндовс;.<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        $this->setting      = json_decode($this->terminal['TTS_SETING'], true);
+
+	parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
+	$this->setting      = json_decode($this->terminal['TTS_SETING'], true);
         $this->devicenumber = substr($this->setting['TTS_SOUND_DEVICE'], 0, strpos($this->setting['TTS_SOUND_DEVICE'], '^'));
         $this->devicename   = substr($this->setting['TTS_SOUND_DEVICE'], strpos($this->setting['TTS_SOUND_DEVICE'], '^') + 1);
         register_shutdown_function("catchTimeoutTerminals");
