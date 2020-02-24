@@ -6,6 +6,7 @@ class chromegate_tts extends tts_addon {
         $this->title="ChromeGate addon for Google Chrome";
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         register_shutdown_function("catchTimeoutTerminals");
+        parent::__construct($terminal);
     }
 
     // Say
