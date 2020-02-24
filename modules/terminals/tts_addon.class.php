@@ -5,11 +5,11 @@ class tts_addon {
     private $title = NULL;
     public $terminal = NULL;
 
-    function __construct($terminal) {
+/*     function __construct($terminal) {
         $this->terminal = $terminal;
     }
 
-/*     public function ask($phrase, $level) {
+    public function ask($phrase, $level) {
         return $this->say($phrase);
     }
 
