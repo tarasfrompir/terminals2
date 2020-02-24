@@ -14,7 +14,7 @@ class mpd_tts extends tts_addon
         $this->title       = 'Music Player Daemon (MPD)';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
         
-        parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         
