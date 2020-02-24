@@ -10,6 +10,8 @@ class vlcweb_tts extends tts_addon
     // Constructor
     function __construct($terminal)
     {
+        parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
         $this->title       = 'VLC через HTTP';
         $this->description = '<b>Описание:</b>&nbsp; Работает с VideoLAN Client (VLC). Управление VLC производится по протоколу HTTP.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
@@ -30,7 +32,6 @@ class vlcweb_tts extends tts_addon
             curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
         }
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
     }
     
     // Destructor
