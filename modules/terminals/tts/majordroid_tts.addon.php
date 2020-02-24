@@ -6,14 +6,15 @@ class majordroid_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = "MajorDroid";
-        $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
+
         $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MajorDroid API.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
 
-	            parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
+        $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
 	    $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
         register_shutdown_function("catchTimeoutTerminals");
     }
