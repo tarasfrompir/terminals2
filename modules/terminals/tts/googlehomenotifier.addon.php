@@ -14,6 +14,7 @@ class googlehomenotifier extends tts_addon {
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         if (!$this->terminal['HOST'])
             return false;        
+        register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
     }
 
