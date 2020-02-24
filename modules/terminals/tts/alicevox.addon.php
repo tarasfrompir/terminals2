@@ -6,7 +6,7 @@ class alicevox extends tts_addon
 {
     function __construct($terminal)
     {
-        $this->terminal = $terminal;
+        parent::__construct($terminal);
         if (!$this->terminal['HOST'])
             return false;
         // содержит в себе все настройки терминала кроме айпи адреса
@@ -20,7 +20,6 @@ class alicevox extends tts_addon
         
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
     }
     
     
