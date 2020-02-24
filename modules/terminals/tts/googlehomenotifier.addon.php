@@ -3,7 +3,8 @@
 class googlehomenotifier extends tts_addon {
 
     function __construct($terminal) {
-        $this->terminal = $terminal;
+        parent::__construct($terminal);
+        if (!$this->terminal['HOST']) return false;
 	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
@@ -15,7 +16,6 @@ class googlehomenotifier extends tts_addon {
         if (!$this->terminal['HOST'])
             return false;        
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
     }
 
     // Say
