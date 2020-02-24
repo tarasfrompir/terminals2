@@ -17,7 +17,8 @@ class vlcweb_tts extends tts_addon
         $this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
         $this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        parent::__construct($terminal);
+
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST'])
             return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
