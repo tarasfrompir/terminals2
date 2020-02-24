@@ -14,8 +14,8 @@ class telegramm extends tts_addon
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
         unsubscribeFromEvent('telegram', 'SAYREPLY');
-        //set_time_limit(5);
-        //register_shutdown_function("catchTimeoutTerminals");
+        register_shutdown_function("catchTimeoutTerminals");
+        parent::__construct($terminal);
     }
     
     // Say
@@ -108,7 +108,7 @@ class telegramm extends tts_addon
         return $this->success;
     }
 	
-	// Get terminal status
+    // Get terminal status
     function terminal_status()
     {
         // Defaults
