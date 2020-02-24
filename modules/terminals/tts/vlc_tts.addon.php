@@ -24,6 +24,7 @@ class vlc_tts extends tts_addon {
 			curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
 			curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD']);
 		}
+        register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
 	}
 	
@@ -44,32 +45,6 @@ class vlc_tts extends tts_addon {
 
 			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_play&param='.urlencode("'".$message['CACHED_FILENAME']."'"));
 			//DebMes( $this->address.'/rc/?command=vlc_play&param='.urlencode("'".$message['CACHED_FILENAME']."'"));
-			if($result = curl_exec($this->curl)) {
-				if($result == 'OK') {
-					$this->success = TRUE;
-				} else {
-					$this->success = FALSE;
-				}
-			} else {
-				$this->success = FALSE;
-			}
-		} else {
-			$this->success = FALSE;
-		}
-		return $this->success;
-	}
-	
-	// Play
-	function play($input) {
-		if(strlen($input)) {
-			$input = preg_replace('/\\\\$/is', '', $input);
-			$input = preg_replace('/\/$/is', '', $input);
-			if(!preg_match('/^http/', $input)) {
-				$input = str_replace('/', "\\", $input);
-			}
-			$this->stop();
-
-			curl_setopt($this->curl, CURLOPT_URL, $this->address.'/rc/?command=vlc_play&param='.urlencode("'".$input."'"));
 			if($result = curl_exec($this->curl)) {
 				if($result == 'OK') {
 					$this->success = TRUE;
