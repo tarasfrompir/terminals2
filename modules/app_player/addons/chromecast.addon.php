@@ -168,7 +168,7 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         $this->cc->load($input, 0);
-        $this->cc->seek($position);
+        //$this->cc->seek($position);
         $response = $this->cc->play();
         if ($response) {
             $this->success = TRUE;
