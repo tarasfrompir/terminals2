@@ -23,7 +23,7 @@ class chromecast_tts extends tts_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         register_shutdown_function("catchTimeoutTerminals");
-        //set_time_limit(2);
+        parent::__construct($terminal);
     }
     
     // Say
