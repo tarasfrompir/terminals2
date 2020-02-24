@@ -8,12 +8,14 @@ class vlc_tts extends tts_addon {
 	
 	// Constructor
 	function __construct($terminal) {
+	        parent::__construct($terminal);
+        	if (!$this->terminal['HOST']) return false;
 		$this->title = 'Системные сообщения с помощью VLC (VideoLAN)';
 		$this->description = 'Управление VLC через GUI интерфейс. ';
 		$this->description .= 'В настоящее время доступно только для Windows. ';
 		$this->description .= 'Поддерживает ограниченный набор команд. ';
 		
-		$this->terminal = $terminal;
+
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
 		
 		// Curl
@@ -25,7 +27,6 @@ class vlc_tts extends tts_addon {
 			curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD']);
 		}
         register_shutdown_function("catchTimeoutTerminals");
-        parent::__construct($terminal);
 	}
 	
 	// Destructor
