@@ -41,7 +41,7 @@ class majordroid_tts extends tts_addon
 		return true;
     }
     
-    function sendMajorDroidCommand($cmd)
+    private function sendMajorDroidCommand($cmd)
     {
         if ($this->terminal['HOST']) {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
