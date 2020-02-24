@@ -29,6 +29,8 @@ class vlcweb_tts extends tts_addon
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
         }
+        register_shutdown_function("catchTimeoutTerminals");
+        parent::__construct($terminal);
     }
     
     // Destructor
@@ -161,26 +163,6 @@ class vlcweb_tts extends tts_addon
         ))) {
             if ($this->vlcweb_parse_xml($this->data)) {
                 $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-    
-    // Seek
-    function seek($position)
-    {
-        if (strlen($position)) {
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'seek',
-                'val' => (int) $position
-            ))) {
-                if ($this->vlcweb_parse_xml($this->data)) {
-                    $this->success = TRUE;
-                }
             } else {
                 $this->success = FALSE;
             }
