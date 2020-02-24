@@ -13,6 +13,7 @@ class majordroid_tts extends tts_addon
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
+        register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
     }
     
