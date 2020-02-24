@@ -11,7 +11,7 @@ class iobroker_tts extends tts_addon
         $this->description = '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
         $this->description .= '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>';
 
-	parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
 	
 	$this->setting       = json_decode($this->terminal['TTS_SETING'], true);
