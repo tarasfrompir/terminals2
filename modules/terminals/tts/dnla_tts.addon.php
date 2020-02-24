@@ -14,7 +14,7 @@ class dnla_tts extends tts_addon
         $this->description .= '<b>Настройка:</b>&nbsp; Адрес управления вида http://ip:port/ (указывать не нужно, т.к. определяется автоматически и может отличаться для различных устройств).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
 
-	            parent::__construct($terminal);
+        $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
 	    
 	    
