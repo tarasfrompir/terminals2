@@ -11,6 +11,7 @@ class sounddevice_tts extends tts_addon
         $this->setting      = json_decode($this->terminal['TTS_SETING'], true);
         $this->devicenumber = substr($this->setting['TTS_SOUND_DEVICE'], 0, strpos($this->setting['TTS_SOUND_DEVICE'], '^'));
         $this->devicename   = substr($this->setting['TTS_SOUND_DEVICE'], strpos($this->setting['TTS_SOUND_DEVICE'], '^') + 1);
+        register_shutdown_function("catchTimeoutTerminals");
         parent::__construct($terminal);
     }
     
@@ -63,56 +64,7 @@ class sounddevice_tts extends tts_addon
 	}
     }
     
-    // Get player status
-    function status()
-    {
-        // Defaults
-        $track_id = -1;
-        $length   = '';
-        $time     = '';
-        $state    = 'unknown';
-        $volume   = '';
-        $muted    = FALSE;
-        $random   = FALSE;
-        $loop     = FALSE;
-        $repeat   = FALSE;
-        $name     = 'unknow';
-        $file     = '';
-        $brightness = '';
-        $display_state = 'unknown';
-
-	    
-	    
-        // get volume
-        if (IsWindowsOS()) {
-            exec(DOC_ROOT . '/rc/smallplay.exe -getvolume ' . $this->devicename . ' 2>&1', $volum);
-        } else {
-            // linux
-        }
-        if ($volum) {
-            $volume = intval($volume[0]*100);
-	    }
-        $this->data = array(
-                'track_id' => $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-                'name' => $name, //Current speed for playing media. float.
-                'file' => $file, //Current link for media in device. String.
-                'length' => $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => $volume, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'muted' => $muted, // Muted mode. Boolean.
-                'random' => $random, // Random mode. Boolean. 
-                'loop' => $loop, // Loop mode. Boolean.
-                'repeat' => $repeat, //Repeat mode. Boolean.
-                'brightness'=> $brightness, // brightness display in %
-                'display_state'=> $display_state, // unknow , On, Off  - display  state
-        );
-        return $this->data;
-    }
-	
-	
-	
-	// Get terminal status
+    // Get terminal status
     function terminal_status()
     {
         // Defaults
