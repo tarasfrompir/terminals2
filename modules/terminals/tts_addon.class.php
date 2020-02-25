@@ -68,7 +68,7 @@ class tts_addon {
     {
         // Defaults
         $listening_keyphrase = -1;
-		$volume_media        = -1;
+        $volume_media        = -1;
         $volume_ring         = -1;
         $volume_alarm        = -1;
         $volume_notification = -1;
