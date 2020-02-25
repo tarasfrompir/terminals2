@@ -105,7 +105,7 @@ while (1) {
         if (!$base_terminal[$terminal['TTS_TYPE']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
             $base_terminal[$terminal['TTS_TYPE']] = new $terminal['TTS_TYPE']($terminal);
-            if ($ter->config['LOG_ENABLED']) DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             continue;
         }
         
