@@ -102,9 +102,9 @@ while (1) {
         }
        
         // обьявляем новый обьект которого нет в массиве $base_terminal                
-        if (!$base_terminal[$terminal['ID']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
+        if (!$base_terminal[$terminal['TTS_TYPE']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             include_once(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
-            $base_terminal[$terminal['ID']] = new $terminal['TTS_TYPE']($terminal);
+            $base_terminal[$terminal['TTS_TYPE']] = new $terminal['TTS_TYPE']($terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Add terminal to array tts objects -" . $terminal['NAME'], 'terminals');
             continue;
         }
@@ -167,7 +167,7 @@ while (1) {
         
         // если есть сообщение НО не сгенерирован звук (остутсвует в информации о сообщении запись) в течении 2 минут 
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND method_exists($base_terminal[$terminal['ID']], 'say_media_message')) {
+        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND method_exists($base_terminal[$terminal['TTS_TYPE']], 'say_media_message')) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -187,7 +187,7 @@ while (1) {
         
         // если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутсвтует файл)
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND method_exists($base_terminal[$terminal['ID']], 'say_media_message')) {
+        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND method_exists($base_terminal[$terminal['TTS_TYPE']], 'say_media_message')) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -206,13 +206,13 @@ while (1) {
         }
 
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
-        if (method_exists($base_terminal[$terminal['ID']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
+        if (method_exists($base_terminal[$terminal['TTS_TYPE']], 'say_media_message') AND !$old_message['CACHED_FILENAME']) {
             continue;
         }
 
         // если тип терминала передающий только текстовое сообщение  
         // запускаем его воспроизведение
-        if (method_exists($base_terminal[$terminal['ID']], 'say_message') AND $old_message['SOURCE']) {
+        if (method_exists($base_terminal[$terminal['TTS_TYPE']], 'say_message') AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -231,7 +231,7 @@ while (1) {
 	    
         // если тип терминала передающий медиа сообщение
         // иначе запускаем его воспроизведение
-        if (method_exists($base_terminal[$terminal['ID']], 'say_media_message') AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
+        if (method_exists($base_terminal[$terminal['TTS_TYPE']], 'say_media_message') AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
