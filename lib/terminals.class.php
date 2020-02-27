@@ -518,11 +518,11 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont get status. Maybe  system message ?", 'terminals');
     }
 
-    // пробуем остановить медиа на терминале
+    // пробуем остановить медиа на плеере
     try {
-        if ($tts AND in_array('stop', $tts_methods)) {
+        if ($player AND in_array('stop', $player_methods)) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
-            $tts->stop();
+            $player->stop();
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop", 'terminals');
         }
