@@ -59,12 +59,7 @@ class tts_addon {
         return false;
     }
 
-    function stop()
-    {
-        return false;
-    }
-	
-	function terminal_status()
+    function terminal_status()
     {
         return false;
     } 
