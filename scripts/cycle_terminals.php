@@ -117,27 +117,17 @@ while (1) {
             $base_terminal[$terminal['TTS_TYPE']] = new $terminal['TTS_TYPE']($terminal);
             if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             
-			// определяем по содержимому функции подкласса какой тип терминала текстовый или медиатерминал
-			if ($terminal['TTS_TYPE'] == (new ReflectionMethod($base_terminal[$terminal['TTS_TYPE']], 'say_media_message'))->class) {
-				$base_type[$terminal['TTS_TYPE']] = 'audio_terminal';
-			} else if ($terminal['TTS_TYPE'] == (new ReflectionMethod($base_terminal[$terminal['TTS_TYPE']], 'say_message'))->class) {
-				$base_type[$terminal['TTS_TYPE']] = 'text_terminal';
-			} else {
-				$base_type[$terminal['TTS_TYPE']] = 'unknow_terminal';
-			}
-			//DebMes($base_type[$terminal['TTS_TYPE']] .' '. $terminal['TTS_TYPE']);
+			$reflection_tts = new ReflectionClass($base_terminal[$terminal['TTS_TYPE']]);
+    		foreach ($reflection_tts->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+    			if($method->getDeclaringClass()->getName() == $reflection_tts->getName()) {
+    				$tts_methods[$terminal['TTS_TYPE']][] = $method->getName();
+    			}
+    		}
+			DebMes(serialize($tts_methods[$terminal['TTS_TYPE']]) .' '. $terminal['TTS_TYPE']);
             continue;
         }
         
-		// если терминал неизвестного типа то пропустим его и скажем это через метод 
-        if ($base_type[$terminal['TTS_TYPE']] == 'unknow_terminal') {
-            if ($ter->config['LOG_ENABLED']) DebMes("Unknown type terminal - " . $terminal['NAME'] . ". Please chek type or class for this terminal.", 'terminals');
-            $params               = array();
-            $params["ERROR"]      = 'Терминал ' . $terminal['NAME'] .' не имеет функции вывода сообщения в классе терминала. Проверьте тип или управляющий класс текущего терминала';
-            callMethodSafe($terminals . '.MessageError', $params);
-            continue;
-        }
-		
+
         // если терминал СВОБОДНЫЙ и офлайн то пингуем его
         if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
@@ -196,7 +186,7 @@ while (1) {
         
         // если есть сообщение НО не сгенерирован звук (остутсвует в информации о сообщении запись) в течении 2 минут 
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND $base_type[$terminal['TTS_TYPE']] == 'audio_terminal') {
+        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND in_array('say_media_message', $tts_methods[$terminal['TTS_TYPE']])) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -216,7 +206,7 @@ while (1) {
         
         // если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутсвтует файл)
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND $base_type[$terminal['TTS_TYPE']] == 'audio_terminal') {
+        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND in_array('say_media_message', $tts_methods[$terminal['TTS_TYPE']])) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -235,13 +225,13 @@ while (1) {
         }
 
         // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
-        if ($base_type[$terminal['TTS_TYPE']] == 'audio_terminal' AND !$old_message['CACHED_FILENAME']) {
+        if (in_array('say_media_message', $tts_methods[$terminal['TTS_TYPE']]) AND !$old_message['CACHED_FILENAME']) {
             continue;
         }
 
         // если тип терминала передающий только текстовое сообщение  
         // запускаем его воспроизведение
-        if ($base_type[$terminal['TTS_TYPE']] = 'text_terminal' AND $old_message['SOURCE']) {
+        if (in_array('say_message', $tts_methods[$terminal['TTS_TYPE']]) AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -260,7 +250,7 @@ while (1) {
 	    
         // если тип терминала передающий медиа сообщение
         // иначе запускаем его воспроизведение
-        if ($base_type[$terminal['TTS_TYPE']] == 'audio_terminal' AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
+        if (in_array('say_media_message', $tts_methods[$terminal['TTS_TYPE']]) AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
