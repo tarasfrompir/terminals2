@@ -132,23 +132,6 @@ class vlcweb_tts extends tts_addon
         return $this->success;
     }
     
-    // Stop
-    function stop()
-    {
-        if ($this->vlcweb_request('status.xml', array(
-            'command' => 'pl_stop'
-        ))) {
-            if ($this->vlcweb_parse_xml($this->data)) {
-                $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-    
     // Set volume
     function set_volume($level)
     {
