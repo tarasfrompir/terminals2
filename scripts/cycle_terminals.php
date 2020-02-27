@@ -122,8 +122,8 @@ while (1) {
     			if($method->getDeclaringClass()->getName() == $reflection_tts->getName()) {
     				$tts_methods[$terminal['TTS_TYPE']][] = $method->getName();
     			}
-    		}
-			DebMes(serialize($tts_methods[$terminal['TTS_TYPE']]) .' '. $terminal['TTS_TYPE']);
+            }
+            //DebMes(serialize($tts_methods[$terminal['TTS_TYPE']]) .' '. $terminal['TTS_TYPE']);
             continue;
         }
         
