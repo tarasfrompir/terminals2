@@ -89,30 +89,6 @@ class mpd_tts extends tts_addon
         return $this->success;
     }
     
-    // Stop
-    function stop()
-    {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
-            $this->mpd->Connect();
-        if ($this->mpd->connected) {
-            try {
-                if ($this->mpd->Stop()) {
-                    $this->success = TRUE;
-                } else {
-                    $this->success = TRUE;
-                }
-            }
-            catch (Exception $e) {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        if ($this->mpd->mpd_sock AND $this->mpd->connected)
-            $this->mpd->Disconnect();
-        return $this->success;
-    }
-    
     // ping terminal
     function ping()
     {
