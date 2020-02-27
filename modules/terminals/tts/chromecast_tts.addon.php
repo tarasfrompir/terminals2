@@ -30,7 +30,8 @@ class chromecast_tts extends tts_addon
     // Say
     function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
+        $message_link = $message['CACHED_FILENAME'];
+        if (preg_match('/\/cms\/cached.+/',  $message_link, $m)) {
             $message_link = BASE_URL . $m[0];
         }
         $this->cc->requestId = time();
