@@ -23,6 +23,7 @@ class chromecast_tts extends tts_addon
         $this->port     = empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT'];
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
+        $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
         register_shutdown_function("catchTimeoutTerminals");
     }
     
@@ -32,12 +33,10 @@ class chromecast_tts extends tts_addon
         if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
             $message_link = BASE_URL . $m[0];
         }
-        
-        $cc            = new GChromecast($this->terminal['HOST'], $this->port);
-        $cc->requestId = time();
-        $cc->load($message_link, 0);
-        $cc->requestId = time();
-        $response      = $cc->play();
+        $this->cc->requestId = time();
+        $this->cc->load($message_link, 0);
+        $this->cc->requestId = time();
+        $response      = $this->cc->play();
         if ($response) {
             //set_time_limit(2+$message['MESSAGE_DURATION']);
             sleep($message['MESSAGE_DURATION']);
@@ -53,10 +52,9 @@ class chromecast_tts extends tts_addon
     {
         if (strlen($level)) {
             try {
-                $cc            = new GChromecast($this->terminal['HOST'], $this->port);
-                $cc->requestId = time();
+                $this->cc->requestId = time();
                 $level         = $level / 100;
-                $cc->SetVolume($level);
+                $this->cc->SetVolume($level);
                 $this->success = TRUE;
             }
             catch (Exception $e) {
@@ -72,9 +70,8 @@ class chromecast_tts extends tts_addon
     function ping()
     {
         // proverka na otvet
-        $cc            = new GChromecast($this->terminal['HOST'], $this->port);
-        $cc->requestId = time();
-        $status        = $cc->getStatus();
+        $this->cc->requestId = time();
+        $status        = $this->cc->getStatus();
         if (is_array($status)) {
             $this->success = TRUE;
         } else {
