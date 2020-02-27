@@ -36,12 +36,6 @@ class majordroid_tts extends tts_addon
 		return true;
     }
     
-    function stop()
-    {
-        $this->sendMajorDroidCommand('pause');
-		return true;
-    }
-    
     private function sendMajorDroidCommand($cmd)
     {
         if ($this->terminal['HOST']) {
