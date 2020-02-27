@@ -65,23 +65,7 @@ class vlc_tts extends tts_addon
         }
         return $this->success;
     }
-    
-    // Stop
-    function stop()
-    {
-        curl_setopt($this->curl, CURLOPT_URL, $this->address . '/rc/?command=vlc_close');
-        if ($result = curl_exec($this->curl)) {
-            if ($result == 'OK') {
-                $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-    
+ 
     // Default command
     private function command($command, $parameter)
     {
