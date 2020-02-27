@@ -19,7 +19,7 @@ class chromecast_tts extends tts_addon
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
 	    
-	    $this->setting  = json_decode($this->terminal['TTS_SETING'], true);
+        $this->setting  = json_decode($this->terminal['TTS_SETING'], true);
         $this->port     = empty($this->setting['TTS_PORT']) ? 8009 : $this->setting['TTS_PORT'];
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
@@ -96,9 +96,12 @@ class chromecast_tts extends tts_addon
         $display_state       = -1;
         $battery             = -1;
 	
+        $this->cc->requestId = time();
+        $status              = $this->cc->getStatus();
+	    
         $out_data = array(
                 'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
-                'volume_media' => (int)$volume_media, // громкость медиа на терминале (-1 - не поддерживается терминалом)
+                'volume_media' => (int)($status['status']['volume']['level'] * 100), // громкость медиа на терминале (-1 - не поддерживается терминалом)
                 'volume_ring' => (int)$volume_ring, // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
                 'volume_alarm' => (int)$volume_alarm, // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
                 'volume_notification' => (int)$volume_notification, // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
