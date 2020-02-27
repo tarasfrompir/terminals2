@@ -73,19 +73,6 @@ class dnla_tts extends tts_addon
         return $this->success;
     }
 
-     // Stop
-    function stop()
-    {
-        $response = $this->remote->stop();
-        if ($response) {
-            $this->success = TRUE;
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-    
-
     // Set volume
     function set_volume($level)
     {
