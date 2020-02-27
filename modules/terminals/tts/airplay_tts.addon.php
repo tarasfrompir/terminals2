@@ -37,13 +37,7 @@ class airplay_tts extends tts_addon
             }
             // берем ссылку http
             if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
-                $server_ip = getLocalIp();
-                if (!$server_ip) {
-                    DebMes("Server IP not found", 'terminals');
-                    return false;
-                } else {
-                    $message_link = 'http://' . $server_ip . $m[0];
-                }
+                $message_link = BASE_URL . $m[0];
             }
         }
         $remote = new AirPlay($this->terminal['HOST'], $this->port);
