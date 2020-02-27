@@ -32,11 +32,6 @@ class mjdmterminal_tts extends tts_addon
     {
         return $this->sendMjdmCommand('volume:' . $volume);
     }
-    
-    function stop()
-    {
-        return $this->sendMjdmCommand('stop');
-    }
 	
     function set_brightness_display($brightness, $time=0)
     {
