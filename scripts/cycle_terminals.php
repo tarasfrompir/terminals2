@@ -224,11 +224,6 @@ while (1) {
             }
         }
 
-        // если тип терминала воспроизводящий аудио и нету еще сгенерированного файла пропускаем
-        if (in_array('say_media_message', $tts_methods[$terminal['TTS_TYPE']]) AND !$old_message['CACHED_FILENAME']) {
-            continue;
-        }
-
         // если тип терминала передающий только текстовое сообщение  
         // запускаем его воспроизведение
         if (in_array('say_message', $tts_methods[$terminal['TTS_TYPE']]) AND $old_message['SOURCE']) {
@@ -241,7 +236,6 @@ while (1) {
                 //передаем сообщение на терминал передающий только текстовое сообщение 
                 send_messageSafe($old_message, $terminal);
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with text to terminal - " . $terminal['NAME'], 'terminals');
-                continue;
             }
             catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача текстового сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
@@ -260,7 +254,6 @@ while (1) {
                 //передаем сообщение на терминалы воспроизводящие аудио
                 send_messageSafe($old_message, $terminal);
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
-                continue;
             }
             catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
