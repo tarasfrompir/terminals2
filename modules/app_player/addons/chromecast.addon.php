@@ -24,6 +24,7 @@ class chromecast extends app_player_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
+        $this->cc->requestId = time();
     }
     // Get player status
     function status()
@@ -91,6 +92,7 @@ class chromecast extends app_player_addon
             try {
                 $this->cc->requestId = time();
                 $this->cc->load($input, 0);
+                $this->cc->requestId = time();
                 $this->cc->play();
                 $this->success = TRUE;
                 $this->message = 'Ok!';
@@ -167,8 +169,11 @@ class chromecast extends app_player_addon
     function restore_media($input, $position = 0)
     {
         $this->reset_properties();
+        $this->cc->requestId = time();
         $this->cc->load($input, 0);
+        $this->cc->requestId = time();
         //$this->cc->seek($position);
+        $this->cc->requestId = time();
         $response = $this->cc->play();
         if ($response) {
             $this->success = TRUE;
