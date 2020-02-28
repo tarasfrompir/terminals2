@@ -10,6 +10,7 @@ class chromecast extends app_player_addon
     // Constructor
     function __construct($terminal)
     {
+        $this->reset_properties();
         $this->title       = 'Google Chromecast';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
         $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
@@ -19,8 +20,7 @@ class chromecast extends app_player_addon
         
         if (!$this->terminal['HOST'])
             return false;
-        
-        $this->reset_properties();
+
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
