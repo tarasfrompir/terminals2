@@ -24,8 +24,8 @@ class chromecast extends app_player_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
-        $this->cc->requestId = time();
     }
+
     // Get player status
     function status()
     {
