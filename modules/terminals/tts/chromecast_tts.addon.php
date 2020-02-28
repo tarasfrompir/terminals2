@@ -24,6 +24,7 @@ class chromecast_tts extends tts_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
+        $this->cc->requestId = time();
         register_shutdown_function("catchTimeoutTerminals");
     }
     
@@ -54,7 +55,7 @@ class chromecast_tts extends tts_addon
         if (strlen($level)) {
             try {
                 $this->cc->requestId = time();
-                $level         = $level / 100;
+                $level = $level / 100;
                 $this->cc->SetVolume($level);
                 $this->success = TRUE;
             }
@@ -72,7 +73,7 @@ class chromecast_tts extends tts_addon
     {
         // proverka na otvet
         $this->cc->requestId = time();
-        $status        = $this->cc->getStatus();
+        $status = $this->cc->getStatus();
         if (is_array($status)) {
             $this->success = TRUE;
         } else {
@@ -98,7 +99,7 @@ class chromecast_tts extends tts_addon
         $battery             = -1;
 	
         $this->cc->requestId = time();
-        $status              = $this->cc->getStatus();
+        $status = $this->cc->getStatus();
 	    
         $out_data = array(
                 'listening_keyphrase' =>(string) strtolower($listening_keyphrase), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
