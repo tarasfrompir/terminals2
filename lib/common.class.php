@@ -1766,7 +1766,7 @@ function date2str($date)
         return implode(' ', array($dayStr, $monthStr, $yearStr));
     }
 
-function chekUser($username = '', $password = '') {
+function chekUser($params = array()) {
     // проверка запуска метода на сеть и пользователя
     if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0])) {
         $p = preg_quote(HOME_NETWORK);    
@@ -1800,6 +1800,7 @@ function chekUser($username = '', $password = '') {
                     return false;
                 }
             }
-        }
+        return $params;
+	}
     }
 }
