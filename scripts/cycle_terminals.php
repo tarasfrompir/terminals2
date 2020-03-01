@@ -118,8 +118,6 @@ while (1) {
             } else {
                 $base_terminal[$terminal['TTS_TYPE']] = 'audio_terminal';
             }
-
-            DebMes($base_terminal[$terminal['TTS_TYPE']]);
             if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             continue;
         }
