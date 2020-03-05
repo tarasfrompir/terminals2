@@ -466,7 +466,7 @@ function send_message($terminalname, $message, $terminal) {
 
     // берем информацию о состоянии терминала яркость дисплея, состояние дисплея, заряд батареи, громкость для сообщений и т.д
     try {
-        if ($terminal['TTS_TYPE'] AND stristr($file_tts, 'terminal_status') AND !gg($terminal['LINKED_OBJECT'] . '.terminaldata')) {
+        if ($tts AND stristr($file_tts, 'terminal_status') AND !gg($terminal['LINKED_OBJECT'] . '.terminaldata')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut terminal", 'terminals');
             $terminaldata = $tts->terminal_status();
             if ($terminaldata) {
@@ -483,7 +483,7 @@ function send_message($terminalname, $message, $terminal) {
 
     // берем информацию о состоянии плеера громкость, воспроизводимое  и т.д.
     try {
-        if ($terminal['PLAYER_TYPE'] AND !gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $player->status()) {
+        if ($player AND !gg($terminal['LINKED_OBJECT'] . '.playerdata') AND $player->status()) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " get info abaut media", 'terminals');
             $playerdata_data = $player->data;
         } else {
@@ -511,7 +511,7 @@ function send_message($terminalname, $message, $terminal) {
 
     // пробуем остановить медиа на плеере
     try {
-        if ($terminal['PLAYER_TYPE'] AND $player->stop()) {
+        if ($player AND $player->stop()) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop, or error", 'terminals');
@@ -522,7 +522,7 @@ function send_message($terminalname, $message, $terminal) {
 
     //включим екран перед подачей сообщений если необходимо
     try {
-        if ($terminal['TTS_TYPE'] AND $tts_setting['TTS_USE_DISPLAY'] AND $tts->turn_on_display()) {
+        if ($tts AND $tts_setting['TTS_USE_DISPLAY'] AND $tts->turn_on_display()) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " turn_on_display", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function turn_on_display, or error", 'terminals');
@@ -533,7 +533,7 @@ function send_message($terminalname, $message, $terminal) {
 
     //установим яркость екрана перед подачей сообщений если необходимо
     try {
-        if ($terminal['TTS_TYPE'] AND $tts_setting['TTS_USE_DISPLAY'] AND $tts->set_brightness_display($tts_setting['TTS_BRIGHTNESS_DISPLAY'])) {
+        if ($tts AND $tts_setting['TTS_USE_DISPLAY'] AND $tts->set_brightness_display($tts_setting['TTS_BRIGHTNESS_DISPLAY'])) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set_brightness_display, or error", 'terminals');
@@ -544,7 +544,7 @@ function send_message($terminalname, $message, $terminal) {
 
     //установим громкость для сообщений
     try {
-        if ($terminal['TTS_TYPE'] AND $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL'])) {
+        if ($tts AND $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL'])) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set volume", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set volume, or error", 'terminals');
@@ -556,14 +556,13 @@ function send_message($terminalname, $message, $terminal) {
     // попробуем отправить сообщение на терминал
     try {
         if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
-        if ($terminal['TTS_TYPE'] AND $out = $tts->say_message($message, $terminal)) {
+        if ($tts AND $out = $tts->say_message($message, $terminal)) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_message function on terminal - " . $terminalname, 'terminals');
-        } else if ($terminal['TTS_TYPE'] AND $out = $tts->say_media_message($message, $terminal)) {
+        } else if ($tts AND $out = $tts->say_media_message($message, $terminal)) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname, 'terminals');
         } else {
             sleep(1);
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname, 'terminals');
-            DebMes(serialize($tts_methods));
         }
         if (!$out) {
             if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
