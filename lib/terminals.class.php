@@ -404,8 +404,8 @@ function pingTerminal($terminal, $details) {
     if (file_exists($addon_file)) {
         include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
         include_once ($addon_file);
-        $ping_terminal = new $details['TTS_TYPE']($details);
-        $out = $ping_terminal->ping_terminal($details['HOST']);
+        $ping_t = new $details['TTS_TYPE']($details);
+        $out = $ping_t->ping_terminal($details['HOST']);
         DebMes("Try to ping - " . $terminal , 'terminals');
     }
     if ($out) {
