@@ -29,9 +29,9 @@ class tts_addon {
         return false;
     }
 
-    function ping()
+    function ping_terminal($host)
     {
-        return false;
+        return ping($host);
     }
 
     function say_media_message($message, $terminal)
