@@ -6,8 +6,6 @@ function sayToUser($ph, $level = 0, $user = '')
     if (!$user) {
         return 0;
     }
-    // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // get room ID
@@ -34,16 +32,10 @@ function sayToUser($ph, $level = 0, $user = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } 
     }
@@ -51,10 +43,8 @@ function sayToUser($ph, $level = 0, $user = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    if ($needgenerateaudio) {
-        DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-        processSubscriptionsSafe('SAYTO', $rec); //, 
-    }
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+
     
     return 1;
 }
@@ -65,8 +55,6 @@ function sayToLocation($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
-    // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // get room ID
@@ -91,16 +79,10 @@ function sayToLocation($ph, $level = 0, $destination = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } 
     }
@@ -108,11 +90,8 @@ function sayToLocation($ph, $level = 0, $destination = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    if ($needgenerateaudio) {
-        DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-        processSubscriptionsSafe('SAYTO', $rec); //, 
-    }
-    
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+   
     return 1;
 }
 
@@ -227,8 +206,6 @@ function sayTo($ph, $level = 0, $destination = '')
     if (!$destination) {
         return 0;
     }
-    // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
     // replace enter simbol
     $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
     // add message to chat
@@ -256,16 +233,10 @@ function sayTo($ph, $level = 0, $destination = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } 
     }
@@ -273,11 +244,8 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['ID'] = SQLInsert('shouts', $rec);
 
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    if ($needgenerateaudio) {
-        DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-        processSubscriptionsSafe('SAYTO', $rec); //, 
-    }
-    
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+  
     return 1;
 }
 
@@ -312,9 +280,6 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  */
 function say($ph, $level = 0, $member_id = 0, $source = '')
 {
-    // array of text terminals
-    $text_terminals = array("telegramm", "majordroid_tts", "mdmpiterminal_tts");
-    
     // replace enter simbol
     $ph = str_replace(array(
         "\r\n",
@@ -373,16 +338,10 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         if (!$terminal['USE_SYSTEM_MML']) {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } else  {
             if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
-                if ($terminal['TTS_TYPE']  AND !in_array($terminal['TTS_TYPE'],  $text_terminals)) {
-                    $needgenerateaudio = true;
-                }
             }
         } 
     }
@@ -391,21 +350,9 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     
     DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
     
-    if ($needgenerateaudio) {
-        DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
-        processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
-    }
+    DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+    processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
     
-    // костыль для яндекс станций - переделать когда устаткуют все 
-    if (file_exists(DIR_MODULES . "yadevices/yadevices.class.php")) {
-        include_once (DIR_MODULES . "yadevices/yadevices.class.php");
-        $yadevice = new yadevices();
-	//$yadevice->processSubscription('SAY', array('level' => $level, 'message' => $ph, ));
-        $stations = SQLSelect("SELECT ID FROM yastations WHERE TTS=1");
-        foreach($stations as $station) {
-            $yadevice->sendCommandToStation($station['ID'],'повтори за мной '. $ph);
-        }
-    }
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
     
