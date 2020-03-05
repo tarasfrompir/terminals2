@@ -393,6 +393,7 @@ function setTerminalMML($host = 'localhost', $mml = 0) {
 // check terminal
 function pingTerminal($terminal, $details) {
     if (!$terminal) {
+        sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
         return;
     }
     if ($details['ID']) {
@@ -424,21 +425,17 @@ function pingTerminal($terminal, $details) {
 }
 
 // check terminal Safe
-function pingTerminalSafe($terminal, $details = '') {
+function pingTerminalSafe($terminalname, $details = '') {
     if (!is_array($details)) {
         $details = array();
     }
-    $data = array('pingTerminal' => 1, 'terminal' => $terminal, 'params' => json_encode($details));
+    $data = array('pingTerminal' => 1, 'terminal' => $terminalname, 'params' => json_encode($details));
     if (session_id()) {
         $data[session_name()] = session_id();
     }
-    $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url.= '&' . $k . '=' . urlencode($v);
-        }
-    }
-    getURLBackground($url, 0);
+    $url = BASE_URL . '/objects/?' ;
+    postURLBackground($url, $data);
+    return 1;   
 }
 
 function send_message($terminalname, $message, $terminal) {
