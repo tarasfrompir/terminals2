@@ -90,7 +90,7 @@ class mpd_tts extends tts_addon
     }
     
     // ping terminal
-    function ping()
+    function ping_terminal($host)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();

@@ -95,7 +95,7 @@ class telegramm extends tts_addon
     }
     
     // ping terminal
-    function ping()
+    function ping_terminal($host)
     {
         if (file_exists(DIR_MODULES . 'telegram/telegram.class.php')) {
             include(DIR_MODULES . 'telegram/telegram.class.php');

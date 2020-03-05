@@ -86,7 +86,7 @@ class dnla_tts extends tts_addon
     }
     
     // ping terminal
-    function ping()
+    function ping_terminal($host)
     {
         // proverka na otvet
         $ch = curl_init();
@@ -98,10 +98,8 @@ class dnla_tts extends tts_addon
         curl_close($ch);
         if ($retcode != 200 OR !stripos($content, 'AVTransport')) {
             $this->success = FALSE;
-            $this->message = 'Command execution error!';
         } else {
             $this->success = TRUE;
-            $this->message = 'Volume changed';
         }
         return $this->success;
     }
