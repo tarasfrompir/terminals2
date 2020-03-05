@@ -404,13 +404,8 @@ function pingTerminal($terminal, $details) {
         include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
         include_once ($addon_file);
         $ping_terminal = new $details['TTS_TYPE']($details);
-        if ($details['TTS_TYPE'] == (new ReflectionMethod($ping_terminal, 'ping'))->class) {
-            $out = $ping_terminal->ping();
-            DebMes("Try to ping - " . $terminal . ' with class function', 'terminals');
-        } else {
-            $out = ping($details['HOST']);
-            DebMes("Try to ping - " . $terminal . ' with standart function', 'terminals');
-        }
+        $out = $ping_terminal->ping_terminal($details['HOST']);
+        DebMes("Try to ping - " . $terminal , 'terminals');
     }
     if ($out) {
         sg($details['LINKED_OBJECT'] . '.alive', '1');
