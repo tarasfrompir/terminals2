@@ -19,7 +19,6 @@ class alicevox extends tts_addon
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
    
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     
