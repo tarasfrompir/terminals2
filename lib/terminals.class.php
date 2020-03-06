@@ -445,7 +445,7 @@ function send_message($terminalname, $message, $terminal) {
 
     // подключаем класс терминала
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-    if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
+    if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND file_exists($addon_file) ) {
         include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
         include_once ($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
@@ -453,7 +453,7 @@ function send_message($terminalname, $message, $terminal) {
 
     // подключаем класс плеера
     $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
-    if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
+    if ($terminal['CANPLAY'] AND $terminal['PLAYER_TYPE'] AND file_exists($addon_file) ) {
         include_once DIR_MODULES . 'app_player/addons.php';
         include_once ($addon_file);
         $player = new $terminal['PLAYER_TYPE']($terminal);
@@ -598,7 +598,7 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // подключаем класс терминала
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
-    if (file_exists($addon_file) AND $terminal['TTS_TYPE']) {
+    if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND file_exists($addon_file) ) {
         include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
         include_once ($addon_file);
         $tts = new $terminal['TTS_TYPE']($terminal);
@@ -607,7 +607,7 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // подключаем класс плеера
     $addon_file = DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php';
-    if (file_exists($addon_file) AND $terminal['PLAYER_TYPE']) {
+   if ($terminal['CANPLAY'] AND $terminal['PLAYER_TYPE'] AND file_exists($addon_file) ) {
         include_once DIR_MODULES . 'app_player/addons.php';
         include_once ($addon_file);
         $player = new $terminal['PLAYER_TYPE']($terminal);
