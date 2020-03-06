@@ -855,7 +855,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
 
             if ($background) {
                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 150);
             }
 
             if ($username != '' || $password != '') {
@@ -931,13 +931,4 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
     endMeasure('postURL');
 
     return $result;
-}
-
-function catchTimeoutTerminals() {
-    # Getting last error
-    $error = error_get_last();
-    # Checking if last error is a fatal error
-    if (($error['type'] === E_ERROR) || ($error['type'] === E_USER_ERROR)) {
-        DebMes ("Получен таймаут на выполнение скрипта! Ошибка - " . serialize($error), 'terminals');
-    }
 }
