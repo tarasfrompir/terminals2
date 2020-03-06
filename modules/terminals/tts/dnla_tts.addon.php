@@ -17,8 +17,7 @@ class dnla_tts extends tts_addon
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
 	    
-	    
-	    $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+	$this->setting = json_decode($this->terminal['TTS_SETING'], true);
         
         // proverka na otvet
         $ch = curl_init();
@@ -44,9 +43,7 @@ class dnla_tts extends tts_addon
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRenderer.php');
         include_once(DIR_MODULES . 'app_player/libs/MediaRenderer/MediaRendererVolume.php');
         $this->remote = new MediaRenderer($this->setting['TTS_CONTROL_ADDRESS']);
-        $this->remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);
-        register_shutdown_function("catchTimeoutTerminals");
-        
+        $this->remotevolume = new MediaRendererVolume($this->setting['TTS_CONTROL_ADDRESS']);  
     }
  
     // Say
