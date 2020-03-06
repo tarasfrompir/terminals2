@@ -37,7 +37,7 @@ while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 60) {
         // проверка на установленность терминалов2
-        if (!function_exists('catchTimeoutTerminals')) {
+        if ($ter->config['LOG_ENABLED'] != '') {
             DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
             setGlobal('cycle_terminalsAutoRestart', '0');
             setGlobal('cycle_terminalsControl', 'stop');
