@@ -839,28 +839,29 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             startMeasure('curl_prepare');
             $ch = curl_init();
             @curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            @curl_setopt($ch, CURLOPT_POST, 1);
+            @curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+            @curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+            @curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            @curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             // connection timeout
-            curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
+            @curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
             @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 45);
-            // operation timeout 45 seconds
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
             if ($background) {
-                curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 150);
+                @curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+                @curl_setopt($ch, CURLOPT_TIMEOUT_MS, 300);
+            } else {
+                @curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+                // operation timeout 45 seconds
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+                @curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                @curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
             $url_parsed = parse_url($url);
