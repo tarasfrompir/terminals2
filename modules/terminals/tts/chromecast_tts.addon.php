@@ -24,7 +24,6 @@ class chromecast_tts extends tts_addon
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
         $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Say
