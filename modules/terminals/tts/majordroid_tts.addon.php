@@ -14,8 +14,7 @@ class majordroid_tts extends tts_addon
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
-	    $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
-        register_shutdown_function("catchTimeoutTerminals");
+        $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
     }
     
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
