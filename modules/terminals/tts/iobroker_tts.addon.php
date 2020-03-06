@@ -19,7 +19,6 @@ class iobroker_tts extends tts_addon
         $this->port    = empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT'];
         $this->curl    = curl_init();
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
-        register_shutdown_function("catchTimeoutTerminals");
     }
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
