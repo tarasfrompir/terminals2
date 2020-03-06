@@ -29,9 +29,14 @@ class chromecast_tts extends tts_addon
     // Say
     function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        $message_link = $message['CACHED_FILENAME'];
-        if (preg_match('/\/cms\/cached.+/',  $message_link, $m)) {
-            $message_link = BASE_URL . $m[0];
+        if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
         }
         $this->cc->requestId = time();
         $this->cc->load($message_link, 0);
