@@ -12,8 +12,6 @@ class mainterminal extends tts_addon
 
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
-	    
-	    register_shutdown_function("catchTimeoutTerminals");
     }
 
     // Say
