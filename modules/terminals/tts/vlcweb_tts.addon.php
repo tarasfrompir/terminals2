@@ -19,8 +19,7 @@ class vlcweb_tts extends tts_addon
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
 
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
         // Curl
         $this->curl    = curl_init();
@@ -30,7 +29,6 @@ class vlcweb_tts extends tts_addon
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
         }
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Destructor
