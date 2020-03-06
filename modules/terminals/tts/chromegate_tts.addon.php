@@ -7,7 +7,6 @@ class chromegate_tts extends tts_addon {
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
-        register_shutdown_function("catchTimeoutTerminals");
     }
 
     // Say
