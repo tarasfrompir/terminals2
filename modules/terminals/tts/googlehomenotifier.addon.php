@@ -13,7 +13,6 @@ class googlehomenotifier extends tts_addon {
 	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
-        register_shutdown_function("catchTimeoutTerminals");
     }
 
     // Say
