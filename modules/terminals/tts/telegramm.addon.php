@@ -12,14 +12,12 @@ class telegramm extends tts_addon
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         
         unsubscribeFromEvent('telegram', 'SAY');
         unsubscribeFromEvent('telegram', 'SAYTO');
         unsubscribeFromEvent('telegram', 'ASK');
         unsubscribeFromEvent('telegram', 'SAYREPLY');
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Say
@@ -59,7 +57,7 @@ class telegramm extends tts_addon
         } else {
             $this->success = FALSE;
         }
-        sleep(1);
+        usleep(100000);
         return $this->success;
     }
     
