@@ -17,7 +17,6 @@ class mdmpiterminal extends tts_addon
 
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
