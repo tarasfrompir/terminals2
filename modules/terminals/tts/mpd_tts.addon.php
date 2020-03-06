@@ -26,7 +26,6 @@ class mpd_tts extends tts_addon
         include_once(DIR_MODULES . 'app_player/libs/mpd/mpd.class.php');
         $this->mpd = new mpd_player($this->terminal['HOST'], $this->port, $this->password);
         $this->mpd->Disconnect();
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Say
