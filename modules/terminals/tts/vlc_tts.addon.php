@@ -29,7 +29,6 @@ class vlc_tts extends tts_addon
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
         }
-        register_shutdown_function("catchTimeoutTerminals");
     }
     
     // Destructor
