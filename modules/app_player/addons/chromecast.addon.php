@@ -23,7 +23,7 @@ class chromecast extends app_player_addon
 
         // Chromecast
         include_once(DIR_MODULES . 'app_player/libs/castv2/Chromecast.php');
-        $this->cc = new GChromecast($this->terminal['HOST'], $this->port);
+        $this->Gcc = new GChromecast($this->terminal['HOST'], $this->port);
     }
 
     // Get player status
@@ -47,10 +47,10 @@ class chromecast extends app_player_addon
         $crossfade        = -1;
         $speed            = -1;
         
-        $this->cc->requestId = time();
-        $status              = $this->cc->getStatus();
-        $this->cc->requestId = time();
-        $result              = $this->cc->getMediaSession();
+        $this->Gcc->requestId = time();
+        $status              = $this->Gcc->getStatus();
+        $this->Gcc->requestId = time();
+        $result              = $this->Gcc->getMediaSession();
         
         $this->data = array(
             'playlist_id' => (int) $playlist_id, // номер или имя плейлиста 
@@ -90,10 +90,10 @@ class chromecast extends app_player_addon
         $this->reset_properties();
         if (strlen($input)) {
             try {
-                $this->cc->requestId = time();
-                $this->cc->load($input, 0);
-                $this->cc->requestId = time();
-                $this->cc->play();
+                $this->Gcc->requestId = time();
+                $this->Gcc->load($input, 0);
+                $this->Gcc->requestId = time();
+                $this->Gcc->play();
                 $this->success = TRUE;
                 $this->message = 'Ok!';
             }
@@ -113,8 +113,8 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         try {
-            $this->cc->requestId = time();
-            $this->cc->pause();
+            $this->Gcc->requestId = time();
+            $this->Gcc->pause();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -130,8 +130,8 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         try {
-            $this->cc->requestId = time();
-            $this->cc->stop();
+            $this->Gcc->requestId = time();
+            $this->Gcc->stop();
             $this->success = TRUE;
             $this->message = 'OK';
         }
@@ -148,9 +148,9 @@ class chromecast extends app_player_addon
         $this->reset_properties();
         if (strlen($level)) {
             try {
-                $this->cc->requestId = time();
+                $this->Gcc->requestId = time();
                 $level               = $level / 100;
-                $this->cc->SetVolume($level);
+                $this->Gcc->SetVolume($level);
                 $this->success = TRUE;
                 $this->message = 'OK';
             }
@@ -169,12 +169,12 @@ class chromecast extends app_player_addon
     function restore_media($input, $position = 0)
     {
         $this->reset_properties();
-        $this->cc->requestId = time();
-        $this->cc->load($input, 0);
-        $this->cc->requestId = time();
-        //$this->cc->seek($position);
-        $this->cc->requestId = time();
-        $response = $this->cc->play();
+        $this->Gcc->requestId = time();
+        $this->Gcc->load($input, 0);
+        $this->Gcc->requestId = time();
+        //$this->Gcc->seek($position);
+        $this->Gcc->requestId = time();
+        $response = $this->Gcc->play();
         if ($response) {
             $this->success = TRUE;
             $this->message = 'Play files';
