@@ -75,7 +75,7 @@ class mjdmterminal_tts extends tts_addon
                 'fullscreen' => (boolean) $result['recognition'], // полноекранный режим на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
                 'brightness' => (int)rtrim($result['brightness'],'%'), // яркость екрана (-1 - не поддерживается терминалом)
                 'battery' => (int) rtrim($result['battery'],'%'), // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
-                'display_state'=> (int) $display_state, // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
+                'display_state'=> (boolean) $result['screenon'], // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
             );
 		
 		// удаляем из массива пустые данные
