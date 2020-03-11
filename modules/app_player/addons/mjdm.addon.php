@@ -1,6 +1,6 @@
 <?php
 
-class mjdmterminal_tts extends tts_addon
+class mjdm extends app_player_addon
 {
     
     function __construct($terminal)
@@ -14,76 +14,135 @@ class mjdmterminal_tts extends tts_addon
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
         $this->setting     = json_decode($this->terminal['TTS_SETING'], true);	    
-        $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
+        $this->port = empty($this->terminal['PLAYER_PORT']) ? 7999 : $this->terminal['PLAYER_PORT'];
+    }
+  
+    // Pause
+    function pause()
+    {
+        $this->reset_properties();
+        try {
+            $this->sendMjdmCommand('media pause');
+            $this->success = TRUE;
+            $this->message = 'OK';
+        }
+        catch (Exception $e) {
+            $this->success = FALSE;
+            $this->message = $e->getMessage();
+        }
+        return $this->success;
     }
     
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    // Stop
+    function stop()
     {
-        return $this->sendMjdmCommand('tts:' . $message['MESSAGE']);
-    }
-
-    function ask($phrase, $level = 0)
-    {
-        return $this->sendMjdmCommand('ask:' . $phrase);
+        $this->reset_properties();
+        try {
+            $this->sendMjdmCommand('media stop');
+            $this->success = TRUE;
+            $this->message = 'OK';
+        }
+        catch (Exception $e) {
+            $this->success = FALSE;
+            $this->message = $e->getMessage();
+        }
+        return $this->success;
     }
     
-    function set_volume($volume = 0)
+    // Set volume
+    function set_volume($level)
     {
-        return $this->sendMjdmCommand('volume:' . $volume);
+        $this->reset_properties();
+        if (strlen($level)) {
+            try {
+                $this->sendMjdmCommand('mvolume:' . $level);
+                $this->success = TRUE;
+                $this->message = 'OK';
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+                $this->message = $e->getMessage();
+            }
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Level is missing!';
+        }
+        return $this->success;
     }
 	
-    function set_brightness_display($brightness, $time=0)
+    // Play
+    function play($input) 
     {
-        // установим яркость дисплея
-        return $this->sendMjdmCommand('brightness:' . $brightness);
+        $this->reset_properties();
+        if (strlen($input)) {
+            try {
+                $this->sendMjdmCommand('play:' . $input);
+                $this->success = TRUE;
+                $this->message = 'Ok!';
+            }
+            catch (Exception $e) {
+                $this->success = FALSE;
+                $this->message = $e->getMessage();
+            }
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Input is missing!';
+        }
+        return $this->success;
     }
 	
-    function turn_on_display($time = 0)
+      // Get player status
+    function status()
     {
-        return $this->sendMjdmCommand('screen:on');
-    }
-    function turn_off_display($time = 0)
-    {
-        return $this->sendMjdmCommand('screen:off');
-    }
-	
-    // Get terminal status
-    function terminal_status()
-    {
+        $this->reset_properties();
         // Defaults
-        $listening_keyphrase = -1;
-        $volume_media        = -1;
-        $volume_ring         = -1;
-        $volume_alarm        = -1;
-        $volume_notification = -1;
-        $brightness_auto     = -1;
-        $recognition         = -1;
-        $fullscreen          = -1;
-        $brightness          = -1;
-        $display_state       = -1;
-        $battery             = -1;
-	    
-        $result              = json_decode($this->sendMjdmCommand('status'));
-	
-        $out_data = array(
-                'listening_keyphrase' =>(string) strtolower(($result['application']['settings']['listening_keyphrase'])), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
-                'volume_media' => (int)rtrim($result['device']['volume_media'],'%'), // громкость медиа на терминале (-1 - не поддерживается терминалом)
-                'volume_ring' => (int)rtrim($result['device']['volume_ring'],'%'), // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
-                'volume_alarm' => (int)rtrim($result['device']['volume_alarm'],'%'), // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
-                'volume_notification' => (int)rtrim($result['device']['volume_notification'],'%'), // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
-                'brightness_auto' => (boolean) $result['device']['brightness_auto'], // автояркость включена или выключена true или false (-1 - не поддерживается терминалом)
-                'recognition' => (boolean) $result['application']['settings']['recognition'], // распознавание на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
-                'fullscreen' => (boolean) $result['application']['settings']['recognition'], // полноекранный режим на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
-                'brightness' => (int)rtrim($result['device']['brightness'],'%'), // яркость екрана (-1 - не поддерживается терминалом)
-                'battery' => (int) rtrim($result['device']['battery'],'%'), // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
-                'display_state'=> (boolean) $result['application']['settings']['screenon'], // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
-            );
-		
-		// удаляем из массива пустые данные
-		foreach ($out_data as $key => $value) {
-			if ($value == '-1') unset($out_data[$key]); ;
-		}
-        return $out_data;
+        $playlist_id      = -1;
+        $playlist_content = array();
+        $track_id         = -1;
+        $name             = -1;
+        $file             = -1;
+        $length           = -1;
+        $time             = -1;
+        $state            = -1;
+        $volume           = -1;
+        $muted            = -1;
+        $random           = -1;
+        $loop             = -1;
+        $repeat           = -1;
+        $crossfade        = -1;
+        $speed            = -1;
+        
+        $result = json_decode($this->sendMjdmCommand('status'));
+        
+        $this->data = array(
+            'playlist_id' => (int) $playlist_id, // номер или имя плейлиста 
+            'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+            // обязательно $playlist_content[$i]['pos'] - номер трека
+            // обязательно $playlist_content[$i]['file'] - адрес трека
+            // возможно $playlist_content[$i]['Artist'] - артист
+            // возможно $playlist_content[$i]['Title'] - название трека
+            'track_id' => (int) $track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $file, //Current link for media in device. String.
+            'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => (int)rtrim($result['device']['volume_media'],'%'), // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $muted, // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (int) $random, // Random mode. Boolean. 
+            'loop' => (int) $loop, // Loop mode. Boolean.
+            'repeat' => (string) $repeat, //Repeat mode. Boolean.
+            'crossfade' => (int) $crossfade, // crossfade
+            'speed' => (int) $speed // crossfade
+        );
+        // удаляем из массива пустые данные
+        foreach ($this->data as $key => $value) {
+            if ($value == '-1' or !$value)
+                unset($this->data[$key]);
+        }
+        $this->success = TRUE;
+        $this->message = 'OK';
+        return $this->success;
     }
 	
     private function sendMjdmCommand($cmd)
