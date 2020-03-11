@@ -62,20 +62,21 @@ class mjdmterminal_tts extends tts_addon
         $brightness          = -1;
         $display_state       = -1;
         $battery             = -1;
+	    
         $result              = json_decode($this->sendMjdmCommand('status'));
 	
         $out_data = array(
-                'listening_keyphrase' =>(string) strtolower(($result['listening_keyphrase'])), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
-                'volume_media' => (int)rtrim($result['volume_media'],'%'), // громкость медиа на терминале (-1 - не поддерживается терминалом)
-                'volume_ring' => (int)rtrim($result['volume_ring'],'%'), // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
-                'volume_alarm' => (int)rtrim($result['volume_alarm'],'%'), // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
-                'volume_notification' => (int)rtrim($result['volume_notification'],'%'), // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
-                'brightness_auto' => (boolean) $result['brightness_auto'], // автояркость включена или выключена true или false (-1 - не поддерживается терминалом)
-                'recognition' => (boolean) $result['recognition'], // распознавание на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
-                'fullscreen' => (boolean) $result['recognition'], // полноекранный режим на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
-                'brightness' => (int)rtrim($result['brightness'],'%'), // яркость екрана (-1 - не поддерживается терминалом)
-                'battery' => (int) rtrim($result['battery'],'%'), // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
-                'display_state'=> (boolean) $result['screenon'], // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
+                'listening_keyphrase' =>(string) strtolower(($result['application']['settings']['listening_keyphrase'])), // ключевое слово терминал для  начала распознавания (-1 - не поддерживается терминалом)
+                'volume_media' => (int)rtrim($result['device']['volume_media'],'%'), // громкость медиа на терминале (-1 - не поддерживается терминалом)
+                'volume_ring' => (int)rtrim($result['device']['volume_ring'],'%'), // громкость звонка к пользователям на терминале (-1 - не поддерживается терминалом)
+                'volume_alarm' => (int)rtrim($result['device']['volume_alarm'],'%'), // громкость аварийных сообщений на терминале (-1 - не поддерживается терминалом)
+                'volume_notification' => (int)rtrim($result['device']['volume_notification'],'%'), // громкость простых сообщений на терминале (-1 - не поддерживается терминалом)
+                'brightness_auto' => (boolean) $result['device']['brightness_auto'], // автояркость включена или выключена true или false (-1 - не поддерживается терминалом)
+                'recognition' => (boolean) $result['application']['settings']['recognition'], // распознавание на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
+                'fullscreen' => (boolean) $result['application']['settings']['recognition'], // полноекранный режим на терминале включена или выключена true или false (-1 - не поддерживается терминалом)
+                'brightness' => (int)rtrim($result['device']['brightness'],'%'), // яркость екрана (-1 - не поддерживается терминалом)
+                'battery' => (int) rtrim($result['device']['battery'],'%'), // заряд акумулятора терминала в процентах (-1 - не поддерживается терминалом)
+                'display_state'=> (boolean) $result['application']['settings']['screenon'], // 1, 0  - состояние дисплея (-1 - не поддерживается терминалом)
             );
 		
 		// удаляем из массива пустые данные
