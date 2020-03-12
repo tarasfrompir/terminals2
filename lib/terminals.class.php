@@ -425,7 +425,7 @@ function pingTerminal($terminal, $details) {
         }
         SQLUpdate('terminals', $rec);
     } catch (Exception $e) {
-        if (DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
+        DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
     }
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
