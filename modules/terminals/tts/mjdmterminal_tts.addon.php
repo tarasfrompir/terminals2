@@ -52,7 +52,7 @@ class mjdmterminal_tts extends tts_addon
     {
         // proverka na otvet
        $status = $this->sendMjdmCommand('ping');
-        if ($status == 'ОК') {
+        if ($status === 'ОК') {
             $this->success = TRUE;
         } else {
             $this->success = FALSE;
