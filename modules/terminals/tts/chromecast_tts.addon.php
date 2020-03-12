@@ -74,14 +74,17 @@ class chromecast_tts extends tts_addon
     // ping terminal
     function ping_terminal($host)
     {
-        // proverka na otvet
-        $this->cc->requestId = time();
-        $status = $this->cc->getStatus();
-        if (is_array($status)) {
-            $this->success = TRUE;
-        } else {
-            $this->success = FALSE;
-        }
+        if (ping($host)) {
+	    $this->cc->requestId = time();
+	    $status = $this->cc->getStatus();
+	    if (is_array($status)) {
+	        $this->success = TRUE;
+	    } else {
+	        $this->success = FALSE;
+	    }
+	} else {
+	     $this->success = FALSE;
+	}
         return $this->success;
     }
 	
