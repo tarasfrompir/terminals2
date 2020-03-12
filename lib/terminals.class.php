@@ -399,28 +399,34 @@ function pingTerminal($terminal, $details) {
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-    // пробуем найти встроенные функции пинга для этого вида терминала
-    $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
-    if (file_exists($addon_file)) {
-        include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
-        include_once ($addon_file);
-        $ping_t = new $details['TTS_TYPE']($details);
-        $out = $ping_t->ping_terminal($details['HOST']);
-        DebMes("Try to ping - " . $terminal , 'terminals');
+   	try {
+        // пробуем найти встроенные функции пинга для этого вида терминала
+        $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
+        if (file_exists($addon_file)) {
+            include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
+            include_once ($addon_file);
+            $ping_t = new $details['TTS_TYPE']($details);
+            $out = $ping_t->ping_terminal($details['HOST']);
+            DebMes("Try to ping - " . $terminal , 'terminals');
+        } else {
+            DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+        }
+        if ($out) {
+            sg($details['LINKED_OBJECT'] . '.alive', '1');
+            $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+            $rec['IS_ONLINE'] = 1;
+            DebMes("Terminal - " . $terminal . ' is online', 'terminals');
+        } else {
+            sg($details['LINKED_OBJECT'] . '.alive', '0');
+            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+            $rec['IS_ONLINE'] = 0;
+            DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
+        }
+        SQLUpdate('terminals', $rec);
+    } catch (Exception $e) {
+        if (DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
     }
-    if ($out) {
-        sg($details['LINKED_OBJECT'] . '.alive', '1');
-        $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-        $rec['IS_ONLINE'] = 1;
-        DebMes("Terminal - " . $terminal . ' is online', 'terminals');
-    } else {
-        sg($details['LINKED_OBJECT'] . '.alive', '0');
-        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-        $rec['IS_ONLINE'] = 0;
-        DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
-    }
-    SQLUpdate('terminals', $rec);
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
 
