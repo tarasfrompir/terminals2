@@ -578,6 +578,11 @@ function send_message($terminalname, $message, $terminal) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname . ' sucessfull', 'terminals');
+            sg($terminal['LINKED_OBJECT'] . '.alive', '1');
+            $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+            $terminal['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+            $terminal['IS_ONLINE'] = 1;
+			SQLUpdate('terminals', $terminal);
         }
     } catch (Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminalname, 'terminals');
