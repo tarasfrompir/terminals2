@@ -281,9 +281,9 @@ class terminals extends module
             $this->getConfig();
             $terminals = SQLSelect("SELECT * FROM `terminals`");
             foreach ($terminals as $terminal) {
-		sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-		pingTerminalSafe($terminal['NAME'], $terminal);    
-	    }
+                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($terminal['NAME'], $terminal);
+            }
         } else if ($event == 'DAILY') {
             $this->getConfig();
             // проверяем, что каталог
