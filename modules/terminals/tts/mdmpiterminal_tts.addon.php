@@ -1,6 +1,6 @@
 <?php
 
-class mdmpiterminal extends tts_addon
+class mdmpiterminal_tts extends tts_addon
 {
     
     function __construct($terminal)
@@ -19,20 +19,21 @@ class mdmpiterminal extends tts_addon
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
     }
     
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    function say_message($message, $terminal) 
     {
-        return $this->sendMajorDroidCommand('tts:' . $message['MESSAGE']);
+        return $this->sendCommand('tts:' . $message['MESSAGE']);
     }
 
     function ask($phrase, $level = 0)
     {
-        return $this->sendMajorDroidCommand('ask:' . $phrase);
+        return $this->sendCommand('ask:' . $phrase);
     }
     
     function set_volume($volume = 0)
     {
-        return $this->sendMajorDroidCommand('volume:' . $volume);
+        return $this->sendCommand('volume:' . $volume);
     }
+    
     
     // Get terminal status
     function terminal_status()
@@ -50,7 +51,8 @@ class mdmpiterminal extends tts_addon
         $display_state       = -1;
         $battery             = -1;
 		
-        if ($volume = $this->sendMajorDroidCommand('get:volume')) $volume_media = $volume;
+        if ($mvolume = $this->sendCommand('get:mvolume')) $volume_media = $mvolume;
+	if ($nvolume = $this->sendCommand('get:nvolume')) $volume_notification = $nvolume;
 			
 	
         $out_data = array(
@@ -68,16 +70,16 @@ class mdmpiterminal extends tts_addon
             );
     }
 	
-    private function sendMajorDroidCommand($cmd)
+    private function sendCommand($cmd)
     {
         if ($this->terminal['HOST']) {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             if ($socket === false) {
-                return 0;
+                return false;
             }
             $result = socket_connect($socket, $this->terminal['HOST'], $this->port);
             if ($result === false) {
-                return 0;
+                return false;
             }
             $result = socket_write($socket, $cmd, strlen($cmd));
             usleep(500000);
