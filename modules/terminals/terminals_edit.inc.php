@@ -108,13 +108,12 @@ if ($this->mode == 'update') {
     }
 
     $out['USER_NAME'] = gr('user');
-	
-	
-    $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
 
     // автозаполнение поля 
-    if ($rec['MIN_MSG_LEVEL'] == '') {
-        $rec['MIN_MSG_LEVEL'] = 0;
+    if (gr('min_msg_level') == '') {
+        $rec['MIN_MSG_LEVEL'] = 1;
+    } else {
+        $rec['MIN_MSG_LEVEL'] = gr('min_msg_level');
     }
     // автодополнение обьекта 
     if ($rec['LINKED_OBJECT'] != 'terminal_'.$rec['NAME']) {
