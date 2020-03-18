@@ -560,7 +560,7 @@ function send_message($terminalname, $message, $terminal) {
 
     //воспроизведем динг донг файл
     try {
-        if ((!defined('SETTINGS_SPEAK_SIGNAL') OR SETTINGS_SPEAK_SIGNAL == '1') AND time() - (int) getGlobal('lastSayTime') > 30 AND $tts AND $tts_setting['TTS_DINGDONG_FILE'] AND $tts->play_media(ROOT.'cms/sounds/'.$tts_setting['TTS_DINGDONG_FILE'])) {
+        if ((!defined('SETTINGS_SPEAK_SIGNAL') OR SETTINGS_SPEAK_SIGNAL == '1') AND (int)time() - (int)strtotime($terminal['LATEST_REQUEST_TIME']) > 30 AND $tts AND $tts_setting['TTS_DINGDONG_FILE'] AND $tts->play_media(ROOT.'cms/sounds/'.$tts_setting['TTS_DINGDONG_FILE'])) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " play ding-dong file", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function play media - file 'ding dong', or error", 'terminals');
