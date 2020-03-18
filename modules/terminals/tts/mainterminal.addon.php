@@ -34,4 +34,24 @@ class mainterminal extends tts_addon
         }
         return $this->success;
     }
+	
+    public function play_media($link)
+    {
+        if($link) {
+            if(file_exists($link)) {
+                if (IsWindowsOS()){
+                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $link);
+                } else {
+                    safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
+                }
+                sleep (2);
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
 }
