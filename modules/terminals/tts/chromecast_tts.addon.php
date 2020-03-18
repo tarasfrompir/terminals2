@@ -125,6 +125,32 @@ class chromecast_tts extends tts_addon
         }
         return $out_data;
     }
+    
+    function play_media($link) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    {
+        if (preg_match('/\/cms.+/', $link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        $cc = new GChromecast($this->terminal['HOST'], $this->port);
+        $cc->requestId = time();
+        $cc->load($message_link, 0);
+        $cc->requestId = time();
+        $response = $cc->play();
+        if ($response) {
+            //set_time_limit(2+$message['MESSAGE_DURATION']);
+            sleep($message['MESSAGE_DURATION']);
+            $this->success = TRUE;
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
 }
 
 ?>
