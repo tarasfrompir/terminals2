@@ -37,10 +37,10 @@ if (!$out['TTS']) {
 		'TTS_DINGDONG_FILE'=>gr('tts_dingdong_file'),
 		       );
 }
-//DebMes($out['TTS']);
+
 // get list of ding dong files
 $out['TTS_DINGDONG_FILES'] = getDirFiles(ROOT.'/cms/sounds');
-DebMes($out['TTS_DINGDONG_FILES']);
+
 //  get sound device list
 if (IsWindowsOS()) {
 	$dev_list = exec(DOC_ROOT.'/rc/smallplay -devicelist 2>&1');
