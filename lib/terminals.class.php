@@ -1,5 +1,4 @@
 <?php
-
 // Get terminals by location
 function getTerminalsByLocation($location = '') {
     $pvalues = SQLSelect("SELECT * FROM `pvalues` WHERE VALUE = '".$location."' AND PROPERTY_NAME LIKE 'terminal_%.linkedRoom' ");
@@ -943,4 +942,20 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
     endMeasure('postURL');
 
     return $result;
+}
+
+function getDirFiles($dir, &$results = array()){
+   $isdir = is_dir($dir);
+   if ($isdir) {
+     $files = scandir($dir);
+     foreach($files as $key => $value){
+       $path = realpath($dir."/".$value);
+       if(!is_dir($path)) {
+         $results[] = array('NAME'=>$value, 'FILENAME'=>$path,'DT'=>date('Y-m-d H:i:s',filemtime($path)),'TM'=>filemtime($path),'SIZE'=>filesize($path));
+       } else if($value != "." && $value != "..") {
+         getDirTree($path, $results);
+       }
+     }
+   }
+   return $results;
 }
