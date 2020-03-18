@@ -144,7 +144,7 @@ class chromecast_tts extends tts_addon
         $response = $cc->play();
         if ($response) {
             //set_time_limit(2+$message['MESSAGE_DURATION']);
-            sleep($message['MESSAGE_DURATION']);
+            sleep(2);
             $this->success = TRUE;
         } else {
             $this->success = FALSE;
