@@ -63,4 +63,9 @@ class tts_addon {
     {
         return false;
     } 
+
+    function play_media($link)
+    {
+        return false;
+    }
 }
