@@ -34,9 +34,14 @@ if (!$out['TTS']) {
 		'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 
 		'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 
 		'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),
+		'TTS_DINGDONG_FILE'=>gr('tts_dingdong_file'),
 		       );
 }
 
+// get list of ding dong files
+$out['TTS_DINGDONG_FILES'] = getDirTree(ROOT.'/cms/sounds');
+
+//  get sound device list
 if (IsWindowsOS()) {
 	$dev_list = exec(DOC_ROOT.'/rc/smallplay -devicelist 2>&1');
 	$dev_list = iconv('CP1251', 'utf-8', $dev_list);
@@ -97,6 +102,7 @@ if ($this->mode == 'update') {
 			'TTS_SOUND_DEVICE'=>gr('tts_sound_device'), 
 			'TTS_USE_DISPLAY'=>gr('tts_display_turnonf'), 
 			'TTS_BRIGHTNESS_DISPLAY'=>gr('tts_display_brightness_level'),
+			'TTS_DINGDONG_FILE'=>gr('tts_dingdong_file'),
 		       );
     $rec['TTS_SETING'] = json_encode($out['TTS']);
 
