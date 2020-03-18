@@ -128,7 +128,7 @@ class chromecast_tts extends tts_addon
     
     function play_media($link) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        if (preg_match('/\/cms.+/', $link, $m)) {
+        if (preg_match('/\/cms\/.+/', $link, $m)) {
             $server_ip = getLocalIp();
             if (!$server_ip) {
                 DebMes("Server IP not found", 'terminals');
