@@ -558,6 +558,17 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
+    //воспроизведем динг донг файл
+    try {
+        if ($tts AND $tts_setting['TTS_DINGDONG_FILE'] AND $tts->play_media(TTS_DINGDONG_FILE)) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " play ding-dong file", 'terminals');
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function play media, or error", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+	
     // попробуем отправить сообщение на терминал
     try {
         if ($ter->config['LOG_ENABLED']) DebMes("Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
