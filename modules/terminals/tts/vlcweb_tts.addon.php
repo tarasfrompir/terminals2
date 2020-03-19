@@ -109,6 +109,9 @@ class vlcweb_tts extends tts_addon
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
+        // cleare playlist
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));
+        // play message
         if (file_exists($outlink)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
             if ($this->vlcweb_request('status.xml', array(
@@ -163,6 +166,9 @@ class vlcweb_tts extends tts_addon
                 $message_link = 'http://' . $server_ip . $m[0];
             }
         }
+        // cleare playlist
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));
+        // play audio
         if (file_exists($link)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
             if ($this->vlcweb_request('status.xml', array(
