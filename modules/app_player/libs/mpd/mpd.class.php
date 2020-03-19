@@ -284,6 +284,12 @@ class mpd_player
                 }
                 if ($element == 'file') {
                     $i++;
+    				$out = parse_url($value);
+    				$scheme   = isset($out['scheme']) ? $out['scheme'] . '://' : '';
+                    $host     = isset($out['host']) ? $out['host'] : '';
+                    $port     = isset($out['port']) ? ':' . $out['port'] : '';
+                    $path     = isset($out['path']) ? $out['path'] : '';
+                    $value = $scheme.$host.$port.$path;
                 }
                 $statusArray[$i][$element] = $value;
                 $statusLine                = strtok("\n");
