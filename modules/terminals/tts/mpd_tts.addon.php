@@ -51,6 +51,7 @@ class mpd_tts extends tts_addon
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
                 sleep($message['MESSAGE_DURATION']);
+                // контроль окончания воспроизведения медиа
                 $count = 0;
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
@@ -185,6 +186,7 @@ class mpd_tts extends tts_addon
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
                 sleep($message['MESSAGE_DURATION']);
+                // контроль окончания воспроизведения медиа
                 $count = 0;
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
