@@ -19,10 +19,15 @@ class mainterminal extends tts_addon
     {
         if($message['CACHED_FILENAME']) {
             if(file_exists($message['CACHED_FILENAME'])) {
-                if (IsWindowsOS()){
-                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['CACHED_FILENAME']);
-                } else {
-                    safe_exec('mplayer ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1");
+		if (IsWindowsOS()) {
+                    safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $message['CACHED_FILENAME'], 0, 0);
+		} else {
+                    if (defined('AUDIO_PLAYER') && AUDIO_PLAYER!='') {
+                        $audio_player = AUDIO_PLAYER;
+                    } else {
+                        $audio_player = 'mplayer';
+                    }
+                   safe_exec($audio_player.' ' . $message['CACHED_FILENAME'] . " >/dev/null 2>&1", 0, 0);
                 }
                 sleep ($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
