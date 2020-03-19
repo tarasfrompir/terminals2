@@ -97,54 +97,64 @@ class vlcweb extends app_player_addon {
 		return $this->success;
 	}
 
-    // Get player status
+        // Get player status
     function status()
     {
         $this->reset_properties();
         // Defaults
-		$playlist_id = -1;
-		$playlist_content = array();
+        $playlist_id = -1;
+        $playlist_content = array();
         $track_id = -1;
-		$name     = -1;
-		$file     = -1;
+        $name     = -1;
+        $file     = -1;
         $length   = -1;
         $time     = -1;
         $state    = -1;
         $volume   = -1;
-		$muted    = -1;
+        $muted    = -1;
         $random   = -1;
         $loop     = -1;
         $repeat   = -1;
         $crossfade= -1;
-		$speed = -1;
+        $speed = -1;
 		
+	if($this->vlcweb_request('status.xml')) {
+            if($this->vlcweb_parse_xml($this->data)) {
+		$xml = $this->data;
+	    }
+	}
+		
+	if($this->pl_get()) {
+	    $playlist_content = $this->data;
+	}
+
         $this->data = array(
-                'playlist_id' => (int)$playlist_id, // номер или имя плейлиста 
-                'playlist_content' => $playlist_content, // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+                'playlist_id' => (int)1, // номер или имя плейлиста 
+                'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
                                                          // обязательно $playlist_content[$i]['pos'] - номер трека
                                                          // обязательно $playlist_content[$i]['file'] - адрес трека
                                                          // возможно $playlist_content[$i]['Artist'] - артист
                                                          // возможно $playlist_content[$i]['Title'] - название трека
-				'track_id' => (int) track_id, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
-			    'name' => (string) $name, //Current speed for playing media. float.
-				'file' => (string) $file, //Current link for media in device. String.
-                'length' => (int) $length, //Track length in seconds. Integer. If unknown = 0. 
-                'time' => (int) $time, //Current playback progress (in seconds). If unknown = 0. 
-                'state' => (string) strtolower($state), //Playback status. String: stopped/playing/paused/unknown 
-                'volume' => (int)$volume, // Volume level in percent. Integer. Some players may have values greater than 100.
+		'track_id' => (int)$xml->currentplid, //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+		'name' => (string) $name, //Current speed for playing media. float.
+		'file' => (string) $file, //Current link for media in device. String.
+                'length' => (int)$xml->length, //Track length in seconds. Integer. If unknown = 0. 
+                'time' => (int)$xml->time, //Current playback progress (in seconds). If unknown = 0. 
+                'state' => (string) strtolower($xml->state), //Playback status. String: stopped/playing/paused/unknown 
+                'volume' => (int)round((int)$xml->volume * 100 / 256), // Volume level in percent. Integer. Some players may have values greater than 100.
                 'muted' => (int) $random, // Volume level in percent. Integer. Some players may have values greater than 100.
-                'random' => (int) $random, // Random mode. Boolean. 
-                'loop' => (int) $loop, // Loop mode. Boolean.
-                'repeat' => (int) $repeat, //Repeat mode. Boolean.
+                'random' => (int) $xml->random == 'true'?1:0, // Random mode. Boolean. 
+                'loop' => (int) $xml->loop == 'true'?1:0, // Loop mode. Boolean.
+                'repeat' => (int) $xml->repeat == 'true'?1:0, //Repeat mode. Boolean.
                 'crossfade' => (int) $crossfade, // crossfade
                 'speed' => (int) $speed, // crossfade
             );
 
-		// удаляем из массива пустые данные
-		foreach ($this->data as $key => $value) {
-			if ($value == '-1' or !$value) unset($this->data[$key]);
-		}
-				        
+        // удаляем из массива пустые данные
+        foreach ($this->data as $key => $value) {
+             if ($value == '-1' or !$value) unset($this->data[$key]);
+        }
+
         $this->success = TRUE;
         $this->message = 'OK';
         return $this->success;
