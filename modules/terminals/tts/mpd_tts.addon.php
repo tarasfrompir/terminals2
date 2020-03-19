@@ -54,7 +54,7 @@ class mpd_tts extends tts_addon
                 $count = 0;
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
-                    sleep (2);
+                    sleep (1);
                     $count = $count + 1;
                     if ($count > 10 ) {
                         break;
@@ -192,7 +192,7 @@ class mpd_tts extends tts_addon
                     if ($count > 10 ) {
                         break;
                     }
-                    sleep (2);
+                    sleep (1);
                 }
                 $this->success = TRUE;
             } else {
