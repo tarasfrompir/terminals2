@@ -348,8 +348,8 @@ class vlcweb extends app_player_addon
                 foreach ($xml->node[0] as $item)
                 {
                     $this->data[] = array(
-                        'id' => (int)$item['id'],
-                        'name' => (string)$item['name'],
+                        'pos' => (int)$item['id'],
+                        'Title' => (string)$item['name'],
                         'file' => (string)$item['uri'],
                     );
                 }
