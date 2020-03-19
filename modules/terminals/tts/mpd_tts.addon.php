@@ -15,8 +15,7 @@ class mpd_tts extends tts_addon
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
         
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         
         $this->setting  = json_decode($this->terminal['TTS_SETING'], true);
         $this->port     = empty($this->setting['TTS_PORT']) ? 6600 : $this->setting['TTS_PORT'];
@@ -153,6 +152,40 @@ class mpd_tts extends tts_addon
         return $out_data;
     }
     
+    // Say
+    function play_media($link)
+    {
+        if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
+            $this->mpd->Connect();
+        if ($this->mpd->connected) {
+            // берем ссылку http
+            if (preg_match('/\/cms\/cached.+/', $link, $m)) {
+                $server_ip = getLocalIp();
+                if (!$server_ip) {
+                    DebMes("Server IP not found", 'terminals');
+                    return false;
+                } else {
+                    $message_link = 'http://' . $server_ip . $m[0];
+                }
+            }
+            $this->mpd->SetRepeat(0);
+            $this->mpd->SetRandom(0);
+            $this->mpd->SetCrossfade(0);
+            $this->mpd->PLClear();
+            $this->mpd->PLAddFile($message_link);
+            if ($this->mpd->Play()) {
+                sleep(2);
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        if ($this->mpd->mpd_sock AND $this->mpd->connected)
+            $this->mpd->Disconnect();
+        return $this->success;
+    }
 }
 
 ?>
