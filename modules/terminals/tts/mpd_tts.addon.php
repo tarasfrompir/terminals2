@@ -153,7 +153,7 @@ class mpd_tts extends tts_addon
     }
     
     // Say
-    public function play_media($link)
+    public function play_media ($link)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
