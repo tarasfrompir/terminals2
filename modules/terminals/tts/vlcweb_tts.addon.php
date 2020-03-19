@@ -95,7 +95,7 @@ class vlcweb_tts extends tts_addon
         return $this->success;
     }
     
-    function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         
         $outlink = $message['CACHED_FILENAME'];
@@ -117,6 +117,7 @@ class vlcweb_tts extends tts_addon
             ))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
+                    sleep($message['MESSAGE_DURATION']);
                 } else {
                     $this->success = FALSE;
                 }
@@ -126,12 +127,11 @@ class vlcweb_tts extends tts_addon
         } else {
             $this->success = FALSE;
         }
-        sleep($message['MESSAGE_DURATION']);
         return $this->success;
     }
     
     // Set volume
-    function set_volume($level)
+    public function set_volume($level)
     {
         if (strlen($level)) {
             $level = round((int) $level * 256 / 100);
@@ -141,6 +141,39 @@ class vlcweb_tts extends tts_addon
             ))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
+                }
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+    
+    public function play_media ($link) 
+    {
+        // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        if (file_exists($link)) {
+            $message_link = preg_replace('/\\\\$/is', '', $message_link);
+            if ($this->vlcweb_request('status.xml', array(
+                'command' => 'in_play',
+                'input' => $message_link
+            ))) {
+                if ($this->vlcweb_parse_xml($this->data)) {
+                    $this->success = TRUE;
+                    sleep(2);
+                } else {
+                    $this->success = FALSE;
                 }
             } else {
                 $this->success = FALSE;
