@@ -189,9 +189,7 @@ class mpd_tts extends tts_addon
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
                     $count = $count + 1;
-                    DebMes($result['state']);
                     if ($count > 10 ) {
-                        DebMes('break');
                         break;
                     }
                     sleep (2);
