@@ -30,11 +30,11 @@ function sayToUser($ph, $level = 0, $user = '')
             continue;
         }
         if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } 
@@ -77,11 +77,11 @@ function sayToLocation($ph, $level = 0, $destination = '')
             continue;
         }
         if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } 
@@ -231,11 +231,11 @@ function sayTo($ph, $level = 0, $destination = '')
             continue;
         }
         if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } 
@@ -327,11 +327,11 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             continue;
         }
         if (!$terminal['USE_SYSTEM_MML']) {
-            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+            if ((int) $rec['IMPORTANCE'] >= (int) $terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int) $rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
                 $rec['SOURCE'] .= $terminal['ID'] . '^';
             }
         } 
