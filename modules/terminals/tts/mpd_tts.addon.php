@@ -28,7 +28,7 @@ class mpd_tts extends tts_addon
     }
     
     // Say
-    function say_media_message($message, $terminal)
+    public function say_media_message($message, $terminal)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
@@ -64,7 +64,7 @@ class mpd_tts extends tts_addon
     }
     
     // Set volume
-    function set_volume($level = 0)
+    public function set_volume($level = 0)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
@@ -88,7 +88,7 @@ class mpd_tts extends tts_addon
     }
     
     // ping terminal
-    function ping_terminal($host)
+    public function ping_terminal($host)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
@@ -107,7 +107,7 @@ class mpd_tts extends tts_addon
     }
     
     // Get terminal status
-    function terminal_status()
+    public function terminal_status()
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
@@ -153,7 +153,7 @@ class mpd_tts extends tts_addon
     }
     
     // Say
-    function play_media($link)
+    public function play_media($link)
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
