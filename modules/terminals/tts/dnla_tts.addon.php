@@ -63,10 +63,10 @@ class dnla_tts extends tts_addon
         $response = $this->remote->play($message_link);
         if (stristr($response, 'PlayResponse')) {
             $this->success = TRUE;
+            sleep($message['MESSAGE_DURATION']);
         } else {
             $this->success = FALSE;
         }
-        sleep($message['MESSAGE_DURATION']);
         return $this->success;
     }
 
@@ -187,6 +187,29 @@ class dnla_tts extends tts_addon
             if ($value == '-1') unset($out_data[$key]); ;
         }
         return $out_data;
+    }
+    
+        // Say
+    public function play_media ($link)
+    {
+                // берем ссылку http
+        if (preg_match('/\/cms\/cached.+/', $link, $m)) {
+            $server_ip = getLocalIp();
+            if (!$server_ip) {
+                DebMes("Server IP not found", 'terminals');
+                return false;
+            } else {
+                $message_link = 'http://' . $server_ip . $m[0];
+            }
+        }
+        $response = $this->remote->play($message_link);
+        if (stristr($response, 'PlayResponse')) {
+            $this->success = TRUE;
+            sleep(2);
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
     }
 }
 ?>
