@@ -50,8 +50,18 @@ class mpd_tts extends tts_addon
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
-                sleep($message['MESSAGE_DURATION'] + 2);
+                sleep($message['MESSAGE_DURATION']);
+                $count = 0;
+                while ($result['state'] != 'stop') {
+                    $result = $this->mpd->GetStatus();
+                    sleep (2);
+                    $count = $count + 1;
+                    if ($count > 20 ) {
+                        break;
+                    }
+                }
                 $this->success = TRUE;
+                
             } else {
                 $this->success = FALSE;
             }
