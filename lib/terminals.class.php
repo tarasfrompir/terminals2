@@ -414,12 +414,14 @@ function pingTerminal($terminal, $details) {
         DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
     }
     if ($out) {
+        sg($details['LINKED_OBJECT'] . '.status', '1');
         sg($details['LINKED_OBJECT'] . '.alive', '1');
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 1;
         DebMes("Terminal - " . $terminal . ' is online', 'terminals');
     } else {
+        sg($details['LINKED_OBJECT'] . '.status', '0');
         sg($details['LINKED_OBJECT'] . '.alive', '0');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 0;
@@ -596,6 +598,7 @@ function send_message($terminalname, $message, $terminal) {
             pingTerminalSafe($terminal['NAME'], $terminal);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " sending to : " . $terminalname . ' sucessfull', 'terminals');
+            sg($details['LINKED_OBJECT'] . '.status', '1');
             sg($terminal['LINKED_OBJECT'] . '.alive', '1');
             $terminal['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
             $terminal['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
