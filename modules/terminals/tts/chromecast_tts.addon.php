@@ -25,7 +25,7 @@ class chromecast_tts extends tts_addon
     }
 
     // Say
-    function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (preg_match('/\/cms\/cached.+/', $message['CACHED_FILENAME'], $m)) {
             $server_ip = getLocalIp();
@@ -52,7 +52,7 @@ class chromecast_tts extends tts_addon
     }
 
     // Set volume
-    function set_volume($level) {
+    public function set_volume($level) {
         if (strlen($level)) {
             try {
                 $cc = new GChromecast($this->terminal['HOST'], $this->port);
@@ -70,7 +70,7 @@ class chromecast_tts extends tts_addon
     }
 
     // ping terminal
-    function ping_terminal($host) {
+    public function ping_terminal($host) {
         if (ping($host)) {
             $cc = new GChromecast($this->terminal['HOST'], $this->port);
             $cc->requestId = time();
@@ -87,7 +87,7 @@ class chromecast_tts extends tts_addon
     }
 
     // Get terminal status
-    function terminal_status() {
+    public function terminal_status() {
         // Defaults
         $listening_keyphrase = -1;
         $volume_media = -1;
@@ -126,7 +126,7 @@ class chromecast_tts extends tts_addon
         return $out_data;
     }
     
-    function play_media($link) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function play_media($link) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (preg_match('/\/cms\/cached.+/', $link, $m)) {
             $server_ip = getLocalIp();
@@ -143,7 +143,6 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         $response = $cc->play();
         if ($response) {
-            //set_time_limit(2+$message['MESSAGE_DURATION']);
             sleep(2);
             $this->success = TRUE;
         } else {
