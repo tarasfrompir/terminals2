@@ -157,7 +157,7 @@ class vlcweb extends app_player_addon
         foreach ($this->data as $key => $value) {
             if ($value == '-1' or !$value) unset($this->data[$key]);
         }
-        DebMes(serialize($this->data));
+
         $this->success = true;
         $this->message = 'OK';
         return $this->success;
