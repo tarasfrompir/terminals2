@@ -39,7 +39,7 @@ if (!$out['TTS']) {
 }
 
 // get list of ding dong files
-$out['TTS_DINGDONG_FILES'] = getDirFiles(ROOT.'/cms/sounds');
+$out['TTS_DINGDONG_FILES'] = getDirFiles(ROOT.'/cms/cached/sounds');
 
 //  get sound device list
 if (IsWindowsOS()) {
