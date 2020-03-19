@@ -50,7 +50,7 @@ class mpd_tts extends tts_addon
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
-                sleep($message['MESSAGE_DURATION'] + 1);
+                sleep($message['MESSAGE_DURATION'] + 2);
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
@@ -174,7 +174,7 @@ class mpd_tts extends tts_addon
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
-                sleep(2);
+                sleep(4);
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
