@@ -431,29 +431,4 @@ class vlcweb extends app_player_addon {
 		}
 		return $this->success;
 	}
-		
-	// Get player status
-	function statusold() {
-		if($this->vlcweb_request('status.xml')) {
-			if($this->vlcweb_parse_xml($this->data)) {
-				$xml = $this->data;
-				$this->reset_properties();
-				$this->success = TRUE;
-				$this->message = 'OK';
-				$this->data = array(
-					'track_id'		=> (int)$xml->currentplid,
-					'length'		=> (int)$xml->length,
-					'time'			=> (int)$xml->time,
-					'state'			=> (string)$xml->state,
-					'volume'		=> (round((int)$xml->volume * 100 / 256)),
-					'random'		=> ($xml->random == 'true'?TRUE:FALSE),
-					'loop'			=> ($xml->loop == 'true'?TRUE:FALSE),
-					'repeat'		=> ($xml->repeat == 'true'?TRUE:FALSE),
-				);
-			}
-		}
-		return $this->success;
-	}
-}
-
 ?>
