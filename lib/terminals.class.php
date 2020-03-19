@@ -506,8 +506,17 @@ function send_message($terminalname, $message, $terminal) {
         unset ($playerdata_data['volume']);
         SQLUpdate('terminals', $volume);
     }
-    // проверим - не системное ли это сообщение
-    if (stripos($playerdata_data['file'], '/cms/cached/voice') === false AND $playerdata_data) {
+	
+    // проверим - не системное ли это сообщение в медиа содержащих плейлист
+    if ($playerdata_data['playlist_content'] AND !preg_match('/cms.+cached.+voice/', $playerdata_data['playlist_content'])) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($playerdata_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
+        sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
+    } else {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont get status. Maybe  system message ?", 'terminals');
+    }
+	
+    // проверим - не системное ли это сообщение в медиа содержащих только файл
+    if ($playerdata_data['file'] AND stripos($playerdata_data['file'], '/cms/cached/voice') === false) {
         if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($playerdata_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
     } else {
