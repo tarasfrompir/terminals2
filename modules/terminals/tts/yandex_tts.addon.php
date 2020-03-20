@@ -21,11 +21,11 @@ class yandex_tts extends tts_addon
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
             include(DIR_MODULES . 'yadevices/yadevices.class.php');
             $yandex = new yadevices();
-            $station = SQLSelect("SELECT * FROM yastations WHERE IP LIKE '".$terminal['HOST']."'");
+            $station = SQLSelectOne("SELECT * FROM yastations WHERE IP LIKE '".$this->terminal['HOST']."'");
 
             if ($message['MESSAGE'] ) {
-       			$yandex->sendCommandToStation($station['ID'],'повтори за мной '.$message['MESSAGE']);
-				$this->success = TRUE;
+                $yandex->sendCommandToStation($station['ID'],'повтори за мной '.$message['MESSAGE']);
+                $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
