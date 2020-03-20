@@ -1,6 +1,6 @@
 <?php
 
-class mjdm extends app_player_addon
+class mjdmterminal extends app_player_addon
 {
     
     function __construct($terminal)
