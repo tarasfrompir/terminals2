@@ -16,15 +16,13 @@ class yandex_tts extends tts_addon
     }
     
     // Say
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
-            include(DIR_MODULES . 'yadevices/yadevices.class.php');
-            $yandex = new yadevices();
-            $station = SQLSelectOne("SELECT * FROM yastations WHERE IP LIKE '".$this->terminal['HOST']."'");
-
-            if ($message['MESSAGE'] ) {
-                $yandex->sendCommandToStation($station['ID'],'повтори за мной '.$message['MESSAGE']);
+            include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            $yadevice = new yadevices();
+            $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
+            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'повтори за мной '. $message['MESSAGE']))) {
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
@@ -33,6 +31,12 @@ class yandex_tts extends tts_addon
             $this->success = FALSE;
         }
         usleep(100000);
+        return $this->success;
+    }
+    
+     // ping terminal
+    public function ping_terminal($host) {
+        $this->success = TRUE;
         return $this->success;
     }
     
