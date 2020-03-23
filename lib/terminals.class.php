@@ -653,9 +653,9 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим звук для медиа на терминале
     try {
-        if ($terminal['TTS_TYPE'] AND $terminaldata['volume_media'] AND stristr($file_tts, 'set_volume')) {
+        if ($terminal['TTS_TYPE'] AND $terminaldata['volume_media'] AND stristr($file_tts, 'set_volume_media')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore volume", 'terminals');
-            $tts->set_volume($terminaldata['volume_media']);
+            $tts->set_volume_media($terminaldata['volume_media']);
             unset ($terminaldata['volume_media']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set restore volume TTS or class have not function set volume", 'terminals');
