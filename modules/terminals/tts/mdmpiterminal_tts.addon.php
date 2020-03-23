@@ -19,24 +19,24 @@ class mdmpiterminal_tts extends tts_addon
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
     }
     
-    function say_message($message, $terminal) 
+    public function say_message($message, $terminal) 
     {
         return $this->sendCommand('tts:' . $message['MESSAGE']);
     }
 
-    function ask($phrase, $level = 0)
+    public function ask($phrase, $level = 0)
     {
         return $this->sendCommand('ask:' . $phrase);
     }
     
-    function set_volume($volume = 0)
+    public function set_volume($volume = 0)
     {
         return $this->sendCommand('volume:' . $volume);
     }
     
     
     // Get terminal status
-    function terminal_status()
+    public function terminal_status()
     {
         // Defaults
         $listening_keyphrase = -1;
