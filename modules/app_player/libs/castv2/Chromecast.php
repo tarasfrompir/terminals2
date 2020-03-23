@@ -336,6 +336,7 @@ class GChromecast
 		}
 		if (!$this->mediaid) {
 			$this->mediaid=1;
+			$result = false;
 		}
 	return $result;
 	}
