@@ -703,7 +703,18 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
     }
 
-
+    // восстановим уровень громкости на плеере
+    try {
+        if ($terminal['PLAYER_TYPE'] AND $level = $terminal['TERMINAL_VOLUME_LEVEL'] AND stristr($file_player, 'set_volume')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media volume", 'terminals');
+            $player->set_volume($level);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set media volume mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+	
     // восстановим repeat на плеере
     try {
         if ($terminal['PLAYER_TYPE'] AND $playerdata['repeat'] AND stristr($file_player, 'set_repeat')) {
