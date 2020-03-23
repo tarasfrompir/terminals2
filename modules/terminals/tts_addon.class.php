@@ -12,6 +12,10 @@ class tts_addon {
     public function ask($phrase, $level) {
         return $this->say($phrase);
     }
+    
+    public function set_volume_media($volume) {
+        return false;
+    }
 
     public function set_volume_notification($volume) {
         return false;
