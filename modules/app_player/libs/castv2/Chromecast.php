@@ -332,10 +332,12 @@ class GChromecast
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
 			$this->mediaid = $m[1];
+			$result = true;
 		}
 		if (!$this->mediaid) {
 			$this->mediaid=1;
 		}
+	return $result;
 	}
 	
 	// cheked functions
