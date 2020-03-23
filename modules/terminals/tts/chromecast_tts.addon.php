@@ -38,7 +38,14 @@ class chromecast_tts extends tts_addon
         }
         $cc = new GChromecast($this->terminal['HOST'], $this->port);
         $cc->requestId = time();
-        $cc->load($message_link, 0);
+        while (!$cc->load($message_link, 0)) {
+            $count = $count + 1;
+            if ($count > 10 ) {
+                break;
+            }
+            sleep (1);
+            $cc->requestId = time();
+        }
         $cc->requestId = time();
         $response = $cc->play();
         if ($response) {
@@ -139,7 +146,14 @@ class chromecast_tts extends tts_addon
         }
         $cc = new GChromecast($this->terminal['HOST'], $this->port);
         $cc->requestId = time();
-        $cc->load($message_link, 0);
+        while (!$cc->load($message_link, 0)) {
+            $count = $count + 1;
+            if ($count > 10 ) {
+                break;
+            }
+            sleep (1);
+            $cc->requestId = time();
+        }
         $cc->requestId = time();
         $response = $cc->play();
         if ($response) {
