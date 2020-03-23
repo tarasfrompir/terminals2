@@ -43,7 +43,7 @@ class chromecast_tts extends tts_addon
             if ($count > 10 ) {
                 break;
             }
-            sleep (1);
+            usleep (100000);
             $cc->requestId = time();
         }
         $cc->requestId = time();
@@ -151,7 +151,7 @@ class chromecast_tts extends tts_addon
             if ($count > 10 ) {
                 break;
             }
-            sleep (1);
+            usleep (100000);
             $cc->requestId = time();
         }
         $cc->requestId = time();
