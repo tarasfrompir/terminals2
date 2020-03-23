@@ -705,9 +705,9 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим уровень громкости на плеере
     try {
-        if ($terminal['PLAYER_TYPE'] AND $level = $terminal['TERMINAL_VOLUME_LEVEL'] AND stristr($file_player, 'set_volume')) {
+        if ($terminal['PLAYER_TYPE'] AND $terminal['TERMINAL_VOLUME_LEVEL'] AND stristr($file_player, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media volume", 'terminals');
-            $player->set_volume($level);
+            $player->set_volume($terminal['TERMINAL_VOLUME_LEVEL']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set media volume mode MEDIA or class have not function repeat", 'terminals');
         }
