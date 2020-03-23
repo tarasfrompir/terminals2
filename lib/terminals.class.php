@@ -535,6 +535,17 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
 
+    //установим громкость для сообщений
+    try {
+        if ($tts AND $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL'])) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set volume", 'terminals');
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set volume, or error", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+    }
+	
     //включим екран перед подачей сообщений если необходимо
     try {
         if ($tts AND $tts_setting['TTS_USE_DISPLAY'] AND $tts->turn_on_display()) {
@@ -552,17 +563,6 @@ function send_message($terminalname, $message, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set_brightness_display", 'terminals');
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set_brightness_display, or error", 'terminals');
-        }
-    } catch (Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
-    }
-
-    //установим громкость для сообщений
-    try {
-        if ($tts AND $tts->set_volume($terminal['MESSAGE_VOLUME_LEVEL'])) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " set volume", 'terminals');
-        } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " class TTS have not function set volume, or error", 'terminals');
         }
     } catch (Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
