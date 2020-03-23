@@ -28,6 +28,18 @@ class majordroid_tts extends tts_addon
         $this->sendMajorDroidCommand('ask:' . $phrase);
 		return true;
     }
+
+    function set_volume_media($volume = 0)
+    {
+        $this->sendMajorDroidCommand('mvolume:' . $volume);
+		return true;
+    }
+
+    function set_volume_notification($volume = 0)
+    {
+        $this->sendMajorDroidCommand('nvolume:' . $volume);
+		return true;
+    }
     
     function set_volume($volume = 0)
     {
