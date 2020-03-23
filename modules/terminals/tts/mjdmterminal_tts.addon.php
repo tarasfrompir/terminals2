@@ -32,6 +32,22 @@ class mjdmterminal_tts extends tts_addon
         return $this->sendMjdmCommand('volume:' . $volume);
     }
 	
+    public function set_volume_media($volume) {
+        return $this->sendMjdmCommand('mvolume:' . $volume);
+    }
+
+    public function set_volume_notification($volume) {
+        return $this->sendMjdmCommand('nvolume:' . $volume);
+    }
+
+    public function set_volume_alarm($volume) {
+        return $this->sendMjdmCommand('avolume:' . $volume);
+    }
+	
+    public function set_volume_ring($volume) {
+        return $this->sendMjdmCommand('rvolume:' . $volume);
+    }
+
     function set_brightness_display($brightness, $time=0)
     {
         // установим яркость дисплея
