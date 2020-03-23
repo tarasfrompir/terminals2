@@ -17,31 +17,31 @@ class majordroid_tts extends tts_addon
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
     }
     
-    function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
+    public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         $this->sendMajorDroidCommand('tts:' . $message['MESSAGE']);
 		return true;
     }
     
-    function ask($phrase, $level = 0)
+    public function ask($phrase, $level = 0)
     {
         $this->sendMajorDroidCommand('ask:' . $phrase);
 		return true;
     }
 
-    function set_volume_media($volume = 0)
+    public function set_volume_media($volume = 0)
     {
         $this->sendMajorDroidCommand('mvolume:' . $volume);
 		return true;
     }
 
-    function set_volume_notification($volume = 0)
+    public function set_volume_notification($volume = 0)
     {
         $this->sendMajorDroidCommand('nvolume:' . $volume);
 		return true;
     }
     
-    function set_volume($volume = 0)
+    public function set_volume($volume = 0)
     {
         $this->sendMajorDroidCommand('volume:' . $volume);
 		return true;
