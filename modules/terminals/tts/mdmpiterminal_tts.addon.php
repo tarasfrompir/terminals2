@@ -34,6 +34,15 @@ class mdmpiterminal_tts extends tts_addon
         return $this->sendCommand('volume:' . $volume);
     }
     
+    public function set_volume_media($volume = 0)
+    {
+        return $this->sendCommand('mvolume:' . $volume);
+    }
+
+    public function set_volume_notification($volume = 0)
+    {
+        return $this->sendCommand('nvolume:' . $volume);
+    }
     
     // Get terminal status
     public function terminal_status()
