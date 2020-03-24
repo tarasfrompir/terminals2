@@ -343,10 +343,10 @@ class terminals extends module
         addClassProperty('Terminals', 'UPNP_CONTROL_ADDRESS');
 
         // update main terminal
-        $terminal = getMainTerminal();
-        $terminal['TTS_TYPE'] = 'mainterminal';
-        $terminal['CANTTS'] = '1';
-        SQLUpdate('terminals', $terminal);
+        //$terminal = getMainTerminal();
+        //$terminal['TTS_TYPE'] = 'mainterminal';
+        //$terminal['CANTTS'] = '1';
+        //SQLUpdate('terminals', $terminal);
 
         // add autorestart cicle
         setGlobal('cycle_terminalsControl','start');
