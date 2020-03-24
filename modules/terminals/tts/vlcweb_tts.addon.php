@@ -21,20 +21,9 @@ class vlcweb_tts extends tts_addon
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
-        // Curl
-        $this->curl    = curl_init();
+
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT']);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-        if ($this->setting['TTS_USERNAME'] OR $this->setting['TTS_PASSWORD']) {
-            curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($this->curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
-        }
-    }
-    
-    // Destructor
-    private function destroy()
-    {
-        curl_close($this->curl);
+       
     }
     
     // Private: VLC-WEB request
@@ -49,10 +38,18 @@ class vlcweb_tts extends tts_addon
             }
         }
         $params = implode('&', $params);
-        
-        curl_setopt($this->curl, CURLOPT_URL, $this->address . '/requests/' . $path . (strlen($params) ? '?' . $params : ''));
-        if ($result = curl_exec($this->curl)) {
-            $code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+		
+		// init curl
+        $curl = curl_init();
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		if ($this->setting['TTS_USERNAME'] OR $this->setting['TTS_PASSWORD']) {
+            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
+        }
+        curl_setopt($curl, CURLOPT_URL, $this->address . '/requests/' . $path . (strlen($params) ? '?' . $params : ''));
+
+        if ($result = curl_exec($curl)) {
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             switch ($code) {
                 case 200:
                     $this->success = TRUE;
@@ -69,8 +66,8 @@ class vlcweb_tts extends tts_addon
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'VLC HTTP interface not available!';
         }
+        curl_close($curl);
         return $this->success;
     }
     
@@ -97,8 +94,7 @@ class vlcweb_tts extends tts_addon
     
     public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        
-        $outlink = $message['CACHED_FILENAME'];
+		$outlink = $message['CACHED_FILENAME'];
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
             $server_ip = getLocalIp();
@@ -138,10 +134,7 @@ class vlcweb_tts extends tts_addon
     {
         if (strlen($level)) {
             $level = round((int) $level * 256 / 100);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'volume',
-                'val' => (int) $level
-            ))) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'volume','val' => (int) $level))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                 }
