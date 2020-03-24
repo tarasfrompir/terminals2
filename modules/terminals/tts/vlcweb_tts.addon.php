@@ -117,6 +117,19 @@ class vlcweb_tts extends tts_addon
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                     sleep($message['MESSAGE_DURATION']);
+					// контроль окончания воспроизведения медиа
+					$count = 0;
+					while ($xml->state != 'stopped') {
+						$this->vlcweb_request('status.xml');
+						if ($this->vlcweb_parse_xml($this->data)) {
+							$xml = $this->data;
+						}
+						usleep (100000);
+						$count = $count + 1;
+						if ($count > 30 ) {
+							break;
+						}
+					}
                 } else {
                     $this->success = FALSE;
                 }
@@ -164,13 +177,23 @@ class vlcweb_tts extends tts_addon
         // play audio
         if (file_exists($link)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'in_play',
-                'input' => $message_link
-            ))) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'in_play','input' => $message_link))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                     sleep(2);
+					// контроль окончания воспроизведения медиа
+					$count = 0;
+					while ($xml->state != 'stopped') {
+						$this->vlcweb_request('status.xml');
+						if ($this->vlcweb_parse_xml($this->data)) {
+							$xml = $this->data;
+						}
+						usleep (100000);
+						$count = $count + 1;
+						if ($count > 30 ) {
+							break;
+						}
+					}
                 } else {
                     $this->success = FALSE;
                 }
