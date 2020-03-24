@@ -26,19 +26,8 @@ class vlcweb extends app_player_addon
         if (!$this->terminal['HOST']) return false;
         $this->reset_properties();
 
-        // Curl
-        $this->curl = curl_init();
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->terminal['PLAYER_PORT']) ? 8080 : $this->terminal['PLAYER_PORT']);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-        if ($this->terminal['PLAYER_USERNAME'] || $this->terminal['PLAYER_PASSWORD']) {
-            curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($this->curl, CURLOPT_USERPWD, $this->terminal['PLAYER_USERNAME'] . ':' . $this->terminal['PLAYER_PASSWORD']);
-        }
-    }
 
-    // Destructor
-    function destroy() {
-        curl_close($this->curl);
     }
 
     // Private: VLC-WEB request
@@ -53,10 +42,18 @@ class vlcweb extends app_player_addon
             }
         }
         $params = implode('&', $params);
-        $this->reset_properties();
-        curl_setopt($this->curl, CURLOPT_URL, $this->address . '/requests/' . $path . (strlen($params) ? '?' . $params : ''));
-        if ($result = curl_exec($this->curl)) {
-            $code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+
+		// init curl
+        $curl = curl_init();
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        if ($this->terminal['PLAYER_USERNAME'] || $this->terminal['PLAYER_PASSWORD']) {
+            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($curl, CURLOPT_USERPWD, $this->terminal['PLAYER_USERNAME'] . ':' . $this->terminal['PLAYER_PASSWORD']);
+        }
+        curl_setopt($curl, CURLOPT_URL, $this->address . '/requests/' . $path . (strlen($params) ? '?' . $params : ''));
+		
+        if ($result = curl_exec($curl)) {
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             switch ($code) {
                 case 200:
                     $this->success = true;
@@ -76,6 +73,7 @@ class vlcweb extends app_player_addon
             $this->success = false;
             $this->message = 'VLC HTTP interface not available!';
         }
+        curl_close($curl);
         return $this->success;
     }
 
@@ -490,6 +488,29 @@ class vlcweb extends app_player_addon
                     $this->message = 'OK';
                 }
             }
+        }
+        return $this->success;
+    }
+	
+    // restore playlist
+    function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0)
+    {
+        // cleare playlist
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));        
+		
+		// add files to playlist
+        foreach ($playlist_content as $song) {
+			$this->vlcweb_request('status.xml', array('command' => 'in_enqueue', 'input' => $song['file']));
+        }
+        // change played file
+		
+        // play seeked file
+        if ($this->vlcweb_request('status.xml', array('command' => 'pl_play', 'id' => $track_id))) {
+            $this->success = TRUE;
+            $this->message = 'OK';
+        } else {
+            $this->success = FALSE;
+            $this->message = 'Missing restore playlist';
         }
         return $this->success;
     }
