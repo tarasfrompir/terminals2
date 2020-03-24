@@ -17,14 +17,13 @@ class vlcweb_tts extends tts_addon
         $this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
         $this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
-        
+
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
-        
+
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT']);
-        
+       
     }
     
     // Private: VLC-WEB request
@@ -39,16 +38,16 @@ class vlcweb_tts extends tts_addon
             }
         }
         $params = implode('&', $params);
-        
-        // init curl
+		
+		// init curl
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        if ($this->setting['TTS_USERNAME'] OR $this->setting['TTS_PASSWORD']) {
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		if ($this->setting['TTS_USERNAME'] OR $this->setting['TTS_PASSWORD']) {
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($curl, CURLOPT_USERPWD, $this->setting['TTS_USERNAME'] . ':' . $this->setting['TTS_PASSWORD']);
         }
         curl_setopt($curl, CURLOPT_URL, $this->address . '/requests/' . $path . (strlen($params) ? '?' . $params : ''));
-        
+
         if ($result = curl_exec($curl)) {
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             switch ($code) {
@@ -95,7 +94,7 @@ class vlcweb_tts extends tts_addon
     
     public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        $outlink = $message['CACHED_FILENAME'];
+		$outlink = $message['CACHED_FILENAME'];
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $outlink, $m)) {
             $server_ip = getLocalIp();
@@ -107,9 +106,7 @@ class vlcweb_tts extends tts_addon
             }
         }
         // cleare playlist
-        $this->vlcweb_request('status.xml', array(
-            'command' => 'pl_empty'
-        ));
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));
         // play message
         if (file_exists($outlink)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
@@ -120,19 +117,19 @@ class vlcweb_tts extends tts_addon
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                     sleep($message['MESSAGE_DURATION']);
-                    // контроль окончания воспроизведения медиа
-                    $count = 0;
-                    while ($xml->state != 'stopped') {
-                        $this->vlcweb_request('status.xml');
-                        if ($this->vlcweb_parse_xml($this->data)) {
-                            $xml = $this->data;
-                        }
-                        usleep(100000);
-                        $count = $count + 1;
-                        if ($count > 30) {
-                            break;
-                        }
-                    }
+					// контроль окончания воспроизведения медиа
+					$count = 0;
+					while ($xml->state != 'stopped') {
+						$this->vlcweb_request('status.xml');
+						if ($this->vlcweb_parse_xml($this->data)) {
+							$xml = $this->data;
+						}
+						$count = $count + 1;
+						if ($count > 30 ) {
+							break;
+						}
+					usleep (100000);
+					}
                 } else {
                     $this->success = FALSE;
                 }
@@ -150,15 +147,22 @@ class vlcweb_tts extends tts_addon
     {
         if (strlen($level)) {
             $level = round((int) $level * 256 / 100);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'volume',
-                'val' => (int) $level
-            ))) {
-                if ($this->vlcweb_parse_xml($this->data)) {
-                    $this->success = TRUE;
-                }
-            } else {
-                $this->success = FALSE;
+			// проверка установки уровня звука с контролем на 3 секунды
+			$count = 0;
+			while ($xml->volume != $level) {
+				if ($this->vlcweb_request('status.xml', array('command' => 'volume','val' => (int) $level))) {
+					$this->success = TRUE;
+					$this->vlcweb_request('status.xml');
+					if ($this->vlcweb_parse_xml($this->data)) {
+						$xml = $this->data;
+					}
+					$count = $count + 1;
+					if ($count > 30 ) {
+			            $this->success = FALSE;
+						break;
+					}
+					usleep (100000);
+				}
             }
         } else {
             $this->success = FALSE;
@@ -166,7 +170,7 @@ class vlcweb_tts extends tts_addon
         return $this->success;
     }
     
-    public function play_media($link)
+    public function play_media ($link) 
     {
         // берем ссылку http
         if (preg_match('/\/cms\/cached.+/', $link, $m)) {
@@ -179,32 +183,27 @@ class vlcweb_tts extends tts_addon
             }
         }
         // cleare playlist
-        $this->vlcweb_request('status.xml', array(
-            'command' => 'pl_empty'
-        ));
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));
         // play audio
         if (file_exists($link)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'in_play',
-                'input' => $message_link
-            ))) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'in_play','input' => $message_link))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                     sleep(2);
-                    // контроль окончания воспроизведения медиа
-                    $count = 0;
-                    while ($xml->state != 'stopped') {
-                        $this->vlcweb_request('status.xml');
-                        if ($this->vlcweb_parse_xml($this->data)) {
-                            $xml = $this->data;
-                        }
-                        usleep(100000);
-                        $count = $count + 1;
-                        if ($count > 30) {
-                            break;
-                        }
-                    }
+					// контроль окончания воспроизведения медиа
+					$count = 0;
+					while ($xml->state != 'stopped') {
+						$this->vlcweb_request('status.xml');
+						if ($this->vlcweb_parse_xml($this->data)) {
+							$xml = $this->data;
+						}
+						$count = $count + 1;
+						if ($count > 30 ) {
+							break;
+						}
+					usleep (100000);
+					}
                 } else {
                     $this->success = FALSE;
                 }
