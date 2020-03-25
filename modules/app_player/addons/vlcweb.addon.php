@@ -501,9 +501,18 @@ class vlcweb extends app_player_addon
 		// add files to playlist
         foreach ($playlist_content as $song) {
 			$this->vlcweb_request('status.xml', array('command' => 'in_enqueue', 'input' => $song['file']));
+			if ($song['pos'] == $track_id) $track_url = $song['file'];
         }
-        // change played file
-		
+       
+		//  get playlist for seach id played file
+		if ($this->pl_get()) {
+            $playlist_content = $this->data;
+        }
+		// seech id file
+		$found_key = array_search($track_url, array_column($playlist_content, 'file'));
+		// get new id file in playlist
+		$track_id = $playlist_content[$found_key]['pos'];
+		//DebMes($track_id);
         // play seeked file
         if ($this->vlcweb_request('status.xml', array('command' => 'pl_play', 'id' => $track_id))) {
             $this->success = TRUE;
