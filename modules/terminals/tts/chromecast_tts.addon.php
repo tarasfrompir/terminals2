@@ -40,7 +40,7 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         while (!$cc->load($message_link, 0)) {
             $count = $count + 1;
-            if ($count > 10 ) {
+            if ($count > 30 ) {
                 break;
             }
             usleep (100000);
@@ -148,7 +148,7 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         while (!$cc->load($message_link, 0)) {
             $count = $count + 1;
-            if ($count > 10 ) {
+            if ($count > 30 ) {
                 break;
             }
             usleep (100000);
