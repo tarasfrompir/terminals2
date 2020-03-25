@@ -512,8 +512,8 @@ class vlcweb extends app_player_addon
         $found_key = array_search($track_url, array_column($playlist_content, 'file'));
         // get new id file in playlist
         $track_id = $playlist_content[$found_key]['pos'];
-	// seek to position
-	$this->vlcweb_request('status.xml', array('command' => 'seek', 'val' => $time))
+        // seek to position
+        $this->vlcweb_request('status.xml', array('command' => 'seek', 'val' => $time));
         // play seeked file
         if ($this->vlcweb_request('status.xml', array('command' => 'pl_play', 'id' => $track_id))) {
             $this->success = TRUE;
