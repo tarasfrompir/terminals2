@@ -47,17 +47,27 @@ class app_player_addon {
 	// Get player status
 	public function status() {
 		/*
-			$this->data format (array):
-			
-			'track_id'	 -	ID of currently playing track (in playlist).
-							Integer. If unknown (playback stopped or playlist is empty) = -1.
-			'length'	 -	Track length in seconds. Integer. If unknown = 0.
-			'time'		 -	Current playback progress (in seconds). If unknown = 0.
-			'state'		 -	Playback status. String: stopped/playing/paused/unknown
-			'volume'	 -	Volume level in percent. Integer. Some players may have values greater than 100.
-			'random'	 -	Random mode. Boolean.
-			'loop'		 -	Loop mode. Boolean.
-			'repeat'	 -	Repeat mode. Boolean.
+$this->data = array(
+            'playlist_id' => (int) $result['playlist'], // номер или имя плейлиста 
+            'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+            							  // обязательно $playlist_content[$i]['pos'] - номер трека
+           							  // обязательно $playlist_content[$i]['file'] - адрес трека
+							          // возможно $playlist_content[$i]['Artist'] - артист
+            							  // возможно $playlist_content[$i]['Title'] - название трека
+            'track_id' => (int) $result['song'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
+            'name' => (string) $name, //Current speed for playing media. float.
+            'file' => (string) $file, //Current link for media in device. String.
+            'length' => (int) $result['duration'], //Track length in seconds. Integer. If unknown = 0. 
+            'time' => (int) $result['time'], //Current playback progress (in seconds). If unknown = 0. 
+            'state' => (string) strtolower($result['state']), //Playback status. String: stopped/playing/paused/unknown 
+            'volume' => (int) $result['volume'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'muted' => (int) $result['muted'], // Volume level in percent. Integer. Some players may have values greater than 100.
+            'random' => (int) $result['random'], // Random mode. Boolean. 
+            'loop' => (int) $result['loop'], // Loop mode. Boolean.
+            'repeat' => (int) $result['repeat'], //Repeat mode. Boolean.
+            'crossfade' => (int) $result['xfade'], // crossfade
+            'speed' => (int) $speed // crossfade
+        );
 		*/
 		return $this->not_supported();
 	}
