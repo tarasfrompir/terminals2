@@ -294,7 +294,7 @@ class mpd extends app_player_addon
     }
     
     // restore playlist
-    function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0)
+    function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0, $state = 'stopped')
     {
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
