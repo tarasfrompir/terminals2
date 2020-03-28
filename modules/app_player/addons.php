@@ -143,7 +143,7 @@ class app_player_addon {
 	}
 	
     // Play the specified file
-	public function restore_playlist($playlist_id, $playlist_content=array(), $track_id = -1, $time = 0, $state = 'stop') {
+	public function restore_playlist($playlist_id, $playlist_content=array(), $track_id = -1, $time = 0, $state = 'stopped') {
 		/*
 			$input - The path to the file for playback. String.
 			
