@@ -308,14 +308,6 @@ class mpd extends app_player_addon
                 }
                 // change played file
                 $this->mpd->PLSeek($track_id, $time);
-                // play seeked file
-                if ($this->mpd->Play()) {
-                    $this->success = TRUE;
-                    $this->message = 'OK';
-                } else {
-                    $this->success = FALSE;
-                    $this->message = 'Missing restore playlist';
-                }
                 // restore state player
                 //stopped/playing/paused/unknown
                 switch ($state) {
@@ -401,11 +393,11 @@ class mpd extends app_player_addon
         
         $this->data = array(
             'playlist_id' => (int) $result['playlist'], // номер или имя плейлиста 
-            'playlist_content' => json_encode($playlist_content), // содержимое плейлиста должен быть ВСЕГДА МАССИВ 
-            // обязательно $playlist_content[$i]['pos'] - номер трека
-            // обязательно $playlist_content[$i]['file'] - адрес трека
-            // возможно $playlist_content[$i]['Artist'] - артист
-            // возможно $playlist_content[$i]['Title'] - название трека
+            'playlist_content' => json_encode($playlist_content), 	// содержимое плейлиста должен быть ВСЕГДА МАССИВ 
+																	// обязательно $playlist_content[$i]['pos'] - номер трека
+																	// обязательно $playlist_content[$i]['file'] - адрес трека
+																	// возможно $playlist_content[$i]['Artist'] - артист
+																	// возможно $playlist_content[$i]['Title'] - название трека
             'track_id' => (int) $result['song'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
             'name' => (string) $name, //Current speed for playing media. float.
             'file' => (string) $file, //Current link for media in device. String.
