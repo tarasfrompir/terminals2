@@ -572,6 +572,7 @@ class vlcweb extends app_player_addon
                     $this->success = FALSE;
                     $this->message = 'Missing restore playlist';
                 }
+                break;
             case 'unknown':
                 $this->success = TRUE;
                 $this->message = 'OK';
