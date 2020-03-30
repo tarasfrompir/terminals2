@@ -316,6 +316,44 @@ class mpd extends app_player_addon
                     $this->success = FALSE;
                     $this->message = 'Missing restore playlist';
                 }
+                // restore state player
+                //stopped/playing/paused/unknown
+                switch ($state) {
+                    case 'playing':
+                        if ($this->mpd->Play()) {
+                            $this->success = TRUE;
+                            $this->message = 'OK';
+                        } else {
+                            $this->success = FALSE;
+                            $this->message = 'Missing restore playlist';
+                        }
+                        break;
+                    case 'paused':
+                        if ($this->mpd->Play()) {
+                            if ($this->mpd->Pause()) {
+                                $this->success = TRUE;
+                                $this->message = 'OK';
+                            } else {
+                                $this->success = FALSE;
+                                $this->message = 'Missing restore playlist';
+                            }
+                        } else {
+                            $this->success = FALSE;
+                            $this->message = 'Missing restore playlist';
+                        }
+                        break;
+                    case 'stoped':
+                        if ($this->mpd->Stop()) {
+                            $this->success = TRUE;
+                            $this->message = 'OK';
+                        } else {
+                            $this->success = FALSE;
+                            $this->message = 'Missing restore playlist';
+                        }
+                    case 'unknown':
+                        $this->success = TRUE;
+                        $this->message = 'OK';
+                }
             }
             catch (Exception $e) {
                 $this->success = FALSE;
@@ -392,7 +430,7 @@ class mpd extends app_player_addon
         $this->message = 'OK';
         return $this->success;
     }
-
+    
 }
 
 ?>
