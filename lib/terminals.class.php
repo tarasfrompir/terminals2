@@ -803,7 +803,7 @@ function restore_terminal_state($terminalname, $terminal) {
     try {
         if ($terminal['PLAYER_TYPE'] AND $playerdata['playlist_id'] AND stristr($file_player, 'restore_playlist')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore playlist media", 'terminals');
-            $player->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time']);
+            $player->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time'], $playerdata['state']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not playlist to restore", 'terminals');
         }
