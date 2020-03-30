@@ -321,6 +321,7 @@ class mpd extends app_player_addon
                             $this->success = FALSE;
                             $this->message = 'Missing restore playlist';
                         }
+			break;
                     case 'paused':
                         if ($this->mpd->Play()) {
                             if ($this->mpd->Pause()) {
@@ -334,6 +335,7 @@ class mpd extends app_player_addon
                             $this->success = FALSE;
                             $this->message = 'Missing restore playlist';
                         }
+			break;
                     case 'stoped':
                         if ($this->mpd->Stop()) {
                             $this->success = TRUE;
@@ -342,13 +344,15 @@ class mpd extends app_player_addon
                             $this->success = FALSE;
                             $this->message = 'Missing restore playlist';
                         }
+			break;
                     case 'unknown':
                         $this->success = TRUE;
                         $this->message = 'OK';
+			break;
                     default:
                         $this->success = TRUE;
                         $this->message = 'OK';
-
+			break;
                 }
             } catch (Exception $e) {
                 $this->success = FALSE;
