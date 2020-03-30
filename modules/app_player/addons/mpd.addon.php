@@ -390,6 +390,18 @@ class mpd extends app_player_addon
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo();
         }
+
+	switch (strtolower($result['state'])) {
+            case 'play':
+                $result['state'] = 'playing';
+                break;
+            case 'pause':
+                $result['state'] = 'paused';
+                break;
+            case 'stop':
+                $result['state'] = 'stoped';
+                break;
+        }
         
         $this->data = array(
             'playlist_id' => (int) $result['playlist'], // номер или имя плейлиста 
