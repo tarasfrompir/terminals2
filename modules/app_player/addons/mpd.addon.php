@@ -296,6 +296,7 @@ class mpd extends app_player_addon
     // restore playlist
     function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0, $state = 'stopped')
     {
+        DebMes($state);
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
         if ($this->mpd->connected) {
@@ -313,13 +314,13 @@ class mpd extends app_player_addon
                 switch ($state) {
                     case 'playing':
                         if ($this->mpd->Play()) {
+                            DebMes('play mpd-');
                             $this->success = TRUE;
                             $this->message = 'OK';
                         } else {
                             $this->success = FALSE;
                             $this->message = 'Missing restore playlist';
                         }
-                        break;
                     case 'paused':
                         if ($this->mpd->Play()) {
                             if ($this->mpd->Pause()) {
@@ -333,7 +334,6 @@ class mpd extends app_player_addon
                             $this->success = FALSE;
                             $this->message = 'Missing restore playlist';
                         }
-                        break;
                     case 'stoped':
                         if ($this->mpd->Stop()) {
                             $this->success = TRUE;
@@ -345,9 +345,12 @@ class mpd extends app_player_addon
                     case 'unknown':
                         $this->success = TRUE;
                         $this->message = 'OK';
+                    default:
+                        $this->success = TRUE;
+                        $this->message = 'OK';
+
                 }
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $this->success = FALSE;
                 $this->message = 'Error ' . $e;
             }
@@ -390,7 +393,7 @@ class mpd extends app_player_addon
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo();
         }
-
+        DebMes($result['state']);
 	switch (strtolower($result['state'])) {
             case 'play':
                 $result['state'] = 'playing';
@@ -402,14 +405,13 @@ class mpd extends app_player_addon
                 $result['state'] = 'stoped';
                 break;
         }
-        
         $this->data = array(
             'playlist_id' => (int) $result['playlist'], // номер или имя плейлиста 
             'playlist_content' => json_encode($playlist_content), 	// содержимое плейлиста должен быть ВСЕГДА МАССИВ 
-																	// обязательно $playlist_content[$i]['pos'] - номер трека
-																	// обязательно $playlist_content[$i]['file'] - адрес трека
-																	// возможно $playlist_content[$i]['Artist'] - артист
-																	// возможно $playlist_content[$i]['Title'] - название трека
+									// обязательно $playlist_content[$i]['pos'] - номер трека
+									// обязательно $playlist_content[$i]['file'] - адрес трека
+									// возможно $playlist_content[$i]['Artist'] - артист
+									// возможно $playlist_content[$i]['Title'] - название трека
             'track_id' => (int) $result['song'], //ID of currently playing track (in playlist). Integer. If unknown (playback stopped or playlist is empty) = -1.
             'name' => (string) $name, //Current speed for playing media. float.
             'file' => (string) $file, //Current link for media in device. String.
