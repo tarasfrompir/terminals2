@@ -507,7 +507,6 @@ function send_message($terminalname, $message, $terminal) {
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
 	    // запишем уровень громкости на терминале
 		if ($playerdata_data['volume']) {
-			DebMes($terminal);
 			$terminal['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
 			SQLUpdate('terminals', $terminal);
 		}
@@ -518,9 +517,8 @@ function send_message($terminalname, $message, $terminal) {
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
 	    // запишем уровень громкости на терминале
 		if ($playerdata_data['volume']) {
-			$volume['ID'] = $terminal['ID'];
-			$volume['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
-			SQLUpdate('terminals', $volume);
+			$terminal['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
+			SQLUpdate('terminals', $terminal);
 		}
 
     //терминал не получил статуса плеера - оно не нужно
