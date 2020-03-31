@@ -501,23 +501,27 @@ function send_message($terminalname, $message, $terminal) {
     }
 
 
-    // запишем уровень громкости на терминале
-    if ($playerdata_data['volume']) {
-        $volume['ID'] = $terminal['ID'];
-        $volume['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
-        unset ($playerdata_data['volume']);
-        SQLUpdate('terminals', $volume);
-    }
-	
     // проверим - не системное ли это сообщение в медиа содержащих плейлист
     if ($playerdata_data['playlist_content'] AND !preg_match('/cms.+cached.+voice/', $playerdata_data['playlist_content'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($playerdata_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
+	    // запишем уровень громкости на терминале
+		if ($playerdata_data['volume']) {
+			DebMes($terminal);
+			$terminal['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
+			SQLUpdate('terminals', $terminal);
+		}
 	    
     // проверим - не системное ли это сообщение в медиа содержащих только файл
     } else if ($playerdata_data['file'] AND stripos($playerdata_data['file'], '/cms/cached/voice') === false) {
         if ($ter->config['LOG_ENABLED']) DebMes("Write info about terminal state  - " . json_encode($playerdata_data, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
         sg($terminal['LINKED_OBJECT'] . '.playerdata', json_encode($playerdata_data));
+	    // запишем уровень громкости на терминале
+		if ($playerdata_data['volume']) {
+			$volume['ID'] = $terminal['ID'];
+			$volume['TERMINAL_VOLUME_LEVEL'] = $playerdata_data['volume'];
+			SQLUpdate('terminals', $volume);
+		}
 
     //терминал не получил статуса плеера - оно не нужно
     } else {
@@ -705,9 +709,9 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим уровень громкости на плеере
     try {
-        if ($terminal['PLAYER_TYPE'] AND $terminal['TERMINAL_VOLUME_LEVEL'] AND stristr($file_player, 'set_volume')) {
+        if ($terminal['PLAYER_TYPE'] AND $playerdata['volume'] AND stristr($file_player, 'set_volume')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media volume", 'terminals');
-            $player->set_volume($terminal['TERMINAL_VOLUME_LEVEL']);
+            $player->set_volume($playerdata['volume']);
         } else {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set media volume mode MEDIA or class have not function repeat", 'terminals');
         }
