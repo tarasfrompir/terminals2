@@ -45,7 +45,6 @@ class sounddevice_tts extends tts_addon
             }
         } else {
             $this->success = FALSE;
-            $this->message = 'Input is missing!';
         }
         return $this->success;
     }
@@ -114,6 +113,37 @@ class sounddevice_tts extends tts_addon
         return $out_data;
     }
     
+	public function play_media ($link)
+    {
+        if ($link) {
+            $fileinfo = pathinfo($link);
+            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
+            if (!file_exists($filename)) {
+                if (!defined('PATH_TO_FFMPEG')) {
+                    if (IsWindowsOS()) {
+                        define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                    } else {
+                        define("PATH_TO_FFMPEG", 'ffmpeg');
+                    }
+                }
+                shell_exec(PATH_TO_FFMPEG . " -i " . $link . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
+            }
+            if (file_exists($filename)) {
+                if (IsWindowsOS()) {
+                    exec(DOC_ROOT . '/rc/smallplay.exe -play ' . $filename . ' ' . $this->devicenumber);
+                } else {
+                    // linux
+                }
+                sleep(2);
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
     
     
 }
