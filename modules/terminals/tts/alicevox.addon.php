@@ -25,19 +25,17 @@ class alicevox extends tts_addon
     // Say
     public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        if ($message['CACHED_FILENAME']) {
+       if ($message['CACHED_FILENAME']) {
             $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
-            if (!file_exists($filename)) {
-                if (!defined('PATH_TO_FFMPEG')) {
-                    if (IsWindowsOS()) {
-                        define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-                    } else {
-                        define("PATH_TO_FFMPEG", 'ffmpeg');
-                    }
+            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . 'temp.wav';
+            if (!defined('PATH_TO_FFMPEG')) {
+                if (IsWindowsOS()) {
+                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                } else {
+                    define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             }
+            shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $filename = 'http://' . getLocalIp() . $m[0];
