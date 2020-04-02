@@ -117,24 +117,23 @@ class sounddevice_tts extends tts_addon
     {
         if ($link) {
             $fileinfo = pathinfo($link);
-            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
-            if (!file_exists($filename)) {
-                if (!defined('PATH_TO_FFMPEG')) {
-                    if (IsWindowsOS()) {
-                        define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-                    } else {
-                        define("PATH_TO_FFMPEG", 'ffmpeg');
-                    }
+            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . 'temp.wav';
+            if (!defined('PATH_TO_FFMPEG')) {
+                if (IsWindowsOS()) {
+                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                } else {
+                    define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
-                shell_exec(PATH_TO_FFMPEG . " -i " . $link . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             }
-            if (file_exists($filename)) {
+            shell_exec(PATH_TO_FFMPEG . " -i " . $link . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
+             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
                     exec(DOC_ROOT . '/rc/smallplay.exe -play ' . $filename . ' ' . $this->devicenumber);
                 } else {
                     // linux
                 }
                 sleep(2);
+                @unlink($filename);
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
