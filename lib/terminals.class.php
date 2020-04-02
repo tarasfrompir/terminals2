@@ -526,16 +526,30 @@ function send_message($terminalname, $message, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont get status. Maybe  system message ?", 'terminals');
     }
 
-    // пробуем остановить медиа на плеере
-    try {
-        if ($player AND $player->stop()) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
-        } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop, or error", 'terminals');
-        }
-    } catch (Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
-    }
+    // если плеер тот же что и терминал
+	if ($terminal['PLAYER_TYPE'] . '_tts' == $terminal['TTS_TYPE']) {
+		// пробуем остановить медиа на плеере 
+		try {
+			if ($player AND $terminal['CANPLAY'] AND $player->stop()) {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
+			} else {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop, or error", 'terminals');
+			}
+		} catch (Exception $e) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+		}
+	} else {
+		// прикрутим громкость на плеере до 50% от громкости сообщений 
+		try {
+			if ($player AND $player->set_volume($terminal['MESSAGE_VOLUME_LEVEL']*0.75)) {
+				if ($ter->config['LOG_ENABLED']) DebMes("Plaer " . $terminal['NAME'] . " set volume 50% with message level", 'terminals');
+			} else {
+				if ($ter->config['LOG_ENABLED']) DebMes("Player -" . $terminalname . " have not function set volume, or error", 'terminals');
+			}
+		} catch (Exception $e) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Player " . $terminal['NAME'] . " have wrong setting", 'terminals');
+		}
+	}
 
     //установим громкость для сообщений
     try {
@@ -789,30 +803,34 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
     }
 
-    // восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист на плеере
-    try {
-        if ($terminal['PLAYER_TYPE'] AND $playerdata['file'] AND stristr($file_player, 'restore_media')) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media", 'terminals');
-            $player->restore_media($playerdata['file'], $playerdata['time']);
-        } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore ON MEDIA ", 'terminals');
-        }
-    } catch (Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
-    }
+    // если тип плеера не равен типу терминала то
+	if ($terminal['PLAYER_TYPE'] . '_tts' == $terminal['TTS_TYPE']) {
+		// восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист на плеере
+		
+		try {
+			if ($terminal['PLAYER_TYPE'] AND $playerdata['file'] AND stristr($file_player, 'restore_media')) {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media", 'terminals');
+				$player->restore_media($playerdata['file'], $playerdata['time']);
+			} else {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not media to restore ON MEDIA ", 'terminals');
+			}
+		} catch (Exception $e) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+		}
 
-    // восстановим медиа для устройств ПОДДЕРЖИВАЮЩИХ плейлист	на плеере
-    try {
-        if ($terminal['PLAYER_TYPE'] AND $playerdata['playlist_id'] AND stristr($file_player, 'restore_playlist')) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore playlist media", 'terminals');
-            $player->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time'], $playerdata['state']);
-        } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not playlist to restore", 'terminals');
-        }
-    } catch (Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
-    }
-
+		// восстановим медиа для устройств ПОДДЕРЖИВАЮЩИХ плейлист	на плеере
+		try {
+			if ($terminal['PLAYER_TYPE'] AND $playerdata['playlist_id'] AND stristr($file_player, 'restore_playlist')) {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore playlist media", 'terminals');
+				$player->restore_playlist($playerdata['playlist_id'], json_decode($playerdata['playlist_content'], TRUE), $playerdata['track_id'], $playerdata['time'], $playerdata['state']);
+			} else {
+				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not playlist to restore", 'terminals');
+			}
+		} catch (Exception $e) {
+			if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+		}
+	}
+	
     //установим яркость екрана назад и при том что экран был включен, после всех сообщений на терминале
     try {
         if ($terminal['TTS_TYPE'] AND stristr($file_tts, 'set_brightness_display') AND $terminaldata['brightness']) {
