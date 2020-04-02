@@ -395,6 +395,11 @@ function pingTerminal($terminal, $details) {
         sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
         return;
     }
+
+    include_once (DIR_MODULES . "terminals/terminals.class.php");
+    $ter = new terminals();
+    $ter->getConfig();
+
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
@@ -406,12 +411,12 @@ function pingTerminal($terminal, $details) {
             include_once ($addon_file);
             $ping_t = new $details['TTS_TYPE']($details);
             $out = $ping_t->ping_terminal($details['HOST']);
-            DebMes("Try to ping - " . $terminal , 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Try to ping - " . $terminal , 'terminals');
         } else {
-            DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
         }
     } catch (Exception $e) {
-        DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
     }
     if ($out) {
         sg($details['LINKED_OBJECT'] . '.status', '1');
@@ -419,13 +424,13 @@ function pingTerminal($terminal, $details) {
         $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 1;
-        DebMes("Terminal - " . $terminal . ' is online', 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is online', 'terminals');
     } else {
         sg($details['LINKED_OBJECT'] . '.status', '0');
         sg($details['LINKED_OBJECT'] . '.alive', '0');
         $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
         $rec['IS_ONLINE'] = 0;
-        DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
     }
     SQLUpdate('terminals', $rec);
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
