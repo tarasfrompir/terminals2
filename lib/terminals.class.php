@@ -547,7 +547,7 @@ function send_message($terminalname, $message, $terminal) {
 		// прикрутим громкость на плеере до 50% от громкости сообщений 
 		try {
 			if ($player AND $player->set_volume($terminal['MESSAGE_VOLUME_LEVEL']*0.75)) {
-				if ($ter->config['LOG_ENABLED']) DebMes("Plaer " . $terminal['NAME'] . " set volume 50% with message level", 'terminals');
+				if ($ter->config['LOG_ENABLED']) DebMes("Plaer " . $terminal['NAME'] . " set volume 75% with message level", 'terminals');
 			} else {
 				if ($ter->config['LOG_ENABLED']) DebMes("Player -" . $terminalname . " have not function set volume, or error", 'terminals');
 			}
