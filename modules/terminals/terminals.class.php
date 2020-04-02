@@ -244,7 +244,7 @@ class terminals extends module
                 usleep(10000);
                 $count++;
             }
-            DebMes('Duration message - '.$duration_norm, 'terminals');
+            if ($this->config['LOG_ENABLED']) DebMes('Duration message - '.$duration_norm, 'terminals');
             if ($duration_norm < 2) {
                 $duration = 2;
             } else {
