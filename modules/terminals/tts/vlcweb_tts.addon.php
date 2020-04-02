@@ -113,10 +113,7 @@ class vlcweb_tts extends tts_addon
         // play message
         if (file_exists($outlink)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
-            if ($this->vlcweb_request('status.xml', array(
-                'command' => 'in_play',
-                'input' => $message_link
-            ))) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'in_play', 'input' => $message_link ))) {
                 if ($this->vlcweb_parse_xml($this->data)) {
                     $this->success = TRUE;
                     sleep($message['MESSAGE_DURATION']);
@@ -153,10 +150,7 @@ class vlcweb_tts extends tts_addon
             // проверка установки уровня звука с контролем на 3 секунды
             $count = 0;
             while ($xml->volume != $level) {
-                if ($this->vlcweb_request('status.xml', array(
-                    'command' => 'volume',
-                    'val' => (int) $level
-                ))) {
+                if ($this->vlcweb_request('status.xml', array('command' => 'volume','val' => (int) $level))) {
                     $this->success = TRUE;
                     $this->vlcweb_request('status.xml');
                     if ($this->vlcweb_parse_xml($this->data)) {
