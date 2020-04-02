@@ -532,29 +532,29 @@ function send_message($terminalname, $message, $terminal) {
     }
 
     // если плеер тот же что и терминал
-	if ($terminal['PLAYER_TYPE'] . '_tts' == $terminal['TTS_TYPE']) {
-		// пробуем остановить медиа на плеере 
-		try {
-			if ($player AND $terminal['CANPLAY'] AND $player->stop()) {
-				if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
-			} else {
-				if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop, or error", 'terminals');
-			}
-		} catch (Exception $e) {
-			if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
-		}
-	} else {
-		// прикрутим громкость на плеере до 50% от громкости сообщений 
-		try {
-			if ($player AND $player->set_volume($terminal['MESSAGE_VOLUME_LEVEL']*0.75)) {
-				if ($ter->config['LOG_ENABLED']) DebMes("Plaer " . $terminal['NAME'] . " set volume 75% with message level", 'terminals');
-			} else {
-				if ($ter->config['LOG_ENABLED']) DebMes("Player -" . $terminalname . " have not function set volume, or error", 'terminals');
-			}
-		} catch (Exception $e) {
-			if ($ter->config['LOG_ENABLED']) DebMes("Player " . $terminal['NAME'] . " have wrong setting", 'terminals');
-		}
+    if ($terminal['PLAYER_TYPE'] . '_tts' == $terminal['TTS_TYPE']) {
+        // пробуем остановить медиа на плеере 
+        try {
+            if ($player AND $terminal['CANPLAY'] AND $player->stop()) {
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " woth stopped", 'terminals');
+            } else {
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " have not function stop, or error", 'terminals');
+            }
+        } catch (Exception $e) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
 	}
+    } else {
+        // и если громкость плеера выше нужного уровня прикрутим громкость на плеере до 75% от громкости сообщений 
+        try {
+            if ($player AND $terminal['TERMINAL_VOLUME_LEVEL']> $terminal['MESSAGE_VOLUME_LEVEL'] AND $player->set_volume($terminal['MESSAGE_VOLUME_LEVEL']*0.75)) {
+                if ($ter->config['LOG_ENABLED']) DebMes("Plaer " . $terminal['NAME'] . " set volume 75% with message level", 'terminals');
+            } else {
+                if ($ter->config['LOG_ENABLED']) DebMes("Player -" . $terminalname . " have not function set volume, or error", 'terminals');
+            }
+        } catch (Exception $e) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Player " . $terminal['NAME'] . " have wrong setting", 'terminals');
+        }
+    }
 
     //установим громкость для сообщений
     try {
