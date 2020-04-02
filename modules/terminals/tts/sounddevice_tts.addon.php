@@ -17,21 +17,18 @@ class sounddevice_tts extends tts_addon
     }
     
     // Say
-    public function say_media_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
-    {
+    public function say_media_message($message, $terminal) {
         if ($message['CACHED_FILENAME']) {
             $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.wav';
-            if (!file_exists($filename)) {
-                if (!defined('PATH_TO_FFMPEG')) {
-                    if (IsWindowsOS()) {
-                        define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
-                    } else {
-                        define("PATH_TO_FFMPEG", 'ffmpeg');
-                    }
+            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . 'temp.wav';
+            if (!defined('PATH_TO_FFMPEG')) {
+                if (IsWindowsOS()) {
+                    define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+                } else {
+                    define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             }
+            shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
             if (file_exists($filename)) {
                 if (IsWindowsOS()) {
                     exec(DOC_ROOT . '/rc/smallplay.exe -play ' . $filename . ' ' . $this->devicenumber);
@@ -40,6 +37,7 @@ class sounddevice_tts extends tts_addon
                 }
                 sleep($message['MESSAGE_DURATION']);
                 $this->success = TRUE;
+                 @unlink($filename);
             } else {
                 $this->success = FALSE;
             }
@@ -113,7 +111,7 @@ class sounddevice_tts extends tts_addon
         return $out_data;
     }
     
-	public function play_media ($link)
+    public function play_media ($link)
     {
         if ($link) {
             $fileinfo = pathinfo($link);
