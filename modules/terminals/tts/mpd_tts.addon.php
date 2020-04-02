@@ -82,6 +82,16 @@ class mpd_tts extends tts_addon
         if ($this->mpd->connected) {
             try {
                 if ($this->mpd->SetVolume($level)) {
+					// контроль установки громкости
+					$count = 0;
+					while ($result['volume'] != $level) {
+						$result = $this->mpd->GetStatus();
+						$count = $count + 1;
+						if ($count > 30 ) {
+							break;
+						}
+						usleep (100000);
+					}
                     $this->success = TRUE;
                 } else {
                     $this->success = FALSE;
