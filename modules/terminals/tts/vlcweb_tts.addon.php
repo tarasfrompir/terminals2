@@ -107,9 +107,7 @@ class vlcweb_tts extends tts_addon
             }
         }
         // cleare playlist
-        $this->vlcweb_request('status.xml', array(
-            'command' => 'pl_empty'
-        ));
+        $this->vlcweb_request('status.xml', array('command' => 'pl_empty'));
         // play message
         if (file_exists($outlink)) {
             $message_link = preg_replace('/\\\\$/is', '', $message_link);
@@ -124,11 +122,12 @@ class vlcweb_tts extends tts_addon
                         if ($this->vlcweb_parse_xml($this->data)) {
                             $xml = $this->data;
                         }
+                        sleep(1);
                         $count = $count + 1;
                         if ($count > 30) {
+                            $this->success = FALSE;
                             break;
                         }
-                        usleep(100000);
                     }
                 } else {
                     $this->success = FALSE;
@@ -156,12 +155,12 @@ class vlcweb_tts extends tts_addon
                     if ($this->vlcweb_parse_xml($this->data)) {
                         $xml = $this->data;
                     }
+                    usleep(100000);
                     $count = $count + 1;
                     if ($count > 30) {
                         $this->success = FALSE;
                         break;
                     }
-                    usleep(100000);
                 }
             }
         } else {
@@ -200,11 +199,12 @@ class vlcweb_tts extends tts_addon
                         if ($this->vlcweb_parse_xml($this->data)) {
                             $xml = $this->data;
                         }
+                        sleep(1);
                         $count = $count + 1;
                         if ($count > 30) {
+                            $this->success = FALSE;
                             break;
                         }
-                        usleep(100000);
                     }
                 } else {
                     $this->success = FALSE;
