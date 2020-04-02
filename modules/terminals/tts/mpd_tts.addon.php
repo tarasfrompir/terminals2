@@ -53,16 +53,16 @@ class mpd_tts extends tts_addon
                 sleep($message['MESSAGE_DURATION']);
                 // контроль окончания воспроизведения медиа
                 $count = 0;
+                $this->success = TRUE;
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
-                    sleep (1);
                     $count = $count + 1;
+                    sleep (1);
                     if ($count > 10 ) {
+                        $this->success = FALSE;
                         break;
                     }
                 }
-                $this->success = TRUE;
-                
             } else {
                 $this->success = FALSE;
             }
@@ -83,17 +83,17 @@ class mpd_tts extends tts_addon
             try {
                 if ($this->mpd->SetVolume($level)) {
                     $this->success = TRUE;
-					// контроль установки громкости
-					$count = 0;
-					while ($result['volume'] != $level) {
-						$result = $this->mpd->GetStatus();
-						$count = $count + 1;
-						if ($count > 30 ) {
-	                        $this->success = FALSE;
-							break;
-						}
-						usleep (100000);
-					}
+                    // контроль установки громкости
+                    $count = 0;
+                    while ($result['volume'] != $level) {
+                        $result = $this->mpd->GetStatus();
+                        usleep (100000);
+			$count = $count + 1;
+                        if ($count > 30 ) {
+                            $this->success = FALSE;
+                            break;
+                        }
+                   }
                 } else {
                     $this->success = FALSE;
                 }
@@ -196,18 +196,19 @@ class mpd_tts extends tts_addon
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($message_link);
             if ($this->mpd->Play()) {
-                sleep($message['MESSAGE_DURATION']);
+                sleep(2);
                 // контроль окончания воспроизведения медиа
                 $count = 0;
+                $this->success = TRUE;
                 while ($result['state'] != 'stop') {
                     $result = $this->mpd->GetStatus();
                     $count = $count + 1;
+                    sleep (1);
                     if ($count > 10 ) {
+                        $this->success = FALSE;
                         break;
                     }
-                    sleep (1);
                 }
-                $this->success = TRUE;
             } else {
                 $this->success = FALSE;
             }
