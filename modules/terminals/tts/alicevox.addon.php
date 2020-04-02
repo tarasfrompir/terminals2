@@ -44,6 +44,7 @@ class alicevox extends tts_addon
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
+                        @unlink($filename);
                     } else {
                         $this->success = FALSE;
                     }
