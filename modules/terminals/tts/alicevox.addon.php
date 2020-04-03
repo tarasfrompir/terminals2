@@ -35,12 +35,13 @@ class alicevox extends tts_addon
                     define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
             }
-            safe_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename, 1, 1,usleep(100000));
+            shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 16000 " . $filename);
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $filename = 'http://' . getLocalIp() . $m[0];
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$filename."\"]},\"id\":1}";
                     $result = json_decode(getURL($url, 0), true);
+                    DebMes($result);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
