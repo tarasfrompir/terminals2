@@ -41,7 +41,6 @@ class alicevox extends tts_addon
                     $filename = 'http://' . getLocalIp() . $m[0];
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$filename."\"]},\"id\":1}";
                     $result = json_decode(getURL($url, 0), true);
-                    DebMes($result);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']);
                         $this->success = TRUE;
