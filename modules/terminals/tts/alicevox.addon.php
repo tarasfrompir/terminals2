@@ -35,7 +35,7 @@ class alicevox extends tts_addon
                     define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
             }
-            shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
+            safe_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename, 1, 1,usleep(100000));
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $filename = 'http://' . getLocalIp() . $m[0];
