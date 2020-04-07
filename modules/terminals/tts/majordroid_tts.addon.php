@@ -9,7 +9,7 @@ class majordroid_tts extends tts_addon
         $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MajorDroid API.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
-        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;change_tts_volume(), say(), sayTo(), sayReply(), ask().';
 
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
