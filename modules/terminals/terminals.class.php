@@ -164,6 +164,18 @@ class terminals extends module
                 $this->change_terminals_state($this->id);
 				$this->redirect("?ok=1");
             }
+			if ($this->view_mode == 'change_terminals_tts') {
+                $this->change_terminals_tts($this->id);
+				$this->redirect("?ok=1");
+            }
+			if ($this->view_mode == 'change_terminals_play') {
+                $this->change_terminals_play($this->id);
+				$this->redirect("?ok=1");
+            }
+			if ($this->view_mode == 'change_terminals_recognition') {
+                $this->change_terminals_recognition($this->id);
+				$this->redirect("?ok=1");
+            }
         }
         if ($this->view_mode == 'update_settings') {
             $this->config['LOG_ENABLED'] = gr('log_enabled');
@@ -175,6 +187,51 @@ class terminals extends module
         }
     }
 
+    /**
+     *
+     * @access public
+     */
+    function change_terminals_recognition($id) {
+        if ($rec = getTerminalByID($id)) {
+			if ($rec['CANRECOGNIZE'] == 1) {
+				$rec['CANRECOGNIZE'] = 0;
+			} else {
+				$rec['CANRECOGNIZE'] = 1;
+			}
+            //SQLUpdate('terminals', $rec);
+        }
+    }
+	
+    /**
+     *
+     * @access public
+     */
+    function change_terminals_play($id) {
+        if ($rec = getTerminalByID($id)) {
+			if ($rec['CANPLAY'] == 1) {
+				$rec['CANPLAY'] = 0;
+			} else {
+				$rec['CANPLAY'] = 1;
+			}
+            SQLUpdate('terminals', $rec);
+        }
+    }
+	
+    /**
+     *
+     * @access public
+     */
+    function change_terminals_tts($id) {
+        if ($rec = getTerminalByID($id)) {
+			if ($rec['CANTTS'] == 1) {
+				$rec['CANTTS'] = 0;
+			} else {
+				$rec['CANTTS'] = 1;
+			}
+            SQLUpdate('terminals', $rec);
+        }
+    }
+	
     /**
      * FrontEnd
      *
