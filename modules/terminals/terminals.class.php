@@ -160,6 +160,10 @@ class terminals extends module
                 $this->delete_terminals($this->id);
                 $this->redirect("?");
             }
+			if ($this->view_mode == 'disable_terminals') {
+                $this->disable_terminals($this->id);
+				$this->redirect("?ok=1");
+            }
         }
         if ($this->view_mode == 'update_settings') {
             $this->config['LOG_ENABLED'] = gr('log_enabled');
@@ -168,8 +172,6 @@ class terminals extends module
             $this->config['TERMINALS_PING'] = trim(gr('terminals_ping'));
             $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
             $this->saveConfig();
-
-            $this->redirect("?ok=1");
         }
     }
 
@@ -214,6 +216,19 @@ class terminals extends module
         }
     }
 
+    /**
+     * terminals disable
+     *
+     * @access public
+     */
+    function disable_terminals($id) {
+        if ($rec = getTerminalByID($id)) {
+            $rec['CANTTS'] = 0;
+            $rec['CANPLAY'] = 0;
+            SQLUpdate('terminals', $rec);
+			
+        }
+    }
 
     /**
      * terminals subscription events
