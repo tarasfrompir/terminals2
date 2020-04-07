@@ -380,7 +380,13 @@ function setMessageVolume($host = 'localhost', $level = 0) {
     // yстановим звук для сообщений на терминале
     try {
         if ($terminal['TTS_TYPE'] AND $terminal['MESSAGE_VOLUME_LEVEL'] AND stristr($file_tts, 'set_volume_notification')) {
-            $tts->set_volume_notification($terminal['MESSAGE_VOLUME_LEVEL']);
+            if ($tts->set_volume_notification($terminal['MESSAGE_VOLUME_LEVEL'])) {
+                DebMes('Звук для сообщений установлен');            
+            } else {
+                DebMes('Звук для сообщений не установлен');
+            }
+        } else {
+            DebMes('Звук для сообщений не установлен');
         }
     } catch (Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
