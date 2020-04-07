@@ -121,10 +121,23 @@
   [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
  </td>
  <td valign="top">
- [#if CANTTS="1"#]<img src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
- [#if CANPLAY="1"#]<img src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
- [#if CANRECOGNIZE="1"#]<img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
+ <a href="?view_mode=change_terminals_tts&id=[#ID#]" > 
+     <img [#if CANTTS="1"#] src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle" 
+	 [#else#] src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle;opacity: 0.3;"[#endif#]>
+	 </img>
+ </a>
+ <a href="?view_mode=change_terminals_play&id=[#ID#]" > 
+     <img [#if CANPLAY="1"#] src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle"
+	 [#else#] src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle;opacity: 0.3;" [#endif#]>
+	 </img>
+ </a>
+ <a href="?view_mode=change_terminals_recognition&id=[#ID#]" > 
+     <img [#if CANRECOGNIZE="1"#] src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle"
+	 [#else#] src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle;opacity: 0.3;" [#endif#]>
+	 </img>
+ </a>
  </td>
+ 
  <td valign="top">[#LATEST_ACTIVITY#]
  [#if IS_ONLINE="1"#]
   <font color="green">Online</font>
