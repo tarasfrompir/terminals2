@@ -404,7 +404,7 @@ class terminals extends module
         // автодобавления метода который вызывается циклом при ошибках терминала..
         addClassMethod('Terminals', 'volumeOnChangeMessage', '
 $terminal_name=gg($this->object_title.".name"); 
-setMessageVolume($terminal_name, $params['volume']);
+setMessageVolume($terminal_name, $params["volume"]);
 ');
         parent::install($parent_name);
 
