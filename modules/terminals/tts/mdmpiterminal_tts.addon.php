@@ -5,12 +5,12 @@ class mdmpiterminal_tts extends tts_addon
     
     function __construct($terminal)
     {
-        $this->title       = "MDMPiTerminal";
+        $this->title       = "mdmTerminal2";
 
-        $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MDMPiTerminal.<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Предназначен для устройств с ПО голосовых терминалов &nbsp;<a href="https://github.com/Aculeasis/mdmTerminal2">mdmTerminal2</a>. Фактически представляет собой тип терминала MajorDroid с расширенным API mdmTerminal2.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
-        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;set_volume_notification(), say(), sayTo(), sayReply(), ask().';
 
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
