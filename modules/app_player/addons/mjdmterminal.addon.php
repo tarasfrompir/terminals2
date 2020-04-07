@@ -5,8 +5,8 @@ class mjdmterminal extends app_player_addon
     
     function __construct($terminal)
     {
-        $this->title       = "MJDM Terminals player";
-        $this->description = '<b>Описание:</b>&nbsp; Используется на устройствах которые поддерживаают MJDM Terminal.<br>';
+        $this->title       = "MjDM Terminal player";
+        $this->description = '<b>Описание:</b>&nbsp;Предназначен для управления плеером устройств с ПО &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=6737">мой MjDM</a>.<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
