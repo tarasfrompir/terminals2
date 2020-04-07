@@ -7,7 +7,7 @@ class mjdmterminal_tts extends tts_addon
     {
         $this->title       = "MjDM Terminal";
 
-        $this->description = '<b>Описание:</b>&nbsp; Предназначен для Android устройств с ПО &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=6737">мой MjDM</a>. Фактически представляет собой тип терминала MajorDroid с расширенным API. Используется на устройствах которые поддерживаают "мой MjDM".<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Предназначен для Android устройств с ПО &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=6737">мой MjDM</a>. Фактически представляет собой тип терминала MajorDroid с расширенным API.<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;change_tts_volume(), say(), sayTo(), sayReply(), ask().';
  
