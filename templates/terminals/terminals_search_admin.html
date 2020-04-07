@@ -132,15 +132,12 @@
   <font color="red">Offline</font>
  [#endif#]
  </td>
- <td width="100">
+ <td>
  
   [#if "<#ACTION#>"=="admin"#]
-  
+    <a class="btn btn-default btn-sm" href="?view_mode=disable_terminals&id=[#ID#]" onClick="return confirm('Turn off terminal?')"><i class="glyphicon glyphicon-off"></i></a>
     <a class="btn btn-default btn-sm" href="?view_mode=edit_terminals&id=[#ID#]" ><i class="glyphicon glyphicon-pencil"></i></a>
-  
-  
     <a class="btn btn-default btn-sm" href="?view_mode=delete_terminals&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
-  
   [#endif ACTION#]
   
  </td>
