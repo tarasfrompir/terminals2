@@ -390,8 +390,8 @@ class terminals extends module
         subscribeToEvent($this->name, 'DAILY');
         subscribeToEvent($this->name, 'HOURLY');
         
-// автодобавления метода который вызывается циклом при ошибках терминала..
-addClassMethod('Terminals', 'MessageError', '
+        // автодобавления метода который вызывается циклом при ошибках терминала..
+        addClassMethod('Terminals', 'MessageError', '
 // $params["NAME"]; - Имя Терминала
 // $params["MESSAGE"]; - сообщение
 // $params["ERROR"]; - тип ошибки
@@ -401,8 +401,8 @@ addClassMethod('Terminals', 'MessageError', '
 // $this->linkedRoom; - привязанное помещение
 ');
         
-// автодобавления метода который вызывается циклом при ошибках терминала..
-addClassMethod('Terminals', 'volumeOnChangeMessage', '
+        // автодобавления метода который вызывается циклом при ошибках терминала..
+        addClassMethod('Terminals', 'volumeOnChangeMessage', '
 $terminal_name=gg($this->object_title.".name");
 setMessageVolume($terminal_name, $params['volume']);
 ');
