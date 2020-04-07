@@ -160,19 +160,15 @@ class terminals extends module
                 $this->delete_terminals($this->id);
                 $this->redirect("?");
             }
-			if ($this->view_mode == 'change_terminals_state') {
-                $this->change_terminals_state($this->id);
-				$this->redirect("?ok=1");
-            }
-			if ($this->view_mode == 'change_terminals_tts') {
+            if ($this->view_mode == 'change_terminals_tts') {
                 $this->change_terminals_tts($this->id);
 				$this->redirect("?ok=1");
             }
-			if ($this->view_mode == 'change_terminals_play') {
+            if ($this->view_mode == 'change_terminals_play') {
                 $this->change_terminals_play($this->id);
 				$this->redirect("?ok=1");
             }
-			if ($this->view_mode == 'change_terminals_recognition') {
+            if ($this->view_mode == 'change_terminals_recognition') {
                 $this->change_terminals_recognition($this->id);
 				$this->redirect("?ok=1");
             }
@@ -270,29 +266,6 @@ class terminals extends module
         if ($rec = getTerminalByID($id)) {
             deleteObject($rec['LINKED_OBJECT']);
             SQLExec('DELETE FROM `terminals` WHERE `ID` = ' . $rec['ID']);
-        }
-    }
-
-    /**
-     * terminals disable
-     *
-     * @access public
-     */
-    function change_terminals_state($id) {
-        if ($rec = getTerminalByID($id)) {
-			if ($rec['CANTTS'] == 1 OR $rec['CANPLAY'] == 1) {
-				$rec['CANTTS'] = 0;
-			    $rec['CANPLAY'] = 0;
-                SQLUpdate('terminals', $rec);
-			} else {
-				if ($rec['PLAYER_TYPE']) {
-					$rec['CANPLAY'] = 1;
-				}
-				if ($rec['TTS_TYPE']) {
-					$rec['CANTTS'] = 1;
-				}
-                SQLUpdate('terminals', $rec);
-			}
         }
     }
 
