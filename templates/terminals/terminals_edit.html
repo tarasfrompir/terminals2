@@ -293,7 +293,7 @@
   <div id='tts_volume'class="form-group ">
     <label class="col-lg-4 control-label" for="tts_volume">Уровень громкости сообщений:</label>
     <div class="col-lg-5">
-      <input type="range" name="message_volume_level" id="message_volume_level" value="[#MESSAGE_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput="message_volume_level_cypher.value = message_volume_level.value">
+      <input type="range" name="message_volume_level" id="message_volume_level" value="[#MESSAGE_VOLUME_LEVEL#]" min="0" max="100" style="width:90%; height: 20px;" oninput='message_volume_level_cypher.value = message_volume_level.value; callMethod("[#LINKED_OBJECT#].volumeOnChangeMessage", "volume="+message_volume_level.value);'> 
       <output name="message_volume_level_cypher" id="message_volume_level_cypher"><#MESSAGE_VOLUME_LEVEL#></output>
     </div>
   </div>
