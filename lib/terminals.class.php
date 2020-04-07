@@ -367,7 +367,7 @@ function setMessageVolume($host = 'localhost', $level = 0) {
     }
     $terminal['MESSAGE_VOLUME_LEVEL'] = $level;
     SQLUpdate('terminals', $terminal);
-    include_once (DIR_MODULES . "terminals/terminals.class.php");
+
     // подключаем класс терминала
     $addon_file = DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php';
     if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND file_exists($addon_file) ) {
@@ -376,6 +376,7 @@ function setMessageVolume($host = 'localhost', $level = 0) {
         $tts = new $terminal['TTS_TYPE']($terminal);
         $file_tts = file_get_contents($addon_file);
     }
+
     // yстановим звук для сообщений на терминале
     try {
         if ($terminal['TTS_TYPE'] AND $terminal['MESSAGE_VOLUME_LEVEL'] AND stristr($file_tts, 'set_volume_notification')) {
