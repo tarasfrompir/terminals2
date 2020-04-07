@@ -102,6 +102,9 @@
  <b><#LANG_TITLE#></b>
  </th>
  <th>
+ <b>Службы терминала</b>
+ </th>
+ <th>
  <b>Latest activity</b>
  </th>
 <th></th>
@@ -124,6 +127,11 @@
   </a></b>
   [#if CANTTS="1"#](+notifications [#TTS_TYPE#][#if MIN_MSG_LEVEL!=""#], min level: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
   [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
+ </td>
+ <td valign="top">
+ [#if CANTTS="1"#]<img src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/cantts.png" alt="CANTTS" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
+ [#if CANPLAY="1"#]<img src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/canplay.png" alt="CANPLAY" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
+ [#if CANRECOGNIZE="1"#]<img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle"></img>[#else#]<img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle;opacity: 0.3;"></img>[#endif#]
  </td>
  <td valign="top">[#LATEST_ACTIVITY#]
  [#if IS_ONLINE="1"#]
