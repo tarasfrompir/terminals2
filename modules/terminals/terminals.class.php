@@ -160,8 +160,8 @@ class terminals extends module
                 $this->delete_terminals($this->id);
                 $this->redirect("?");
             }
-			if ($this->view_mode == 'disable_terminals') {
-                $this->disable_terminals($this->id);
+			if ($this->view_mode == 'change_terminals_state') {
+                $this->change_terminals_state($this->id);
 				$this->redirect("?ok=1");
             }
         }
@@ -221,12 +221,21 @@ class terminals extends module
      *
      * @access public
      */
-    function disable_terminals($id) {
+    function change_terminals_state($id) {
         if ($rec = getTerminalByID($id)) {
-            $rec['CANTTS'] = 0;
-            $rec['CANPLAY'] = 0;
-            SQLUpdate('terminals', $rec);
-			
+			if ($rec['CANTTS'] == 1 OR $rec['CANPLAY'] == 1) {
+				$rec['CANTTS'] = 0;
+			    $rec['CANPLAY'] = 0;
+                SQLUpdate('terminals', $rec);
+			} else {
+				if ($rec['PLAYER_TYPE']) {
+					$rec['CANPLAY'] = 1;
+				}
+				if ($rec['TTS_TYPE']) {
+					$rec['CANTTS'] = 1;
+				}
+                SQLUpdate('terminals', $rec);
+			}
         }
     }
 
