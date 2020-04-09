@@ -44,7 +44,7 @@ class alicevox extends tts_addon
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$filename."\"]},\"id\":1}";
                     $result = json_decode(getURL($url, 0), true);
                     if ($result['result']=='OK') {
-                        sleep($message['MESSAGE_DURATION']);
+                        sleep($message['MESSAGE_DURATION']+3);
                         $this->success = TRUE;
                         @unlink($filename);
                     } else {
