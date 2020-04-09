@@ -17,10 +17,8 @@ class alicevox extends tts_addon
 	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+	    
         $this->dingdong = $this->setting['TTS_DINGDONG_FILE'];
-        DebMes($this->dingdong);
-
-   
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
     }
     
