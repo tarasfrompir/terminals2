@@ -17,8 +17,10 @@ class alicevox extends tts_addon
 	    
         // содержит в себе все настройки терминала кроме айпи адреса
         $this->setting = json_decode($this->terminal['TTS_SETING'], true);
+        $this->dingdong = $this->setting['TTS_DINGDONG_FILE'];
+        DebMes($this->dingdong);
 
-	$this->dingdong = $this->setting['TTS_DINGDONG_FILE'];
+   
         $this->address = 'http://'.$this->setting['TTS_USERNAME'].':'.$this->setting['TTS_PASSWORD'].'@'.$this->terminal['HOST'].':'.(empty($this->setting['TTS_PORT'])?8080:$this->setting['TTS_PORT']);
     }
     
@@ -36,7 +38,8 @@ class alicevox extends tts_addon
                     define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
             }
-            shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 24000 " . $filename);
+            shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 24000  -vn -y ' . $filename);            
+
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $filename = 'http://' . getLocalIp() . $m[0];
