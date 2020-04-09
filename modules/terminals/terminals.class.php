@@ -180,6 +180,7 @@ class terminals extends module
             $this->config['TERMINALS_PING'] = trim(gr('terminals_ping'));
             $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
             $this->saveConfig();
+            $this->redirect("?ok=1");
         }
     }
 
