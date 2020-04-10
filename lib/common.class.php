@@ -1,100 +1,4 @@
 <?php
-
-// say to all terminal where User = $user 
-function sayToUser($ph, $level = 0, $user = '')
-{
-    if (!$user) {
-        return 0;
-    }
-    // replace enter simbol
-    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
-    // get room ID
-    $users = SQLSelectOne("SELECT * FROM `users` WHERE `USERNAME` LIKE '" . $user. "' OR `NAME` LIKE '" . $user. "'");
-    // add message to chat
-    $rec               = array();
-    $rec['MESSAGE']    = $ph;
-    $rec['ADDED']      = date('Y-m-d H:i:s');
-    $rec['ROOM_ID']    = 0;
-    $rec['MEMBER_ID']  = $users['ID'];
-    $rec['IMPORTANCE'] = $level;
-    
-    $terminals = array();
-    if (!$users OR !$terminals = getTerminalsByUser($user)) {
-        return;
-	}
-	
-    foreach ($terminals as $terminal) {
-	// если пустая инфа о терминале пропускаем
-        if (!$terminal) {
-            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
-            continue;
-        }
-        if (!$terminal['USE_SYSTEM_MML']) {
-            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-            }
-        } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-            }
-        } 
-    }
-    $rec['EVENT'] = 'SAYTO';
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    processSubscriptionsSafe('SAYTO', $rec); //, 
-
-    
-    return 1;
-}
-
-// say to all terminal where location = $destination 
-function sayToLocation($ph, $level = 0, $destination = '')
-{
-    if (!$destination) {
-        return 0;
-    }
-    // replace enter simbol
-    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
-    // get room ID
-    $location = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
-    // add message to chat
-    $rec               = array();
-    $rec['MESSAGE']    = $ph;
-    $rec['ADDED']      = date('Y-m-d H:i:s');
-    $rec['ROOM_ID']    = $location['ID'];
-    $rec['MEMBER_ID']  = 0;
-    $rec['IMPORTANCE'] = $level;
-   
-    if (!$location OR !$terminals = getTerminalsByLocationId($location['ID'])) {
-        return;
-	}
-    foreach ($terminals as $terminal) {
-	// если пустая инфа о терминале пропускаем
-        if (!$terminal) {
-            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
-            continue;
-        }
-        if (!$terminal['USE_SYSTEM_MML']) {
-            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-            }
-        } else  {
-            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
-                $rec['SOURCE'] .= $terminal['ID'] . '^';
-            }
-        } 
-    }
-    $rec['EVENT'] = 'SAYTO';
-    $rec['ID'] = SQLInsert('shouts', $rec);
-
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    processSubscriptionsSafe('SAYTO', $rec); //, 
-   
-    return 1;
-}
-
 function getSystemSerial($force_update = 0) {
     $serial = gg('Serial');
     if (!$serial || $serial == '0' || $force_update) {
@@ -825,12 +729,16 @@ function runScript($id, $params = '')
 function runScriptSafe($id, $params = '')
 {
     $current_call = 'script.' . $id;
-    if (is_array($params)) {
-        $current_call.='.'.md5(json_encode($params));
-    }
     $call_stack = array();
+    if (is_array($params)) {
+        if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
+            $call_stack = $params['m_c_s'];
+        }
+        unset($params['m_c_s']);
+        $current_call .= '.' . md5(json_encode($params));
+    }
     if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
-        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s'])) {
+        if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
             $call_stack = $_GET['m_c_s'];
         }
         if (in_array($current_call, $call_stack)) {
@@ -839,19 +747,19 @@ function runScriptSafe($id, $params = '')
             return 0;
         }
     }
-    $call_stack[] = $current_call;
+  
     if (!is_array($params)) {
         $params = array();
     }
-    if (isSet($_SERVER['REQUEST_URI'])) {
+
+    $call_stack[] = $current_call;
+    $params['m_c_s'] = $call_stack;       
+
+    if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && count($call_stack)>1) {
         $result = runScript($id,$params);
     } else {
-        $params['m_c_s'] = $call_stack;
-        if (session_id()) {
-            $params[session_name()] = session_id();
-        }
         $result = callAPI('/api/script/' . urlencode($id), 'GET', $params);
-    }
+    }  
     return $result;
 }
 
@@ -1742,3 +1650,100 @@ function chekUser($params = array()) {
 	}
     }
 }
+
+
+// say to all terminal where User = $user 
+function sayToUser($ph, $level = 0, $user = '')
+{
+    if (!$user) {
+        return 0;
+    }
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    // get room ID
+    $users = SQLSelectOne("SELECT * FROM `users` WHERE `USERNAME` LIKE '" . $user. "' OR `NAME` LIKE '" . $user. "'");
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = $users['ID'];
+    $rec['IMPORTANCE'] = $level;
+    
+    $terminals = array();
+    if (!$users OR !$terminals = getTerminalsByUser($user)) {
+        return;
+	}
+	
+    foreach ($terminals as $terminal) {
+	// если пустая инфа о терминале пропускаем
+        if (!$terminal) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if (!$terminal['USE_SYSTEM_MML']) {
+            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+            }
+        } else  {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+            }
+        } 
+    }
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+
+    
+    return 1;
+}
+
+// say to all terminal where location = $destination 
+function sayToLocation($ph, $level = 0, $destination = '')
+{
+    if (!$destination) {
+        return 0;
+    }
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    // get room ID
+    $location = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = $location['ID'];
+    $rec['MEMBER_ID']  = 0;
+    $rec['IMPORTANCE'] = $level;
+   
+    if (!$location OR !$terminals = getTerminalsByLocationId($location['ID'])) {
+        return;
+	}
+    foreach ($terminals as $terminal) {
+	// если пустая инфа о терминале пропускаем
+        if (!$terminal) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if (!$terminal['USE_SYSTEM_MML']) {
+            if ((int)$rec['IMPORTANCE'] >= (int)$terminal['MIN_MSG_LEVEL'] AND $terminal['IS_ONLINE'] AND $terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE']) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+            }
+        } else  {
+            if ($terminal['LINKED_OBJECT'] AND $terminal['CANTTS'] AND $terminal['IS_ONLINE'] AND $terminal['TTS_TYPE'] AND (int)$rec['IMPORTANCE'] >= (int) getGlobal('minMsgLevel')) {
+                $rec['SOURCE'] .= $terminal['ID'] . '^';
+            }
+        } 
+    }
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
+    processSubscriptionsSafe('SAYTO', $rec); //, 
+   
+    return 1;
+}
+
