@@ -39,7 +39,7 @@ class alicevox extends tts_addon
             if ($this->dingdong) {
                 shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
             } else {
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
+                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 -y " . $filename);
             }
 
             if (file_exists($filename)) {
