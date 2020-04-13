@@ -40,8 +40,8 @@ class alicevox extends tts_addon
 
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
-                    $filename = 'http://' . getLocalIp() . $m[0];
-                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"".$filename."\"]},\"id\":1}";
+                    $LinkName = 'http://' . getLocalIp() . $m[0];
+                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"" . $LinkName . "\"]},\"id\":1}";
                     $result = json_decode(getURL($url, 0), true);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']+3);
