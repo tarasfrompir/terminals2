@@ -36,7 +36,11 @@ class alicevox extends tts_addon
                     define("PATH_TO_FFMPEG", 'ffmpeg');
                 }
             }
-            shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 24000  -vn -y ' . $filename);            
+            if ($this->dingdong) {
+                shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
+            } else {
+                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 " . $filename);
+            }
 
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
