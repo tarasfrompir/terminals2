@@ -37,17 +37,15 @@ class alicevox extends tts_addon
                 }
             }
             if ($this->dingdong) {
-                $result = shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
+                shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
             } else {
-                $result = shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 -y " . $filename);
+                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 -y " . $filename);
             }
 
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $LinkName = 'http://' . getLocalIp() . $m[0];
-                    DebMes($LinkName);
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"" . $LinkName . "\"]},\"id\":1}";
-                    DebMes($url);
                     $result = json_decode(getURL($url, 0), true);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']+3);
