@@ -296,7 +296,6 @@ class mpd extends app_player_addon
     // restore playlist
     function restore_playlist($playlist_id = 0, $playlist_content = array(), $track_id = 0, $time = 0, $state = 'stopped')
     {
-        DebMes($state);
         if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
         if ($this->mpd->connected) {
@@ -314,7 +313,6 @@ class mpd extends app_player_addon
                 switch ($state) {
                     case 'playing':
                         if ($this->mpd->Play()) {
-                            DebMes('play mpd-');
                             $this->success = TRUE;
                             $this->message = 'OK';
                         } else {
@@ -397,7 +395,6 @@ class mpd extends app_player_addon
         if ($this->mpd->connected) {
             $playlist_content = $this->mpd->GetPlaylistinfo();
         }
-        DebMes($result['state']);
 	switch (strtolower($result['state'])) {
             case 'play':
                 $result['state'] = 'playing';
