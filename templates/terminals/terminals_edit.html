@@ -302,11 +302,12 @@
   [#begin TTS_SOUND_DEVICES#]
   <script type="text/javascript">
     $(document).ready(function() {
+        $('option:selected', document.getElementById("tts_sound_device_id")).hide().siblings().show(); 
         var tts_sound_device_id = document.getElementById("tts_sound_device_id");
-    var opt = document.createElement("option");
-    opt.value = '[#NAME#]';
-    opt.text = '[#NAME#]';
-    tts_sound_device_id.add(opt, null);
+        var opt = document.createElement("option");
+        opt.value = '[#NAME#]';
+        opt.text = '[#NAME#]';
+        tts_sound_device_id.add(opt, null);
     });
   </script>
   [#end TTS_SOUND_DEVICES#]
@@ -315,11 +316,12 @@
   [#begin TTS_DINGDONG_FILES#]
   <script type="text/javascript">
     $(document).ready(function() {
-        var tts_sound_device_id = document.getElementById("tts_dingdong_file_id");
+        $('option:selected', document.getElementById("tts_dingdong_file_id")).hide().siblings().show(); 
+        var tts_dingdong_file_id = document.getElementById("tts_dingdong_file_id");
 		var opt = document.createElement("option");
 		opt.value = '[#NAME#]';
 		opt.text = '[#NAME#]';
-		tts_sound_device_id.add(opt, null);
+		tts_dingdong_file_id.add(opt, null);
     });
   </script>
   [#end TTS_DINGDONG_FILES#]  
@@ -357,7 +359,7 @@
   <div id="tts_sound_device" class="form-group">
     <label class="col-lg-4 control-label" for="tts_type">Номер аудиоустройства TTS:</label>
     <div class="col-lg-5">
-      <select id="tts_sound_device_id" name="tts_sound_device"  class="form-control"  onchange="return tts_sound_device($(this).val());">
+      <select id="tts_sound_device_id" name="tts_sound_device"  class="form-control" onchange="return tts_sound_device($(this).val());">
         <option value="">Выберите аудиоустройство для TTS</option>
         [#if TTS_SOUND_DEVICE !="" #] <option value="[#TTS_SOUND_DEVICE#]" selected[#endif#] >[#TTS_SOUND_DEVICE#]</option>  [#endif TTS_SOUND_DEVICE#]
         <!-- see addon for list sound device -->
