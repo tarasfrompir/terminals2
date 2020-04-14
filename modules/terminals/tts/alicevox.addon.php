@@ -28,7 +28,7 @@ class alicevox extends tts_addon
     {
        if ($message['CACHED_FILENAME']) {
             $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . $this->terminal['NAME'].'.wav';
+            $filename = $fileinfo[dirname] . '/' . rand(1000000000,9000000000).'.wav';
             if (!defined('PATH_TO_FFMPEG')) {
                 if (IsWindowsOS()) {
                     define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
@@ -37,15 +37,17 @@ class alicevox extends tts_addon
                 }
             }
             if ($this->dingdong) {
-                shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
+                $result = shell_exec(PATH_TO_FFMPEG . ' -i ' . ROOT . "cms/cached/sounds/" . $this->dingdong . ' -i ' . $message['CACHED_FILENAME'] . ' -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 44100  -vn -y ' . $filename);
             } else {
-                shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 -y " . $filename);
+                $result = shell_exec(PATH_TO_FFMPEG . " -i " . $message['CACHED_FILENAME'] . " -acodec pcm_s16le -ac 1 -ar 44100 -y " . $filename);
             }
 
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $LinkName = 'http://' . getLocalIp() . $m[0];
+                    DebMes($LinkName);
                     $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"" . $LinkName . "\"]},\"id\":1}";
+                    DebMes($url);
                     $result = json_decode(getURL($url, 0), true);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']+3);
