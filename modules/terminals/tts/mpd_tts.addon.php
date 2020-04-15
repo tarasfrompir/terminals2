@@ -178,24 +178,23 @@ class mpd_tts extends tts_addon
     // Say
     public function play_media ($link)
     {
-        if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
+	// проверяем айпи
+        $server_ip = getLocalIp();
+        if (!$server_ip) {
+            DebMes("Server IP not found", 'terminals');
+            return false;
+        }
+	if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
             $this->mpd->Connect();
         if ($this->mpd->connected) {
-            // берем ссылку http
-            if (preg_match('/\/cms\/cached.+/', $link, $m)) {
-                $server_ip = getLocalIp();
-                if (!$server_ip) {
-                    DebMes("Server IP not found", 'terminals');
-                    return false;
-                } else {
-                    $message_link = 'http://' . $server_ip . $m[0];
-                }
-            }
+            // превращаем в адрес 
+            $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT, "", $link);
+		
             $this->mpd->SetRepeat(0);
             $this->mpd->SetRandom(0);
             $this->mpd->SetCrossfade(0);
             $this->mpd->PLClear();
-            $this->mpd->PLAddFile($message_link);
+            $this->mpd->PLAddFile($file_link);
             if ($this->mpd->Play()) {
                 sleep(2);
                 // контроль окончания воспроизведения медиа
