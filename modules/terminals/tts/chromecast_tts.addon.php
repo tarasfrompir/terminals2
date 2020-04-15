@@ -135,18 +135,38 @@ class chromecast_tts extends tts_addon
     
     public function play_media($link) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
-        if (preg_match('/\/cms\/cached.+/', $link, $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
-                return false;
-            } else {
-                $message_link = 'http://' . $server_ip . $m[0];
-            }
+        // проверяем айпи
+		$server_ip = getLocalIp();
+        if (!$server_ip) {
+            DebMes("Server IP not found", 'terminals');
+            return false;
         }
+		
+		// проверяем файл на нужный формат
+		$fileinfo = pathinfo($link);
+		// если не он то конвертируем в кеш
+		if (fileinfo['extension'] !='mp3') {
+			$linknold = $link;
+			$link = ROOT . "cms/cached/voice/" . $fileinfo['filename'] . '.mp3';
+			if (!file_exists($link)) {
+			    DebMes('convert');
+				if (!defined('PATH_TO_FFMPEG')) {
+					if (IsWindowsOS()) {
+						define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
+					} else {
+						define("PATH_TO_FFMPEG", 'ffmpeg');
+					}
+				}
+				shell_exec(PATH_TO_FFMPEG . " -i " . $linknold . " -vn -ar 44100 -ac 2 -b:a 192k -y " . $link);
+			}
+		}
+        
+		// превращаем в адрес 
+        $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT , "", $link);
+		
         $cc = new GChromecast($this->terminal['HOST'], $this->port);
         $cc->requestId = time();
-        while (!$cc->load($message_link, 0)) {
+        while (!$cc->load($file_link, 0)) {
             $count = $count + 1;
             if ($count > 30 ) {
                 break;
