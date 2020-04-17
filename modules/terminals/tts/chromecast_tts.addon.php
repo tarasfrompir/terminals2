@@ -185,18 +185,8 @@ class chromecast_tts extends tts_addon
         $cc->requestId = time();
         $response = $cc->play();
         if ($response) {
-            sleep(2);
+            sleep(get_media_info($file_link)['duration']);
             $this->success = TRUE;
-            while (strtolower($result['status'][0]['playerState']) != 'stop') {
-                $this->cc->requestId = time();
-                $result = $this->cc->getStatus();      
-                $count = $count + 1;
-                sleep (1);
-                if ($count > 10 ) {
-                    $this->success = FALSE;
-                    break;
-                }
-            }
         } else {
             $this->success = FALSE;
         }
