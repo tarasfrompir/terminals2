@@ -125,7 +125,7 @@ class GChromecast
 	
 	function getMediaSession() {
 		$this->getStatus(); 
-		if (is_array($this->namespaces) AND in_array("urn:x-cast:com.google.cast.media", array_column($this->namespaces, 'name'))) {
+		if ($this->appid != '233637DE' AND is_array($this->namespaces) AND in_array("urn:x-cast:com.google.cast.media", array_column($this->namespaces, 'name'))) {
 			$this->connect();
 		} else {
 			$this->launch('CC1AD845');
