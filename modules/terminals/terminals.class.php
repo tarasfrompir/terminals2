@@ -336,13 +336,11 @@ class terminals extends module
             $this->getConfig();
             $terminals = SQLSelect("SELECT * FROM `terminals`");
             foreach ($terminals as $terminal) {
-		setTimeOut('ping Terminal'.gg($terminal['LINKED_OBJECT'], " 
-		    if(!gg($terminal['LINKED_OBJECT'] . '.TerminalState')) {
-                        if ($this->config['LOG_ENABLED']) DebMes('Terminal free and can pinged hourly - ' . $terminal['NAME'] , 'terminals');
-                        sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                        pingTerminalSafe($terminal['NAME'], $terminal);
-                    }",150);
-               
+                if(!gg($terminal['LINKED_OBJECT'] . '.TerminalState')) {
+                   if ($this->config['LOG_ENABLED']) DebMes('Terminal free and can pinged hourly - ' . $terminal['NAME'] , 'terminals');
+                   sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
+                   pingTerminalSafe($terminal['NAME'], $terminal);
+                    }
             }
         } else if ($event == 'DAILY') {
             $this->getConfig();
