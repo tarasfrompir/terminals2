@@ -157,6 +157,7 @@ class mpd extends app_player_addon
             try {
                 $this->mpd->PLClear();
                 if ($this->mpd->PLAddFile($input)) {
+		    $this->mpd->Play();
                     $this->message = 'OK';
                     $this->success = TRUE;
                 } else {
