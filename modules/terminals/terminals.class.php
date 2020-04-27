@@ -136,10 +136,15 @@ class terminals extends module
         } else {
             $out['TERMINALS_DINGDONG'] = 'dingdong.mp3';
         }
-        if ($this->config['TERMINALS_PING']) {
-            $out['TERMINALS_PING'] = $this->config['TERMINALS_PING'];
+        if ($this->config['TERMINALS_PING_OFFLINE']) {
+            $out['TERMINALS_PING_OFFLINE'] = $this->config['TERMINALS_PING_OFFLINE'];
         } else {
-            $out['TERMINALS_PING'] = 27;
+            $out['TERMINALS_PING_OFFLINE'] = 27;
+        }
+        if ($this->config['TERMINALS_PING_ONLINE']) {
+            $out['TERMINALS_PING_ONLINE'] = $this->config['TERMINALS_PING_ONLINE'];
+        } else {
+            $out['TERMINALS_PING_ONLINE'] = 54;
         }
         if ($this->config['TERMINALS_CASH_CLEAR']) {
             $out['TERMINALS_CASH_CLEAR'] = $this->config['TERMINALS_CASH_CLEAR'];
@@ -176,7 +181,8 @@ class terminals extends module
         if ($this->view_mode == 'update_settings') {
             $this->config['LOG_ENABLED'] = gr('log_enabled');
             $this->config['TERMINALS_DINGDONG'] = gr('dingdong_path');
-            $this->config['TERMINALS_TIMEOUT'] = trim(gr('terminals_timeout'));
+            $this->config['TERMINALS_PING_OFFLINE'] = trim(gr('terminals_ping_offline'));
+            $this->config['TERMINALS_PING_ONLINE'] = trim(gr('terminals_ping_online'));
             $this->config['TERMINALS_PING'] = trim(gr('terminals_ping'));
             $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
             $this->saveConfig();
@@ -332,16 +338,6 @@ class terminals extends module
             } catch (Exception $e) {
                 if ($this->config['LOG_ENABLED']) DebMes("Terminal terminated, not work addon - " . $terminal['NAME'] , 'terminals');
             }
-        } else if ($event == 'HOURLY') {
-            $this->getConfig();
-            $terminals = SQLSelect("SELECT * FROM `terminals`");
-            foreach ($terminals as $terminal) {
-                if(!gg($terminal['LINKED_OBJECT'] . '.TerminalState')) {
-                   if ($this->config['LOG_ENABLED']) DebMes('Terminal free and can pinged hourly - ' . $terminal['NAME'] , 'terminals');
-                   sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                   pingTerminalSafe($terminal['NAME'], $terminal);
-                    }
-            }
         } else if ($event == 'DAILY') {
             $this->getConfig();
             // проверяем, что каталог
@@ -443,6 +439,7 @@ class terminals extends module
         subscribeToEvent($this->name, 'ASK', 0);
         subscribeToEvent($this->name, 'DAILY');
         subscribeToEvent($this->name, 'HOURLY');
+        unsubscribeFromEvent($this->name, 'HOURLY');
         
         // автодобавления метода который вызывается циклом при ошибках терминала..
         addClassMethod('Terminals', 'MessageError', '
