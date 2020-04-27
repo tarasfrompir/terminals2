@@ -196,11 +196,11 @@ class terminals extends module
      */
     function change_terminals_recognition($id) {
         if ($rec = getTerminalByID($id)) {
-			if ($rec['CANRECOGNIZE'] == 1) {
-				$rec['CANRECOGNIZE'] = 0;
-			} else {
-				$rec['CANRECOGNIZE'] = 1;
-			}
+            if ($rec['CANRECOGNIZE'] == 1) {
+		$rec['CANRECOGNIZE'] = 0;
+            } else {
+                $rec['CANRECOGNIZE'] = 1;
+            }
             //SQLUpdate('terminals', $rec);
         }
     }
@@ -211,11 +211,11 @@ class terminals extends module
      */
     function change_terminals_play($id) {
         if ($rec = getTerminalByID($id)) {
-			if ($rec['CANPLAY'] == 1) {
-				$rec['CANPLAY'] = 0;
-			} else {
-				$rec['CANPLAY'] = 1;
-			}
+            if ($rec['CANPLAY'] == 1) {
+                $rec['CANPLAY'] = 0;
+            } else {
+                $rec['CANPLAY'] = 1;
+            }
             SQLUpdate('terminals', $rec);
         }
     }
@@ -226,11 +226,11 @@ class terminals extends module
      */
     function change_terminals_tts($id) {
         if ($rec = getTerminalByID($id)) {
-			if ($rec['CANTTS'] == 1) {
-				$rec['CANTTS'] = 0;
-			} else {
-				$rec['CANTTS'] = 1;
-			}
+            if ($rec['CANTTS'] == 1) {
+                $rec['CANTTS'] = 0;
+            } else {
+                $rec['CANTTS'] = 1;
+            }
             SQLUpdate('terminals', $rec);
         }
     }
