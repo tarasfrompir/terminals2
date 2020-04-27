@@ -43,11 +43,19 @@ while (1) {
             setGlobal('cycle_terminalsControl', 'stop');
         }
         $ter->getConfig();
-        if (!$ter->config['TERMINALS_PING']) {
-            if ($ter->config['LOG_ENABLED'])
-                DebMes("Timeout for ping terminals is null minutes, set default 30 minutes", 'terminals');
-            $ter->config['TERMINALS_PING'] = 30;
+        
+        //получаем таймут для офлайновых терминалов
+        if (!$ter->config['TERMINALS_PING_OFFLINE']) {
+            $ter->config['TERMINALS_PING_OFFLINE'] = 27;
+            if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping offline terminals is ".$ter->config['TERMINALS_PING_OFFLINE']." minutes", 'terminals');
         }
+        
+        //полуйчаем таймаут для онлайновых терминалов
+        if (!$ter->config['TERMINALS_PING_ONLINE']) {
+            $ter->config['TERMINALS_PING_ONLINE'] = 54;
+            if ($ter->config['LOG_ENABLED'])  DebMes("Timeout for ping online terminals is ".$ter->config['TERMINALS_PING_ONLINE']." minutes", 'terminals');
+        }
+        // получаем таймаут жизни сообщений
         if (!$ter->config['TERMINALS_TIMEOUT']) {
             if ($ter->config['LOG_ENABLED'])
                 DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
@@ -67,7 +75,7 @@ while (1) {
         }
     }
 
-    // CHEK next message for terminals ready
+    // проверяем наличие следующего номера сообщения для терминалов
     $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
     if ($message) {
         $number_message = $number_message + 1;
@@ -123,8 +131,20 @@ while (1) {
         }
 
 
-        // если терминал СВОБОДНЫЙ и офлайн то пингуем его
-        if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        // если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
+        if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+            try {
+                //установим флаг занятости терминала
+                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($terminal['NAME'], $terminal);
+                continue;
+            } catch (Exception $e) {
+                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
+            }
+        }
+        
+        // если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
+        if ($terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
