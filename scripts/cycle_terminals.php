@@ -35,7 +35,7 @@ DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 while (1) {
     // time update cicle of terminal
-    if (time() - $checked_time > 30) {
+    if (time() - $checked_time > 20) {
         // проверка на установленность терминалов2
         if (!function_exists('restore_terminal_state')) {
             DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
