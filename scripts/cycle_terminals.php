@@ -132,7 +132,7 @@ while (1) {
 
 
         // если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -144,7 +144,7 @@ while (1) {
         }
         
         // если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        if ($terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
