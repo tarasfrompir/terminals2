@@ -380,7 +380,7 @@ function setMessageVolume($host = 'localhost', $level = 0) {
     try {
         if ($terminal['TTS_TYPE'] AND $terminal['MESSAGE_VOLUME_LEVEL'] AND stristr($file_tts, 'set_volume_notification')) {
             if ($tts->set_volume_notification($terminal['MESSAGE_VOLUME_LEVEL'])) {
-                DebMes('Звук для сообщений установлен');            
+                //DebMes('Звук для сообщений установлен');            
             } 
         } 
     } catch (Exception $e) {
