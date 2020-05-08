@@ -72,10 +72,13 @@ class alicevox extends tts_addon
         // proverka na otvet
         $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
         $result = json_decode(getURL($url, 0), true);
+        DebMes(serialize($result));
         if ($result['error']) {
             $this->success = FALSE;
-        } else {
+        } else if (is_array($result)) {
             $this->success = TRUE;
+        } else {
+            $this->success = FALSE;
         }
         return $this->success;
     }
