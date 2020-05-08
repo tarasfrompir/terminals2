@@ -630,7 +630,7 @@ function send_message($terminalname, $message, $terminal) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal say with say_media_message function on terminal - " . $terminalname, 'terminals');
         } else {
             sleep(1);
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal not right configured - " . $terminalname, 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("function say can not send message to Terminal - " . $terminalname, 'terminals');
         }
         if (!$out) {
             if ($ter->config['LOG_ENABLED']) DebMes("ERROR with Sending Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . "to : " . $terminalname, 'terminals');
