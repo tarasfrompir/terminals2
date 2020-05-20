@@ -45,8 +45,8 @@ class alicevox extends tts_addon
             if (file_exists($filename)) {
                 if (preg_match('/\/cms\/cached.+/', $filename, $m)) {
                     $LinkName = 'http://' . getLocalIp() . $m[0];
-                    $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"" . $LinkName . "\"]},\"id\":1}";
-                    $result = json_decode(getURL($url, 0), true);
+                    $command = "{\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"" . $LinkName . "\"]},\"id\":1}";
+	            	$result = $this->send_command($command);
                     if ($result['result']=='OK') {
                         sleep($message['MESSAGE_DURATION']+3);
                         $this->success = TRUE;
@@ -70,8 +70,10 @@ class alicevox extends tts_addon
     function ping_terminal($host)
     {
         // proverka na otvet
-        $url = $this->address."/jsonrpc?request={\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
-        $result = json_decode(getURL($url, 0), true);
+        $command = "{\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
+		$result = $this->send_command($command);
+		
+        DebMes($result);
         if ($result['error']) {
             $this->success = FALSE;
         } else if (is_array($result)) {
@@ -80,5 +82,37 @@ class alicevox extends tts_addon
             $this->success = FALSE;
         }
         return $this->success;
+    }
+    
+    private function send_command($data=null, $timeout=3) {
+        $_curlHdl = curl_init();
+        curl_setopt($_curlHdl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($_curlHdl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($_curlHdl, CURLOPT_CONNECTTIMEOUT, 7);
+        curl_setopt($_curlHdl, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($_curlHdl, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($_curlHdl, CURLINFO_HEADER_OUT, true);
+        curl_setopt($_curlHdl, CURLOPT_POST, true);
+        curl_setopt($_curlHdl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($_curlHdl, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Content-Length: ' . strlen($data))
+		);
+
+        $url =  $this->address.'/jsonrpc';
+        curl_setopt($_curlHdl, CURLOPT_URL, $url);
+
+        $answer = curl_exec($_curlHdl);
+        if(curl_errno($_curlHdl)) {
+            return array('error'=>curl_error($_curlHdl));
+        }
+
+        if ($answer == false) {
+            return array('error'=>"Couldn't reach Kodi device.");
+        }
+
+        $answer = json_decode($answer, true);
+        if (isset($answer['error']) ) return array('result'=>null, 'error'=>$answer['error']);
+        return array('result'=>$answer['result']);
     }
 }
