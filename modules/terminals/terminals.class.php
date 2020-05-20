@@ -501,6 +501,7 @@ setMessageVolume($terminal_name, $params["volume"]);
  terminals: MIN_MSG_LEVEL varchar(255) NOT NULL DEFAULT ''
  terminals: TTS_TYPE char(20) NOT NULL DEFAULT ''
  terminals: TTS_SETING longtext NOT NULL DEFAULT ''
+ terminals: TTS_IS_ONLINE int(1) NOT NULL DEFAULT '0'
  terminals: PLAYER_TYPE char(20) NOT NULL DEFAULT ''
  terminals: PLAYER_PORT varchar(255) NOT NULL DEFAULT ''
  terminals: PLAYER_USERNAME varchar(255) NOT NULL DEFAULT ''
