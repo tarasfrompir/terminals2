@@ -71,10 +71,8 @@ class alicevox extends tts_addon
     {
         // proverka na otvet
         $command = "{\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
-		$result = $this->send_command($command);
-		
-        DebMes($result);
-        if ($result['error']) {
+        $result = $this->send_command($command);
+	if ($result['error']) {
             $this->success = FALSE;
         } else if (is_array($result)) {
             $this->success = TRUE;
