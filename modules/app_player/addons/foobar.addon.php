@@ -14,7 +14,7 @@ class foobar extends app_player_addon {
 	function __construct($terminal) {
 		$this->title = 'Foobar2000';
 		$this->description = '<b>Описание:</b>&nbsp; Мощный медиаплеер, созданный одним из разработчиков WinAmp.<br>';
-		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Нет (если ТТС такого же типа, что и плеер).<br>';
+		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Не применимо (нет такого ТТС плеера).<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8888 (если по умолчанию, можно не указывать).';
 				
