@@ -132,19 +132,19 @@ function sayTo($ph, $level = 0, $destination = '')
 
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
-        if (!$terminal) {
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
             if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
         } else  {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
@@ -230,19 +230,19 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
-        if (!$terminal) {
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
             if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
         } else  {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
@@ -1637,19 +1637,19 @@ function sayToUser($ph, $level = 0, $user = '')
 	
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
-        if (!$terminal) {
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
             if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
         } else  {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
@@ -1690,19 +1690,19 @@ function sayToLocation($ph, $level = 0, $destination = '')
 
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
-        if (!$terminal) {
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
             DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
             if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
         } else  {
             if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
-                if ($terminal['IS_ONLINE'] AND $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
                     $rec['SOURCE'] .= $terminal['ID'] . '^';
                 }
             }
