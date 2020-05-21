@@ -131,24 +131,24 @@ while (1) {
         }
 
 
-        // если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if (!$terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        // сервис CANTTS если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
+        if (!$terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal);
+                pingTerminalSafe($terminal['NAME'], $terminal,'CANTTS');
                 continue;
             } catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
         
-        // если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
+        // сервис CANTTS если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
+        if ($terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal);
+                pingTerminalSafe($terminal['NAME'], $terminal,'CANTTS');
                 continue;
             } catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
