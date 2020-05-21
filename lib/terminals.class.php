@@ -423,8 +423,7 @@ function pingTerminal($terminal, $details, $service) {
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-    DebMes($service);
-   	if ($service == 'CANTTS' AND $details['TTS_TYPE']) {
+    if ($service == 'CANTTS' AND $details['TTS_TYPE']) {
        	try {
             // пробуем найти встроенные функции пинга для этого вида терминала
             $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
@@ -454,36 +453,36 @@ function pingTerminal($terminal, $details, $service) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
    	} else if ($service == 'CANPLAY' AND $details['PLAYER_TYPE']) {
-       	try {
-            // пробуем найти встроенные функции пинга для этого вида терминала
-            // подключаем класс плеера
-            $addon_file = DIR_MODULES . 'app_player/addons/' . $details['PLAYER_TYPE'] . '.addon.php';
-            if ($details['CANPLAY'] AND file_exists($addon_file) ) {
-                include_once DIR_MODULES . 'app_player/addons.php';
-                include_once ($addon_file);
-                $player = new $details['PLAYER_TYPE']($details);
-                $out = $player->ping_mediaservice($details['HOST']);
-                if ($ter->config['LOG_ENABLED']) DebMes("Try to ping player service - " . $terminal , 'terminals');
-            } else {
-                if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+       	    try {
+                // пробуем найти встроенные функции пинга для этого вида терминала
+                // подключаем класс плеера
+                $addon_file = DIR_MODULES . 'app_player/addons/' . $details['PLAYER_TYPE'] . '.addon.php';
+                if ($details['CANPLAY'] AND file_exists($addon_file) ) {
+                    include_once DIR_MODULES . 'app_player/addons.php';
+                    include_once ($addon_file);
+                    $player = new $details['PLAYER_TYPE']($details);
+                    $out = $player->ping_mediaservice($details['HOST']);
+                    if ($ter->config['LOG_ENABLED']) DebMes("Try to ping player service - " . $terminal , 'terminals');
+                } else {
+                    if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+                }
+            } catch (Exception $e) {
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
             }
-        } catch (Exception $e) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
-        }
-        if ($out) {
-            //sg($details['LINKED_OBJECT'] . '.status', '1');
-            //sg($details['LINKED_OBJECT'] . '.alive', '1');
-            $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-            $rec['PLAYER_IS_ONLINE'] = 1;
-        } else {
-            //sg($details['LINKED_OBJECT'] . '.status', '0');
-            //sg($details['LINKED_OBJECT'] . '.alive', '0');
-            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-            $rec['PLAYER_IS_ONLINE'] = 0;
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
-        }
-   	}
+            if ($out) {
+                //sg($details['LINKED_OBJECT'] . '.status', '1');
+                //sg($details['LINKED_OBJECT'] . '.alive', '1');
+                $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+                $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+                $rec['PLAYER_IS_ONLINE'] = 1;
+            } else {
+                //sg($details['LINKED_OBJECT'] . '.status', '0');
+                //sg($details['LINKED_OBJECT'] . '.alive', '0');
+                $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+                $rec['PLAYER_IS_ONLINE'] = 0;
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
+            }
+    }
     SQLUpdate('terminals', $rec);
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
