@@ -81,7 +81,7 @@ class chromecast_tts extends tts_addon
     }
     
     // ping terminal
-    public function ping_terminal($host)
+    public function ping_ttsservice($host)
     {
         if (ping($host)) {
             $cc = new GChromecast($this->terminal['HOST'], $this->port);
