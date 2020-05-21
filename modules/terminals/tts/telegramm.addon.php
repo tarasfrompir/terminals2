@@ -8,7 +8,7 @@ class telegramm extends tts_addon
         
         $this->title       = "Telegramm module";
         $this->description = '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2768&sid=89e1057b5d8345f7983111f006d41154">модуль Телеграм</a>. Без этого модуля ничего работать не будет.<br>';
-        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование устройства проводится проверкой состояния сервиса).<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
         
         $this->terminal = $terminal;
