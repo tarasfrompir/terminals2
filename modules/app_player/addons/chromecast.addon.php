@@ -185,6 +185,22 @@ class chromecast extends app_player_addon
         return $this->success;
     }
     
+    // ping mediaservise
+    public function ping_mediaservice($host)
+    {
+        if (ping($host)) {
+            $this->Gcc->requestId = time();
+            $status = $this->Gcc->getStatus();
+            if (is_array($status)) {
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
 }
 
 ?>
