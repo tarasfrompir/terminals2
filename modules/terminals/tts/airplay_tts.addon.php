@@ -8,7 +8,11 @@ class airplay_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = "Airplay";
-        $this->description = '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Для работы использует устройства поддерживающие протокол AirPlay</a>.<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7000 (если по умолчанию, можно не указывать).<br>';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo().';
+        
         $this->terminal    = $terminal;
         if (!$this->terminal['HOST'])
             return false;
