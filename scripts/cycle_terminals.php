@@ -154,54 +154,6 @@ while (1) {
             }
         }
         
-       // сервис CANPLAY если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if ($terminal['CANPLAY'] AND !$terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANPLAY');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-        
-        // сервис CANPLAY если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['CANPLAY'] AND $terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANPLAY');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-        
-        // сервис CANRECOGNIZE если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if ($terminal['CANRECOGNIZE'] AND !$terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANRECOGNIZE');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-        
-        // сервис CANRECOGNIZE если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['CANRECOGNIZE'] AND $terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANRECOGNIZE');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-
         // берем первоочередное сообщение
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 
