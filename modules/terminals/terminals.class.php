@@ -370,9 +370,19 @@ class terminals extends module
                 }
             }
         } else if ($event == 'HOURLY') {
+            // ping player state
             $terminals = getTerminalsCanPlay();
             foreach ($terminals as $terminal) {
                 pingTerminalSafe($terminal['NAME'], $terminal , 'CANPLAY');
+            }
+            // ping device state
+            $terminals = getAllTerminals();
+            foreach ($terminals as $terminal) {
+                $out = ping($terminal['HOST']);
+                if ($out) {
+                    $terminal['IS_ONLINE'] = 1;
+                    SQLUpdate('terminals', $terminal);
+                }
             }
         }
     }
