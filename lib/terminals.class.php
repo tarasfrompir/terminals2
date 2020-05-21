@@ -411,12 +411,11 @@ function setTerminalMML($host = 'localhost', $mml = 0) {
 }
 
 // check terminal
-function pingTerminal($terminal, $details) {
+function pingTerminal($terminal, $details, $service) {
     if (!$terminal) {
         sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
         return;
     }
-
     include_once (DIR_MODULES . "terminals/terminals.class.php");
     $ter = new terminals();
     $ter->getConfig();
@@ -424,45 +423,46 @@ function pingTerminal($terminal, $details) {
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-   	try {
-        // пробуем найти встроенные функции пинга для этого вида терминала
-        $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
-        if (file_exists($addon_file)) {
-            include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
-            include_once ($addon_file);
-            $ping_t = new $details['TTS_TYPE']($details);
-            $out = $ping_t->ping_terminal($details['HOST']);
-            if ($ter->config['LOG_ENABLED']) DebMes("Try to ping - " . $terminal , 'terminals');
-        } else {
-            if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+   	if ($service == 'CANTTS') {
+       	try {
+            // пробуем найти встроенные функции пинга для этого вида терминала
+            $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
+            if (file_exists($addon_file)) {
+                include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
+                include_once ($addon_file);
+                $ping_t = new $details['TTS_TYPE']($details);
+                $out = $ping_t->ping_terminal($details['HOST']);
+                if ($ter->config['LOG_ENABLED']) DebMes("Try to ping - " . $terminal , 'terminals');
+            } else {
+                if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
+            }
+        } catch (Exception $e) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
         }
-    } catch (Exception $e) {
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $details['NAME'] . " cannot ping have error", 'terminals');
-    }
-    if ($out) {
-        sg($details['LINKED_OBJECT'] . '.status', '1');
-        sg($details['LINKED_OBJECT'] . '.alive', '1');
-        $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
-        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-        $rec['IS_ONLINE'] = 1;
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is online', 'terminals');
-    } else {
-        sg($details['LINKED_OBJECT'] . '.status', '0');
-        sg($details['LINKED_OBJECT'] . '.alive', '0');
-        $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
-        $rec['IS_ONLINE'] = 0;
-        if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
-    }
+        if ($out) {
+            sg($details['LINKED_OBJECT'] . '.status', '1');
+            sg($details['LINKED_OBJECT'] . '.alive', '1');
+            $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
+            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+            $rec['TTS_IS_ONLINE'] = 1;
+        } else {
+            sg($details['LINKED_OBJECT'] . '.status', '0');
+            sg($details['LINKED_OBJECT'] . '.alive', '0');
+            $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
+            $rec['TTS_IS_ONLINE'] = 0;
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
+        }
+   	}
     SQLUpdate('terminals', $rec);
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
 
 // check terminal Safe
-function pingTerminalSafe($terminalname, $details = '') {
+function pingTerminalSafe($terminalname, $details = '', $service = '') {
     if (!is_array($details)) {
         $details = array();
     }
-    $data = array('pingTerminal' => 1, 'terminal' => $terminalname, 'params' => json_encode($details));
+    $data = array('pingTerminal' => 1, 'terminal' => $terminalname, 'params' => json_encode($details), 'service'=>$service);
     if (session_id()) {
         $data[session_name()] = session_id();
     }
