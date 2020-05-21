@@ -423,7 +423,9 @@ function pingTerminal($terminal, $details, $service) {
     if ($details['ID']) {
         $rec['ID'] = $details['ID'];
     }
-    if ($service == 'CANTTS') {
+    DebMes($service);
+    DebMes($details);
+   	if ($service == 'CANTTS' AND $details['TTS_TYPE']) {
        	try {
             // пробуем найти встроенные функции пинга для этого вида терминала
             $addon_file = DIR_MODULES . 'terminals/tts/' . $details['TTS_TYPE'] . '.addon.php';
@@ -452,13 +454,16 @@ function pingTerminal($terminal, $details, $service) {
             $rec['TTS_IS_ONLINE'] = 0;
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
-    } else if ($service == 'CANPLAY') {
+   	} else if ($service == 'CANPLAY' AND $details['PLAYER_TYPE']) {
        	try {
             // пробуем найти встроенные функции пинга для этого вида терминала
             $addon_file = DIR_MODULES . 'app_player/addons/' . $details['PLAYER_TYPE'] . '.addon.php';
+                        DebMes('addon file' . $addon_file);
             if (file_exists($addon_file)) {
                 include_once (DIR_MODULES . 'app_player/addon.class.php');
+                                DebMes('addon file main load');
                 include_once ($addon_file);
+                DebMes('addon file addon load');
                 $ping_t = new $details['PLAYER_TYPE']($details);
                 $out = $ping_t->ping_mediaservice($details['HOST']);
                 if ($ter->config['LOG_ENABLED']) DebMes("Try to ping player service - " . $terminal , 'terminals');
@@ -481,7 +486,7 @@ function pingTerminal($terminal, $details, $service) {
             $rec['PLAYER_IS_ONLINE'] = 0;
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
-    }
+   	}
     SQLUpdate('terminals', $rec);
     sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
 }
