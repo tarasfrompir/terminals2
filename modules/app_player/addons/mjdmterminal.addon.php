@@ -7,7 +7,9 @@ class mjdmterminal extends app_player_addon
     {
         $this->title       = "MjDM Terminal player";
         $this->description = '<b>Описание:</b>&nbsp;Предназначен для управления плеером устройств с ПО &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=6737">мой MjDM</a>.<br>';
-        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
+	$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Нет (если ТТС такого же типа, что и плеер).<br>';
+	$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
+	$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7999 (если по умолчанию, можно не указывать).<br>';
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
         $this->port = empty($this->terminal['PLAYER_PORT']) ? 7999 : $this->terminal['PLAYER_PORT'];
