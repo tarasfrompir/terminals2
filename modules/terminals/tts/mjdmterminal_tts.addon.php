@@ -63,19 +63,6 @@ class mjdmterminal_tts extends tts_addon
         return $this->sendMjdmCommand('screen:off');
     }
 	
-    // ping terminal
-    function ping_ttsservice($host)
-    {
-        // proverka na otvet
-       $status = $this->sendMjdmCommand('ping');
-        if ($status === 'ОК') {
-            $this->success = TRUE;
-        } else {
-            $this->success = FALSE;
-        }
-        return $this->success;
-    }
-	
     // Get terminal status
     function terminal_status()
     {
