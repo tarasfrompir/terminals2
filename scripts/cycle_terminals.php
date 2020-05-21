@@ -130,9 +130,8 @@ while (1) {
             continue;
         }
 
-
         // сервис CANTTS если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if (!$terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        if ($terminal['CANTTS'] AND !$terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -144,7 +143,7 @@ while (1) {
         }
         
         // сервис CANTTS если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
+        if ($terminal['CANTTS'] AND $terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -155,8 +154,8 @@ while (1) {
             }
         }
         
-        // сервис CANPLAY если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if (!$terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+       // сервис CANPLAY если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
+        if ($terminal['CANPLAY'] AND !$terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -168,7 +167,7 @@ while (1) {
         }
         
         // сервис CANPLAY если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
+        if ($terminal['CANPLAY'] AND $terminal['PLAYER_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -178,9 +177,9 @@ while (1) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
             }
         }
-
+        
         // сервис CANRECOGNIZE если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if (!$terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
+        if ($terminal['CANRECOGNIZE'] AND !$terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -192,7 +191,7 @@ while (1) {
         }
         
         // сервис CANRECOGNIZE если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
+        if ($terminal['CANRECOGNIZE'] AND $terminal['RECOGNIZE_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
             try {
                 //установим флаг занятости терминала
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
