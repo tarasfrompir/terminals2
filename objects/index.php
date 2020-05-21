@@ -172,7 +172,7 @@ if ($object != '') {
 } elseif (gr('sayTo')) {
    sayTo(gr('ph'),gr('level'),gr('destination'));
 } elseif (gr('pingTerminal')) {
-    pingTerminal(gr('terminal'), json_decode(gr('params'),true));
+    pingTerminal(gr('terminal'), json_decode(gr('params'),true), gr('service'));
 } elseif (gr('send_message')) {
     send_message( gr('terminalname'), json_decode(gr('message'), true), json_decode(gr('terminal'), true));
 } elseif (gr('restore_terminal_state')) {
