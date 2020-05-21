@@ -372,7 +372,6 @@ class terminals extends module
         } else if ($event == 'HOURLY') {
             $terminals = getTerminalsCanPlay();
             foreach ($terminals as $terminal) {
-                DebMes('ttt');
                 pingTerminalSafe($terminal['NAME'], $terminal , 'CANPLAY');
             }
         }
