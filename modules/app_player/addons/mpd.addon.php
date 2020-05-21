@@ -31,6 +31,26 @@ class mpd extends app_player_addon
         $this->mpd->Disconnect();
     }
     
+    // ping mediaservice
+    public function ping_mediaservice($host)
+    {
+        if (!$this->mpd->mpd_sock OR !$this->mpd->connected)
+            $this->mpd->Connect();
+        if ($this->mpd->connected) {
+            if ($this->mpd->Ping()) {
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        if ($this->mpd->mpd_sock AND $this->mpd->connected)
+            $this->mpd->Disconnect();
+        return $this->success;
+    }
+	
+	
     // Set volume
     function set_volume($level = 0)
     {
