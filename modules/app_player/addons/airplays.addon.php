@@ -13,6 +13,7 @@ class airplays extends app_player_addon
         $this->reset_properties();
         $this->title       = "Airplay";
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на устройства поддерживающих протокол AirPlay.<br>';
+        $this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Нет (если ТТС такого же типа, что и плеер).<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 7000 (если по умолчанию, можно не указывать).';
         $this->terminal = $terminal;
