@@ -48,6 +48,25 @@ class dnla extends app_player_addon
      
     }
     
+	
+    // ping mediaservice
+    function ping_mediaservice($host)
+    {
+        // proverka na otvet
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->setting['TTS_CONTROL_ADDRESS']);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $content = curl_exec($ch);
+        $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($retcode != 200 OR !stripos($content, 'AVTransport')) {
+            $this->success = FALSE;
+        } else {
+            $this->success = TRUE;
+        }
+        return $this->success;
+    }
     
     // Get player status
     function status()
