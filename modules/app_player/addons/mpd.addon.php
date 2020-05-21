@@ -18,8 +18,7 @@ class mpd extends app_player_addon
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 6600 (если по умолчанию, можно не указывать).';
         
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         
         // Network
         $this->port     = (empty($this->terminal['PLAYER_PORT']) ? 6600 : $this->terminal['PLAYER_PORT']);
