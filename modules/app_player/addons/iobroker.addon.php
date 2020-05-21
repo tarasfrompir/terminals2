@@ -20,6 +20,7 @@ class iobroker extends app_player_addon {
 		$this->description .= 'В задачах добавить соответствующие команды. Выберите из списка действий «Медиа»->»Упр. медиа плеером» и далее выбираем вариант необходимо события.<br>';
 		$this->description .= 'Поставить галочку на против строки "Use Notification if Availble.<br>';
 		$this->description .= 'В настройках таскера на вкладке разное поставить галочку "Разрешить внешний доступ".<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках ioBroker.paw и включть работу сервиса кнопкой: Connection<br>';
 		$this->description .= '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>';
 		
