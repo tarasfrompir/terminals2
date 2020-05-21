@@ -132,25 +132,25 @@
  <td valign="top">
  <a href="?view_mode=change_terminals_tts&id=[#ID#]" style="text-decoration: none;"> 
      <img  src="cms/terminals/cantts.png" alt="CANTTS" 
-     [#if CANTTS = "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; border:3px ;"[#endif#] 
+     [#if CANTTS = "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; border:3px solid white;"[#endif#] 
      [#if CANTTS = "1" && TTS_IS_ONLINE != "1"#] style="vertical-align:top/middle/bottom; border:3px solid red;"[#endif#] 
-     [#if CANTTS != "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; opacity: 0.3; border:3px;"[#endif#] 
+     [#if CANTTS != "1" && TTS_IS_ONLINE = "1"#] style="vertical-align:top/middle/bottom; opacity: 0.3; border:3px solid white;"[#endif#] 
      [#if CANTTS != "1" && TTS_IS_ONLINE != "1"#] style="vertical-align:top/middle/bottom; opacity: 0.3; border:3px solid red;"[#endif#] 
 	 ></img>
  </a>
  <a href="?view_mode=change_terminals_play&id=[#ID#]" style="text-decoration: none;"> 
      <img src="cms/terminals/canplay.png" alt="CANPLAY" 
-     [#if CANPLAY = "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px ;"[#endif#] 
+     [#if CANPLAY = "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px solid white;"[#endif#] 
      [#if CANPLAY = "1" && PLAYER_IS_ONLINE != "1"#] style="vertical-align: middle; border:3px solid red;"[#endif#] 
-     [#if CANPLAY != "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px;"[#endif#] 
+     [#if CANPLAY != "1" && PLAYER_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid white;"[#endif#] 
      [#if CANPLAY != "1" && PLAYER_IS_ONLINE != "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid red;"[#endif#] 
 	 ></img>
  </a>
  <a href="?view_mode=change_terminals_recognition&id=[#ID#]" style="text-decoration: none;"> 
-     <img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" style="vertical-align: middle; border:3px;"
-     [#if CANRECOGNIZE = "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px ;"[#endif#] 
+     <img src="cms/terminals/canrecognize.png" alt="CANRECOGNIZE" 
+     [#if CANRECOGNIZE = "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; border:3px solid white;"[#endif#] 
      [#if CANRECOGNIZE = "1" && RECOGNIZE_IS_ONLINE != "1"#] style="vertical-align: middle; border:3px solid red;"[#endif#] 
-     [#if CANRECOGNIZE != "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px;"[#endif#] 
+     [#if CANRECOGNIZE != "1" && RECOGNIZE_IS_ONLINE = "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid white;"[#endif#] 
      [#if CANRECOGNIZE != "1" && RECOGNIZE_IS_ONLINE != "1"#] style="vertical-align: middle; opacity: 0.3; border:3px solid red;"[#endif#] 
 	 ></img>
  </a>
