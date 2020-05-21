@@ -369,7 +369,12 @@ class terminals extends module
                     closedir($dh);
                 }
             }
-
+        } else if ($event == 'HOURLY') {
+            $terminals = getTerminalsCanPlay();
+            foreach ($terminals as $terminal) {
+                DebMes('ttt');
+                pingTerminalSafe($terminal['NAME'], $terminal , 'CANPLAY');
+            }
         }
     }
 
@@ -439,7 +444,6 @@ class terminals extends module
         subscribeToEvent($this->name, 'ASK', 0);
         subscribeToEvent($this->name, 'DAILY');
         subscribeToEvent($this->name, 'HOURLY');
-        unsubscribeFromEvent($this->name, 'HOURLY');
         
         // автодобавления метода который вызывается циклом при ошибках терминала..
         addClassMethod('Terminals', 'MessageError', '
