@@ -83,7 +83,7 @@ class dnla_tts extends tts_addon
     }
     
     // ping terminal
-    function ping_terminal($host)
+    function ping_ttsservice($host)
     {
         // proverka na otvet
         $ch = curl_init();
