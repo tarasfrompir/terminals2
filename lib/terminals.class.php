@@ -431,7 +431,7 @@ function pingTerminal($terminal, $details, $service) {
                 include_once (DIR_MODULES . 'terminals/tts_addon.class.php');
                 include_once ($addon_file);
                 $ping_t = new $details['TTS_TYPE']($details);
-                $out = $ping_t->ping_terminal($details['HOST']);
+                $out = $ping_t->ping_ttsservice($details['HOST']);
                 if ($ter->config['LOG_ENABLED']) DebMes("Try to ping - " . $terminal , 'terminals');
             } else {
                 if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is empy or wrong, chek terminal settings', 'terminals');
