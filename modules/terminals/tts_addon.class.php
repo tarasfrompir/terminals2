@@ -33,7 +33,7 @@ class tts_addon {
         return false;
     }
 
-    function ping_terminal($host)
+    function ping_ttsservice($host)
     {
         return ping($host);
     }
