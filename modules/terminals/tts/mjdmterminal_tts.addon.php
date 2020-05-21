@@ -64,7 +64,7 @@ class mjdmterminal_tts extends tts_addon
     }
 	
     // ping terminal
-    function ping_terminal($host)
+    function ping_ttsservice($host)
     {
         // proverka na otvet
        $status = $this->sendMjdmCommand('ping');
