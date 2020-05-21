@@ -35,7 +35,7 @@ class yandex_tts extends tts_addon
     }
     
      // ping terminal
-    public function ping_terminal($host) {
+    public function ping_ttsservice($host) {
         $this->success = TRUE;
         return $this->success;
     }
