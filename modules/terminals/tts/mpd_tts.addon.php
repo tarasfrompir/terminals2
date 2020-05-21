@@ -12,7 +12,10 @@ class mpd_tts extends tts_addon
     {
         
         $this->title       = 'Music Player Daemon (MPD)';
-        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через кроссплатформенный музыкальный проигрыватель, который имеет клиент-серверную архитектуру.<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Для работы использует кроссплатформенный музыкальный сервер MPD</a>.<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" проводится проверкой состояния сервиса).<br>';
+        $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 6600 (если по умолчанию, можно не указывать).<br>';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';    
         
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;

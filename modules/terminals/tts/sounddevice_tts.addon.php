@@ -5,7 +5,10 @@ class sounddevice_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title = "Звуковые карты";
-        $this->description .= '<b>Работает:</b>&nbsp; только на Виндовс;.<br>';
+        
+        $this->description = '<b>Описание:</b>&nbsp; Для работы использует непосредственный вывод на физические звуковые устройства (карты) установленные в системе УД.<br>';
+		$this->description .= '<b>Проверка доступности:</b>&nbsp; Не применимо.<br>';
+		$this->description .= '<b>Настройка:</b>&nbsp; Работает ТОЛЬКО на Windows.<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
         
         $this->terminal = $terminal;

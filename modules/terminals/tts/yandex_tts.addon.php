@@ -7,7 +7,8 @@ class yandex_tts extends tts_addon
     {
         
         $this->title       = "Yandex module";
-        $this->description = '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://connect.smartliving.ru/addons/category1/211.html">модуль YaDevices</a>. Без этого модуля ничего работать не будет.<br>';
+        $this->description = '<b>Описание:</b>&nbsp;Для работы использует&nbsp;<a href="https://connect.smartliving.ru/addons/category1/211.html">модуль YaDevices</a>. Без этого модуля ничего работать не будет.<br>';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply() - Уточнить!.';
         
         $this->terminal = $terminal;
         if (!$this->terminal['HOST']) return false;
