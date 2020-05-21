@@ -40,6 +40,11 @@ class app_player_addon {
 		*/
 	}
 	
+	// Ping mediaplayer service
+        public function ping_mediaservice($host) {
+            return ping($host);
+        }
+	
 	/*
 		Playback methods
 	*/
