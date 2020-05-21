@@ -67,7 +67,7 @@ class alicevox extends tts_addon
     }
 
     // ping terminal
-    function ping_terminal($host)
+    function ping_ttsservice($host)
     {
         // proverka na otvet
         $command = "{\"jsonrpc\":\"2.0\",\"method\":\"Addons.ExecuteAddon\",\"params\":{\"addonid\":\"script.alicevox.master\",\"params\":[\"ping\"]},\"id\":1}";
