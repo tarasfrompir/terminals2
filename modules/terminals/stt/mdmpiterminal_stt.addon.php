@@ -19,9 +19,12 @@ class mdmpiterminal_stt extends stt_addon
         $this->port = empty($this->setting['TTS_PORT']) ? 7999 : $this->setting['TTS_PORT'];
     }
     
-    public function turnOn_stt( $terminal) 
-    {
-        return $this->sendCommand('tts:' . $message['MESSAGE']);
+    public function turnOn_stt() {
+        return $this->sendCommand('listener:on');
+    }
+    
+    public function turnOff_stt() {
+        return $this->sendCommand('listener:off');
     }
 
     private function sendCommand($cmd)
