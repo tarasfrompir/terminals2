@@ -453,7 +453,8 @@ function pingTerminal($terminal, $details, $service) {
             $rec['TTS_IS_ONLINE'] = 0;
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
-   	} else if ($service == 'CANPLAY' AND $details['PLAYER_TYPE']) {
+        sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
+    } else if ($service == 'CANPLAY' AND $details['PLAYER_TYPE']) {
        	try {
             // пробуем найти встроенные функции пинга для этого вида терминала
             // подключаем класс плеера
@@ -484,6 +485,7 @@ function pingTerminal($terminal, $details, $service) {
             $rec['PLAYER_IS_ONLINE'] = 0;
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
+        sg($details['LINKED_OBJECT'] . '.PlayerState', 0);
     } else if ($service == 'CANRECOGNIZE' AND $details['RECOGNIZE_TYPE']) {
         try {
             // пробуем найти встроенные функции пинга для этого вида терминала
@@ -515,8 +517,8 @@ function pingTerminal($terminal, $details, $service) {
             $rec['RECOGNIZE_IS_ONLINE'] = 0;
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal - " . $terminal . ' is offline', 'terminals');
         }
+    sg($details['LINKED_OBJECT'] . '.RecognizeState', 0);
     }
-    sg($details['LINKED_OBJECT'] . '.TerminalState', 0);
     SQLUpdate('terminals', $rec);
 }
 
