@@ -445,6 +445,7 @@ function pingTerminal($terminal, $details, $service) {
             $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
             $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
             $rec['TTS_IS_ONLINE'] = 1;
+            $rec['IS_ONLINE'] = 1;
         } else {
             sg($details['LINKED_OBJECT'] . '.status', '0');
             sg($details['LINKED_OBJECT'] . '.alive', '0');
@@ -475,6 +476,7 @@ function pingTerminal($terminal, $details, $service) {
             $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
             $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
             $rec['PLAYER_IS_ONLINE'] = 1;
+            $rec['IS_ONLINE'] = 1;
         } else {
             //sg($details['LINKED_OBJECT'] . '.status', '0');
             //sg($details['LINKED_OBJECT'] . '.alive', '0');
@@ -505,6 +507,7 @@ function pingTerminal($terminal, $details, $service) {
             $rec['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
             $rec['LATEST_REQUEST_TIME'] = date('Y-m-d H:i:s');
             $rec['RECOGNIZE_IS_ONLINE'] = 1;
+            $rec['IS_ONLINE'] = 1;
         } else {
             //sg($details['LINKED_OBJECT'] . '.status', '0');
             //sg($details['LINKED_OBJECT'] . '.alive', '0');
