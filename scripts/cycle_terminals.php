@@ -178,7 +178,7 @@ while (1) {
         // если отсутствует сообщение и есть инфа для восстановления состояния терминала или вопросизведения терминала то восстанавливаем состояние
         // и переходим на следующий свободный терминал
         if (!$old_message['ID'] OR !$old_message['SOURCE']) {
-            if ($terminal['IS_ONLINE'] AND (gg($terminal['LINKED_OBJECT'] . '.playerdata') OR gg($terminal['LINKED_OBJECT'] . '.terminaldata'))) {
+            if ($terminal['PLAYER_IS_ONLINE'] AND (gg($terminal['LINKED_OBJECT'] . '.playerdata') OR gg($terminal['LINKED_OBJECT'] . '.terminaldata'))) {
                 try {
                     sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                     restore_terminal_stateSafe($terminal);
@@ -195,7 +195,7 @@ while (1) {
 
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
-        if ($old_message['ID'] AND !$terminal['IS_ONLINE']) {
+        if ($old_message['ID'] AND !$terminal['CANTTS_IS_ONLINE']) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
