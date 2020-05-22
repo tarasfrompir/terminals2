@@ -16,4 +16,8 @@ class stt_addon {
     public function turnOff_stt() {
         return false;
     }
+    function ping_sttservice($host)
+    {
+        return ping($host);
+    }
 }
