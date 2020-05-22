@@ -195,7 +195,7 @@ while (1) {
 
         // если есть сообщение НО терминал оффлайн удаляем из работы эту запись
         // и пропускаем (пингуется дополнительно - если вернется с ошибкой отправления)
-        if ($old_message['ID'] AND !$terminal['CANTTS_IS_ONLINE']) {
+        if ($old_message['ID'] AND !$terminal['TTS_IS_ONLINE']) {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
