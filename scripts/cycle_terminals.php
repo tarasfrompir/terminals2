@@ -75,11 +75,11 @@ while (1) {
                 pingTerminalSafe($t['NAME'], $t,'CANTTS');
             }
             if ($t['CANPLAY'] AND !$t['PLAYER_IS_ONLINE']) {
-                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                sg($t['LINKED_OBJECT'] . '.PlayerState', 1);
                 pingTerminalSafe($t['NAME'], $t,'CANPLAY');
             }
             if ($t['CANRECOGNIZE'] AND !$t['RECOGNIZE_IS_ONLINE']) {
-                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                sg($t['LINKED_OBJECT'] . '.RecognizeState', 1);
                 pingTerminalSafe($t['NAME'], $t,'CANRECOGNIZE');
             }
         }
@@ -95,11 +95,11 @@ while (1) {
                 pingTerminalSafe($t['NAME'], $t,'CANTTS');
             }
             if ($t['CANPLAY'] AND $t['PLAYER_IS_ONLINE']) {
-                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                sg($t['LINKED_OBJECT'] . '.PlayerState', 1);
                 pingTerminalSafe($t['NAME'], $t,'CANPLAY');
             }
             if ($t['CANRECOGNIZE'] AND $t['RECOGNIZE_IS_ONLINE']) {
-                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                sg($t['LINKED_OBJECT'] . '.RecognizeState', 1);
                 pingTerminalSafe($t['NAME'], $t,'CANRECOGNIZE');
             }
         }
