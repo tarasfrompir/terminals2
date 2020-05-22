@@ -64,6 +64,47 @@ while (1) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
     }
+    
+    // Пингование сервисов офлайн терминалов 
+    if (time() - $check_terminaloffline > 60 * $ter->config['TERMINALS_PING_OFFLINE']) {
+        $check_terminaloffline = time();
+        $term = SQLSelect("SELECT * FROM terminals");
+        foreach ($term as $t) {
+            if ($t['CANTTS'] AND !$t['TTS_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANTTS');
+            }
+            if ($t['CANPLAY'] AND !$t['PLAYER_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANPLAY');
+            }
+            if ($t['CANRECOGNIZE'] AND !$t['RECOGNIZE_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANRECOGNIZE');
+            }
+        }
+    }     
+
+    // Пингование сервисов онлайн терминалов 
+    if (time() - $check_terminalonline > 60 * $ter->config['TERMINALS_PING_ONLINE']) {
+        $check_terminalonline = time();
+        $term = SQLSelect("SELECT * FROM terminals");
+        foreach ($term as $t) {
+            if ($t['CANTTS'] AND $t['TTS_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANTTS');
+            }
+            if ($t['CANPLAY'] AND $t['PLAYER_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANPLAY');
+            }
+            if ($t['CANRECOGNIZE'] AND $t['RECOGNIZE_IS_ONLINE']) {
+                sg($t['LINKED_OBJECT'] . '.TerminalState', 1);
+                pingTerminalSafe($t['NAME'], $t,'CANRECOGNIZE');
+            }
+        }
+    } 
+    
     //время жизни сообщений
     if (time() - $clear_message > 60 * $ter->config['TERMINALS_TIMEOUT']) {
         $clear_message = time();
@@ -83,6 +124,7 @@ while (1) {
             DebMes("Next message number - " . $number_message, 'terminals');
     } else {
         sleep(1);
+        //continue;
     }
 
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
@@ -130,30 +172,6 @@ while (1) {
             continue;
         }
 
-        // сервис CANTTS если терминал СВОБОДНЫЙ и офлайн то пингуем его по таймауту для офлайновых терминалов
-        if ($terminal['CANTTS'] AND !$terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_OFFLINE'] + strtotime($terminal['LATEST_REQUEST_TIME']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANTTS');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-        
-        // сервис CANTTS если терминал СВОБОДНЫЙ и онлайн то пингуем его по таймауту для онлайновых терминалов
-        if ($terminal['CANTTS'] AND $terminal['TTS_IS_ONLINE'] AND (time() > 60 * $ter->config['TERMINALS_PING_ONLINE'] + strtotime($terminal['LATEST_ACTIVITY']))) {
-            try {
-                //установим флаг занятости терминала
-                sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
-                pingTerminalSafe($terminal['NAME'], $terminal,'CANTTS');
-                continue;
-            } catch (Exception $e) {
-                if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Пингование терминала " . $terminal['NAME'] . " завершилось ошибкой", 'terminals');
-            }
-        }
-        
         // берем первоочередное сообщение
         $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 
