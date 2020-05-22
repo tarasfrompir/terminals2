@@ -419,8 +419,12 @@ class terminals extends module
         addClass('Terminals', 'SDevices');
         // name of terminal
         addClassProperty('Terminals', 'name');
-        // state o terminal busy or not bausy
+        // state of terminal tts  - busy or not bausy
         addClassProperty('Terminals', 'TerminalState');
+        // state of terminal player  - busy or not bausy
+        addClassProperty('Terminals', 'PlayerState');
+	// state of terminal stt  - busy or not bausy
+        addClassProperty('Terminals', 'RecognizeState');
         // playerstate file, playlist, volume etc...
         addClassProperty('Terminals', 'playerdata');
         // terminal state brigtnes, screen, battary etc..
