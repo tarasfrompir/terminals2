@@ -249,7 +249,7 @@ if (is_dir(DIR_MODULES . 'terminals/stt')) {
                     $addon_name = basename($addon_file, '.addon.php');
                     include_once($addon_file);
                     if (class_exists($addon_name)) {
-                        if (is_subclass_of($addon_name, 'tts_addon', TRUE)) {
+                        if (is_subclass_of($addon_name, 'stt_addon', TRUE)) {
                             if ($stt = new $addon_name(NULL)) {
                                 // Results
                                 $out['STT_ADDONS'][] = array(
