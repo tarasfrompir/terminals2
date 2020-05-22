@@ -63,6 +63,7 @@
       </select>
     </div>
   </div>
+  
   <script language="javascript">
     function canPlayChanged() {
      if ($('#canplay').is(':checked')) {
@@ -94,6 +95,13 @@
               $('#tts_display_brightness_level').hide();
            }
         }
+     function canRecognizeChanged() {
+        if ($('#canrecognize').is(':checked')) {
+            $('#CANRECOGNIZEDetails').show();
+        } else {
+            $('#CANRECOGNIZEDetails').hide();
+        }
+    }
      
   </script>
   <div class="form-group">
@@ -520,6 +528,41 @@
     <div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
   </div>
   </div>
+  
+    <div class="form-group">
+    <div class="col-lg-offset-3 ">
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" align="center" value="1" id='canrecognize' name="canrecognize" onClick='canRecognizeChanged();' [#if CANRECOGNIZE="1"#] checked[#endif#]> Может распознавать голосовые команды</input>
+        </label>
+      </div>
+    </div>
+    </div>
+<div id="CANRECOGNIZEDetails"[#if CANRECOGNIZE!="1"#] style="display:none"[#endif#]>
+  <div class="form-group">
+    <div class="col-lg-offset-2">
+      <label align="center"><font color="red" >Раздел настроек связанный с передачей голосовых команд с этого терминала</font></label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-lg-4 control-label">Тип устройства STT:</label>
+    <div class="col-lg-5">
+      <select id="recognize_type" name="recognize_type" class="form-control" onchange="return recognize_type_select($(this).val());">
+        <option value="">Выберите тип STT</option>
+        [#begin STT_ADDONS#]
+        <option value="[#NAME#]"[#if NAME="<#RECOGNIZE_TYPE#>"#] selected[#endif#]>[#TITLE#]</option>
+        [#end STT_ADDONS#]
+      </select>
+      [#begin STT_ADDONS#]
+      <small id="[#NAME#]_description" class="addon-descriptiontts form-text text-muted hidden">[#DESCRIPTION#]</small>
+      [#end STT_ADDONS#]
+      <style type="text/css">
+        .addon-descriptiontts { display: block; margin-top: 10px; }
+      </style>
+    </div>
+  </div>
+</div>
+  
   <div class="form-group">
     <div class="col-lg-offset-2 col-lg-5">
       [#if ID!=""#]
