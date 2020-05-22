@@ -93,6 +93,8 @@ if ($this->mode == 'update') {
 
     $rec['CANTTS'] = gr('cantts', 'int');    
     $rec['TTS_TYPE'] = gr('tts_type');
+    $rec['CANRECOGNIZE'] = gr('canrecognize', 'int');
+    $rec['RECOGNIZE_TYPE'] = gr('recognize_type');
 
     // write seting for tts terminals тут сохраняются настройки для ТТС терминалов
     $out['TTS'] = array('TTS_PORT'=>gr('tts_port'), 
@@ -225,6 +227,35 @@ if (is_dir(DIR_MODULES . 'app_player/addons')) {
                                     'TITLE' => $player->title,
                                     'VALUE' => $addon_name,
                                     'DESCRIPTION' => $player->description,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+$out['STT_ADDONS'] = array();
+if (is_dir(DIR_MODULES . 'terminals/stt')) {
+    include_once(DIR_MODULES . 'terminals/stt_addon.class.php');
+    $addons = scandir(DIR_MODULES . 'terminals/stt');
+    if (is_array($addons)) {
+        foreach ($addons as $addon_file) {
+            $addon_file = DIR_MODULES . 'terminals/stt/' . $addon_file;
+            if (is_file($addon_file)) {
+                if (strtolower(substr($addon_file, -10)) == '.addon.php') {
+                    $addon_name = basename($addon_file, '.addon.php');
+                    include_once($addon_file);
+                    if (class_exists($addon_name)) {
+                        if (is_subclass_of($addon_name, 'tts_addon', TRUE)) {
+                            if ($stt = new $addon_name(NULL)) {
+                                // Results
+                                $out['STT_ADDONS'][] = array(
+                                    'TITLE' => $stt->title,
+                                    'NAME' => $addon_name,
+                                    'DESCRIPTION' => $stt->description,
                                 );
                             }
                         }
