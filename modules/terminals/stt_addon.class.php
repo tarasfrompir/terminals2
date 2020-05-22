@@ -9,7 +9,11 @@ class stt_addon {
         $this->terminal = $terminal;
     }
 
-    public function turnOn_stt( $terminal) {
+    public function turnOn_stt() {
+        return false;
+    }
+    
+    public function turnOff_stt() {
         return false;
     }
 }
