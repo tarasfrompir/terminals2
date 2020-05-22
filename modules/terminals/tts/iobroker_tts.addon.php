@@ -8,7 +8,7 @@ class iobroker_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title       = "ioBroker.paw";
-        $this->description = '<b>Описание:</b>&nbsp; Для работы использует андроид с с установленным приложением &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>.<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Для работы использует андроид с установленным приложением &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>.<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках ioBroker.paw и включть работу сервиса кнопкой: Connection.<br>';
 		$this->description .= 'Управление треками реальзовано через запуск команды в Tasker:<br>';
