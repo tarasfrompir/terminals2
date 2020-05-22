@@ -12,7 +12,7 @@ class chromecast extends app_player_addon
     {
         $this->reset_properties();
         $this->title       = 'Google Chromecast';
-        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука на устройствах поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
         $this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
         $this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер).<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping ("пингование" проводится проверкой состояния сервиса).<br>';
