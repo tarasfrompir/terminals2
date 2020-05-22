@@ -195,13 +195,36 @@ class terminals extends module
      * @access public
      */
     function change_terminals_recognition($id) {
-        if ($rec = getTerminalByID($id)) {
-            if ($rec['CANRECOGNIZE'] == 0 AND $rec['RECOGNIZE_TYPE']) {
-	        	$rec['CANRECOGNIZE'] = 1;
-            } else {
-                $rec['CANRECOGNIZE'] = 0;
+        if ($terminal = getTerminalByID($id)) {
+            // подключаем класс stt 
+            $addon_file = DIR_MODULES . 'terminals/stt/' . $terminal['RECOGNIZE_TYPE'] . '.addon.php';
+            if ($terminal['RECOGNIZE_TYPE'] AND file_exists($addon_file) ) {
+                include_once (DIR_MODULES . 'terminals/stt_addon.class.php');
+                include_once ($addon_file);
+                $stt = new $terminal['RECOGNIZE_TYPE']($terminal);
             }
-            SQLUpdate('terminals', $rec);
+            if ($terminal['CANRECOGNIZE'] == 0 AND $terminal['RECOGNIZE_TYPE']) {
+	        	$terminal['CANRECOGNIZE'] = 1;
+	        	// пробуем включить службу распознавания на устройстве
+                try {
+                    if ($stt) {
+                        $stt->turnOn_stt();
+                    }
+                } catch (Exception $e) {
+                    DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+                }
+            } else {
+                $terminal['CANRECOGNIZE'] = 0;
+                // пробуем otключить службу распознавания на устройстве
+                try {
+                    if ($stt) {
+                        $stt->turnOff_stt();
+                    }
+                } catch (Exception $e) {
+                    DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
+                }
+            }
+            SQLUpdate('terminals', $terminal);
         }
     }
 	
