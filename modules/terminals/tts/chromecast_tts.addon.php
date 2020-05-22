@@ -11,7 +11,7 @@ class chromecast_tts extends tts_addon
     function __construct($terminal)
     {
         $this->title = 'Google Chromecast';
-        $this->description = '<b>Описание:</b>&nbsp; Работает на всех устройства поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
+        $this->description = '<b>Описание:</b>&nbsp; Работает на устройствах поддерживающих протокол Chromecast (CASTv2) от компании Google.<br>';
         $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование проводится проверкой состояния сервиса).<br>';
         $this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 8009 (если по умолчанию, можно не указывать).<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply().';
