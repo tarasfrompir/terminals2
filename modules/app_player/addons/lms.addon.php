@@ -19,7 +19,7 @@ class lms extends app_player_addon {
 		$this->description .= 'В качестве программного LMS клиента (плеера) может быть использован, например &nbsp;<a href="https://en.wikipedia.org/wiki/Squeezelite">Squeezelite</a>.<br>';
 		$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Не применимо (нет такого TTS плеера).<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
-		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 9002 (если по умолчанию, можно не указывать).';
+		$this->description .= '<b>Настройка:</b>&nbsp; Порт доступа по умолчанию 9000 (если по умолчанию, можно не указывать).';
 		$this->description .= 'В поле <i>Имя пользователя</i> необходимо указать IP или MAC адрес LMS клиента (плеера), например squeezebox.';
 		
 		$this->terminal = $terminal;
