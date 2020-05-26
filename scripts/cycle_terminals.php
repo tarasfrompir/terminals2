@@ -57,8 +57,7 @@ while (1) {
         }
         // получаем таймаут жизни сообщений
         if (!$ter->config['TERMINALS_TIMEOUT']) {
-            if ($ter->config['LOG_ENABLED'])
-                DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
             $ter->config['TERMINALS_TIMEOUT'] = 10;
         }
         $checked_time = time();
@@ -111,20 +110,8 @@ while (1) {
         $result = SQLSelect("SELECT COUNT(ID) FROM shouts WHERE SOURCE != '' AND ADDED > (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
         if ($result[0]['COUNT(ID)'] > 0) {
             SQLExec("UPDATE shouts SET SOURCE = '' WHERE SOURCE != '' AND ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
-            if ($ter->config['LOG_ENABLED'])
-                DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
+            if ($ter->config['LOG_ENABLED']) DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
-    }
-
-    // проверяем наличие следующего номера сообщения для терминалов
-    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
-    if ($message) {
-        $number_message = $number_message + 1;
-        if ($ter->config['LOG_ENABLED'])
-            DebMes("Next message number - " . $number_message, 'terminals');
-    } else {
-        sleep(1);
-        //continue;
     }
 
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
@@ -132,6 +119,7 @@ while (1) {
         // если нету свободных терминалов пропускаем
         if (!$terminals) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal is busy. See properties TerminalState in object " . $terminals, 'terminals');
+            sleep(2);
             continue;
         }
 
@@ -142,8 +130,9 @@ while (1) {
             DebMes("Cannot find terminal for this object - " . $terminals . ". Object must be deleted.", 'terminals');
             continue;
         }
+
         // если терминал не воспроизводит сообщения то пропускаем его в этой итерации
-        if (!$terminal['CANTTS']) {
+        if (!$terminal['CANTTS'] OR !$terminal['TTS_TYPE']) {
             continue;
         }
 
@@ -173,9 +162,9 @@ while (1) {
         }
 
         // берем первоочередное сообщение
-        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE ID <= '" . $number_message . "' AND SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
+        $old_message = SQLSelectOne("SELECT * FROM shouts WHERE SOURCE LIKE '%" . $terminal['ID'] . "^%' ORDER BY ID ASC");
 
-        // если отсутствует сообщение и есть инфа для восстановления состояния терминала или вопросизведения терминала то восстанавливаем состояние
+        // если отсутствует сообщение и есть инфа для восстановления состояния терминала или воспроизведения терминала то восстанавливаем состояние
         // и переходим на следующий свободный терминал
         if (!$old_message['ID'] OR !$old_message['SOURCE']) {
             if ($terminal['PLAYER_IS_ONLINE'] AND (gg($terminal['LINKED_OBJECT'] . '.playerdata') OR gg($terminal['LINKED_OBJECT'] . '.terminaldata'))) {
@@ -231,7 +220,7 @@ while (1) {
             }
         }
 
-        // если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутсвтует файл)
+        // если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутствует файл)
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
         if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND $base_terminal[$terminal['TTS_TYPE']] == 'audio_terminal') {
             try {
@@ -285,6 +274,8 @@ while (1) {
         }
 
     }
+    
+    sleep(2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
