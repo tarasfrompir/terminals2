@@ -189,20 +189,18 @@ class dnla_tts extends tts_addon
         return $out_data;
     }
     
-        // Say
+    // Say
     public function play_media ($link)
     {
-                // берем ссылку http
-        if (preg_match('/\/cms\/cached.+/', $link, $m)) {
-            $server_ip = getLocalIp();
-            if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
-                return false;
-            } else {
-                $message_link = 'http://' . $server_ip . $m[0];
-            }
+        // проверяем айпи
+        $server_ip = getLocalIp();
+        if (!$server_ip) {
+            DebMes("Server IP not found", 'terminals');
+            return false;
         }
-        $response = $this->remote->play($message_link);
+        // превращаем в адрес 
+        $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT, "", $link);
+        $response = $this->remote->play($file_link);
         if (stristr($response, 'PlayResponse')) {
             $this->success = TRUE;
             sleep(2);
