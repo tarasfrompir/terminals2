@@ -872,7 +872,7 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим loop на плеере
     try {
-        if ($terminal['PLAYER_TYPE'] AND $playerdata['random'] AND stristr($file_player, 'set_loop')) {
+        if ($terminal['PLAYER_TYPE'] AND $playerdata['loop'] AND stristr($file_player, 'set_loop')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore loop mode", 'terminals');
             $player->set_loop($playerdata['loop']);
         } else {
@@ -884,7 +884,7 @@ function restore_terminal_state($terminalname, $terminal) {
 
     // восстановим speed на плеере
     try {
-        if ($terminal['PLAYER_TYPE'] AND $playerdata['random'] AND stristr($file_player, 'set_speed')) {
+        if ($terminal['PLAYER_TYPE'] AND $playerdata['speed'] AND stristr($file_player, 'set_speed')) {
             if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore loop mode", 'terminals');
             $player->set_speed($playerdata['speed']);
         } else {
@@ -894,10 +894,9 @@ function restore_terminal_state($terminalname, $terminal) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
     }
 
-    // если тип плеера не равен типу терминала то
+    // если тип плеера равен типу терминала то
 	if ($terminal['PLAYER_TYPE'] . '_tts' == $terminal['TTS_TYPE']) {
 		// восстановим медиа для устройств НЕ ПОДДЕРЖИВАЮЩИХ плейлист на плеере
-		
 		try {
 			if ($terminal['PLAYER_TYPE'] AND $playerdata['file'] AND stristr($file_player, 'restore_media')) {
 				if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " restore media", 'terminals');
