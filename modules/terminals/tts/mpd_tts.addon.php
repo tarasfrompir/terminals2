@@ -66,7 +66,6 @@ class mpd_tts extends tts_addon
                         break;
                     }
                 }
-		sleep (1);
             } else {
                 $this->success = FALSE;
             }
