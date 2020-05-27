@@ -2,7 +2,7 @@
 /*
 Addon Kodi (XBMC) for app_player
 */
-class alicevox extends tts_addon
+class alicevox_tts extends tts_addon
 {
     function __construct($terminal)
     {
