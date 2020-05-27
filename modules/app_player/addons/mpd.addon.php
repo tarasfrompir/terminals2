@@ -324,7 +324,13 @@ class mpd extends app_player_addon
                 $this->mpd->PLClear();
                 // add files to playlist
                 foreach ($playlist_content as $song) {
-                    $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos']);
+                    if (remote_file_exists($song['file'])) { 
+                        $this->mpd->PLAddFileWithPosition($song['file'], $song['Pos']);
+                    } else {
+                        $out = parse_url($song['file']);
+                        $path = isset($out['path']) ? $out['path'] : '';
+                        $this->mpd->PLAddFileWithPosition($path, $song['Pos']);
+                    }
                 }
                 // change played file
                 $this->mpd->PLSeek($track_id, $time);
