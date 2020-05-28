@@ -47,17 +47,14 @@ class mpd_tts extends tts_addon
             }
             // для Сергея - у него мпд немного глючит вставим паузу 1 секунду
             shell_exec(PATH_TO_FFMPEG . ' -i ' . $outlink . ' -i '. SERVER_ROOT . '/cms/terminals/silent.wav -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 1 -ar 22000  -vn -y ' . $outlink.'111' );
-                
-                
+
     	    // проверяем айпи
             $server_ip = getLocalIp();
             if (!$server_ip) {
-                DebMes("Server IP not found", 'terminals');
                 return false;
             }
 
             $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT, "", $outlink.'111');
-            DebMes($file_link);
             $this->mpd->SetRepeat(0);
             $this->mpd->SetRandom(0);
             $this->mpd->SetCrossfade(0);
