@@ -37,7 +37,7 @@ class mpd_tts extends tts_addon
             $this->mpd->Connect();
         if ($this->mpd->connected) {
 	    $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo['dirname'] . '/' . $fileinfo['filename'].'sil'.'.wav'; 
+            $filename = $fileinfo['dirname'] . '/' . $fileinfo['filename'].'sil'.'.mp3'; 
                         
             if (!defined('PATH_TO_FFMPEG')) {
                 if (IsWindowsOS()) {
@@ -47,7 +47,7 @@ class mpd_tts extends tts_addon
                 }
             }
             // для Сергея - у него мпд немного глючит вставим паузу 1 секунду
-            shell_exec(PATH_TO_FFMPEG . ' -i ' . $message['CACHED_FILENAME'] . ' -i '. SERVER_ROOT . '/cms/terminals/silent.wav -filter_complex concat=n=2:v=0:a=1 -f WAV -acodec pcm_s16le -ac 2 -ar 44100  -vn -y ' . $filename );
+            shell_exec(PATH_TO_FFMPEG . ' -i ' . $message['CACHED_FILENAME'] . ' -i '. SERVER_ROOT . '/cms/terminals/silent.wav -filter_complex concat=n=2:v=0:a=1 -vn -ar 44100 -ac 2 -ab 192 -f mp3 -y ' . $filename );
 
     	    // проверяем айпи
             $server_ip = getLocalIp();
