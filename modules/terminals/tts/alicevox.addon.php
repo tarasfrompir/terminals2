@@ -28,7 +28,7 @@ class alicevox extends tts_addon
     {
        if ($message['CACHED_FILENAME']) {
             $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . rand(1000000000,9000000000).'.wav';
+            $filename = $fileinfo['dirname'] . '/' . rand(1000000000,9000000000).'.wav';
             if (!defined('PATH_TO_FFMPEG')) {
                 if (IsWindowsOS()) {
                     define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
