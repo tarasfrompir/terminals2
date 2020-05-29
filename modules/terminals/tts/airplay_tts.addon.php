@@ -27,7 +27,7 @@ class airplay_tts extends tts_addon
     {
         if ($message['CACHED_FILENAME']) {
             $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . $fileinfo[filename] . '.avi';
+            $filename = $fileinfo['dirname'] . '/' . $fileinfo['filename'] . '.avi';
             if (!file_exists($filename)) {
                 if (!defined('PATH_TO_FFMPEG')) {
                     if (IsWindowsOS()) {
