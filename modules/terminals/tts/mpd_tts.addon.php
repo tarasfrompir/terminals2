@@ -37,7 +37,7 @@ class mpd_tts extends tts_addon
             $this->mpd->Connect();
         if ($this->mpd->connected) {
 	    $fileinfo = pathinfo($message['CACHED_FILENAME']);
-            $filename = $fileinfo[dirname] . '/' . $fileinfo[basename].'sil'.'.wav'; 
+            $filename = $fileinfo['dirname'] . '/' . $fileinfo['filename'].'sil'.'.wav'; 
                         
             if (!defined('PATH_TO_FFMPEG')) {
                 if (IsWindowsOS()) {
