@@ -133,7 +133,7 @@ function sayTo($ph, $level = 0, $destination = '')
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
         if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
-            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            DebMes("No information of terminal " . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
@@ -231,7 +231,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     foreach ($terminals as $terminal) {
         // если пустая инфа о терминале пропускаем
         if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
-            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            DebMes("No information of terminal " . $terminal['NAME'], 'terminals');
             continue;
         }
         if ($terminal['USE_SYSTEM_MML']) {
