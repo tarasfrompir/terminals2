@@ -180,10 +180,10 @@ class terminals extends module
         }
         if ($this->view_mode == 'update_settings') {
             $this->config['LOG_ENABLED'] = gr('log_enabled');
+            $this->config['TERMINALS_TIMEOUT'] = = gr('terminals_timeout');
             $this->config['TERMINALS_DINGDONG'] = gr('dingdong_path');
             $this->config['TERMINALS_PING_OFFLINE'] = trim(gr('terminals_ping_offline'));
             $this->config['TERMINALS_PING_ONLINE'] = trim(gr('terminals_ping_online'));
-            $this->config['TERMINALS_PING'] = trim(gr('terminals_ping'));
             $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
             $this->saveConfig();
             $this->redirect("?ok=1");
