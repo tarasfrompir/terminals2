@@ -25,14 +25,12 @@ class telegramm extends tts_addon
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
             include(DIR_MODULES . 'yadevices/yadevices.class.php');
             $yandex_cloud = new yadevices();
-            $stations = SQLSelect("SELECT * FROM yastations WHERE TTS=2 AND IOT_ID!=''");
-            foreach ($stations as $station) {
-                $yandex_cloud->sendCloudTTS($station['IOT_ID'],$message['MESSAGE']);
-            }
+            $station = SQLSelectOne("SELECT * FROM yastations WHERE TTS=2 AND IOT_ID!='' AND IP='".$this->terminal['HOST']."'");
+            $yandex_cloud->sendCloudTTS($station['IOT_ID'],$message['MESSAGE']);
+        }
         $this->success = TRUE;
         usleep(500000);
         return $this->success;
-        }
     }
  }
 
