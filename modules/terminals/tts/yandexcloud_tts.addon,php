@@ -1,6 +1,6 @@
 <?php
 
-class telegramm extends tts_addon
+class yandexcloud_tts extends tts_addon
 {
     
     function __construct($terminal)
