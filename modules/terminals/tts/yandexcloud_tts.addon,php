@@ -1,0 +1,39 @@
+<?php
+
+class telegramm extends tts_addon
+{
+    
+    function __construct($terminal)
+    {
+        
+        $this->title       = "Yandex smart device clud";
+        $this->description = '<b>Описание:</b>&nbsp;Для работы использует &nbsp;<a href="https://mjdm.ru/forum/viewtopic.php?f=5&t=2768&sid=89e1057b5d8345f7983111f006d41154">модуль Телеграм</a>. Без этого модуля ничего работать не будет.<br>';
+        $this->description .= '<b>Проверка доступности:</b>&nbsp;service_ping (пингование проводится проверкой состояния сервиса).<br>';
+        $this->description .= '<b>Поддерживаемые возможности:</b>&nbsp;say(), sayTo(), sayReply(), ask().';
+        
+        $this->terminal = $terminal;
+        if (!$this->terminal['HOST']) return false;
+        
+        unsubscribeFromEvent('yadevices', 'SAY');
+        unsubscribeFromEvent('yadevices', 'SAYTO');
+        unsubscribeFromEvent('yadevices', 'ASK');
+        unsubscribeFromEvent('yadevices', 'SAYREPLY');
+    }
+    
+    // Say
+    function say_message($message, $terminal) {
+        if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
+            include(DIR_MODULES . 'yadevices/yadevices.class.php');
+            $yandex_cloud = new yadevices();
+            $stations = SQLSelect("SELECT * FROM yastations WHERE TTS=2 AND IOT_ID!=''");
+            foreach ($stations as $station) {
+                $yandex_cloud->sendCloudTTS($station['IOT_ID'],$message['MESSAGE']);
+            }
+        $this->success = TRUE;
+        usleep(500000);
+        return $this->success;
+        }
+    }
+ }
+
+?>
