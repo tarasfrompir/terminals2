@@ -18,6 +18,9 @@ $ter = new terminals();
 $ter->getConfig();
 $checked_time = 0;
 
+//opttmization
+setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
@@ -43,7 +46,7 @@ while (1) {
             setGlobal('cycle_terminalsControl', 'stop');
         }
         $ter->getConfig();
-        
+
         //получаем таймут для офлайновых терминалов
         if (!$ter->config['TERMINALS_PING_OFFLINE']) {
             $ter->config['TERMINALS_PING_OFFLINE'] = 27;
@@ -61,7 +64,7 @@ while (1) {
             $ter->config['TERMINALS_TIMEOUT'] = 10;
         }
         $checked_time = time();
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        saveToCache("MJD:$cycleVarName", $checked_time);
     }
     
     // Пингование сервисов офлайн терминалов 
