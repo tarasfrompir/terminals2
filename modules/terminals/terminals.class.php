@@ -529,7 +529,7 @@ setMessageVolume($terminal_name, $params["volume"]);
         terminals - Terminals
         */
         $data = <<<EOD
- terminals: ID int(10) unsigned NOT NULL auto_increment
+ terminals: ID int(3) unsigned NOT NULL auto_increment
  terminals: NAME varchar(255) NOT NULL DEFAULT ''
  terminals: HOST varchar(255) NOT NULL DEFAULT ''
  terminals: TITLE varchar(255) NOT NULL DEFAULT ''
