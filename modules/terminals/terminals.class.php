@@ -206,6 +206,10 @@ class terminals extends module
             }
             if ($terminal['CANRECOGNIZE'] == 0 AND $terminal['RECOGNIZE_TYPE']) {
 	        	$terminal['CANRECOGNIZE'] = 1;
+	        	if ($terminal['CANRECOGNIZE'] AND !$terminal['RECOGNIZE_IS_ONLINE']) {
+                    sg($terminal['LINKED_OBJECT'] . '.RecognizeState', 1);
+                    pingTerminalSafe($terminal['NAME'], $terminal,'CANRECOGNIZE');
+                }
 	        	// пробуем включить службу распознавания на устройстве
                 try {
                     if ($stt) {
@@ -237,6 +241,10 @@ class terminals extends module
         if ($rec = getTerminalByID($id)) {
             if ($rec['CANPLAY'] == 0 AND $rec['PLAYER_TYPE']) {
                 $rec['CANPLAY'] = 1;
+                if ($rec['CANPLAY'] AND !$rec['PLAYER_IS_ONLINE']) {
+                    sg($rec['LINKED_OBJECT'] . '.PlayerState', 1);
+                    pingTerminalSafe($rec['NAME'], $rec,'CANPLAY');
+                }
             } else {
                 $rec['CANPLAY'] = 0;
             }
@@ -252,6 +260,10 @@ class terminals extends module
         if ($rec = getTerminalByID($id)) {
             if ($rec['CANTTS'] == 0 AND $rec['TTS_TYPE']) {
                 $rec['CANTTS'] = 1;
+                if ($rec['CANTTS'] AND !$rec['TTS_IS_ONLINE']) {
+                    sg($rec['LINKED_OBJECT'] . '.TerminalState', 1);
+                    pingTerminalSafe($rec['NAME'], $rec,'CANTTS');
+                }
             } else {
                 $rec['CANTTS'] = 0;
             }
