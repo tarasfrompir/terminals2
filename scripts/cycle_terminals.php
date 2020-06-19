@@ -10,8 +10,6 @@ set_time_limit(0);
 
 // обьявляем массив обектов дабы не грузить их всегда
 $base_terminal = array();
-$base_type = array();
-
 
 // берем конфигурацию с модуля терминалов - общие настройки
 $ter = new terminals();
@@ -116,6 +114,30 @@ while (1) {
             if ($ter->config['LOG_ENABLED']) DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
     }
+    
+    // проверяем наличие следующего сообщения для терминалов если такие есть то проходим полный цикл
+    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
+    if ($message) {
+        $number_message = $number_message + 1;
+        if ($ter->config['LOG_ENABLED']) DebMes("Next message number - " . $number_message, 'terminals');
+    } else {
+        // иначе проверяем терминалы на необходимость восстановления медиа 
+        foreach ( $base_terminal as $term ) {
+            // если хоть 1 из терминалов имеет флаг на восстановление медиа - то проходим полный цикл
+            if ($term['NEEDRESTOREMEDIA'] == 1) {
+                // прерываем проверку и идем дальнейше
+                $neenrestore = 1;
+                break;
+            }
+        }
+        if ( $neenrestore == 0 ) {
+            // проспим секунду и продолжим основной цикл
+            sleep(1);
+            continue ;
+        } else {
+            $neenrestore = 0;
+        }
+    }
 
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
     foreach ($out_terminals as $terminals) {
@@ -153,12 +175,18 @@ while (1) {
         }
 
         // обьявляем новый обьект которого нет в массиве $base_terminal
-        if (!$base_terminal[$terminal['TTS_TYPE']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
+        if (!$base_terminal[$terminal['TITLE']] AND $terminal['TTS_TYPE'] AND file_exists(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php')) {
             $file = file_get_contents(DIR_MODULES . 'terminals/tts/' . $terminal['TTS_TYPE'] . '.addon.php');
             if (stristr($file, 'say_media_message') === FALSE) {
-                $base_terminal[$terminal['TTS_TYPE']] = 'text_terminal';
+                // задаем в массиве тип терминала
+                $base_terminal[$terminal['TITLE']]['TYPE'] = 'text_terminal';
+                // задаем в массиве нужность восстановления проигрываемого медиа - если есть необходимость
+                // то изменится на 1 при передаче аудиосообщений - предназначено для контроля необходимости воспроизведения
+                // и уменьшения количества запросов к бд
+                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             } else {
-                $base_terminal[$terminal['TTS_TYPE']] = 'audio_terminal';
+                $base_terminal[$terminal['TITLE']]['TYPE'] = 'audio_terminal';
+                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             }
             if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             continue;
@@ -170,6 +198,8 @@ while (1) {
         // если отсутствует сообщение и есть инфа для восстановления состояния терминала или воспроизведения терминала то восстанавливаем состояние
         // и переходим на следующий свободный терминал
         if (!$old_message['ID'] OR !$old_message['SOURCE']) {
+            // укажем на то что запущено восстановление состояния медиаплеера
+            $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             if ($terminal['PLAYER_IS_ONLINE'] AND (gg($terminal['LINKED_OBJECT'] . '.playerdata') OR gg($terminal['LINKED_OBJECT'] . '.terminaldata'))) {
                 try {
                     sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
@@ -206,7 +236,7 @@ while (1) {
 
         // если есть сообщение НО не сгенерирован звук (остутсвует в информации о сообщении запись) в течении 2 минут
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND $base_terminal[$terminal['TTS_TYPE']] == 'audio_terminal') {
+        if ($old_message['CACHED_FILENAME'] AND strtotime($old_message['ADDED']) + 2 * 60 < time() AND $base_terminal[$terminal['TITLE']]['TYPE'] == 'audio_terminal') {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -225,7 +255,7 @@ while (1) {
 
         // если есть сообщение и есть запись о существовании файла НО не сгенерирован звук (отсутствует файл)
         // удаляем сообщение из очереди для терминалов воспроизводящих звук
-        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND $base_terminal[$terminal['TTS_TYPE']] == 'audio_terminal') {
+        if ($old_message['CACHED_FILENAME'] AND !file_exists($old_message['CACHED_FILENAME']) AND $base_terminal[$terminal['TITLE']]['TYPE'] == 'audio_terminal') {
             try {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
@@ -244,7 +274,7 @@ while (1) {
 
         // если тип терминала передающий только текстовое сообщение
         // запускаем его воспроизведение
-        if ($base_terminal[$terminal['TTS_TYPE']] == 'text_terminal' AND $old_message['SOURCE']) {
+        if ($base_terminal[$terminal['TITLE']]['TYPE'] == 'text_terminal' AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -261,7 +291,7 @@ while (1) {
 
         // если тип терминала передающий медиа сообщение
         // иначе запускаем его воспроизведение
-        if ($base_terminal[$terminal['TTS_TYPE']] == 'audio_terminal' AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
+        if ($base_terminal[$terminal['TITLE']]['TYPE'] == 'audio_terminal' AND $old_message['CACHED_FILENAME'] AND $old_message['SOURCE']) {
             try {
                 // убираем запись айди терминала из таблицы шутс - если не воспроизведется то вернет эту запись функция send_message($old_message, $terminal);
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
@@ -270,6 +300,7 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                 //передаем сообщение на терминалы воспроизводящие аудио
                 send_messageSafe($old_message, $terminal);
+                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 1;
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
             } catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
@@ -277,8 +308,6 @@ while (1) {
         }
 
     }
-    
-    sleep(2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
