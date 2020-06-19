@@ -14,6 +14,23 @@ $base_terminal = array();
 // берем конфигурацию с модуля терминалов - общие настройки
 $ter = new terminals();
 $ter->getConfig();
+//получаем таймут для офлайновых терминалов
+if (!$ter->config['TERMINALS_PING_OFFLINE']) {
+    $ter->config['TERMINALS_PING_OFFLINE'] = 27;
+    if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping offline terminals is ".$ter->config['TERMINALS_PING_OFFLINE']." minutes", 'terminals');
+}
+        
+//полуйчаем таймаут для онлайновых терминалов
+if (!$ter->config['TERMINALS_PING_ONLINE']) {
+    $ter->config['TERMINALS_PING_ONLINE'] = 54;
+    if ($ter->config['LOG_ENABLED'])  DebMes("Timeout for ping online terminals is ".$ter->config['TERMINALS_PING_ONLINE']." minutes", 'terminals');
+}
+// получаем таймаут жизни сообщений
+if (!$ter->config['TERMINALS_TIMEOUT']) {
+    if ($ter->config['LOG_ENABLED']) DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
+    $ter->config['TERMINALS_TIMEOUT'] = 10;
+}
+
 $checked_time = 0;
 
 //opttmization
@@ -42,24 +59,6 @@ while (1) {
             DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
             setGlobal('cycle_terminalsAutoRestart', '0');
             setGlobal('cycle_terminalsControl', 'stop');
-        }
-        $ter->getConfig();
-
-        //получаем таймут для офлайновых терминалов
-        if (!$ter->config['TERMINALS_PING_OFFLINE']) {
-            $ter->config['TERMINALS_PING_OFFLINE'] = 27;
-            if ($ter->config['LOG_ENABLED']) DebMes("Timeout for ping offline terminals is ".$ter->config['TERMINALS_PING_OFFLINE']." minutes", 'terminals');
-        }
-        
-        //полуйчаем таймаут для онлайновых терминалов
-        if (!$ter->config['TERMINALS_PING_ONLINE']) {
-            $ter->config['TERMINALS_PING_ONLINE'] = 54;
-            if ($ter->config['LOG_ENABLED'])  DebMes("Timeout for ping online terminals is ".$ter->config['TERMINALS_PING_ONLINE']." minutes", 'terminals');
-        }
-        // получаем таймаут жизни сообщений
-        if (!$ter->config['TERMINALS_TIMEOUT']) {
-            if ($ter->config['LOG_ENABLED']) DebMes("Timeout for message is null minutes, set default 10 minutes", 'terminals');
-            $ter->config['TERMINALS_TIMEOUT'] = 10;
         }
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
