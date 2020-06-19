@@ -185,6 +185,7 @@ class terminals extends module
             $this->config['TERMINALS_PING_OFFLINE'] = trim(gr('terminals_ping_offline'));
             $this->config['TERMINALS_PING_ONLINE'] = trim(gr('terminals_ping_online'));
             $this->config['TERMINALS_CASH_CLEAR'] = trim(gr('terminals_cash_clear'));
+            setGlobal('cycle_terminalsControl','restart');
             $this->saveConfig();
             $this->redirect("?ok=1");
         }
@@ -529,7 +530,7 @@ setMessageVolume($terminal_name, $params["volume"]);
         terminals - Terminals
         */
         $data = <<<EOD
- terminals: ID int(3) unsigned NOT NULL auto_increment
+ terminals: ID int(10) unsigned NOT NULL auto_increment
  terminals: NAME varchar(255) NOT NULL DEFAULT ''
  terminals: HOST varchar(255) NOT NULL DEFAULT ''
  terminals: TITLE varchar(255) NOT NULL DEFAULT ''
