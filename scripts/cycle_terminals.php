@@ -45,10 +45,6 @@ foreach ($term as $t) {
 // reset all message when reload cicle
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 
-
-// get number last message
-$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
-$number_message = $number_message['ID'] + 1;
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 while (1) {
@@ -114,30 +110,6 @@ while (1) {
         }
     }
     
-    // проверяем наличие следующего сообщения для терминалов если такие есть то проходим полный цикл
-    $message = SQLSelectOne("SELECT 1 FROM shouts WHERE ID = '" . $number_message . "'");
-    if ($message) {
-        $number_message = $number_message + 1;
-        if ($ter->config['LOG_ENABLED']) DebMes("Next message number - " . $number_message, 'terminals');
-    } else {
-        // иначе проверяем терминалы на необходимость восстановления медиа 
-        foreach ( $base_terminal as $term ) {
-            // если хоть 1 из терминалов имеет флаг на восстановление медиа - то проходим полный цикл
-            if ($term['NEEDRESTOREMEDIA'] == 1) {
-                // прерываем проверку и идем дальнейше
-                $neenrestore = 1;
-                break;
-            }
-        }
-        if ( $neenrestore == 0 ) {
-            // проспим секунду и продолжим основной цикл
-            sleep(1);
-            continue ;
-        } else {
-            $neenrestore = 0;
-        }
-    }
-
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
     foreach ($out_terminals as $terminals) {
         // если нету свободных терминалов пропускаем
@@ -299,7 +271,6 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                 //передаем сообщение на терминалы воспроизводящие аудио
                 send_messageSafe($old_message, $terminal);
-                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 1;
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
             } catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
@@ -307,6 +278,7 @@ while (1) {
         }
 
     }
+    sleep (2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
