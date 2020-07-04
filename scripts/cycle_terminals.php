@@ -162,6 +162,7 @@ while (1) {
                 $base_terminal[$terminal['TITLE']]['TYPE'] = 'audio_terminal';
                 $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             }
+            $base_terminal[$terminal['TITLE']]['ID'] = $terminal['ID'];
             if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             continue;
         }
@@ -215,6 +216,7 @@ while (1) {
                 $old_message['SOURCE'] = str_replace($terminal['ID'] . '^', '', $old_message['SOURCE']);
                 SQLUpdate('shouts', $old_message);
                 if ($ter->config['LOG_ENABLED']) DebMes("Disable message not generated sound  - " . $terminal['NAME'], 'terminals');
+                DebMes("ВНИМАНИЕ!!! Модуль генератора речи не сгенерировал звуковое сообщение. ПРОВЕРЬТЕ ЕГО РАБОТУ!!!", 'terminals');
                 $params = array();
                 $params['NAME'] = $terminal['NAME'];
                 $params["MESSAGE"] = $old_message['MESSAGE'];
