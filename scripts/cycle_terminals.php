@@ -56,6 +56,9 @@ if (!function_exists('restore_terminal_state')) {
 
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
+// make socket local
+$socket = stream_socket_server("tcp://127.0.0.1:26101", $errno, $errstr);
+
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 20) {
@@ -111,6 +114,27 @@ while (1) {
             SQLExec("UPDATE shouts SET SOURCE = '' WHERE SOURCE != '' AND ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
             if ($ter->config['LOG_ENABLED']) DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
+    }
+
+    //формируем массив прослушиваемых сокетов:
+    $read = $connects;
+    $read[] = $socket;
+    $write = $except = null;
+    
+    if (!stream_select($read, $write, $except, null)) {//ожидаем сокеты доступные для чтения (без таймаута)
+        break;
+    }
+
+    if (in_array($socket, $read)) {//есть новое соединение
+        $connect = stream_socket_accept($socket, -1);//принимаем новое соединение
+        $connects[] = $connect;//добавляем его в список необходимых для обработки
+        unset($read[ array_search($socket, $read) ]);
+    }
+    
+    //обрабатываем все соединения
+    foreach($read as $connect) {
+        ...обрабатываем $connect
+        unset($connects[ array_search($connect, $connects) ]);
     }
     
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
