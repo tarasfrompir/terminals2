@@ -121,11 +121,13 @@ while (1) {
     $read[] = $socket;
     $write = $except = null;
     
-    if (!stream_select($read, $write, $except, null)) {//ожидаем сокеты доступные для чтения (без таймаута)
+    //ожидаем сокеты доступные для чтения (без таймаута)
+    if (!stream_select($read, $write, $except, null)) {
         break;
     }
-
-    if (in_array($socket, $read)) {//есть новое соединение
+    
+    //есть новое соединение
+    if (in_array($socket, $read)) {
         $connect = stream_socket_accept($socket, -1);//принимаем новое соединение
         $connects[] = $connect;//добавляем его в список необходимых для обработки
         unset($read[ array_search($socket, $read) ]);
@@ -133,8 +135,14 @@ while (1) {
     
     //обрабатываем все соединения
     foreach($read as $connect) {
-        ...обрабатываем $connect
-        unset($connects[ array_search($connect, $connects) ]);
+        $terminal_data = '';
+        while ($buffer = rtrim(fgets($connect))) {
+            $terminal_data .= $buffer;
+        }
+        fwrite($connect, "ok");
+        fclose($connect);
+        DebMes($terminal_data);
+        unset($connects[array_search($connect, $connects)]);
     }
     
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
