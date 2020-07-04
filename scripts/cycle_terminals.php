@@ -154,14 +154,13 @@ while (1) {
             if (stristr($file, 'say_media_message') === FALSE) {
                 // задаем в массиве тип терминала
                 $base_terminal[$terminal['TITLE']]['TYPE'] = 'text_terminal';
-                // задаем в массиве нужность восстановления проигрываемого медиа - если есть необходимость
-                // то изменится на 1 при передаче аудиосообщений - предназначено для контроля необходимости воспроизведения
-                // и уменьшения количества запросов к бд
-                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             } else {
                 $base_terminal[$terminal['TITLE']]['TYPE'] = 'audio_terminal';
-                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             }
+            // задаем в массиве нужность восстановления проигрываемого медиа - если есть необходимость
+            // то изменится на 1 при передаче аудиосообщений - предназначено для контроля необходимости воспроизведения
+            // и уменьшения количества запросов к бд
+            $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 0;
             $base_terminal[$terminal['TITLE']]['ID'] = $terminal['ID'];
             if ($ter->config['LOG_ENABLED']) DebMes("Add class terminal to array tts objects -" . $terminal['TTS_TYPE'], 'terminals');
             continue;
@@ -276,6 +275,8 @@ while (1) {
                 sg($terminal['LINKED_OBJECT'] . '.TerminalState', 1);
                 //передаем сообщение на терминалы воспроизводящие аудио
                 send_messageSafe($old_message, $terminal);
+                // ставим что терминал - может восстановить медиа проигрываемое на терминале
+                $base_terminal[$terminal['TITLE']]['NEEDRESTOREMEDIA'] = 1;
                 if ($ter->config['LOG_ENABLED']) DebMes("Send message with media to terminal - " . $terminal['NAME'], 'terminals');
             } catch (Exception $e) {
                 if ($ter->config['LOG_ENABLED']) DebMes("ОШИБКА!!! Передача аудио сообщения на  терминале - " . $terminal['NAME'] . " с типом терминала- " . $terminal['TTS_TYPE'] . " завершилось ошибкой", 'terminals');
