@@ -45,17 +45,20 @@ foreach ($term as $t) {
 // reset all message when reload cicle
 //SQLExec("UPDATE shouts SET SOURCE = '' ");
 
+// проверка на установленность терминалов2
+if (!function_exists('restore_terminal_state')) {
+    DebMes("то после обновления Мажордомо ОБЯЗАТЕЛЬНО обновите этот модуль");
+    DebMes("Если вы в дальнейшем планируете использовать модуль Модификацию Терминалов 2");
+    DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
+    setGlobal('cycle_terminalsAutoRestart', '0');
+    setGlobal('cycle_terminalsControl', 'stop');
+}
+
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 20) {
-        // проверка на установленность терминалов2
-        if (!function_exists('restore_terminal_state')) {
-            DebMes("Удалите цикл - cycle_terminals.php , поскольку вы не используете модуль Модификацию Терминалов 2");
-            setGlobal('cycle_terminalsAutoRestart', '0');
-            setGlobal('cycle_terminalsControl', 'stop');
-        }
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
     }
