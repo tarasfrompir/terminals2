@@ -78,11 +78,14 @@ while (1) {
 
     // Polling for new messages
     if (count($clients)) {
-        foreach ($clients AS $k => $v) {
+        foreach ($clients as $k => $v) {
             $string = '';
             // Check for new messages
-            $char = socket_read($newsock , 1024);
-            DebMes($char);
+            $socket_data = explode("=>", trim(socket_read($v , 2048)));
+            if ($socket_data[1] == 'TerminalState'){
+                $base_terminal[$socket_data[0]]['TERMINALSTATE'] = $socket_data[2];
+                DebMes($base_terminal[$socket_data[0]]);
+            }
             socket_close($clients[$k]);
             unset($clients[$k]);
         }
