@@ -1101,4 +1101,25 @@ function getDirFiles($dir, &$results = array()){
    return $results;
 }
 
+function sendToTerminalsСycle($terminal_title, $terminal_property_Name, $terminal_property) {
+    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    socket_set_timeout ($socket, 30);
+    if ($socket === false) {
+        DebMes("Не удалось выполнить socket_create(): причина: " . socket_strerror(socket_last_error()) );
+    }
+
+    $result = socket_connect($socket, '127.0.0.1', '26101');
+    if ($result === false) {
+        DebMes( "Не удалось выполнить socket_connect().\nПричина: ($result) " . socket_strerror(socket_last_error($socket)) );
+    }
+    
+    $in = $terminal_title .'=>'. $terminal_property_Name .'=>'. $terminal_property;
+    //$out = '';
+    socket_write($socket, $in, strlen($in));
+    //while ($out = socket_read($socket, 2048)) {
+    //    echo $out;
+    //}
+    
+    socket_close($socket);
+}
 
