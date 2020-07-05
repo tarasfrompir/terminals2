@@ -56,12 +56,41 @@ if (!function_exists('restore_terminal_state')) {
 
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
-// make socket local
-$socket = stream_socket_server("tcp://127.0.0.1:26101", $errno, $errstr);
+// Create a TCP Stream socket
+$sock = socket_create(AF_INET, SOCK_STREAM, 0);
+// Bind the socket to an address/port
+socket_bind($sock, '127.0.0.1', '26101') or die('Could not bind to address');
+// Start listening for connections
+socket_listen($sock);
+// Non block socket type
+socket_set_nonblock($sock);
+// Clients
+$clients = [];
 
 while (1) {
+    // Accept new connections
+    if ($newsock = socket_accept($sock)) {
+        if (is_resource($newsock)) {
+            // Append the new connection to the clients array
+            $clients[] = $newsock;
+        }
+    }
+
+    // Polling for new messages
+    if (count($clients)) {
+        foreach ($clients AS $k => $v) {
+            $string = '';
+            // Check for new messages
+            $char = socket_read($newsock , 1024);
+            DebMes($char);
+            socket_close($clients[$k]);
+            unset($clients[$k]);
+        }
+    }
+    
+    
     // time update cicle of terminal
-    if (time() - $checked_time > 20) {
+    if (time() - $checked_time > 2) {
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
     }
@@ -116,35 +145,6 @@ while (1) {
         }
     }
 
-    //формируем массив прослушиваемых сокетов:
-    $read = $connects;
-    $read[] = $socket;
-    $write = $except = null;
-    
-    //ожидаем сокеты доступные для чтения (без таймаута)
-    if (!stream_select($read, $write, $except, null)) {
-        break;
-    }
-    
-    //есть новое соединение
-    if (in_array($socket, $read)) {
-        $connect = stream_socket_accept($socket, -1);//принимаем новое соединение
-        $connects[] = $connect;//добавляем его в список необходимых для обработки
-        unset($read[ array_search($socket, $read) ]);
-    }
-    
-    //обрабатываем все соединения
-    foreach($read as $connect) {
-        $terminal_data = '';
-        while ($buffer = rtrim(fgets($connect))) {
-            $terminal_data .= $buffer;
-        }
-        fwrite($connect, "ok");
-        fclose($connect);
-        DebMes($terminal_data);
-        unset($connects[array_search($connect, $connects)]);
-    }
-    
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
     foreach ($out_terminals as $terminals) {
         // если нету свободных терминалов пропускаем
@@ -320,8 +320,12 @@ while (1) {
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
+        // Close the master sockets
+        socket_close($sock);
         exit;
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
 if ($ter->config['LOG_ENABLED']) DebMes("Цикл неожиданно завершился по неизвестной причине", 'terminals');
+// Close the master sockets
+socket_close($sock);
