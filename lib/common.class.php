@@ -154,9 +154,6 @@ function sayTo($ph, $level = 0, $destination = '')
     $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    processSubscriptionsSafe('SAYTO', $rec); //, 
-  
     return true;
 }
 
@@ -250,11 +247,6 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     }
 
     SQLUpdate('shouts', $rec);
-    
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
-    
-    DebMes("Run generate media file for Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
-    processSubscriptionsSafe('SAY', $rec); //, 'ignoreVoice'=>$ignoreVoice
     
     setGlobal('lastSayTime', time());
     setGlobal('lastSayMessage', $ph);
@@ -1619,10 +1611,6 @@ function sayToUser($ph, $level = 0, $user = '')
     $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    processSubscriptionsSafe('SAYTO', $rec); //, 
-
-    
     return true;
 }
 
@@ -1672,9 +1660,6 @@ function sayToLocation($ph, $level = 0, $destination = '')
     $rec['EVENT'] = 'SAYTO';
     $rec['ID'] = SQLInsert('shouts', $rec);
 
-    DebMes("Make Message - " . json_encode($rec, JSON_UNESCAPED_UNICODE) . " with EVENT SAYTO ", 'terminals');
-    processSubscriptionsSafe('SAYTO', $rec); //, 
-   
     return true;
 }
 
