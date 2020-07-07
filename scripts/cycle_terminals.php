@@ -54,24 +54,23 @@ if (!function_exists('restore_terminal_state')) {
     setGlobal('cycle_terminalsControl', 'stop');
 }
 
+// берем последнее сообщение для определения последнего номера и запуска генерации речи
+$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
+$number_message = $number_message['ID'] + 1;
+
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 // Create a TCP Stream socket
 $sock = socket_create(AF_INET, SOCK_STREAM, 0);
-// Bind the socket to an address/port
-socket_bind($sock, '127.0.0.1', '26101') or die('Could not bind to address');
-// Start listening for connections
+socket_bind($sock, '192.168.6.220', '26101') or die('Could not bind to address');
 socket_listen($sock);
-// Non block socket type
 socket_set_nonblock($sock);
-// Clients
 $clients = [];
 
 while (1) {
     // Accept new connections
     if ($newsock = socket_accept($sock)) {
         if (is_resource($newsock)) {
-            // Append the new connection to the clients array
             $clients[] = $newsock;
         }
     }
@@ -80,22 +79,27 @@ while (1) {
     if (count($clients)) {
         foreach ($clients as $k => $v) {
             $string = '';
-            // Check for new messages
             $socket_data = explode("=>", trim(socket_read($v , 2048)));
-            if ($socket_data[1] == 'TerminalState'){
-                $base_terminal[$socket_data[0]]['TERMINALSTATE'] = $socket_data[2];
-                DebMes($base_terminal[$socket_data[0]]);
-            }
+            DebMes(serialize($socket_data));
             socket_close($clients[$k]);
             unset($clients[$k]);
         }
     }
     
-    
     // time update cicle of terminal
-    if (time() - $checked_time > 2) {
+    if (time() - $checked_time > 20) {
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
+    }
+    
+    // проверяем наличие следующего сообщения для запуска генерации речи
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $number_message . "'");
+    if ($message) {
+        $number_message = $number_message + 1;
+        if ($ter->config['LOG_ENABLED'])     DebMes("Run generate media file for Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+        processSubscriptionsSafe($message['EVENT'], $message); //, 
+    } else {
+        sleep(1);
     }
     
     // Пингование сервисов офлайн терминалов 
@@ -147,7 +151,7 @@ while (1) {
             if ($ter->config['LOG_ENABLED']) DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
     }
-
+    
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
     foreach ($out_terminals as $terminals) {
         // если нету свободных терминалов пропускаем
@@ -319,16 +323,14 @@ while (1) {
         }
 
     }
+
+    // спим 2 секунды - ничего за это время срочного не случится
     sleep (2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
-        // Close the master sockets
-        socket_close($sock);
         exit;
     }
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
 if ($ter->config['LOG_ENABLED']) DebMes("Цикл неожиданно завершился по неизвестной причине", 'terminals');
-// Close the master sockets
-socket_close($sock);
