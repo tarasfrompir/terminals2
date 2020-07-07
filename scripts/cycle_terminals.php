@@ -54,6 +54,10 @@ if (!function_exists('restore_terminal_state')) {
     setGlobal('cycle_terminalsControl', 'stop');
 }
 
+// берем последнее сообщение для определения последнего номера и запуска генерации речи
+$number_message = SQLSelectOne("SELECT * FROM shouts ORDER BY ID DESC");
+$number_message = $number_message['ID'] + 1;
+
 DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 while (1) {
@@ -61,6 +65,16 @@ while (1) {
     if (time() - $checked_time > 20) {
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
+    }
+    
+    // проверяем наличие следующего сообщения для запуска генерации речи
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $number_message . "'");
+    if ($message) {
+        $number_message = $number_message + 1;
+        if ($ter->config['LOG_ENABLED'])     DebMes("Run generate media file for Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+        processSubscriptionsSafe($message['EVENT'], $message); //, 
+    } else {
+        sleep(1);
     }
     
     // Пингование сервисов офлайн терминалов 
@@ -284,6 +298,8 @@ while (1) {
         }
 
     }
+
+    // спим 2 секунды - ничего за это время срочного не случится
     sleep (2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
