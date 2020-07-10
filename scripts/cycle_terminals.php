@@ -10,6 +10,8 @@ set_time_limit(0);
 
 // обьявляем массив обектов дабы не грузить их всегда
 $base_terminal = array();
+// оббявляем массив сообщений
+$messages = array();
 
 // берем конфигурацию с модуля терминалов - общие настройки
 $ter = new terminals();
@@ -62,46 +64,49 @@ DebMes(date("H:i:s") . " Running " . basename(__FILE__));
 
 // Create a TCP Stream socket
 $sock = socket_create(AF_INET, SOCK_STREAM, 0);
-socket_bind($sock, '192.168.6.220', '26101') or die('Could not bind to address');
+socket_bind($sock, 'localhost', '26101') or die('Could not bind to address');
 socket_listen($sock);
 socket_set_nonblock($sock);
 $clients = [];
 
 while (1) {
-    // Accept new connections
-    if ($newsock = socket_accept($sock)) {
-        if (is_resource($newsock)) {
-            $clients[] = $newsock;
+    // проверяем соединение сокетов 1 секунду
+    $count = 0;
+    while ($count <100) {
+        if ($newsock = socket_accept($sock)) {
+            if (is_resource($newsock)) {
+                $clients[] = $newsock;
+            }
         }
+        $count ++;
+        usleep(10000);
     }
 
-    // Polling for new messages
+    // принимаем сообщения от сокета
     if (count($clients)) {
         foreach ($clients as $k => $v) {
-            $string = '';
-            $socket_data = explode("=>", trim(socket_read($v , 2048)));
-            DebMes(serialize($socket_data));
+            // читаем сокет пока не кончатся данные
+            $socket_data = '';
+            while ($buf = @socket_read($v , 2048, PHP_NORMAL_READ)) {
+                $socket_data = $socket_data . $buf;
+            }
+            // разбиваем значение полученных данных на заголовок и джейсон данные
+            $socket_data = explode("=>", trim($socket_data));
+            if ($socket_data[0] == 'StartMessage') {
+                $messages = array_merge( $messages, json_decode($socket_data[1], true));
+                //DebMes(serialize($messages));
+            }
             socket_close($clients[$k]);
             unset($clients[$k]);
         }
     }
     
     // time update cicle of terminal
-    if (time() - $checked_time > 20) {
+    if (time() - $checked_time > 5) {
         $checked_time = time();
         saveToCache("MJD:$cycleVarName", $checked_time);
     }
-    
-    // проверяем наличие следующего сообщения для запуска генерации речи
-    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $number_message . "'");
-    if ($message) {
-        $number_message = $number_message + 1;
-        if ($ter->config['LOG_ENABLED'])     DebMes("Run generate media file for Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
-        processSubscriptionsSafe($message['EVENT'], $message); //, 
-    } else {
-        sleep(1);
-    }
-    
+
     // Пингование сервисов офлайн терминалов 
     if (time() - $check_terminaloffline > 60 * $ter->config['TERMINALS_PING_OFFLINE']) {
         $check_terminaloffline = time();
@@ -150,6 +155,20 @@ while (1) {
             SQLExec("UPDATE shouts SET SOURCE = '' WHERE SOURCE != '' AND ADDED < (NOW() - INTERVAL " . $ter->config['TERMINALS_TIMEOUT'] . " MINUTE)");
             if ($ter->config['LOG_ENABLED']) DebMes("Clear message - when can not to play. For timeouts - " . $ter->config['TERMINALS_TIMEOUT'], 'terminals');
         }
+    }
+        
+    // проверяем наличие следующего сообщения для запуска генерации речи
+    $message = SQLSelectOne("SELECT * FROM shouts WHERE ID = '" . $number_message . "'");
+    if ($message) {
+        $number_message = $number_message + 1;
+        if ($ter->config['LOG_ENABLED']) DebMes("Run generate media file for Message - " . json_encode($message, JSON_UNESCAPED_UNICODE) . " with EVENT SAY ", 'terminals');
+        processSubscriptionsSafe($message['EVENT'], $message); 
+    } else {
+        sleep(1);
+    }
+    // если сообщний нету то пропускаем итерацию
+    if (!count($messages)) {
+        continue;
     }
     
     $out_terminals = getObjectsByProperty('TerminalState', '==', '0');
@@ -325,7 +344,7 @@ while (1) {
     }
 
     // спим 2 секунды - ничего за это время срочного не случится
-    sleep (2);
+    //sleep (2);
 
     if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
