@@ -14,6 +14,8 @@ class yandex_tts extends tts_addon
         if (!$this->terminal['HOST']) return false;
         
         unsubscribeFromEvent('yadevices', 'SAY');
+        //callAPI('/api/module/yadevices','GET',array('station'=>1,'command'=>'установи громкость 3'));
+        //callAPI('/api/module/yadevices','GET',array('station'=>1,'command'=>'повтори за мной установлена вечерняя громкость'));
     }
     
     // Say
