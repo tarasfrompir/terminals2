@@ -1075,6 +1075,7 @@ function get_mime_type($filename) {
     }
 }
 
+// моя дополненная функция
 function getDirFiles($dir, &$results = array()){
    $isdir = is_dir($dir);
    if ($isdir) {
