@@ -1,29 +1,4 @@
 <?php
-// Get terminals by location
-function getTerminalsByLocation($location = '') {
-    $pvalues = SQLSelect("SELECT * FROM `pvalues` WHERE VALUE = '".$location."' AND PROPERTY_NAME LIKE 'terminal_%.linkedRoom' ");
-    foreach ($pvalues as $k => $p) {
-        $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".linkedRoom", "", $p['PROPERTY_NAME']) . "'");
-        $terminals[] = $terminal;
-    }
-    return $terminals;
-}
-
-// Get terminals by locationid
-function getTerminalsByLocationId($locationid = 0) {
-    $terminals = SQLSelect("SELECT * FROM `terminals` WHERE LOCATION_ID = '" . $locationid . "'");
-    return $terminals;
-}
-
-// Get terminals by location
-function getTerminalsByUser($user = '') {
-    $pvalues = SQLSelect("SELECT * FROM `pvalues` WHERE VALUE = '".$user."' AND PROPERTY_NAME LIKE 'terminal_%.username' ");
-    foreach ($pvalues as $k => $p) {
-        $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".username", "", $p['PROPERTY_NAME']) . "'");
-        $terminals[] = $terminal;
-    }
-    return $terminals;
-}
 
 // Get all terminals
 function getAllTerminals($limit = -1, $order = 'ID', $sort = 'ASC') {
@@ -960,4 +935,32 @@ function restore_terminal_stateSafe($terminal) {
     $url = BASE_URL . '/objects/?' ;
     postURLBackground($url, $data);
     return 1;
+}
+
+
+// мое дополнение функций
+// Get terminals by location
+function getTerminalsByLocation($location = '') {
+    $pvalues = SQLSelect("SELECT * FROM `pvalues` WHERE VALUE = '".$location."' AND PROPERTY_NAME LIKE 'terminal_%.linkedRoom' ");
+    foreach ($pvalues as $k => $p) {
+        $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".linkedRoom", "", $p['PROPERTY_NAME']) . "'");
+        $terminals[] = $terminal;
+    }
+    return $terminals;
+}
+
+// Get terminals by locationid
+function getTerminalsByLocationId($locationid = 0) {
+    $terminals = SQLSelect("SELECT * FROM `terminals` WHERE LOCATION_ID = '" . $locationid . "'");
+    return $terminals;
+}
+
+// Get terminals by location
+function getTerminalsByUser($user = '') {
+    $pvalues = SQLSelect("SELECT * FROM `pvalues` WHERE VALUE = '".$user."' AND PROPERTY_NAME LIKE 'terminal_%.username' ");
+    foreach ($pvalues as $k => $p) {
+        $terminal = SQLSelectOne("SELECT * FROM `terminals` WHERE LINKED_OBJECT = '" . str_ireplace(".username", "", $p['PROPERTY_NAME']) . "'");
+        $terminals[] = $terminal;
+    }
+    return $terminals;
 }
