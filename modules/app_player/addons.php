@@ -84,7 +84,7 @@ class app_player_addon {
 	}
 
 	// Playlist(file): Repeat on/off
-	public function set_repeat($repeat) {
+	public function set_repeat($repeat=0) {
 		/*
 			$this->data format (boolean): repeat status (on = true, off = false).
 		*/
@@ -92,7 +92,7 @@ class app_player_addon {
 	}
 	
 	// Playlist(file): Random on/off
-	public function set_random($random) {
+	public function set_random($random=0) {
 		/*
 			$this->data format (boolean): repeat status (on = true, off = false).
 		*/
@@ -100,7 +100,7 @@ class app_player_addon {
 	}
 	
     // Crossfade player
-	public function set_crossfade($crossfade) {
+	public function set_crossfade($crossfade=0) {
 		/*
 			$this->data format (boolean): repeat status (on = true, off = false).
 		*/
@@ -108,7 +108,7 @@ class app_player_addon {
 	}
 	
     // Muted player
-	public function set_muted($muted) {
+	public function set_muted($muted=0) {
 		/*
 			$this->data format (boolean): repeat status (on = true, off = false).
 		*/
@@ -116,7 +116,7 @@ class app_player_addon {
 	}
 	
     // Playlist (file): Loop on/off
-	public function set_loop($loop) {
+	public function set_loop($loop=0) {
 		/*
 			$input - The path to the file for playback. String.
 			
@@ -126,7 +126,7 @@ class app_player_addon {
 	}
 	
     // Play the specified file
-	public function set_speed($speed) {
+	public function set_speed($speed=1) {
 		/*
 			$input - The path to the file for playback. String.
 			
