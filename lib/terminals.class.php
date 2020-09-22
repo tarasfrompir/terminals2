@@ -627,6 +627,70 @@ function send_message($terminalname, $message, $terminal) {
     } catch (Exception $e) {
         if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminal['NAME'] . " have wrong setting", 'terminals');
     }
+	
+	////////////////////////////////// последняя вставка
+	
+    // выключим repeat на плеере
+    try {
+        if ($player AND $playerdata['repeat'] AND stristr($file_player, 'set_repeat')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " turn off repeat mode", 'terminals');
+            $player->set_repeat(0);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set repeat mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+
+    // выключим random на плеере
+    try {
+        if ($player AND $playerdata['random'] AND stristr($file_player, 'set_random')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " turn 0ff random mode", 'terminals');
+            $player->set_random(0);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set random mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+
+    // выключим crossfade на плеере
+    try {
+        if ($player AND $playerdata['crossfade'] AND stristr($file_player, 'set_crossfade')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " turn off crossfade mode", 'terminals');
+            $player->set_crossfade(0);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set crossfade mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+
+    // выключим loop на плеере
+    try {
+        if ($player AND $playerdata['loop'] AND stristr($file_player, 'set_loop')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " torn off loop mode", 'terminals');
+            $player->set_loop(0);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+
+    // выключим speed на плеере
+    try {
+        if ($player AND $playerdata['speed'] AND stristr($file_player, 'set_speed')) {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " normalize speed mode", 'terminals');
+            $player->set_speed(1);
+        } else {
+            if ($ter->config['LOG_ENABLED']) DebMes("Terminal -" . $terminalname . " dont need set loop mode MEDIA or class have not function repeat", 'terminals');
+        }
+    } catch (Exception $e) {
+        if ($ter->config['LOG_ENABLED']) DebMes("Terminal " . $terminalname . " have wrong setting", 'terminals');
+    }
+	
+	//////////////
 
     //воспроизведем динг донг файл
     try {
