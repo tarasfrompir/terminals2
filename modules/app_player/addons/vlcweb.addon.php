@@ -438,46 +438,82 @@ class vlcweb extends app_player_addon
     }
     
     // Playlist: Random
-    function set_random()
+    function set_random($data=0)
     {
-        if ($this->vlcweb_request('status.xml', array(
-            'command' => 'pl_random'
-        ))) {
-            if ($this->vlcweb_parse_xml($this->data)) {
+        // получаем статус все данные будут в $this->data
+        $this->status();
+        // если состояние плеера НЕ такое же как и запрашиваемое состояние то меняем его
+        if (($this->data['random'] AND !$data) OR (!$this->data['random'] AND $data)) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'pl_random'))) {
+                if ($this->vlcweb_parse_xml($this->data)) {
+                    $this->reset_properties();
+                    $this->success = true;
+                    $this->message = 'OK';
+                }
+            } else {
                 $this->reset_properties();
-                $this->success = true;
-                $this->message = 'OK';
+                $this->success = false;
+                $this->message = 'Can not set random';
             }
+        } else {
+            // НИЧЕГО не делаем поскльку состояние такое же
+            $this->reset_properties();
+            $this->success = true;
+            $this->message = 'OK';
         }
         return $this->success;
     }
     
     // Playlist: Loop
-    function set_loop()
+    function set_loop($data=0)
     {
-        if ($this->vlcweb_request('status.xml', array(
-            'command' => 'pl_loop'
-        ))) {
-            if ($this->vlcweb_parse_xml($this->data)) {
+        // получаем статус все данные будут в $this->data
+        $this->status();
+        // если состояние плеера НЕ такое же как и запрашиваемое состояние то меняем его
+        if (($this->data['loop'] AND !$data) OR (!$this->data['loop'] AND $data)) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'pl_loop'))) {
+                if ($this->vlcweb_parse_xml($this->data)) {
+                    $this->reset_properties();
+                    $this->success = true;
+                    $this->message = 'OK';
+                }
+            } else {
                 $this->reset_properties();
-                $this->success = true;
-                $this->message = 'OK';
+                $this->success = false;
+                $this->message = 'Can not set loop';
             }
+        } else {
+            // НИЧЕГО не делаем поскльку состояние такое же
+            $this->reset_properties();
+            $this->success = true;
+            $this->message = 'OK';
         }
         return $this->success;
     }
     
     // Playlist: Repeat
-    function set_repeat()
+    function set_repeat($data=0)
     {
-        if ($this->vlcweb_request('status.xml', array(
-            'command' => 'pl_repeat'
-        ))) {
-            if ($this->vlcweb_parse_xml($this->data)) {
+        // получаем статус все данные будут в $this->data
+        $this->status();
+        // если состояние плеера НЕ такое же как и запрашиваемое состояние то меняем его
+        if (($this->data['repeat'] AND !$data) OR (!$this->data['repeat'] AND $data)) {
+            if ($this->vlcweb_request('status.xml', array('command' => 'pl_repeat'))) {
+                if ($this->vlcweb_parse_xml($this->data)) {
+                    $this->reset_properties();
+                    $this->success = true;
+                    $this->message = 'OK';
+                }
+            } else {
                 $this->reset_properties();
-                $this->success = true;
-                $this->message = 'OK';
+                $this->success = false;
+                $this->message = 'Can not set loop';
             }
+        } else {
+            // НИЧЕГО не делаем поскльку состояние такое же
+            $this->reset_properties();
+            $this->success = true;
+            $this->message = 'OK';
         }
         return $this->success;
     }
