@@ -455,7 +455,7 @@ class kodi extends app_player_addon {
 	}
 
 	// Playlist: Random
-	function pl_random() {
+	function set_random() {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
@@ -472,7 +472,7 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Loop
-	function pl_loop() {
+	function set_loop() {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
@@ -496,7 +496,7 @@ class kodi extends app_player_addon {
 	}
 	
 	// Playlist: Repeat
-	function pl_repeat() {
+	function set_repeat() {
 		if($this->kodi_player_id()) {
 			$player_id = $this->data;
 			if($player_id != -1) {
