@@ -337,7 +337,7 @@ class lms extends app_player_addon {
 	}
 
 	// Playlist: Random
-	function pl_random() {
+	function set_random() {
 		if($this->status()) {
 			$random = ($this->data['random']?0:1);
 		} else {
@@ -351,7 +351,7 @@ class lms extends app_player_addon {
 	}
 	
 	// Playlist: Loop
-	function pl_loop() {
+	function set_loop() {
 		if($this->status()) {
 			$loop = ($this->data['loop']?0:2);
 		} else {
@@ -365,7 +365,7 @@ class lms extends app_player_addon {
 	}
 	
 	// Playlist: Repeat
-	function pl_repeat() {
+	function set_repeat() {
 		if($this->status()) {
 			$repeat = ($this->data['repeat']?0:1);
 		} else {
