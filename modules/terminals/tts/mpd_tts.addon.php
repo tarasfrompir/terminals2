@@ -56,9 +56,6 @@ class mpd_tts extends tts_addon
             }
 
             $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT, "", $filename);
-            $this->mpd->SetRepeat(0);
-            $this->mpd->SetRandom(0);
-            $this->mpd->SetCrossfade(0);
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($file_link);
             if ($this->mpd->Play()) {
@@ -202,10 +199,6 @@ class mpd_tts extends tts_addon
         if ($this->mpd->connected) {
             // превращаем в адрес 
             $file_link = 'http://' . $server_ip . '/' . str_ireplace(ROOT, "", $link);
-		
-            $this->mpd->SetRepeat(0);
-            $this->mpd->SetRandom(0);
-            $this->mpd->SetCrossfade(0);
             $this->mpd->PLClear();
             $this->mpd->PLAddFile($file_link);
             if ($this->mpd->Play()) {
