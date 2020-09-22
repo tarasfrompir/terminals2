@@ -438,7 +438,7 @@ class vlcweb extends app_player_addon
     }
     
     // Playlist: Random
-    function pl_random()
+    function set_random()
     {
         if ($this->vlcweb_request('status.xml', array(
             'command' => 'pl_random'
@@ -453,7 +453,7 @@ class vlcweb extends app_player_addon
     }
     
     // Playlist: Loop
-    function pl_loop()
+    function set_loop()
     {
         if ($this->vlcweb_request('status.xml', array(
             'command' => 'pl_loop'
@@ -468,7 +468,7 @@ class vlcweb extends app_player_addon
     }
     
     // Playlist: Repeat
-    function pl_repeat()
+    function set_repeat()
     {
         if ($this->vlcweb_request('status.xml', array(
             'command' => 'pl_repeat'
