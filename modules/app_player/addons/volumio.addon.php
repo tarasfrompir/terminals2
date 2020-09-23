@@ -1,16 +1,15 @@
 <?php
-
 class volumio extends app_player_addon
 {
-    
+
     // Private properties
     private $curl;
     private $address;
-    
+
     // Constructor
     function __construct($terminal)
     {
-        $this->title       = 'VLC через HTTP';
+        $this->title = 'VOLUMIO';
         $this->description = '<b>Описание:</b>&nbsp; Воспроизведение звука через VOLUMIO.<br>';
         //$this->description .= 'Воспроизведение видео на терминале этого типа пока не поддерживается.<br>';
         //$this->description .= '<b>Восстановление воспроизведения после TTS:</b>&nbsp; Да (если ТТС такого же типа, что и плеер).<br>';
@@ -18,117 +17,123 @@ class volumio extends app_player_addon
         $this->description .= '<b>Настройка:</b>&nbsp; Порт по умолчанию для устройства 3000<br>';
         //$this->description .= '(Инструменты -> Настройки -> Все -> Основные интерфейсы -> Дополнительные модули интерфейса -> Web)<br>';
         //$this->description .= 'и установить для него пароль (Основные интерфейсы -> Lua -> HTTP -> Пароль).';
-        
         $this->terminal = $terminal;
-        if (!$this->terminal['HOST'])
-            return false;
+        if (!$this->terminal['HOST']) return false;
         $this->reset_properties();
-        
+
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->terminal['PLAYER_PORT']) ? 3000 : $this->terminal['PLAYER_PORT']) . 'api/v1/commands/?cmd=';
-		$this->postaddress = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->terminal['PLAYER_PORT']) ? 3000 : $this->terminal['PLAYER_PORT']) . 'api/v1/';
+        $this->postaddress = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->terminal['PLAYER_PORT']) ? 3000 : $this->terminal['PLAYER_PORT']) . 'api/v1/';
     }
-    
-	private function sendCommand($cmd='')
+
+    private function sendCommand($cmd = '')
     {
-        if ($this->terminal['HOST']) {
-            getURLBackground($this->address . $cmd,0 , $this->terminal['PLAYER_USERNAME'], $this->terminal['PLAYER_PASSWORD']);
+        if ($this->terminal['HOST'])
+        {
+            getURLBackground($this->address . $cmd, 0, $this->terminal['PLAYER_USERNAME'], $this->terminal['PLAYER_PASSWORD']);
             return $result;
         }
     }
 
-	private function sendPostCommand($cmd='', $qerry=array())
+    private function sendPostCommand($cmd = '', $qerry = array())
     {
-        if ($this->terminal['HOST']) {
-            postURLBackground($this->postaddress . $cmd, $query, 0 , $this->terminal['PLAYER_USERNAME'], $this->terminal['PLAYER_PASSWORD']);
+        if ($this->terminal['HOST'])
+        {
+            postURLBackground($this->postaddress . $cmd, $query, 0, $this->terminal['PLAYER_USERNAME'], $this->terminal['PLAYER_PASSWORD']);
             return $result;
         }
     }
-	
+
     // Pause
     function pause()
     {
-        if ($this->sendCommand('pause') {
+        if ($this->sendCommand('pause')
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
-    
+
     // Stop
     function stop()
     {
-        if ($this->sendCommand('stop') {
+        if ($this->sendCommand('stop')
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
-    
+
     // Next
     function next()
     {
-        if ($this->sendCommand('next') {
+        if ($this->sendCommand('next')
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
-    
+
     // Previous
     function previous()
     {
-        if ($this->sendCommand('prev') {
+        if ($this->sendCommand('prev')
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
-    
+
     // Set volume
     function set_volume($level)
     {
-        if ($this->sendCommand('volume&volume=' . $level) {
+        if ($this->sendCommand('volume&volume=' . $level)
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
-    
+
     // Playlist: Empty
     function pl_empty()
     {
-        if ($this->sendCommand('clearQueue') {
+        if ($this->sendCommand('clearQueue')
+        {
             $this->reset_properties();
             $this->success = true;
             $this->message = 'OK';
-		}
+        }
         return $this->success;
     }
 
     // Play
     function play($input)
     {
-		$this->pl_empty();
-		$qerry=array(
-		  "uri"=>$input,
-		  "service"=>"mpd",
-		  "title"=>"Majordomo player",
-		  "artist"=>"Majordomo",
-		  "album"=>"New",
-		  "type"=>"song",
-		  "tracknumber"=>0,
-		  //"duration"=>180,
-		  //"trackType"=>"flac"
-		)
-        sendPostCommand('addToQueue', $qerry);
+        $this->pl_empty();
+        $qerry = array(
+            "uri" => $input,
+            "service" => "mpd",
+            "title" => "Majordomo player",
+            "artist" => "Majordomo",
+            "album" => "New",
+            "type" => "song",
+            "tracknumber" => 0,
+            //"duration"=>180,
+            //"trackType"=>"flac"
+            
+        ) sendPostCommand('addToQueue', $qerry);
     }
-	
-	/*
+
+    /*
     // Playlist: Get
     function pl_get()
     {
@@ -416,8 +421,8 @@ class volumio extends app_player_addon
         }
         return $this->success;
     }
-	
-	    // Get player status
+    
+     // Get player status
     function status()
     {
         $this->reset_properties();
@@ -503,7 +508,7 @@ class volumio extends app_player_addon
         }
         return $this->success;
     }
-	
-*/
+    
+    */
 }
 ?>
