@@ -35,7 +35,7 @@ class telegramm extends tts_addon
                 }
             } else {
                 // усли пользователя нет то отправляем на всех без исключения
-                $users = SQLSelect("SELECT * FROM tlg_user ");
+                $users = SQLSelect("SELECT * FROM tlg_user WHERE HISTORY=1");
             }
             $c_users = count($users);
             if ($message['MESSAGE'] AND $c_users) {
