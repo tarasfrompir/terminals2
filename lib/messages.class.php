@@ -1,5 +1,103 @@
 <?php
 
+// say to all terminal where User = $user 
+function sayToUser($ph, $level = 0, $user = '')
+{
+    if (!$user) return false;
+
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+
+    // get room ID
+    $users = SQLSelectOne("SELECT * FROM `users` WHERE `USERNAME` LIKE '" . $user. "' OR `NAME` LIKE '" . $user. "'");
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = 0;
+    $rec['MEMBER_ID']  = $users['ID'];
+    $rec['IMPORTANCE'] = $level;
+    
+    $terminals = array();
+    if (!$users OR !$terminals = getTerminalsByUser($user)) return false;
+	
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
+    }
+    
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    return true;
+}
+
+// say to all terminal where location = $destination 
+function sayToLocation($ph, $level = 0, $destination = '')
+{
+    if (!$destination) return false;
+    
+    // replace enter simbol
+    $ph = str_replace(array("\r\n", "\r", "\n"), '', $ph);
+    if (!$level) $level=0;
+    
+    // get room ID
+    $location = SQLSelectOne("SELECT * FROM `locations` WHERE `TITLE` LIKE '" . $destination. "'");
+
+    // add message to chat
+    $rec               = array();
+    $rec['MESSAGE']    = $ph;
+    $rec['ADDED']      = date('Y-m-d H:i:s');
+    $rec['ROOM_ID']    = $location['ID'];
+    $rec['MEMBER_ID']  = 0;
+    $rec['IMPORTANCE'] = $level;
+   
+    if (!$location OR !$terminals = getTerminalsByLocationId($location['ID'])) return false;
+
+    foreach ($terminals as $terminal) {
+        // если пустая инфа о терминале пропускаем
+        if (!$terminal OR !$terminal['TTS_IS_ONLINE']) {
+            DebMes("No information of terminal" . $terminal['NAME'], 'terminals');
+            continue;
+        }
+        if ($terminal['USE_SYSTEM_MML']) {
+            if ( $rec['IMPORTANCE'] >= getGlobal('minMsgLevel')) {
+                if ($terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } else  {
+            if ($rec['IMPORTANCE'] >= $terminal['MIN_MSG_LEVEL']) {
+                if ( $terminal['CANTTS'] AND $terminal['TTS_TYPE'] AND $terminal['LINKED_OBJECT'] ) {
+                    $rec['SOURCE'] .= $terminal['ID'] . '^';
+                }
+            }
+        } 
+    }
+    
+    $rec['EVENT'] = 'SAYTO';
+    $rec['ID'] = SQLInsert('shouts', $rec);
+
+    return true;
+}
+
 function sayReplySafe($ph, $level = 0, $replyto = '')
 {
     $data = array(
