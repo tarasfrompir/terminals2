@@ -32,7 +32,7 @@ class iobroker_tts extends tts_addon
     public function ping_ttsservice($host)
     {
         if (ping($host)) {
-		$url = $this->address . "/api/set.json?home=1";
+		$url = $this->address . "/api/get.json";
 		if (getURL($url,0)) {
 		    $this->success = TRUE;
 		} else {
