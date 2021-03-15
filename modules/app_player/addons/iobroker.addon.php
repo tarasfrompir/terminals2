@@ -49,7 +49,7 @@ class iobroker extends app_player_addon {
     {
         if (ping($host)) {
 		$this->reset_properties();
-		$url = $this->address . "/api/set.json?home=1";
+		$url = $this->address . "/api/get.json";
 		if (getURL($url,0)) {
 		    $this->success = TRUE;
 		} else {
