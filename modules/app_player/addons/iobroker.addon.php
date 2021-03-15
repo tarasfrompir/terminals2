@@ -53,7 +53,7 @@ class iobroker extends app_player_addon {
 		if (getURL($url,0)) {
 		    $this->success = TRUE;
 		} else {
-		    $this->success = FALSE
+		    $this->success = FALSE;
 		}
         } else {
             $this->success = FALSE;
