@@ -27,6 +27,23 @@ class iobroker_tts extends tts_addon
         $this->curl    = curl_init();
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . $this->port;
     }
+	
+    // ping terminal tts service
+    public function ping_ttsservice($host)
+    {
+        if (ping($host)) {
+		$url = $this->address . "/api/set.json?home=1";
+		if (getURL($url,0)) {
+		    $this->success = TRUE;
+		} else {
+		    $this->success = FALSE
+		}
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+	
     // Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
