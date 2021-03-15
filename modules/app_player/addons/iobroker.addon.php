@@ -43,7 +43,24 @@ class iobroker extends app_player_addon {
 	function destroy() {
 		curl_close($this->curl);
 	}
-		
+ 
+    // ping mediaservise
+    public function ping_mediaservice($host)
+    {
+        if (ping($host)) {
+		$this->reset_properties();
+		$url = $this->address . "/api/set.json?home=1";
+		if (getURL($url,0)) {
+		    $this->success = TRUE;
+		} else {
+		    $this->success = FALSE
+		}
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
+	
 	// Play
 	function play($input) {
 		$this->reset_properties();
