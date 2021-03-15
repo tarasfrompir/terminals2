@@ -11,11 +11,6 @@ class iobroker_tts extends tts_addon
         $this->description = '<b>Описание:</b>&nbsp; Для работы использует андроид с установленным приложением &nbsp;<a href="https://play.google.com/store/apps/details?id=ru.codedevice.iobrokerpawii">ioBroker.paw</a>.<br>';
 		$this->description .= '<b>Проверка доступности:</b>&nbsp;ip_ping.<br>';
 		$this->description .= '<b>Настройка:</b>&nbsp; Не забудьте активировать HTTP интерфейс в настройках ioBroker.paw и включть работу сервиса кнопкой: Connection.<br>';
-		$this->description .= 'Управление треками реальзовано через запуск команды в Tasker:<br>';
-		$this->description .= '1. Создать на вкладке TASKS, 3 задачи: Play, Pause, Prev. Учитавая регистр!<br>';
-		$this->description .= '2. В задачах добавить соответствующие команды. Выберите из списка действий «Медиа»->»Упр. медиа плеером» и далее выбираем вариант необходимо события.<br>';
-		$this->description .= '3. Установить чекбокс на против строки "Use Notification if Availble.<br>';
-		$this->description .= '4. В настройках таскера на вкладке разное установить чекбокс "Разрешить внешний доступ".<br>';
         $this->description .= '<b>Поддерживаемые возможности:</b>say(),sayTo()<br>';
                 
         $this->terminal = $terminal;
@@ -32,9 +27,10 @@ class iobroker_tts extends tts_addon
     public function ping_ttsservice($host)
     {
         if (ping($host)) {
-		$url = $this->address . "/api/get.json";
-		if (getURL($url,0)) {
+		$connection = @fsockopen($this->terminal['HOST'],$this->setting['TTS_PORT'],$errno,$errstr,1);
+		if (is_resource($connection)) {
 		    $this->success = TRUE;
+		    fclose($connection);
 		} else {
 		    $this->success = FALSE;
 		}
