@@ -26,6 +26,23 @@ class vlcweb_tts extends tts_addon
         $this->address = 'http://' . $this->terminal['HOST'] . ':' . (empty($this->setting['TTS_PORT']) ? 8080 : $this->setting['TTS_PORT']);
         
     }
+	
+    // ping terminal tts service
+    public function ping_ttsservice($host)
+    {
+        if (ping($host)) {
+		$connection = @fsockopen($this->terminal['HOST'],$this->setting['TTS_PORT'],$errno,$errstr,1);
+		if (is_resource($connection)) {
+		    $this->success = TRUE;
+		    fclose($connection);
+		} else {
+		    $this->success = FALSE;
+		}
+        } else {
+            $this->success = FALSE;
+        }
+        return $this->success;
+    }
     
     // Private: VLC-WEB request
     private function vlcweb_request($path, $data = array())
