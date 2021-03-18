@@ -30,14 +30,10 @@ class vlcweb_tts extends tts_addon
     // ping terminal tts service
     public function ping_ttsservice($host)
     {
-        if (ping($host)) {
-		$connection = @fsockopen($this->terminal['HOST'],$this->setting['TTS_PORT'],$errno,$errstr,1);
-		if (is_resource($connection)) {
-		    $this->success = TRUE;
-		    fclose($connection);
-		} else {
-		    $this->success = FALSE;
-		}
+        $connection = @fsockopen($this->terminal['HOST'],$this->setting['TTS_PORT'],$errno,$errstr,1);
+        if (is_resource($connection)) {
+            $this->success = TRUE;
+            fclose($connection);
         } else {
             $this->success = FALSE;
         }
