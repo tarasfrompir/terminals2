@@ -47,15 +47,11 @@ class iobroker extends app_player_addon {
     // ping mediaservise
     public function ping_mediaservice($host)
     {
-        if (ping($host)) {
-		$this->reset_properties();
-		$connection = @fsockopen($this->terminal['HOST'],$this->terminal['PLAYER_PORT'],$errno,$errstr,1);
-		if (is_resource($connection)) {
-		    $this->success = TRUE;
-		    fclose($connection);
-		} else {
-		    $this->success = FALSE;
-		}
+        $this->reset_properties();
+        $connection = @fsockopen($this->terminal['HOST'],$this->terminal['PLAYER_PORT'],$errno,$errstr,1);
+        if (is_resource($connection)) {
+            $this->success = TRUE;
+            fclose($connection);
         } else {
             $this->success = FALSE;
         }
