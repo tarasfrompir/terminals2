@@ -35,7 +35,7 @@ $checked_time = 0;
 
 //opttmization
 setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+//$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 
 // set all terminal as free when restart cycle
 $term = SQLSelect("SELECT * FROM terminals");
@@ -64,7 +64,7 @@ while (1) {
     // time update cicle of terminal
     if (time() - $checked_time > 20) {
         $checked_time = time();
-        saveToCache("MJD:$cycleVarName", $checked_time);
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $checked_time, 1);
     }
     
     // проверяем наличие следующего сообщения для запуска генерации речи
@@ -302,7 +302,7 @@ while (1) {
     // спим 2 секунды - ничего за это время срочного не случится
     sleep (2);
 
-    if (file_exists('./reboot') || IsSet($_GET['onetime'])) {
+    if (isRebootRequired() || IsSet($_GET['onetime'])) {
         if ($ter->config['LOG_ENABLED']) DebMes("Цикл перезапущен по команде ребут от сервера ", 'terminals');
         exit;
     }
