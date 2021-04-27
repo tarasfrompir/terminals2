@@ -1006,3 +1006,17 @@ function getTerminalsByUser($user = '') {
     }
     return $terminals;
 }
+
+/**
+ * This function get volume for message on the terminal
+ * @param mixed $host Host (default 'localhost') name or ip of terminal
+ */
+function getMessageVolume($host = 'localhost') {
+    if (!$terminal = getTerminalsByName($host, 1) [0]) {
+        $terminal = getTerminalsByHost($host, 1) [0];
+    }
+    if (!$terminal) {
+        return;
+    }
+    return $terminal['MESSAGE_VOLUME_LEVEL'];
+}
