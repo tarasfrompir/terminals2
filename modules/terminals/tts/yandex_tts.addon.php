@@ -22,10 +22,29 @@ class yandex_tts extends tts_addon
     public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
-            include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
-            $yadevice = new yadevices();
+            //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            //$yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
             if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'say'=>$message['MESSAGE']))) {
+                $this->success = TRUE;
+            } else {
+                $this->success = FALSE;
+            }
+        } else {
+            $this->success = FALSE;
+        }
+        usleep(100000);
+        return $this->success;
+    }
+    
+    // Set volume
+    function set_volume($level)
+    {
+        if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
+            //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            //$yadevice = new yadevices();
+            $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
+            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'setVolume', 'volume'=> $level ))) {
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
