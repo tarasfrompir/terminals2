@@ -25,7 +25,7 @@ class yandex_tts extends tts_addon
             include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
             $yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
-            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'повтори за мной '. $message['MESSAGE']))) {
+            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'say'=>$message['MESSAGE']))) {
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
