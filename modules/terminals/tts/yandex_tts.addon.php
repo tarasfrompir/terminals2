@@ -25,11 +25,13 @@ class yandex_tts extends tts_addon
             include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
             $yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
-            if ($yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE'])) {
-                $this->success = TRUE;
-            } else {
-                $this->success = FALSE;
-            }
+            $yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE']);
+            $this->success = TRUE;
+            //if ($yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE'])) {
+            //    $this->success = TRUE;
+            //} else {
+            //    $this->success = FALSE;
+            //}
         } else {
             $this->success = FALSE;
         }
