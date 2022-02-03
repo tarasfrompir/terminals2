@@ -25,7 +25,7 @@ class yandexcloud_tts extends tts_addon
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
             include(DIR_MODULES . 'yadevices/yadevices.class.php');
             $yandex_cloud = new yadevices();
-            $station = SQLSelectOne("SELECT * FROM yastations WHERE TTS=2 AND IOT_ID!='' AND IP='".$this->terminal['HOST']."'");
+            $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
             $yandex_cloud->sendCloudTTS($station['IOT_ID'],$message['MESSAGE']);
         }
         $this->success = TRUE;
