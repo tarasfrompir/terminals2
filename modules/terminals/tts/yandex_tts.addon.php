@@ -44,7 +44,7 @@ class yandex_tts extends tts_addon
             //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
             //$yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
-            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'setVolume', 'volume'=> $level ))) {
+            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'setVolume', 'volume'=> $level/100 ))) {
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
