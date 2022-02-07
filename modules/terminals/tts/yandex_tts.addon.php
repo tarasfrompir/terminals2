@@ -22,10 +22,11 @@ class yandex_tts extends tts_addon
     public function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php')) {
-            include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
-            $yadevice = new yadevices();
+            //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            //$yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
-            $yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE']);
+            callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'say'=>$message['MESSAGE']));
+            //$yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE']);
             $this->success = TRUE;
             //if ($yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE'])) {
             //    $this->success = TRUE;
