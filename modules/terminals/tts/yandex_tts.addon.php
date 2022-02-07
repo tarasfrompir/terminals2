@@ -59,13 +59,14 @@ class yandex_tts extends tts_addon
         usleep(100000);
         return $this->success;
     }
+    */
     
-     // ping terminal
+    // ping terminal
     public function ping_ttsservice($host) {
         $this->success = TRUE;
         return $this->success;
     }
     
  }
-*/
+
 ?>
