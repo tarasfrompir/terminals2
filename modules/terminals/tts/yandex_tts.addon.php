@@ -40,6 +40,7 @@ class yandex_tts extends tts_addon
         return $this->success;
     }
     
+    /*
     // Set volume
     function set_volume($level)
     {
@@ -66,5 +67,5 @@ class yandex_tts extends tts_addon
     }
     
  }
-
+*/
 ?>
