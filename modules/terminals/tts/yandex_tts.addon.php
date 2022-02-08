@@ -35,7 +35,6 @@ class yandex_tts extends tts_addon
         return $this->success;
     }
     
-    /*
     // Set volume
     function set_volume($level)
     {
@@ -43,7 +42,9 @@ class yandex_tts extends tts_addon
             //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
             //$yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='".$this->terminal['HOST']."'");
-            if (callAPI('/api/module/yadevices','GET',array('station'=>$station['ID'],'command'=>'setVolume', 'volume'=> $level/100 ))) {
+            //if (($params['command'] == 'setVolume') && $params['volume']) {
+            //        return $this->sendCommandToStation((int)$params['station'], $params['command'], $params['volume']);
+            if ($this->sendCommandToStation((int)$station['ID'], 'setVolume', $level/100)) {
                 $this->success = TRUE;
             } else {
                 $this->success = FALSE;
@@ -54,7 +55,7 @@ class yandex_tts extends tts_addon
         usleep(100000);
         return $this->success;
     }
-    */
+
     
     // ping terminal
     public function ping_ttsservice($host) {
