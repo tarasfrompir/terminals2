@@ -38,7 +38,7 @@ class yandex_tts extends tts_addon
         usleep(100000);
         return $this->success;
     }
-
+/*
     // Set volume
     function set_volume($level)
     {
@@ -56,7 +56,7 @@ class yandex_tts extends tts_addon
         usleep(100000);
         return $this->success;
     }
-
+*/
     // ping terminal
     public function ping_ttsservice($host)
     {
