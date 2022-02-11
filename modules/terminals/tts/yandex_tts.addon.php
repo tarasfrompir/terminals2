@@ -48,7 +48,7 @@ class yandex_tts extends tts_addon
             //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
             //$yadevice = new yadevices();
             //$yadevice->sendCommandToStation((int)$station['ID'], 'setVolume', $level / 100);
-            callAPI('/api/module/yadevices','GET',array('station'=>int)$station['ID'],'command'=>'setVolume','volume'=>$level / 100));
+            callAPI('/api/module/yadevices','GET',array('station'=>(int)$station['ID'],'command'=>'setVolume','volume'=>$level / 100));
             $this->success = true;
         } else {
             $this->success = false;
