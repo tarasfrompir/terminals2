@@ -25,10 +25,11 @@ class yandex_tts extends tts_addon
     {
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php'))
         {
-            include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
-            $yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='" . $terminal['HOST'] . "'");
-            $yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE']);
+            //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            //$yadevice = new yadevices();
+            //$yadevice->sendCommandToStation((int)$station['ID'], 'повтори за мной ' . $message['MESSAGE']);
+            callAPI('/api/module/yadevices','GET',array('station'=>(int)$station['ID'],'say'=>$message['MESSAGE']));
             $this->success = true;
         
         } else {
@@ -43,12 +44,11 @@ class yandex_tts extends tts_addon
     {
         if (file_exists(DIR_MODULES . 'yadevices/yadevices.class.php'))
         {
-            include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
-            $yadevice = new yadevices();
             $station = SQLSelectOne("SELECT * FROM yastations WHERE IP='" . $this->terminal['HOST'] . "'");
-            //if (($params['command'] == 'setVolume') && $params['volume']) {
-            //        return $this->sendCommandToStation((int)$params['station'], $params['command'], $params['volume']);
-            $yadevice->sendCommandToStation((int)$station['ID'], 'setVolume', $level / 100);
+            //include_once (DIR_MODULES . 'yadevices/yadevices.class.php');
+            //$yadevice = new yadevices();
+            //$yadevice->sendCommandToStation((int)$station['ID'], 'setVolume', $level / 100);
+            callAPI('/api/module/yadevices','GET',array('station'=>int)$station['ID'],'command'=>'setVolume','volume'=>$level / 100));
             $this->success = true;
         } else {
             $this->success = false;
